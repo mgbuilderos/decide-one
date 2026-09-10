@@ -1,0 +1,70 @@
+{
+  "name": "Decide One \u2014 Priority Instrument",
+  "short_name": "Decide One",
+  "id": "/",
+  "description": "List your tasks, choose a framework, and decide what comes first.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "portrait",
+  "background_color": "#0B0B0D",
+  "theme_color": "#0B0B0D",
+  "lang": "en-US",
+  "dir": "ltr",
+  "categories": [
+    "productivity",
+    "utilities",
+    "lifestyle"
+  ],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Today's Priorities",
+      "short_name": "Today",
+      "description": "Open today's focus priorities and daily log",
+      "url": "/?view=daily",
+      "icons": [
+        {
+          "src": "/icon.svg",
+          "sizes": "512x512"
+        }
+      ]
+    },
+    {
+      "name": "Monthly Overview",
+      "short_name": "Monthly",
+      "description": "View calendar milestones and monthly tasks",
+      "url": "/?view=monthly",
+      "icons": [
+        {
+          "src": "/icon.svg",
+          "sizes": "512x512"
+        }
+      ]
+    },
+    {
+      "name": "Search Your Work",
+      "short_name": "Search",
+      "description": "Find saved priorities and notes",
+      "url": "/?view=daily&action=search",
+      "icons": [
+        {
+          "src": "/icon.svg",
+          "sizes": "512x512"
+        }
+      ]
+    }
+  ]
+}

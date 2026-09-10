@@ -1,0 +1,29 @@
+# Dependencies & build output
+node_modules/
+dist/
+.wrangler/
+
+# Secrets & environment
+.env
+.env.*
+!.env.example
+
+# Local telemetry data — never leaves the machine
+server/data/
+*.sqlite*
+*.db
+*.log
+
+# Browser profiles from local QC runs (may contain session data)
+.chrome-temp/
+.chrome_headless/
+
+# Session scratch — conversation capsules and receipts
+.claude/context-receipt/
+
+# Local artifacts & OS noise
+artifacts/
+.DS_Store
+
+# 3D device-render studio — 231MB of Blender output, kept local
+design/device-studio/

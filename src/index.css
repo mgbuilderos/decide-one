@@ -1,0 +1,1621 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================================================
+   AUTHENTIC STATIONERY PAPER PATTERNS (PURE WHITE #FFFFFF)
+   Delicate, whisper-quiet cadence for optimal reading & writing contrast
+   ========================================================================= */
+.paper-dots {
+  background-color: #FFFFFF !important;
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.11) 1px, transparent 1px) !important;
+  background-size: 24px 24px !important;
+  background-position: 12px 12px !important;
+}
+.dark .paper-dots {
+  background-color: #141416 !important;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.12) 1px, transparent 1px) !important;
+  background-size: 24px 24px !important;
+  background-position: 12px 12px !important;
+}
+
+.paper-square {
+  background-color: #FFFFFF !important;
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px) !important;
+  background-size: 24px 24px !important;
+  background-position: 0 0 !important;
+}
+.dark .paper-square {
+  background-color: #141416 !important;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px) !important;
+  background-size: 24px 24px !important;
+  background-position: 0 0 !important;
+}
+
+.paper-plain {
+  background-color: #FFFFFF !important;
+  background-image: none !important;
+}
+.dark .paper-plain {
+  background-color: #141416 !important;
+  background-image: none !important;
+}
+
+/* Backward compatibility aliases */
+.dot-grid-light {
+  background-color: #FFFFFF !important;
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.11) 1px, transparent 1px) !important;
+  background-size: 24px 24px !important;
+  background-position: 0px 0px !important;
+}
+.dot-grid-dark {
+  background-color: #141416 !important;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.12) 1px, transparent 1px) !important;
+  background-size: 24px 24px !important;
+  background-position: 0px 0px !important;
+}
+
+/* Bifold Spread Pages: Transparent surfaces inheriting the continuous parent notebook canvas */
+.bifold-left-page,
+.bifold-right-page {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* =========================================================================
+   ARCHIVAL PAPER TONES & LUXURY FOUNTAIN PEN INKS
+   ========================================================================= */
+.paper-tone-cream.paper-dots,
+.paper-tone-cream.paper-square,
+.paper-tone-cream.paper-plain,
+.paper-tone-cream {
+  background-color: #FAF7EE !important;
+}
+.dark .paper-tone-cream.paper-dots,
+.dark .paper-tone-cream.paper-square,
+.dark .paper-tone-cream.paper-plain,
+.dark .paper-tone-cream {
+  background-color: #1A1815 !important;
+}
+
+.paper-tone-washi.paper-dots,
+.paper-tone-washi.paper-square,
+.paper-tone-washi.paper-plain,
+.paper-tone-washi {
+  background-color: #F2F1ED !important;
+}
+.dark .paper-tone-washi.paper-dots,
+.dark .paper-tone-washi.paper-square,
+.dark .paper-tone-washi.paper-plain,
+.dark .paper-tone-washi {
+  background-color: #161719 !important;
+}
+
+/* Custom Fountain Pen Archival Inks */
+.ink-oxblood input,
+.ink-oxblood textarea,
+.ink-oxblood .stationery-ink-target {
+  color: #5C1414 !important;
+}
+.dark .ink-oxblood input,
+.dark .ink-oxblood textarea,
+.dark .ink-oxblood .stationery-ink-target {
+  color: #F87171 !important;
+}
+
+.ink-konpeki input,
+.ink-konpeki textarea,
+.ink-konpeki .stationery-ink-target {
+  color: #0369A1 !important;
+}
+.dark .ink-konpeki input,
+.dark .ink-konpeki textarea,
+.dark .ink-konpeki .stationery-ink-target {
+  color: #38BDF8 !important;
+}
+
+.ink-sepia input,
+.ink-sepia textarea,
+.ink-sepia .stationery-ink-target {
+  color: #78350F !important;
+}
+.dark .ink-sepia input,
+.dark .ink-sepia textarea,
+.dark .ink-sepia .stationery-ink-target {
+  color: #FBBF24 !important;
+}
+
+@layer utilities {
+
+  /* Compact Pocketnote Internal Scrollbar */
+  .pocket-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.12) transparent;
+  }
+  .pocket-scroll::-webkit-scrollbar {
+    width: 3.5px;
+  }
+  .pocket-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .pocket-scroll::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 9999px;
+  }
+  .dark .pocket-scroll {
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+  }
+  .dark .pocket-scroll::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  /* Completely Invisible Scrollbar for pristine stationery feel */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* ==========================================================================
+     AUTHENTIC JAPANESE STATIONERY PAPER BLOCK (RODA SLIM NOTEPAD CRAFT)
+     ========================================================================== */
+
+  /* The Paper Block Canvas: Clean Japanese die-cut silhouette, stacked trimmed paper layers, rigid dark backing board */
+  .embossed-notebook {
+    position: relative;
+    border-radius: 20px;
+    box-shadow: 
+      /* Top sheet specular highlight */
+      inset 0 1px 0 rgba(255, 255, 255, 0.95),
+      /* Crisp paper perimeter outline */
+      0 0 0 1px rgba(0, 0, 0, 0.05),
+      /* Visible 3D trimmed paper stack layers (clean cut paper sheets) */
+      0 1px 0 0 #ECEBE6,
+      0 2px 0 0 #E3E2DD,
+      0 3px 0 0 #DAD8D2,
+      0 4px 0 0 #D0CEC7,
+      /* Rigid dark backing board base peeking under the paper stack */
+      0 5px 0 0 #26262A,
+      0 6px 0 0 #161618,
+      /* Soft natural ambient desk occlusion */
+      0 8px 5px -2px rgba(0, 0, 0, 0.10),
+      0 16px 32px -4px rgba(0, 0, 0, 0.07),
+      0 32px 64px -8px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.25s ease;
+  }
+
+  .dark .embossed-notebook {
+    border-radius: 20px;
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
+      0 0 0 1px rgba(255, 255, 255, 0.08),
+      /* Stacked dark obsidian stationery sheets */
+      0 1px 0 0 #28282C,
+      0 2px 0 0 #222226,
+      0 3px 0 0 #1C1C20,
+      0 4px 0 0 #161618,
+      /* Deep dense backing board base */
+      0 5px 0 0 #101012,
+      0 6px 0 0 #08080A,
+      /* Nocturnal ambient elevation shadow */
+      0 8px 18px -2px rgba(0, 0, 0, 0.60),
+      0 24px 60px -8px rgba(0, 0, 0, 0.85);
+  }
+
+  /* Authentic Folded Woven Twill Brand Tag (Directly Modeled on RODA Reference Photo) */
+  .woven-fabric-tag {
+    position: absolute;
+    top: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 30px;
+    padding: 0 24px;
+    background-color: #121214;
+    background-image: repeating-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.06) 0px,
+      rgba(255, 255, 255, 0.06) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    color: #FFFFFF;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-bottom: none;
+    box-shadow: 
+      0 -2px 8px rgba(0, 0, 0, 0.24),
+      inset 0 1px 0 rgba(255, 255, 255, 0.30);
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.18s ease;
+    z-index: 5;
+  }
+
+  .woven-fabric-tag:hover {
+    transform: translateX(-50%) translateY(-1.5px);
+    box-shadow: 
+      0 -4px 10px rgba(0, 0, 0, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  }
+
+  .woven-fabric-tag:active {
+    transform: translateX(-50%) translateY(0.5px);
+  }
+
+  .dark .woven-fabric-tag {
+    background-color: #1A1A1E;
+    border-color: rgba(255, 255, 255, 0.22);
+    box-shadow: 
+      0 -2px 8px rgba(0, 0, 0, 0.6),
+      inset 0 1px 0 rgba(255, 255, 255, 0.30);
+  }
+
+  /* Paper overlap shadow cast down onto the tucked woven twill tag */
+  .woven-fabric-tag::before {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: -2px;
+    right: -2px;
+    height: 4px;
+    background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.25));
+    pointer-events: none;
+  }
+
+  /* Micro-Perforated Tear-off Sheet Line */
+  .tear-off-perforation {
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.12);
+  }
+  .dark .tear-off-perforation {
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
+  }
+
+  /* Bi-Fold Journal Center Spine Crease & Soft Gutter (Smyth-Sewn Bookbindery Thread) */
+  .notebook-spine-crease {
+    position: relative;
+  }
+  @media (min-width: 768px) {
+    .notebook-spine-crease::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1px;
+      background: rgba(0, 0, 0, 0.06);
+      box-shadow: -2px 0 6px rgba(0, 0, 0, 0.03), 2px 0 6px rgba(0, 0, 0, 0.03);
+      z-index: 25;
+      pointer-events: none;
+    }
+    .dark .notebook-spine-crease::before {
+      background: rgba(255, 255, 255, 0.06);
+      box-shadow: -2px 0 6px rgba(0, 0, 0, 0.5), 2px 0 6px rgba(0, 0, 0, 0.5);
+    }
+    /* Smyth-Sewn Thread Stitches down the central spine */
+    .notebook-spine-crease::after {
+      content: '';
+      position: absolute;
+      top: 24px;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      background-image: repeating-linear-gradient(
+        180deg,
+        #E4E1D8 0px,
+        #E4E1D8 10px,
+        transparent 10px,
+        transparent 26px,
+        rgba(0, 0, 0, 0.3) 26px,
+        rgba(0, 0, 0, 0.3) 28px,
+        transparent 28px,
+        transparent 48px
+      );
+      opacity: 0.7;
+      z-index: 26;
+      pointer-events: none;
+    }
+    .dark .notebook-spine-crease::after {
+      background-image: repeating-linear-gradient(
+        180deg,
+        #2A2A2E 0px,
+        #2A2A2E 10px,
+        transparent 10px,
+        transparent 26px,
+        rgba(255, 255, 255, 0.2) 26px,
+        rgba(255, 255, 255, 0.2) 28px,
+        transparent 28px,
+        transparent 48px
+      );
+      opacity: 0.8;
+    }
+    /* Concave Gutter Valley Shadow Falloff */
+    .bifold-left-page {
+      background: linear-gradient(to right, transparent 86%, rgba(0, 0, 0, 0.025) 100%) !important;
+    }
+    .dark .bifold-left-page {
+      background: linear-gradient(to right, transparent 86%, rgba(0, 0, 0, 0.35) 100%) !important;
+    }
+    .bifold-right-page {
+      background: linear-gradient(to left, transparent 86%, rgba(0, 0, 0, 0.025) 100%) !important;
+    }
+    .dark .bifold-right-page {
+      background: linear-gradient(to left, transparent 86%, rgba(0, 0, 0, 0.35) 100%) !important;
+    }
+  }
+
+  /* Extension Booklet Subtle Paper Edge Depth (Precision 10mm Die-Cut Corner) */
+  .extension-booklet-paper {
+    position: relative;
+    border-radius: 0.625rem;
+  }
+
+  /* 3D Page Leaf Container: Spans exact content height and column width inside 24px padding */
+  .page-leaf-container {
+    position: absolute;
+    top: 24px;
+    bottom: 24px;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    pointer-events: none;
+    z-index: 40;
+    will-change: transform;
+  }
+
+  /* Turning Forward (Next Day): Anchored at Center Spine (50%), spans to right content edge (24px) */
+  .leaf-turn-next {
+    left: 50%;
+    right: 24px;
+    transform-origin: 0% 50%;
+    animation: seamlessPageFlipNext 0.72s cubic-bezier(0.25, 0.9, 0.35, 1) forwards;
+  }
+
+  /* Turning Backward (Previous Day): Anchored at Center Spine (50%), spans to left content edge (24px) */
+  .leaf-turn-prev {
+    left: 24px;
+    right: 50%;
+    transform-origin: 100% 50%;
+    animation: seamlessPageFlipPrev 0.72s cubic-bezier(0.25, 0.9, 0.35, 1) forwards;
+  }
+
+  /* Front and Back Faces of the Turning Sheet */
+  .leaf-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    border: none;
+    background-origin: padding-box !important;
+  }
+
+  /* Next Turn: Front Face (Outgoing Right Page) - Outer edge is Right (14px); Spine is Left (0px) */
+  .leaf-turn-next .leaf-face-front {
+    padding-left: 24px;
+    transform: rotateY(0deg);
+    border-top-right-radius: 14px;
+    border-bottom-right-radius: 14px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  /* Next Turn: Back Face (Incoming Left Page) - Outer edge is Left (14px); Spine is Right (0px) */
+  .leaf-turn-next .leaf-face-back {
+    padding-right: 24px;
+    border-right: 1px solid rgba(0, 0, 0, 0.08);
+    transform: rotateY(180deg);
+    border-top-left-radius: 14px;
+    border-bottom-left-radius: 14px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .dark .leaf-turn-next .leaf-face-back {
+    border-right-color: rgba(255, 255, 255, 0.08);
+  }
+
+  /* Prev Turn: Front Face (Outgoing Left Page) - Outer edge is Left (14px); Spine is Right (0px) */
+  .leaf-turn-prev .leaf-face-front {
+    padding-right: 24px;
+    border-right: 1px solid rgba(0, 0, 0, 0.08);
+    transform: rotateY(0deg);
+    border-top-left-radius: 14px;
+    border-bottom-left-radius: 14px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .dark .leaf-turn-prev .leaf-face-front {
+    border-right-color: rgba(255, 255, 255, 0.08);
+  }
+
+  /* Prev Turn: Back Face (Incoming Right Page) - Outer edge is Right (14px); Spine is Left (0px) */
+  .leaf-turn-prev .leaf-face-back {
+    padding-left: 24px;
+    transform: rotateY(-180deg);
+    border-top-right-radius: 14px;
+    border-bottom-right-radius: 14px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  /* GPU-Accelerated Shading Overlays for Physical Lighting Depth */
+  .leaf-face-front::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.02) 30%, transparent 70%);
+    animation: frontFaceShading 0.72s cubic-bezier(0.28, 0, 0.2, 1) forwards;
+  }
+  .dark .leaf-face-front::after {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.06) 30%, transparent 70%);
+  }
+
+  .leaf-turn-prev .leaf-face-front::after {
+    background: linear-gradient(to left, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.02) 30%, transparent 70%);
+  }
+  .dark .leaf-turn-prev .leaf-face-front::after {
+    background: linear-gradient(to left, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.06) 30%, transparent 70%);
+  }
+
+  .leaf-face-back::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background: linear-gradient(to left, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.02) 30%, transparent 70%);
+    animation: backFaceShading 0.72s cubic-bezier(0.28, 0, 0.2, 1) forwards;
+  }
+  .dark .leaf-face-back::after {
+    background: linear-gradient(to left, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.06) 30%, transparent 70%);
+  }
+
+  .leaf-turn-prev .leaf-face-back::after {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.02) 30%, transparent 70%);
+  }
+  .dark .leaf-turn-prev .leaf-face-back::after {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.06) 30%, transparent 70%);
+  }
+
+  /* Mobile 3D Fold Transition */
+  .mobile-fold-turn {
+    animation: mobileFoldFlip 0.56s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+    transform-origin: center center;
+  }
+
+  /* Minimalist Floating Page-Turn Edge Trigger Tabs */
+  .page-turn-edge-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    color: #9CA3AF;
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    cursor: pointer;
+    user-select: none;
+    z-index: 35;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    outline: none !important;
+  }
+  .page-turn-edge-btn:focus {
+    outline: none !important;
+  }
+
+  .dark .page-turn-edge-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.07);
+    color: #6B7280;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  }
+
+  .page-turn-edge-btn:hover {
+    background: rgba(0, 0, 0, 0.08);
+    color: #111827;
+    transform: translateY(-50%) scale(1.06);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .dark .page-turn-edge-btn:hover {
+    background: rgba(255, 255, 255, 0.10);
+    color: #F9FAFB;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  }
+
+  .page-turn-edge-btn:active {
+    transform: translateY(-50%) scale(0.96);
+  }
+
+  .page-turn-edge-left {
+    left: -14px;
+  }
+
+  .page-turn-edge-right {
+    right: -14px;
+  }
+
+  @media (min-width: 1024px) {
+    .page-turn-edge-left {
+      left: -20px;
+    }
+    .page-turn-edge-right {
+      right: -20px;
+    }
+  }
+}
+
+/* --- 3D FLIPPINGBOOK PHYSICAL PERSPECTIVE STAGE --- */
+.flippingbook-stage {
+  perspective: 3200px;
+  -webkit-perspective: 3200px;
+}
+
+/* --- KEYFRAME DEFINITIONS: FLIPPINGBOOK 3D LEAF PHYSICAL DYNAMICS --- */
+@keyframes seamlessPageFlipNext {
+  0% {
+    transform: rotateY(0deg);
+  }
+  50% {
+    transform: rotateY(-90deg) scale(0.97);
+  }
+  100% {
+    transform: rotateY(-180deg);
+  }
+}
+
+@keyframes seamlessPageFlipPrev {
+  0% {
+    transform: rotateY(0deg);
+  }
+  50% {
+    transform: rotateY(90deg) scale(0.97);
+  }
+  100% {
+    transform: rotateY(180deg);
+  }
+}
+
+/* Luxury Debossed Leather Front Cover Canvas */
+.notebook-cover-canvas {
+  background: #18181B;
+  color: #FFFFFF;
+  box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 2px 4px rgba(0, 0, 0, 0.5),
+    0 14px 32px -4px rgba(0, 0, 0, 0.75),
+    0 32px 64px -12px rgba(0, 0, 0, 0.95);
+  border-radius: 1.625rem;
+  position: relative;
+  user-select: none;
+}
+
+.cover-stitch-border {
+  border: 1px dashed rgba(255, 255, 255, 0.22);
+  border-radius: 1.25rem;
+}
+
+@keyframes frontFaceShading {
+  0% {
+    opacity: 0;
+  }
+  35% {
+    opacity: 0.18;
+  }
+  50%, 100% {
+    opacity: 0;
+  }
+}
+
+@keyframes backFaceShading {
+  0%, 50% {
+    opacity: 0;
+  }
+  60% {
+    opacity: 0.15;
+  }
+  75% {
+    opacity: 0.04;
+  }
+  85%, 100% {
+    opacity: 0;
+  }
+}
+
+@keyframes mobileFoldFlip {
+  0% {
+    opacity: 0.65;
+    transform: rotateY(16deg) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: rotateY(0deg) scale(1);
+  }
+}
+
+/* ==========================================================================
+   REALISTIC 3D BOOK-OPENING & CLOSING PHYSICAL DYNAMICS
+   ========================================================================== */
+
+/* =========================================================================
+   TURN.JS-GRADE AUTO-CENTERING 3D STAGE & BOOK OPEN/CLOSE DYNAMICS
+   ========================================================================= */
+
+@media (min-width: 768px) {
+  /* Closed State: Master stage shifted -210px so the right-half cover sits squarely at screen center */
+  .stage-book-closed {
+    transform: translateX(-210px);
+  }
+
+  /* Opening Transition: Master container slides from -210px to 0px */
+  .stage-book-opening {
+    animation: stageAutoCenterOpen 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  /* Closing Transition: Master container slides from 0px to -210px */
+  .stage-book-closing {
+    animation: stageAutoCenterClose 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  /* Open Spread: Stationary centered two-page spread */
+  .stage-book-open {
+    transform: translateX(0px);
+  }
+}
+
+@keyframes stageAutoCenterOpen {
+  0% {
+    transform: translateX(-210px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}
+
+@keyframes stageAutoCenterClose {
+  0% {
+    transform: translateX(0px);
+  }
+  100% {
+    transform: translateX(-210px);
+  }
+}
+
+/* Fluid 3D Book Cover Opening & Closing Transitions (Smooth 560ms Centered Physical Dynamics) */
+.cover-opening-transition {
+  transform-origin: center center;
+  animation: coverSwingOpen 0.56s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.cover-closing-transition {
+  transform-origin: center center;
+  animation: coverSwingClose 0.56s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes coverSwingOpen {
+  0% {
+    transform: perspective(1400px) rotateY(0deg) scale(1);
+    opacity: 1;
+    filter: drop-shadow(0 20px 25px -5px rgba(0, 0, 0, 0.15));
+  }
+  40% {
+    transform: perspective(1400px) rotateY(-16deg) scale(1.02);
+    opacity: 0.95;
+    filter: drop-shadow(0 25px 35px -5px rgba(0, 0, 0, 0.22));
+  }
+  100% {
+    transform: perspective(1400px) rotateY(-32deg) scale(1.03);
+    opacity: 0;
+    filter: drop-shadow(0 30px 45px -5px rgba(0, 0, 0, 0.05));
+  }
+}
+
+@keyframes coverSwingClose {
+  0% {
+    transform: perspective(1400px) rotateY(-32deg) scale(1.03);
+    opacity: 0;
+    filter: drop-shadow(0 30px 45px -5px rgba(0, 0, 0, 0.05));
+  }
+  60% {
+    transform: perspective(1400px) rotateY(-8deg) scale(1.01);
+    opacity: 0.95;
+    filter: drop-shadow(0 25px 35px -5px rgba(0, 0, 0, 0.20));
+  }
+  100% {
+    transform: perspective(1400px) rotateY(0deg) scale(1);
+    opacity: 1;
+    filter: drop-shadow(0 20px 25px -5px rgba(0, 0, 0, 0.15));
+  }
+}
+
+/* 3D Cover Leaf Wrapper: Rotates around center spine on desktop or left hinge on mobile */
+.book-cover-3d-leaf {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  transform-style: preserve-3d;
+  pointer-events: none;
+  z-index: 45;
+  will-change: transform;
+}
+
+@media (min-width: 768px) {
+  .book-cover-3d-leaf {
+    left: 50%;
+    width: 50%;
+    transform-origin: 0% 50%;
+  }
+
+  .cover-leaf-open {
+    animation: bookCoverTurnOpenDesktop 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .cover-leaf-close {
+    animation: bookCoverTurnCloseDesktop 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+}
+
+@media (max-width: 767px) {
+  .book-cover-3d-leaf {
+    left: 0;
+    right: 0;
+    width: 100%;
+    transform-origin: 0% 50%;
+  }
+
+  .cover-leaf-open {
+    animation: bookCoverOpenMobile 0.44s cubic-bezier(0.25, 1, 0.4, 1) forwards;
+  }
+
+  .cover-leaf-close {
+    animation: bookCoverCloseMobile 0.44s cubic-bezier(0.25, 1, 0.4, 1) forwards;
+  }
+}
+
+/* Front and Back Faces of the Turning 3D Cover Leaf */
+.cover-leaf-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  transform-style: flat;
+  border-radius: 26px;
+}
+
+.cover-leaf-face.cover-face-front {
+  transform: rotateY(0deg);
+}
+
+.cover-leaf-face.cover-face-back {
+  transform: rotateY(180deg);
+}
+
+/* Dynamic Lighting Overlays for Cover Faces (Zero residual opacity block) */
+.cover-leaf-open .cover-face-front::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.05) 35%, transparent 75%);
+  animation: coverFrontLightingOpen 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.cover-leaf-open .cover-face-back::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.16) 0%, rgba(0, 0, 0, 0.04) 35%, transparent 75%);
+  animation: coverBackLightingOpen 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.cover-leaf-close .cover-face-front::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.05) 35%, transparent 75%);
+  animation: coverFrontLightingClose 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.cover-leaf-close .cover-face-back::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.16) 0%, rgba(0, 0, 0, 0.04) 35%, transparent 75%);
+  animation: coverBackLightingClose 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Ambient Occlusion Cast Shadow Underneath Lifting Cover */
+.book-opening-cast-shadow {
+  position: absolute;
+  inset: 0;
+  border-radius: 26px;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.05) 50%, transparent 80%);
+  animation: bookCastShadowFade 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  z-index: 20;
+}
+
+.dark .book-opening-cast-shadow {
+  background: radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.15) 50%, transparent 80%);
+}
+
+.book-spread-reveal {
+  animation: bookSpreadReveal 0.56s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+}
+
+@keyframes bookSpreadReveal {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.99);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Left Page Reveal / Veil Animations */
+.left-page-unveil {
+  animation: leftPageUnveil 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.left-page-veil {
+  animation: leftPageVeil 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes leftPageUnveil {
+  0%, 45% {
+    opacity: 0;
+    pointer-events: none;
+  }
+  100% {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+@keyframes leftPageVeil {
+  0% {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  30%, 100% {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+/* Desktop Keyframes: Spine pinned at 50%, turns 0deg to -180deg */
+@keyframes bookCoverTurnOpenDesktop {
+  0% {
+    transform: rotateY(0deg) translateZ(0px);
+  }
+  30% {
+    transform: rotateY(-50deg) translateZ(18px);
+  }
+  65% {
+    transform: rotateY(-125deg) translateZ(12px);
+  }
+  100% {
+    transform: rotateY(-180deg) translateZ(0px);
+  }
+}
+
+@keyframes bookCoverTurnCloseDesktop {
+  0% {
+    transform: rotateY(-180deg) translateZ(0px);
+  }
+  35% {
+    transform: rotateY(-125deg) translateZ(12px);
+  }
+  70% {
+    transform: rotateY(-50deg) translateZ(18px);
+  }
+  100% {
+    transform: rotateY(0deg) translateZ(0px);
+  }
+}
+
+/* Mobile Keyframes: Smooth 3D depth swing */
+@keyframes bookCoverOpenMobile {
+  0% {
+    transform: rotateY(0deg) scale(1);
+    opacity: 1;
+  }
+  45% {
+    transform: rotateY(-45deg) scale(1.02);
+    opacity: 0.95;
+  }
+  100% {
+    transform: rotateY(-95deg) scale(0.96);
+    opacity: 0;
+  }
+}
+
+@keyframes bookCoverCloseMobile {
+  0% {
+    transform: rotateY(-95deg) scale(0.96);
+    opacity: 0;
+  }
+  55% {
+    transform: rotateY(-45deg) scale(1.02);
+    opacity: 0.95;
+  }
+  100% {
+    transform: rotateY(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes bookPageRevealMobile {
+  0% {
+    transform: rotateY(16deg) scale(0.98);
+    opacity: 0.75;
+  }
+  100% {
+    transform: rotateY(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Shading Keyframes: Strictly 0% by 85% for zero opacity blocks on landing */
+@keyframes coverFrontLightingOpen {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.20;
+  }
+  45% {
+    opacity: 0.05;
+  }
+  50%, 100% {
+    opacity: 0;
+  }
+}
+
+@keyframes coverBackLightingOpen {
+  0%, 50% {
+    opacity: 0;
+  }
+  65% {
+    opacity: 0.16;
+  }
+  75% {
+    opacity: 0.04;
+  }
+  85%, 100% {
+    opacity: 0;
+  }
+}
+
+@keyframes coverFrontLightingClose {
+  0%, 50% {
+    opacity: 0;
+  }
+  65% {
+    opacity: 0.06;
+  }
+  75% {
+    opacity: 0.18;
+  }
+  85% {
+    opacity: 0.03;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes coverBackLightingClose {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.18;
+  }
+  45% {
+    opacity: 0.04;
+  }
+  50%, 100% {
+    opacity: 0;
+  }
+}
+
+@keyframes bookCastShadowFade {
+  0% {
+    opacity: 0.75;
+    transform: scaleX(1);
+  }
+  40% {
+    opacity: 0.25;
+    transform: scaleX(0.9);
+  }
+  75% {
+    opacity: 0.04;
+  }
+  85%, 100% {
+    opacity: 0;
+  }
+}
+
+/* Base Body Typography & Studio Gallery Backdrop — Strict Universal Helvetica */
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+}
+
+/* Decide One app: strict zero-scroll viewport lock */
+html.app-locked,
+body.app-locked,
+body.app-locked #root {
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+  height: 100% !important;
+  max-height: 100% !important;
+}
+
+/* The document is the sole website scroll container. The instrument lock is isolated. */
+html.landing-page-active,
+html:has(.pm-landing) {
+  overflow-x: clip !important;
+  overflow-y: scroll !important;
+  height: auto !important;
+  min-height: 100% !important;
+  max-height: none !important;
+  overscroll-behavior-y: auto !important;
+  scroll-behavior: auto;
+}
+body.landing-page-active,
+body:has(.pm-landing),
+body.landing-page-active #root,
+body:has(.pm-landing) #root {
+  overflow: visible !important;
+  height: auto !important;
+  min-height: 100% !important;
+  max-height: none !important;
+  position: static !important;
+  overscroll-behavior: auto !important;
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  background-color: #EAEAE7;
+  color: #18181B;
+}
+
+.dark body, body.dark, html.dark body {
+  background-color: #0B0B0D;
+  color: #F4F4F5;
+}
+
+/* Clean Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 9999px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Print Stylesheet */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-page {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    background: transparent !important;
+  }
+}
+
+/* ==========================================================================
+   Decide One 3-color progress design system (red, yellow, green)
+   Archival Japanese Ink Palette for Progress & Task State Tracking
+   ========================================================================== */
+
+/* Archival Vermilion Red (Missed / Low Progress < 40%) */
+.progress-ink-red {
+  color: #DC2626 !important;
+}
+.dark .progress-ink-red {
+  color: #F87171 !important;
+}
+.progress-bg-red {
+  background-color: #DC2626 !important;
+}
+.dark .progress-bg-red {
+  background-color: #F87171 !important;
+}
+.progress-border-red {
+  border-color: #DC2626 !important;
+}
+.dark .progress-border-red {
+  border-color: #F87171 !important;
+}
+
+/* Archival Amber Yellow (In-Progress / Medium Progress 40% - 79%) */
+.progress-ink-yellow {
+  color: #D97706 !important;
+}
+.dark .progress-ink-yellow {
+  color: #FBBF24 !important;
+}
+.progress-bg-yellow {
+  background-color: #D97706 !important;
+}
+.dark .progress-bg-yellow {
+  background-color: #FBBF24 !important;
+}
+.progress-border-yellow {
+  border-color: #D97706 !important;
+}
+.dark .progress-border-yellow {
+  border-color: #FBBF24 !important;
+}
+
+/* Archival Bamboo Green (Done / High Progress >= 80%) */
+.progress-ink-green {
+  color: #16A34A !important;
+}
+.dark .progress-ink-green {
+  color: #4ADE80 !important;
+}
+.progress-bg-green {
+  background-color: #16A34A !important;
+}
+.dark .progress-bg-green {
+  background-color: #4ADE80 !important;
+}
+.progress-border-green {
+  border-color: #16A34A !important;
+}
+.dark .progress-border-green {
+  border-color: #4ADE80 !important;
+}
+
+/* Task Specific Progress State Badges & Glyphs */
+.task-done-glyph {
+  color: #16A34A;
+}
+.dark .task-done-glyph {
+  color: #4ADE80;
+}
+.task-missed-glyph {
+  color: #DC2626;
+}
+.dark .task-missed-glyph {
+  color: #F87171;
+}
+
+/* ==========================================================================
+   EXECUTIVE ARCHITECTURAL STUDIO GRADE INTERFACE UTILITIES
+   ========================================================================== */
+
+/* Executive Architectural Frosted Glass Card */
+.executive-glass-card,
+.apple-glass-card {
+  position: relative;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 8px 24px -4px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.dark .executive-glass-card,
+.dark .apple-glass-card {
+  background: rgba(22, 22, 26, 0.72);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.4),
+    0 12px 32px -4px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.executive-glass-card:hover,
+.apple-glass-card:hover {
+  border-color: rgba(0, 0, 0, 0.14);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.06),
+    0 16px 36px -6px rgba(0, 0, 0, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+.dark .executive-glass-card:hover,
+.dark .apple-glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: 
+    0 4px 14px rgba(0, 0, 0, 0.6),
+    0 20px 48px -8px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+/* 3D Perspective Diary Spread Hero Container */
+.diary-spread-3d-perspective {
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+.diary-spread-stage {
+  transform: rotateX(2deg);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
+  position: relative;
+}
+
+.diary-spread-stage:hover {
+  transform: rotateX(0deg) scale(1.006);
+}
+
+/* Hyper-Realistic 3D Physical Stationery Book Depth & Stacked Deckle Pages */
+.real-3d-book-chassis {
+  position: relative;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 4px 8px rgba(0, 0, 0, 0.04),
+    0 12px 24px -4px rgba(0, 0, 0, 0.08),
+    0 32px 64px -12px rgba(0, 0, 0, 0.16);
+}
+
+.dark .real-3d-book-chassis {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    0 4px 12px rgba(0, 0, 0, 0.5),
+    0 16px 36px -4px rgba(0, 0, 0, 0.7),
+    0 36px 80px -12px rgba(0, 0, 0, 0.85);
+}
+
+/* Physical Stacked Archival Pages Edge Effect (Right and Bottom Book Thickness) */
+.real-3d-book-chassis::after {
+  content: '';
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  left: 6px;
+  top: 6px;
+  border-radius: 20px;
+  background: repeating-linear-gradient(
+    135deg,
+    #E8E6DF 0px,
+    #E8E6DF 1px,
+    #DCD9D0 1px,
+    #DCD9D0 2px
+  );
+  z-index: -1;
+  box-shadow: 
+    1px 1px 2px rgba(0, 0, 0, 0.08),
+    2px 2px 4px rgba(0, 0, 0, 0.05);
+  pointer-events: none;
+}
+
+.dark .real-3d-book-chassis::after {
+  background: repeating-linear-gradient(
+    135deg,
+    #1E1E22 0px,
+    #1E1E22 1px,
+    #141416 1px,
+    #141416 2px
+  );
+  box-shadow: 
+    1px 1px 3px rgba(0, 0, 0, 0.7),
+    2px 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+/* Secondary Outer Book Binding Base Plate */
+.real-3d-book-chassis::before {
+  content: '';
+  position: absolute;
+  right: -10px;
+  bottom: -10px;
+  left: 10px;
+  top: 10px;
+  border-radius: 22px;
+  background: #1A1A1C;
+  z-index: -2;
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.2),
+    0 24px 48px -8px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
+
+.dark .real-3d-book-chassis::before {
+  background: #0D0D0F;
+  box-shadow: 
+    0 8px 28px rgba(0, 0, 0, 0.6),
+    0 32px 64px -8px rgba(0, 0, 0, 0.9);
+}
+
+/* Macro Inspection Lens Hover Effect */
+.macro-lens-container {
+  overflow: hidden;
+  position: relative;
+}
+
+.macro-lens-container img {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
+}
+
+.macro-lens-container:hover img {
+  transform: scale(1.08);
+}
+
+
+/* 2. Gilded Fore-Edge Removed by User Request — Clean Black Embossed Edge */
+.gilded-fore-edge {
+  position: relative;
+}
+.gilded-fore-edge::after {
+  display: none !important;
+}
+
+/* 3. Gold Foil Stamped Monogram & Blind Leather Deboss */
+.monogram-gold-foil {
+  background: linear-gradient(135deg, #FFFBEB 0%, #FCD34D 25%, #D97706 50%, #F59E0B 75%, #78350F 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 2px rgba(245, 158, 11, 0.4));
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.monogram-blind-deboss {
+  color: rgba(0, 0, 0, 0.35);
+  text-shadow: 
+    0 -1px 0 rgba(0, 0, 0, 0.6),
+    0 1px 1px rgba(255, 255, 255, 0.15);
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+.dark .monogram-blind-deboss {
+  color: rgba(0, 0, 0, 0.55);
+  text-shadow: 
+    0 -1px 0 rgba(0, 0, 0, 0.9),
+    0 1px 1px rgba(255, 255, 255, 0.08);
+}
+
+/* 4. 3D Exploded Anatomy & Craftsmanship Interactive Stage */
+.exploded-anatomy-stage {
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+.exploded-layer-card {
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+  transform-style: preserve-3d;
+}
+
+.exploded-layer-card:hover {
+  transform: translateY(-4px) scale(1.015);
+}
+
+/* =========================================================================
+   PROMOTION 120HZ STRATIFIED AMBIENT SHADOWS
+   ========================================================================= */
+.promotion-calibrated-elevation {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.16),
+    0 8px 24px -3px rgba(0, 0, 0, 0.12),
+    0 24px 64px -12px rgba(0, 0, 0, 0.08);
+}
+.dark .promotion-calibrated-elevation {
+  box-shadow:
+    0 1px 1.5px rgba(0, 0, 0, 0.55),
+    0 12px 28px -4px rgba(0, 0, 0, 0.45),
+    0 36px 88px -14px rgba(0, 0, 0, 0.7);
+}
+
+/* =========================================================================
+   AMBIENT GOLD LEAF SPINE LUMINESCENCE (EVENING HORIZON SIGNAL)
+   ========================================================================= */
+@keyframes spineGoldBreathe {
+  0%, 100% {
+    opacity: 0.25;
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.2), 0 0 16px rgba(217, 119, 6, 0.1);
+  }
+  50% {
+    opacity: 0.85;
+    box-shadow: 0 0 14px rgba(245, 158, 11, 0.5), 0 0 24px rgba(217, 119, 6, 0.25);
+  }
+}
+
+.ambient-gold-spine-glow {
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  background: linear-gradient(
+    180deg,
+    rgba(217, 119, 6, 0.1) 0%,
+    rgba(245, 158, 11, 0.9) 25%,
+    rgba(251, 191, 36, 1.0) 50%,
+    rgba(245, 158, 11, 0.9) 75%,
+    rgba(217, 119, 6, 0.1) 100%
+  );
+  border-radius: 9999px;
+  z-index: 28;
+  pointer-events: auto;
+  cursor: pointer;
+  animation: spineGoldBreathe 4.5s ease-in-out infinite;
+  transition: opacity 0.4s ease;
+}
+
+/* =========================================================================
+   400MS CAPILLARY INK DRYING ANIMATION
+   ========================================================================= */
+@keyframes inkVellumAbsorption {
+  0% {
+    filter: brightness(1.22) contrast(1.12);
+    transform: scale(1.02);
+    opacity: 0.92;
+  }
+  40% {
+    filter: brightness(1.08) contrast(1.04);
+    transform: scale(1.005);
+    opacity: 0.97;
+  }
+  100% {
+    filter: brightness(1.0) contrast(1.0);
+    transform: scale(1.0);
+    opacity: 1.0;
+  }
+}
+
+.ink-drying-active {
+  animation: inkVellumAbsorption 400ms cubic-bezier(0.2, 0.8, 0.25, 1) forwards;
+  will-change: filter, transform;
+}
+
+/* =========================================================================
+   SMOOTH STRIKETHROUGH HAIRLINE INK DRAW (180MS)
+   ========================================================================= */
+@keyframes strikethroughDraw {
+  from {
+    background-size: 0% 1px;
+  }
+  to {
+    background-size: 100% 1px;
+  }
+}
+
+.strikethrough-anim {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 50%;
+  background-repeat: no-repeat;
+  animation: strikethroughDraw 180ms cubic-bezier(0.2, 0.8, 0.25, 1) forwards;
+}
+
+/* =========================================================================
+   TABULAR NUMERALS UTILITY
+   ========================================================================= */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+
+
+/* Luxury Stationery Tracing Vellum Soft Frost */
+.soft-frost-vellum {
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  background-color: rgba(245, 243, 238, 0.65);
+}
+.dark .soft-frost-vellum {
+  background-color: rgba(14, 14, 16, 0.75);
+}
+
+
+
+
+/* Decide One: navigation stays quiet; work owns the page. */
+.instrument-header { width: min(100%, 960px); margin: 0 auto 20px; position: relative; z-index: 60; flex-shrink: 0; color: #323630; }
+.instrument-masthead { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; min-height: 48px; padding: 0 8px; }
+.instrument-wordmark { font-size: 16px; font-weight: 650; letter-spacing: 3px; text-align: center; }
+.instrument-quiet-action { display: inline-flex; align-items: center; gap: 8px; justify-self: start; font-size: 12px; color: #72766e; min-height: 40px; }
+.instrument-tools-trigger { justify-self: end; }
+.instrument-navigation { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #00000010; gap: 16px; padding: 0 8px 8px; }
+.instrument-navigation nav { display: flex; gap: 4px; }
+.instrument-navigation nav button { min-height: 36px; padding: 7px 15px; border-radius: 7px; color: #7b8175; font-size: 12px; }
+.instrument-navigation nav button[aria-current] { background: #fff; color: #23291f; box-shadow: 0 1px 4px #00000008; }
+.instrument-method { display: flex; align-items: center; gap: 12px; color: #747b6e; font-size: 12px; min-height: 36px; max-width: 180px; }
+.instrument-method span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.instrument-popover { position: absolute; right: 0; top: 100%; width: 300px; max-height: min(620px,70dvh); overflow-y: auto; padding: 12px; background: #fff; border: 1px solid #00000012; border-radius: 14px; box-shadow: 0 18px 70px #00000021; z-index: 80; }
+.instrument-popover>p { padding: 5px 10px 12px; color: #969b90; font-size: 12px; }
+.instrument-popover>button { width: 100%; display: flex; align-items: center; gap: 12px; padding: 10px; min-height: 40px; border-radius: 7px; font-size: 13px; text-align: left; }
+.instrument-popover>button:hover,.instrument-popover>button[aria-pressed=true] { background: #f1f3ef; }
+.instrument-methods strong { font-size: 13px; font-weight: 500; display: block; }
+.instrument-methods small { font-size: 11px; color: #89907e; display: block; margin-top: 3px; }
+.instrument-methods>button>span { flex: 1; }
+.instrument-paper-options { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 14px 10px; border-block: 1px solid #0000000c; margin: 8px 0; font-size: 12px; }
+.instrument-paper-options button { padding: 7px; border-radius: 5px; color: #8a9082; }
+.instrument-paper-options button[aria-pressed=true] { background: #ebeee6; color: #303928; }
+.instrument-header button:focus-visible { outline: 2px solid #697b56; outline-offset: 3px; }
+.dark .instrument-header { color: #e8eae4; }
+.dark .instrument-popover { background: #1b1e1a; border-color: #ffffff18; }
+.dark .instrument-navigation { border-color: #ffffff12; }
+.dark .instrument-navigation nav button[aria-current] { background: #30352a; color: #f4f6ef; }
+.dark .instrument-popover>button:hover,.dark .instrument-popover>button[aria-pressed=true] { background: #2c3326; }
+@media(max-width:600px) {
+  .instrument-header { margin-bottom: 14px; }
+  .instrument-navigation { gap: 10px; padding-inline: 0; }
+  .instrument-navigation nav { gap: 0; }
+  .instrument-navigation nav button { padding: 7px 10px; font-size: 12px; }
+  .instrument-method { max-width: 95px; font-size: 11px; gap: 5px; }
+  .instrument-masthead { padding: 0 4px; }
+  .instrument-quiet-action { font-size: 11px; }
+  .instrument-wordmark { font-size: 15px; }
+  .instrument-popover { width: min(320px,calc(100vw - 24px)); }
+}

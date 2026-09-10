@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decide One — Executive Telemetry & Behavioral Analytics</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #0A0A0C;
+      color: #E2E2E6;
+    }
+    .grid-dot-bg {
+      background-image: radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    .card-glass {
+      background: rgba(18, 18, 22, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .card-glass:hover {
+      border-color: rgba(255, 255, 255, 0.16);
+    }
+    .live-pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.9); }
+    }
+  </style>
+</head>
+<body class="min-h-screen grid-dot-bg text-neutral-200 antialiased p-4 sm:p-8">
+
+  <!-- Executive Header -->
+  <header class="max-w-7xl mx-auto mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-800/80 pb-6">
+    <div class="flex items-center gap-3">
+      <div class="h-10 px-3.5 bg-neutral-900 border border-neutral-700 flex items-center justify-center font-bold tracking-widest text-xs uppercase text-white rounded shadow-sm">
+        DECIDE ONE
+      </div>
+      <div>
+        <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2.5">
+          Executive Telemetry 2.0 Hub
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-950/80 text-emerald-400 border border-emerald-800/60">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 live-pulse"></span>
+            TOP 1% OLAP
+          </span>
+        </h1>
+        <p class="text-xs text-neutral-400 mt-0.5">Pathfinders • Circadian Loops • Cognitive Hesitation • Task Debt • Zero-Knowledge</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3 self-end sm:self-auto">
+      <span id="lastUpdated" class="text-xs text-neutral-500 font-medium">Connecting...</span>
+      <button onclick="refreshData()" class="px-3.5 py-1.5 text-xs font-semibold text-neutral-200 bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 rounded transition flex items-center gap-2 cursor-pointer">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        Sync Now
+      </button>
+      <button onclick="lockPanel()" class="px-3.5 py-1.5 text-xs font-semibold text-rose-400 bg-rose-950/40 hover:bg-rose-900/60 border border-rose-900/60 rounded transition flex items-center gap-1.5 cursor-pointer" title="Lock the dashboard (requires Owner Key to reopen)">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        Lock Panel
+      </button>
+    </div>
+  </header>
+
+  <!-- Owner Authentication Lock Screen Modal -->
+  <div id="authLockOverlay" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xl p-4">
+    <div class="card-glass max-w-md w-full p-8 rounded-2xl border border-neutral-700 shadow-2xl space-y-6 text-center">
+      <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20 mx-auto">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      </div>
+      <div>
+        <h2 class="text-lg font-bold text-white tracking-tight">Executive Owner Access Gate</h2>
+        <p class="text-xs text-neutral-400 mt-1.5 leading-relaxed">This behavioral telemetry engine contains private executive intelligence. Access is restricted exclusively to the application owner.</p>
+      </div>
+      <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
+        <div class="space-y-1.5 text-left">
+          <label class="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">Owner Master Secret Key</label>
+          <input 
+            id="ownerSecretInput" 
+            type="password" 
+            placeholder="Enter Owner Key..." 
+            class="w-full px-4 py-2.5 bg-neutral-900 border border-neutral-700 focus:border-amber-500 rounded-lg text-sm text-white focus:outline-none placeholder-neutral-500 transition"
+            required
+          />
+        </div>
+        <div id="authErrorMsg" class="text-xs text-rose-400 hidden"></div>
+        <button 
+          type="submit" 
+          id="authSubmitBtn"
+          class="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold text-xs uppercase tracking-wider rounded-lg transition shadow cursor-pointer"
+        >
+          Unlock Executive Dashboard
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Anomaly Alert Banner (Appears only when Z-score or rage anomalies detected) -->
+  <div id="anomalyBanner" class="max-w-7xl mx-auto mb-6 hidden">
+    <div class="bg-amber-950/70 border border-amber-800/80 p-3.5 rounded-lg flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="text-amber-400 text-lg">⚠️</span>
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-amber-300">Statistical Anomaly Detected</h4>
+          <p id="anomalyText" class="text-xs text-neutral-300 mt-0.5"></p>
+        </div>
+      </div>
+      <span class="text-[10px] font-mono px-2 py-0.5 bg-amber-900/60 rounded text-amber-200">Z-SCORE ALERT</span>
+    </div>
+  </div>
+
+  <main class="max-w-7xl mx-auto space-y-6">
+    <!-- Top KPI Row -->
+    <section class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div class="card-glass p-4 rounded-lg">
+        <p class="text-xs font-medium text-neutral-400 uppercase tracking-wider">DAU (Daily)</p>
+        <p id="kpiDau" class="text-2xl font-bold text-white mt-1">--</p>
+        <p class="text-[11px] text-neutral-500 mt-1">Unique active 24h</p>
+      </div>
+
+      <div class="card-glass p-4 rounded-lg">
+        <p class="text-xs font-medium text-neutral-400 uppercase tracking-wider">WAU (Weekly)</p>
+        <p id="kpiWau" class="text-2xl font-bold text-white mt-1">--</p>
+        <p class="text-[11px] text-neutral-500 mt-1">Unique active 7d</p>
+      </div>
+
+      <div class="card-glass p-4 rounded-lg">
+        <p class="text-xs font-medium text-neutral-400 uppercase tracking-wider">MAU (Monthly)</p>
+        <p id="kpiMau" class="text-2xl font-bold text-white mt-1">--</p>
+        <p class="text-[11px] text-neutral-500 mt-1">Unique active 30d</p>
+      </div>
+
+      <div class="card-glass p-4 rounded-lg border-l-2 border-l-emerald-500">
+        <p class="text-xs font-medium text-neutral-400 uppercase tracking-wider">Stickiness Ratio</p>
+        <p id="kpiStickiness" class="text-2xl font-bold text-emerald-400 mt-1">--%</p>
+        <p class="text-[11px] text-neutral-500 mt-1">DAU / MAU ratio</p>
+      </div>
+
+      <div class="card-glass p-4 rounded-lg border-l-2 border-l-amber-500">
+        <p class="text-xs font-medium text-neutral-400 uppercase tracking-wider">Circadian Loop</p>
+        <p id="kpiCircadian" class="text-2xl font-bold text-amber-400 mt-1">--%</p>
+        <p class="text-[11px] text-neutral-500 mt-1">Morning + Night visits</p>
+      </div>
+
+      <div class="card-glass p-4 rounded-lg border-l-2 border-l-cyan-500">
+        <p class="text-xs font-medium text-neutral-400 uppercase tracking-wider">Standard App Time</p>
+        <p id="kpiAsd" class="text-2xl font-bold text-cyan-400 mt-1">--m</p>
+        <p class="text-[11px] text-neutral-500 mt-1">Avg active dwell time</p>
+      </div>
+    </section>
+
+    <!-- Funnel & Pathfinder Section -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- 5-Step Daily Ritual Funnel -->
+      <div class="lg:col-span-2 card-glass p-6 rounded-lg">
+        <div class="flex items-center justify-between mb-4 border-b border-neutral-800 pb-3">
+          <div>
+            <h2 class="text-base font-semibold text-white">Daily Ritual Funnel & Drop-Off Analysis</h2>
+            <p class="text-xs text-neutral-400">Step-by-step cognitive completion from morning planning to evening closure</p>
+          </div>
+          <span class="text-xs font-mono text-neutral-400">5-STEP JOURNEY</span>
+        </div>
+
+        <div id="funnelContainer" class="space-y-3 mt-4">
+          <p class="text-xs text-neutral-500">Loading funnel data...</p>
+        </div>
+      </div>
+
+      <!-- Pathfinder Drop-Off Destinations (Where drop-offs wander) -->
+      <div class="card-glass p-6 rounded-lg">
+        <div class="flex items-center justify-between mb-4 border-b border-neutral-800 pb-3">
+          <div>
+            <h2 class="text-base font-semibold text-white">Pathfinder Drop-Off Trajectory</h2>
+            <p class="text-xs text-neutral-400">Where users wander when abandoning the flow</p>
+          </div>
+        </div>
+
+        <div id="pathfinderContainer" class="space-y-3 mt-4">
+          <p class="text-xs text-neutral-500">Analyzing surface transitions...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Deep-Dive Analytics 2.0: Cognitive Hesitation, Task Debt, A/B Experiments -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Cognitive Hesitation & First Keypress Latency (FKL) -->
+      <div class="card-glass p-5 rounded-lg">
+        <h3 class="text-sm font-semibold text-white mb-1">Cognitive Hesitation & FKL</h3>
+        <p class="text-xs text-neutral-400 mb-4">First Keypress Latency (ms elapsed before typing)</p>
+
+        <div class="space-y-3">
+          <div class="flex justify-between text-xs">
+            <span class="text-neutral-400">Overall Avg FKL:</span>
+            <span id="hesitationFkl" class="font-semibold text-white">-- ms</span>
+          </div>
+          <div id="hesitationBreakdown" class="space-y-2 pt-2 border-t border-neutral-800/80 text-xs">
+            <!-- Dynamic Surface FKLs -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Task Debt & Closure Triage Dynamics -->
+      <div class="card-glass p-5 rounded-lg">
+        <h3 class="text-sm font-semibold text-white mb-1">Task Debt & Rollover Age</h3>
+        <p class="text-xs text-neutral-400 mb-4">Triage actions in Executive Closure Ritual</p>
+
+        <div class="space-y-3">
+          <div class="flex justify-between text-xs">
+            <span class="text-neutral-400">Avg Task Rollover Age:</span>
+            <span id="taskDebtAge" class="font-semibold text-white">-- days</span>
+          </div>
+          <div class="flex justify-between text-xs">
+            <span class="text-neutral-400">Task Debt Health:</span>
+            <span id="taskDebtStatus" class="font-bold text-emerald-400 uppercase">Optimal</span>
+          </div>
+          <div id="triageBreakdown" class="space-y-2 pt-2 border-t border-neutral-800/80 text-xs">
+            <!-- Dynamic Triage Actions -->
+          </div>
+        </div>
+      </div>
+
+      <!-- A/B Experimentation Engine -->
+      <div class="card-glass p-5 rounded-lg border-l-2 border-l-indigo-500">
+        <h3 class="text-sm font-semibold text-white mb-1">A/B Experimentation Hub</h3>
+        <p class="text-xs text-neutral-400 mb-4">Live feature flag variants & conversion lift</p>
+
+        <div id="experimentsContainer" class="space-y-3 text-xs">
+          <p class="text-neutral-500">Loading active experiments...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live Anonymized Telemetry Event Stream -->
+    <section class="card-glass p-6 rounded-lg">
+      <div class="flex items-center justify-between mb-4 border-b border-neutral-800 pb-3">
+        <div>
+          <h2 class="text-base font-semibold text-white flex items-center gap-2">
+            Live Anonymized Telemetry Feed
+            <span class="text-xs font-normal text-neutral-400">(Auto-refreshing every 4s)</span>
+          </h2>
+          <p class="text-xs text-neutral-400">Real-time event stream ingested from active user sessions</p>
+        </div>
+        <span id="eventCountBadge" class="text-xs px-2.5 py-1 bg-neutral-800 rounded text-neutral-300 font-mono">0 events</span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-neutral-300">
+          <thead class="text-[11px] uppercase bg-neutral-900/60 text-neutral-400 border-b border-neutral-800">
+            <tr>
+              <th class="py-2 px-3">Time</th>
+              <th class="py-2 px-3">Event Name</th>
+              <th class="py-2 px-3">Session</th>
+              <th class="py-2 px-3">Anonymous User</th>
+              <th class="py-2 px-3">Telemetry Metadata (Zero-Knowledge)</th>
+            </tr>
+          </thead>
+          <tbody id="liveEventTable" class="divide-y divide-neutral-800/60">
+            <tr>
+              <td colspan="5" class="py-4 text-center text-neutral-500">Listening for incoming telemetry events...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="max-w-7xl mx-auto mt-12 pt-6 border-t border-neutral-800 text-center text-xs text-neutral-500">
+    Decide One Behavioral Telemetry Platform • Zero-Knowledge Architecture • Confidential Priority Instrument
+  </footer>
+
+  <script>
+    const API_BASE = window.location.origin;
+    const LEGACY_OWNER_KEY = 'pb_owner_key';
+    const OWNER_KEY = 'decideone_owner_key';
+    let ownerKey = sessionStorage.getItem(OWNER_KEY) || sessionStorage.getItem(LEGACY_OWNER_KEY) || new URLSearchParams(window.location.search).get('key') || '';
+
+    function checkAuthOnLoad() {
+      if (ownerKey) {
+        document.getElementById('authLockOverlay').classList.add('hidden');
+        refreshData();
+      } else {
+        document.getElementById('authLockOverlay').classList.remove('hidden');
+      }
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const inputKey = document.getElementById('ownerSecretInput').value.trim();
+      const errorEl = document.getElementById('authErrorMsg');
+      const submitBtn = document.getElementById('authSubmitBtn');
+
+      submitBtn.textContent = 'Verifying...';
+      submitBtn.disabled = true;
+
+      try {
+        const res = await fetch(`${API_BASE}/api/v1/auth/verify`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: inputKey })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          ownerKey = inputKey;
+          sessionStorage.setItem(OWNER_KEY, ownerKey);
+          document.getElementById('authLockOverlay').classList.add('hidden');
+          errorEl.classList.add('hidden');
+          refreshData();
+        } else {
+          errorEl.textContent = data.error || 'Invalid Owner Secret Key';
+          errorEl.classList.remove('hidden');
+        }
+      } catch (err) {
+        errorEl.textContent = 'Server connection error';
+        errorEl.classList.remove('hidden');
+      } finally {
+        submitBtn.textContent = 'Unlock Executive Dashboard';
+        submitBtn.disabled = false;
+      }
+    }
+
+    function lockPanel() {
+      ownerKey = '';
+      sessionStorage.removeItem(OWNER_KEY);
+      sessionStorage.removeItem(LEGACY_OWNER_KEY);
+      document.getElementById('authLockOverlay').classList.remove('hidden');
+      document.getElementById('ownerSecretInput').value = '';
+    }
+
+    async function fetchJson(endpoint) {
+      if (!ownerKey) return null;
+      try {
+        const res = await fetch(`${API_BASE}${endpoint}`, {
+          headers: {
+            'x-admin-key': ownerKey
+          }
+        });
+        if (res.status === 401) {
+          lockPanel();
+          return null;
+        }
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return await res.json();
+      } catch (err) {
+        console.error(`Error fetching ${endpoint}:`, err);
+        return null;
+      }
+    }
+
+    async function refreshData() {
+      const now = new Date();
+      document.getElementById('lastUpdated').textContent = `Updated: ${now.toLocaleTimeString()}`;
+
+      // 1. Overview KPIs
+      const overview = await fetchJson('/api/v1/analytics/overview');
+      if (overview) {
+        document.getElementById('kpiDau').textContent = overview.dau.toLocaleString();
+        document.getElementById('kpiWau').textContent = overview.wau.toLocaleString();
+        document.getElementById('kpiMau').textContent = overview.mau.toLocaleString();
+        document.getElementById('kpiStickiness').textContent = `${overview.stickiness_ratio_pct}%`;
+        document.getElementById('kpiAsd').textContent = `${overview.standard_app_time_minutes}m`;
+      }
+
+      // 2. Circadian Dual-Visit Rate
+      const circadian = await fetchJson('/api/v1/analytics/circadian');
+      if (circadian) {
+        document.getElementById('kpiCircadian').textContent = `${circadian.circadian_dual_rate_pct}%`;
+      }
+
+      // 3. Funnel & Drop-offs
+      const funnels = await fetchJson('/api/v1/analytics/funnels');
+      if (funnels && funnels.daily_ritual_funnel) {
+        const container = document.getElementById('funnelContainer');
+        container.innerHTML = '';
+
+        funnels.daily_ritual_funnel.forEach((step, idx) => {
+          const isFirst = idx === 0;
+          const dropoffBadge = isFirst ? '' : `
+            <span class="text-[11px] font-medium px-2 py-0.5 rounded bg-rose-950/60 text-rose-400 border border-rose-900/60">
+              -${step.dropoff_rate_pct}% drop-off
+            </span>
+          `;
+
+          const stepHtml = `
+            <div class="space-y-1.5 bg-neutral-900/40 p-3 rounded border border-neutral-800/80">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-medium text-white">${step.step_name}</span>
+                <div class="flex items-center gap-2">
+                  ${dropoffBadge}
+                  <span class="font-bold text-neutral-200">${step.users_count} users (${step.overall_conversion_pct}%)</span>
+                </div>
+              </div>
+              <div class="w-full bg-neutral-800 rounded-full h-2">
+                <div class="bg-gradient-to-r from-emerald-500 to-teal-400 h-2 rounded-full transition-all duration-500" style="width: ${Math.max(4, step.overall_conversion_pct)}%"></div>
+              </div>
+            </div>
+          `;
+          container.insertAdjacentHTML('beforeend', stepHtml);
+        });
+      }
+
+      // 4. Pathfinder Drop-Off Trajectories
+      const pathfinder = await fetchJson('/api/v1/analytics/pathfinder');
+      if (pathfinder && pathfinder.top_transitions) {
+        const container = document.getElementById('pathfinderContainer');
+        container.innerHTML = '';
+
+        if (pathfinder.top_transitions.length === 0) {
+          container.innerHTML = '<p class="text-xs text-neutral-500">No transition paths recorded yet.</p>';
+        } else {
+          pathfinder.top_transitions.slice(0, 6).forEach(t => {
+            const html = `
+              <div class="flex items-center justify-between text-xs bg-neutral-900/40 p-2.5 rounded border border-neutral-800/60">
+                <div class="flex items-center gap-2 truncate">
+                  <span class="font-medium text-neutral-300 truncate">${t.from_surface}</span>
+                  <span class="text-neutral-500">→</span>
+                  <span class="font-medium text-amber-400 truncate">${t.to_surface}</span>
+                </div>
+                <span class="font-bold text-neutral-400 text-[11px] shrink-0 ml-2">${t.count} exits</span>
+              </div>
+            `;
+            container.insertAdjacentHTML('beforeend', html);
+          });
+        }
+      }
+
+      // 5. Cognitive Hesitation (FKL)
+      const hesitation = await fetchJson('/api/v1/analytics/hesitation');
+      if (hesitation) {
+        document.getElementById('hesitationFkl').textContent = `${hesitation.overall_avg_fkl_ms} ms`;
+        const breakdown = document.getElementById('hesitationBreakdown');
+        breakdown.innerHTML = '';
+        const bySurface = hesitation.by_surface || {};
+
+        Object.entries(bySurface).forEach(([surface, data]) => {
+          const html = `
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-neutral-400 capitalize">${surface.replace(/_/g, ' ')}:</span>
+              <span class="font-semibold text-neutral-200">${data.avg_fkl_ms} ms <span class="text-neutral-500 font-normal">(${data.abandonment_rate_pct}% drop)</span></span>
+            </div>
+          `;
+          breakdown.insertAdjacentHTML('beforeend', html);
+        });
+      }
+
+      // 6. Task Debt & Triage
+      const taskDebt = await fetchJson('/api/v1/analytics/task-debt');
+      if (taskDebt) {
+        document.getElementById('taskDebtAge').textContent = `${taskDebt.average_task_age_days} days`;
+        const statusElem = document.getElementById('taskDebtStatus');
+        statusElem.textContent = taskDebt.task_debt_status.replace(/_/g, ' ');
+        statusElem.className = `font-bold uppercase ${taskDebt.task_debt_status === 'high_debt' ? 'text-rose-400' : taskDebt.task_debt_status === 'moderate_debt' ? 'text-amber-400' : 'text-emerald-400'}`;
+
+        const triageContainer = document.getElementById('triageBreakdown');
+        triageContainer.innerHTML = '';
+        const dist = taskDebt.triage_distribution || {};
+
+        Object.entries(dist).forEach(([action, info]) => {
+          const html = `
+            <div class="flex justify-between items-center text-xs">
+              <span class="capitalize text-neutral-400">${action}:</span>
+              <span class="font-semibold text-white">${info.count} <span class="text-neutral-500 font-normal">(${info.percentage}%)</span></span>
+            </div>
+          `;
+          triageContainer.insertAdjacentHTML('beforeend', html);
+        });
+      }
+
+      // 7. A/B Experiments
+      const experiments = await fetchJson('/api/v1/experiments');
+      if (experiments && experiments.experiments) {
+        const expContainer = document.getElementById('experimentsContainer');
+        expContainer.innerHTML = '';
+        const expMap = experiments.experiments;
+
+        Object.entries(expMap).forEach(([expId, variants]) => {
+          let variantHtml = '';
+          Object.entries(variants).forEach(([vName, vData]) => {
+            variantHtml += `
+              <div class="flex justify-between text-xs py-1 border-b border-neutral-800/40">
+                <span class="font-medium text-neutral-300 capitalize">${vName.replace(/_/g, ' ')}:</span>
+                <span class="text-emerald-400 font-bold">${vData.conversion_rate_pct}% <span class="text-neutral-500 font-normal">(${vData.conversions}/${vData.impressions})</span></span>
+              </div>
+            `;
+          });
+
+          const card = `
+            <div class="bg-neutral-900/40 p-2.5 rounded border border-neutral-800/60">
+              <p class="font-bold text-neutral-200 text-xs mb-1.5 uppercase tracking-wider">${expId.replace(/_/g, ' ')}</p>
+              ${variantHtml}
+            </div>
+          `;
+          expContainer.insertAdjacentHTML('beforeend', card);
+        });
+      }
+
+      // 8. Statistical Anomalies
+      const anomalies = await fetchJson('/api/v1/analytics/anomalies');
+      const banner = document.getElementById('anomalyBanner');
+      if (anomalies && anomalies.active_alerts_count > 0) {
+        banner.classList.remove('hidden');
+        document.getElementById('anomalyText').textContent = anomalies.alerts.map(a => a.message).join(' • ');
+      } else {
+        banner.classList.add('hidden');
+      }
+
+      // 9. Live Events Feed
+      const live = await fetchJson('/api/v1/analytics/live?limit=15');
+      if (live && live.length > 0) {
+        document.getElementById('eventCountBadge').textContent = `${live.length} latest events`;
+        const tbody = document.getElementById('liveEventTable');
+        tbody.innerHTML = '';
+
+        live.forEach(e => {
+          const time = new Date(e.timestamp).toLocaleTimeString();
+          const props = JSON.stringify(e.properties || {}).replace(/"/g, '');
+          const row = `
+            <tr class="hover:bg-neutral-800/40 transition">
+              <td class="py-2.5 px-3 font-mono text-neutral-400">${time}</td>
+              <td class="py-2.5 px-3 font-semibold text-emerald-400">${e.event}</td>
+              <td class="py-2.5 px-3 font-mono text-neutral-400">${e.session_id.slice(0, 10)}...</td>
+              <td class="py-2.5 px-3 font-mono text-neutral-400">${e.anonymous_id.slice(0, 10)}...</td>
+              <td class="py-2.5 px-3 text-neutral-300 truncate max-w-xs font-mono text-[11px]">${props}</td>
+            </tr>
+          `;
+          tbody.insertAdjacentHTML('beforeend', row);
+        });
+      }
+    }
+
+    // Initialize with owner authentication check
+    checkAuthOnLoad();
+    setInterval(() => {
+      if (ownerKey) refreshData();
+    }, 4000);
+  </script>
+</body>
+</html>

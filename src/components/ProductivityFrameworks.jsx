@@ -1,0 +1,924 @@
+import React from 'react';
+import { Check, Flame } from 'lucide-react';
+import confetti from 'canvas-confetti';
+import { CATEGORIES, detectCategoryFromText } from '../types/journal';
+import { playSound } from '../utils/audio';
+
+export const FRAMEWORKS = [
+  // Cluster 1: Focus & Prioritization
+  {
+    id: 'rule_of_3',
+    cluster: 'Focus',
+    name: 'Top 3',
+    subtitle: 'Your 3 most important tasks',
+    description: 'Focus exclusively on the 3 highest-leverage outcomes for today.',
+    bestFor: 'Daily high-impact clarity without overwhelm'
+  },
+  {
+    id: 'ivy_lee',
+    cluster: 'Focus',
+    name: 'Ivy Lee Method',
+    subtitle: '6 sequential priorities',
+    description: 'Execute 6 prioritized tasks strictly one at a time in numerical order.',
+    bestFor: 'Eliminating context-switching and procrastination'
+  },
+
+  // Cluster 2: Decision & Matrix
+  {
+    id: 'eisenhower',
+    cluster: 'Decision',
+    name: 'Eisenhower Matrix',
+    subtitle: 'Urgent & important decision matrix',
+    description: 'Organize tasks into 4 decision quadrants: Do, Schedule, Delegate, Eliminate.',
+    bestFor: 'Distinguishing urgent noise from truly important work'
+  },
+  {
+    id: 'moscow',
+    cluster: 'Decision',
+    name: 'MoSCoW Method',
+    subtitle: 'Must, Should, Could, Won\'t',
+    description: 'Agile project delivery triage: separate non-negotiables from nice-to-haves.',
+    bestFor: 'High-pressure deadlines and strict scope management'
+  },
+
+  // Cluster 3: Capacity & Leverage
+  {
+    id: 'one_three_five',
+    cluster: 'Capacity',
+    name: 'The 1-3-5 Rule',
+    subtitle: '1 Big, 3 Medium, 5 Small tasks',
+    description: 'Structure your day realistically: 1 major outcome, 3 medium tasks, 5 quick wins.',
+    bestFor: 'Realistic daily capacity planning and balancing workloads'
+  },
+  {
+    id: 'pareto',
+    cluster: 'Capacity',
+    name: 'Pareto 80/20',
+    subtitle: 'Vital 20% vs operational 80%',
+    description: 'Focus energy on the vital 20% of high-leverage tasks driving 80% of results.',
+    bestFor: 'Maximizing ROI on time, attention, and cognitive energy'
+  }
+];
+
+export default function ProductivityFrameworks({
+  activeFramework = 'rule_of_3',
+  onSelectFramework,
+  hardTasks = [],
+  onUpdateHardTasks,
+  frameworkData = {},
+  onUpdateFrameworkData,
+  isMuted = false,
+  isPastDay = false,
+  isFullPage = false
+}) {
+  // Trigger celebration
+  const triggerCelebration = () => {
+    try {
+      confetti({
+        particleCount: 65,
+        spread: 65,
+        origin: { y: 0.6 },
+        colors: ['#16A34A', '#D97706', '#000000', '#FFFFFF']
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // Safe accessor for current framework data
+  const currentFwData = frameworkData[activeFramework] || {};
+
+  const updateActiveData = (newData) => {
+    onUpdateFrameworkData({
+      ...frameworkData,
+      [activeFramework]: newData
+    });
+  };
+
+  // --- 1. RULE OF 3 HANDLERS ---
+  const slotLabels = [
+    { num: '01', title: 'Needle Mover', placeholder: 'Priority 1: Highest-leverage outcome...' },
+    { num: '02', title: 'Strategic Core', placeholder: 'Priority 2: Strategic focus goal...' },
+    { num: '03', title: 'Essential Anchor', placeholder: 'Priority 3: Essential anchor task...' }
+  ];
+
+  const handleToggleHardTask = (index) => {
+    const updated = [...hardTasks];
+    const task = { ...updated[index] };
+    const nextCompleted = !task.completed;
+    task.completed = nextCompleted;
+    updated[index] = task;
+
+    playSound(nextCompleted ? 'check' : 'click', isMuted);
+    onUpdateHardTasks(updated);
+
+    const allDone = updated.every(t => t.text && t.text.trim() !== '' && t.completed);
+    if (allDone && nextCompleted) triggerCelebration();
+  };
+
+  const handleHardTaskTextChange = (index, newText) => {
+    const updated = [...hardTasks];
+    const task = { ...updated[index], text: newText };
+    const detected = detectCategoryFromText(newText);
+    if (detected && (!task.category || task.category === 'personal')) {
+      task.category = detected;
+    }
+    updated[index] = task;
+    onUpdateHardTasks(updated);
+  };
+
+  const categoryKeys = Object.keys(CATEGORIES);
+  const handleCycleCategory = (index) => {
+    playSound('click', isMuted);
+    const updated = [...hardTasks];
+    const task = updated[index] || { text: '', completed: false, category: 'personal' };
+    const currentIndex = categoryKeys.findIndex(k => CATEGORIES[k].id === task.category);
+    const nextIndex = (currentIndex + 1) % categoryKeys.length;
+    task.category = CATEGORIES[categoryKeys[nextIndex]].id;
+    updated[index] = task;
+    onUpdateHardTasks(updated);
+  };
+
+  // --- 2. EISENHOWER HANDLERS (Multi-Task Array per Quadrant) ---
+  const rawQuadrants = currentFwData.quadrants || {};
+  const normalizeQuadList = (q, defaultId) => {
+    if (!q) return [{ id: defaultId, text: '', completed: false }];
+    if (Array.isArray(q)) return q.length > 0 ? q : [{ id: defaultId, text: '', completed: false }];
+    return [{ id: defaultId, text: q.text || '', completed: !!q.completed }];
+  };
+
+  const eData = {
+    q1: normalizeQuadList(rawQuadrants.q1, 'q1_1'),
+    q2: normalizeQuadList(rawQuadrants.q2, 'q2_1'),
+    q3: normalizeQuadList(rawQuadrants.q3, 'q3_1'),
+    q4: normalizeQuadList(rawQuadrants.q4, 'q4_1')
+  };
+
+  const handleToggleEisenhower = (qKey, idx) => {
+    const list = [...eData[qKey]];
+    list[idx] = { ...list[idx], completed: !list[idx].completed };
+    playSound(list[idx].completed ? 'check' : 'click', isMuted);
+    const updated = { ...eData, [qKey]: list };
+    updateActiveData({ quadrants: updated });
+
+    const allTasks = Object.values(updated).flat().filter(t => t.text.trim() !== '');
+    if (list[idx].completed && allTasks.length > 0 && allTasks.every(t => t.completed)) {
+      triggerCelebration();
+    }
+  };
+
+  const handleTextEisenhower = (qKey, idx, text) => {
+    const list = [...eData[qKey]];
+    list[idx] = { ...list[idx], text };
+    updateActiveData({ quadrants: { ...eData, [qKey]: list } });
+  };
+
+  const handleAddTaskEisenhower = (qKey) => {
+    const list = [...eData[qKey]];
+    if (list.length >= 4) return;
+    list.push({ id: `${qKey}_${Date.now()}`, text: '', completed: false });
+    playSound('click', isMuted);
+    updateActiveData({ quadrants: { ...eData, [qKey]: list } });
+  };
+
+  const handleDeleteTaskEisenhower = (qKey, idx) => {
+    const list = [...eData[qKey]];
+    if (list.length <= 1) {
+      list[0] = { ...list[0], text: '', completed: false };
+    } else {
+      list.splice(idx, 1);
+    }
+    updateActiveData({ quadrants: { ...eData, [qKey]: list } });
+  };
+
+  // --- 3. IVY LEE HANDLERS ---
+  const defaultIvy = [
+    { id: 'il_1', text: '', completed: false },
+    { id: 'il_2', text: '', completed: false },
+    { id: 'il_3', text: '', completed: false },
+    { id: 'il_4', text: '', completed: false },
+    { id: 'il_5', text: '', completed: false },
+    { id: 'il_6', text: '', completed: false }
+  ];
+  const ivyTasks = currentFwData.tasks || defaultIvy;
+
+  const handleToggleIvy = (idx) => {
+    const list = [...ivyTasks];
+    list[idx] = { ...list[idx], completed: !list[idx].completed };
+    playSound(list[idx].completed ? 'check' : 'click', isMuted);
+    updateActiveData({ tasks: list });
+
+    const activeList = list.filter(t => t.text.trim() !== '');
+    if (list[idx].completed && activeList.length > 0 && activeList.every(t => t.completed)) {
+      triggerCelebration();
+    }
+  };
+
+  const handleTextIvy = (idx, text) => {
+    const list = [...ivyTasks];
+    list[idx] = { ...list[idx], text };
+    updateActiveData({ tasks: list });
+  };
+
+  // --- 4. THE 1-3-5 RULE HANDLERS ---
+  const otfData = currentFwData.otf || {
+    big: [{ id: 'b1', text: '', completed: false }],
+    medium: [
+      { id: 'm1', text: '', completed: false },
+      { id: 'm2', text: '', completed: false },
+      { id: 'm3', text: '', completed: false }
+    ],
+    small: [
+      { id: 's1', text: '', completed: false },
+      { id: 's2', text: '', completed: false },
+      { id: 's3', text: '', completed: false },
+      { id: 's4', text: '', completed: false },
+      { id: 's5', text: '', completed: false }
+    ]
+  };
+
+  const handleToggleOtf = (tier, idx) => {
+    const list = [...otfData[tier]];
+    list[idx] = { ...list[idx], completed: !list[idx].completed };
+    playSound(list[idx].completed ? 'check' : 'click', isMuted);
+    const updated = { ...otfData, [tier]: list };
+    updateActiveData({ otf: updated });
+
+    const all = [...updated.big, ...updated.medium, ...updated.small].filter(t => t.text.trim());
+    if (list[idx].completed && all.length > 0 && all.every(t => t.completed)) triggerCelebration();
+  };
+
+  const handleTextOtf = (tier, idx, text) => {
+    const list = [...otfData[tier]];
+    list[idx] = { ...list[idx], text };
+    updateActiveData({ otf: { ...otfData, [tier]: list } });
+  };
+
+  // --- 5. MOSCOW HANDLERS (Multi-Task Array per Scale) ---
+  const rawMoscow = currentFwData.moscow || {};
+  const normalizeMoscowList = (list, defaultId) => {
+    if (!list) return [{ id: defaultId, text: '', completed: false }];
+    if (Array.isArray(list)) return list.length > 0 ? list : [{ id: defaultId, text: '', completed: false }];
+    return [{ id: defaultId, text: list.text || '', completed: !!list.completed }];
+  };
+
+  const moscowData = {
+    must: normalizeMoscowList(rawMoscow.must, 'm1'),
+    should: normalizeMoscowList(rawMoscow.should, 's1'),
+    could: normalizeMoscowList(rawMoscow.could, 'c1'),
+    wont: normalizeMoscowList(rawMoscow.wont, 'w1')
+  };
+
+  const handleToggleMoscow = (tier, idx) => {
+    const list = [...moscowData[tier]];
+    list[idx] = { ...list[idx], completed: !list[idx].completed };
+    playSound(list[idx].completed ? 'check' : 'click', isMuted);
+    const updated = { ...moscowData, [tier]: list };
+    updateActiveData({ moscow: updated });
+
+    const allTasks = Object.values(updated).flat().filter(t => t.text.trim() !== '');
+    if (list[idx].completed && allTasks.length > 0 && allTasks.every(t => t.completed)) {
+      triggerCelebration();
+    }
+  };
+
+  const handleTextMoscow = (tier, idx, text) => {
+    const list = [...moscowData[tier]];
+    list[idx] = { ...list[idx], text };
+    updateActiveData({ moscow: { ...moscowData, [tier]: list } });
+  };
+
+  const handleAddTaskMoscow = (tier) => {
+    const list = [...moscowData[tier]];
+    if (list.length >= 4) return;
+    list.push({ id: `${tier}_${Date.now()}`, text: '', completed: false });
+    playSound('click', isMuted);
+    updateActiveData({ moscow: { ...moscowData, [tier]: list } });
+  };
+
+  const handleDeleteTaskMoscow = (tier, idx) => {
+    const list = [...moscowData[tier]];
+    if (list.length <= 1) {
+      list[0] = { ...list[0], text: '', completed: false };
+    } else {
+      list.splice(idx, 1);
+    }
+    updateActiveData({ moscow: { ...moscowData, [tier]: list } });
+  };
+
+  // --- 7. PARETO 80/20 HANDLERS ---
+  const rawPareto = currentFwData.pareto || {};
+  const paretoData = {
+    vital: Array.isArray(rawPareto.vital) && rawPareto.vital.length > 0 
+      ? rawPareto.vital 
+      : [
+        { id: 'v1', text: '', completed: false },
+        { id: 'v2', text: '', completed: false }
+      ],
+    operational: Array.isArray(rawPareto.operational) && rawPareto.operational.length > 0 
+      ? rawPareto.operational 
+      : [
+        { id: 'o1', text: '', completed: false },
+        { id: 'o2', text: '', completed: false }
+      ]
+  };
+
+  const handleTogglePareto = (group, idx) => {
+    const list = [...paretoData[group]];
+    list[idx] = { ...list[idx], completed: !list[idx].completed };
+    playSound(list[idx].completed ? 'check' : 'click', isMuted);
+    updateActiveData({
+      pareto: { ...paretoData, [group]: list }
+    });
+  };
+
+  const handleTextPareto = (group, idx, text) => {
+    const list = [...paretoData[group]];
+    list[idx] = { ...list[idx], text };
+    updateActiveData({
+      pareto: { ...paretoData, [group]: list }
+    });
+  };
+
+  const handleAddTaskPareto = (group) => {
+    const list = [...paretoData[group]];
+    if (list.length >= 5) return;
+    list.push({ id: `${group}_${Date.now()}`, text: '', completed: false });
+    playSound('click', isMuted);
+    updateActiveData({ pareto: { ...paretoData, [group]: list } });
+  };
+
+  const handleDeleteTaskPareto = (group, idx) => {
+    const list = [...paretoData[group]];
+    if (list.length <= 1) {
+      list[0] = { ...list[0], text: '', completed: false };
+    } else {
+      list.splice(idx, 1);
+    }
+    updateActiveData({ pareto: { ...paretoData, [group]: list } });
+  };
+
+  // --- DYNAMIC PROGRESS COMPUTATION ---
+  let totalTasks = 1;
+  let doneCount = 0;
+
+  if (activeFramework === 'rule_of_3') {
+    totalTasks = 3;
+    doneCount = hardTasks.filter(t => t.text && t.text.trim() && t.completed).length;
+  } else if (activeFramework === 'eisenhower') {
+    const all = Object.values(eData).flat().filter(t => t && t.text && t.text.trim());
+    totalTasks = Math.max(all.length, 1);
+    doneCount = all.filter(t => t.completed).length;
+  } else if (activeFramework === 'ivy_lee') {
+    const all = ivyTasks.filter(t => t && t.text && t.text.trim());
+    totalTasks = Math.max(all.length, 1);
+    doneCount = all.filter(t => t.completed).length;
+  } else if (activeFramework === 'one_three_five') {
+    const all = [...otfData.big, ...otfData.medium, ...otfData.small].filter(t => t && t.text && t.text.trim());
+    totalTasks = Math.max(all.length, 1);
+    doneCount = all.filter(t => t.completed).length;
+  } else if (activeFramework === 'moscow') {
+    const all = Object.values(moscowData).flat().filter(t => t && t.text && t.text.trim());
+    totalTasks = Math.max(all.length, 1);
+    doneCount = all.filter(t => t.completed).length;
+  } else if (activeFramework === 'pareto') {
+    const all = [...paretoData.vital, ...paretoData.operational].filter(t => t && t.text && t.text.trim());
+    totalTasks = Math.max(all.length, 1);
+    doneCount = all.filter(t => t.completed).length;
+  }
+
+  const currentMeta = FRAMEWORKS.find(f => f.id === activeFramework) || FRAMEWORKS[0];
+
+  const handleCycleFramework = () => {
+    playSound('click', isMuted);
+    const idx = FRAMEWORKS.findIndex(f => f.id === activeFramework);
+    const nextIdx = (idx + 1) % FRAMEWORKS.length;
+    onSelectFramework(FRAMEWORKS[nextIdx].id);
+  };
+
+  return (
+    <section className={`flex flex-col ${isFullPage ? 'flex-1 min-h-0' : 'shrink-0 border-b border-black/[0.08] dark:border-white/[0.08]'}`}>
+      
+      {/* Universal 24px Grid Cadence Header Bar */}
+      <div className="h-[24px] leading-[24px] flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] shrink-0">
+        <div className="flex items-baseline gap-2">
+          <h2 className="text-sm sm:text-base font-bold uppercase tracking-wider text-neutral-900 dark:text-neutral-100">
+            {currentMeta.name}
+          </h2>
+          <span className="text-[11px] text-neutral-400 dark:text-neutral-500 italic hidden xs:inline">
+            {currentMeta.subtitle}
+          </span>
+        </div>
+
+        {/* Right Switcher & Progress */}
+        <div className="flex items-center gap-2 select-none no-print">
+          <button
+            type="button"
+            onClick={handleCycleFramework}
+            className="text-[10px] uppercase tracking-wider font-semibold text-neutral-500 hover:text-neutral-900 dark:hover:text-white px-1.5 py-0.5 rounded bg-black/[0.04] dark:bg-white/[0.06] transition-colors cursor-pointer"
+            title="Switch method"
+          >
+            Switch ▾
+          </button>
+
+          <div className="text-[10px] font-semibold">
+            <span className={`font-bold ${
+              doneCount === 0 
+                ? 'progress-ink-red' 
+                : doneCount === totalTasks 
+                  ? 'progress-ink-green' 
+                  : 'progress-ink-yellow'
+            }`}>
+              {doneCount}
+            </span>
+            <span className="text-neutral-400 dark:text-neutral-500">/{totalTasks} done</span>
+          </div>
+        </div>
+      </div>
+
+      {/* --- RENDER 1: RULE OF 3 --- */}
+      {activeFramework === 'rule_of_3' && (
+        <div className="space-y-0">
+          {[0, 1, 2].map((idx) => {
+            const task = hardTasks[idx] || { text: '', completed: false, category: 'personal' };
+            const meta = slotLabels[idx];
+            const currentCat = Object.values(CATEGORIES).find(c => c.id === task.category) || CATEGORIES.PERSONAL;
+            const isMissed = !task.completed && isPastDay && task.text && task.text.trim() !== '';
+
+            return (
+              <div
+                key={idx}
+                className={`group flex items-center gap-2.5 transition-all h-[24px] leading-[24px] px-1 -mx-1 ${
+                  task.completed ? 'opacity-40' : 'hover:bg-black/[0.02] dark:hover:bg-white/[0.03]'
+                }`}
+              >
+                <span className={`font-bold select-none text-[10px] w-3.5 ${
+                  isMissed ? 'progress-ink-red' : 'text-neutral-400 dark:text-neutral-500'
+                }`}>
+                  {meta.num}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={() => handleToggleHardTask(idx)}
+                  className={`w-3.5 h-3.5 rounded-full border transition-all flex items-center justify-center shrink-0 cursor-pointer ${
+                    task.completed
+                      ? 'progress-bg-green progress-border-green text-white'
+                      : isMissed
+                        ? 'progress-border-red progress-ink-red'
+                        : 'border-neutral-400 dark:border-neutral-500 hover:border-neutral-700 bg-transparent'
+                  }`}
+                >
+                  {task.completed ? (
+                    <Check className="w-2 h-2 stroke-[3]" />
+                  ) : isMissed ? (
+                    <span className="text-[9px] font-black leading-none">✕</span>
+                  ) : null}
+                </button>
+
+                <div className="flex-1 min-w-0 h-full flex items-center">
+                  <input
+                    type="text"
+                    value={task.text || ''}
+                    onChange={(e) => handleHardTaskTextChange(idx, e.target.value)}
+                    placeholder={meta.placeholder || `Priority ${idx + 1}...`}
+                    className={`w-full bg-transparent font-normal focus:outline-none transition-all placeholder-neutral-400/40 text-xs sm:text-[13px] h-[24px] leading-[24px] ${
+                      task.completed 
+                        ? 'line-through text-neutral-400 dark:text-neutral-500' 
+                        : isMissed 
+                          ? 'progress-ink-red' 
+                          : 'text-neutral-900 dark:text-neutral-100'
+                    }`}
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleCycleCategory(idx)}
+                  title={`Category: ${currentCat.label} (Click to cycle)`}
+                  className="text-[10px] font-semibold text-neutral-400 hover:text-neutral-900 dark:hover:text-white px-1.5 py-0.5 rounded transition-colors select-none shrink-0 cursor-pointer"
+                >
+                  #{currentCat.label.toLowerCase()}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* --- RENDER 2: EISENHOWER MATRIX (Unboxed Symmetrical Quadrants with Multi-Task Support) --- */}
+      {activeFramework === 'eisenhower' && (
+        <div className="flex-1 min-h-0 grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 pt-1">
+          {[
+            { key: 'q1', title: '01. DO FIRST', tag: 'Urgent' },
+            { key: 'q2', title: '02. SCHEDULE', tag: 'Plan' },
+            { key: 'q3', title: '03. DELEGATE', tag: 'Offload' },
+            { key: 'q4', title: '04. ELIMINATE', tag: 'Drop' }
+          ].map((quad) => {
+            const tasks = eData[quad.key] || [];
+
+            return (
+              <div key={quad.key} className="flex flex-col min-h-0">
+                {/* Quadrant Header: Exact 28px height, whitespace-nowrap guarantees 100% horizontal alignment */}
+                <div className="flex items-center justify-between h-[28px] pb-1 mb-1 border-b border-black/[0.08] dark:border-white/[0.08] select-none">
+                  <span className="text-[11px] font-bold tracking-wider uppercase text-neutral-900 dark:text-neutral-100 whitespace-nowrap">
+                    {quad.title}
+                  </span>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <span className="text-[9px] text-neutral-400 dark:text-neutral-500 font-medium whitespace-nowrap">
+                      {quad.tag}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleAddTaskEisenhower(quad.key)}
+                      className="w-4 h-4 rounded-full flex items-center justify-center text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-black/[0.05] dark:hover:bg-white/[0.08] transition-colors cursor-pointer text-xs font-bold leading-none"
+                      title={`Add task to ${quad.title}`}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                {/* Quadrant Tasks List */}
+                <div className="space-y-0.5 flex-1 min-h-0 overflow-hidden">
+                  {tasks.map((item, idx) => {
+                    const isDone = item.completed;
+                    return (
+                      <div
+                        key={item.id || idx}
+                        className="flex items-center gap-2 h-[28px] px-1 -mx-1 rounded-xs hover:bg-black/[0.02] dark:hover:bg-white/[0.03] transition-colors group"
+                      >
+                        <button
+                          type="button"
+                          onClick={() => handleToggleEisenhower(quad.key, idx)}
+                          className={`w-3.5 h-3.5 rounded-full border transition-all flex items-center justify-center shrink-0 cursor-pointer ${
+                            isDone
+                              ? 'progress-bg-green progress-border-green text-white'
+                              : 'border-neutral-400 dark:border-neutral-500 hover:border-neutral-700 bg-transparent'
+                          }`}
+                        >
+                          {isDone && <Check className="w-2 h-2 stroke-[3]" />}
+                        </button>
+
+                        <input
+                          type="text"
+                          value={item.text || ''}
+                          onChange={(e) => handleTextEisenhower(quad.key, idx, e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              handleAddTaskEisenhower(quad.key);
+                            } else if (e.key === 'Backspace' && item.text === '' && tasks.length > 1) {
+                              e.preventDefault();
+                              handleDeleteTaskEisenhower(quad.key, idx);
+                            }
+                          }}
+                          placeholder={idx === 0 ? "Decision outcome..." : "Next item..."}
+                          className={`flex-1 min-w-0 bg-transparent text-xs focus:outline-none placeholder-neutral-400/40 ${
+                            isDone ? 'line-through text-neutral-400 dark:text-neutral-500' : 'text-neutral-800 dark:text-neutral-200'
+                          }`}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* --- RENDER 3: IVY LEE METHOD (Spacious 6 Sequential Priorities) --- */}
+      {activeFramework === 'ivy_lee' && (
+        <div className="flex-1 min-h-0 space-y-1 pt-1">
+          {ivyTasks.map((task, idx) => {
+            const isDone = task.completed;
+            return (
+              <div
+                key={task.id || idx}
+                className={`flex items-center gap-3 h-[36px] sm:h-[40px] px-1 -mx-1 border-b border-black/[0.04] dark:border-white/[0.04] last:border-b-0 transition-all rounded-xs ${
+                  isDone ? 'opacity-40' : 'hover:bg-black/[0.02] dark:hover:bg-white/[0.03]'
+                }`}
+              >
+                <span className="font-bold text-xs sm:text-sm w-5 text-neutral-400 dark:text-neutral-500 select-none">
+                  0{idx + 1}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={() => handleToggleIvy(idx)}
+                  className={`w-4 h-4 rounded-full border transition-all flex items-center justify-center shrink-0 cursor-pointer ${
+                    isDone
+                      ? 'progress-bg-green progress-border-green text-white'
+                      : 'border-neutral-400 dark:border-neutral-500 hover:border-neutral-700 bg-transparent'
+                  }`}
+                >
+                  {isDone && <Check className="w-2.5 h-2.5 stroke-[3]" />}
+                </button>
+
+                <input
+                  type="text"
+                  value={task.text || ''}
+                  onChange={(e) => handleTextIvy(idx, e.target.value)}
+                  placeholder={`Sequential Priority 0${idx + 1}...`}
+                  className={`flex-1 min-w-0 bg-transparent text-xs sm:text-[13px] focus:outline-none placeholder-neutral-400/40 ${
+                    isDone ? 'line-through text-neutral-400 dark:text-neutral-500' : 'text-neutral-900 dark:text-neutral-100'
+                  }`}
+                />
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* --- RENDER 4: THE 1-3-5 RULE (Unboxed Tiers, Hardcoded Zero-Scroll) --- */}
+      {activeFramework === 'one_three_five' && (
+        <div className="flex-1 min-h-0 overflow-hidden space-y-3 pt-1">
+          {/* 1 Big Thing */}
+          <div>
+            <div className="flex items-center justify-between pb-1 mb-1 border-b border-black/[0.08] dark:border-white/[0.08]">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
+                1 Big Outcome (Core Needle Mover)
+              </span>
+            </div>
+            <div className="flex items-center gap-2.5 h-[32px] px-1 -mx-1 rounded-xs hover:bg-black/[0.02] dark:hover:bg-white/[0.03] transition-colors">
+              <button
+                type="button"
+                onClick={() => handleToggleOtf('big', 0)}
+                className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center shrink-0 cursor-pointer ${
+                  otfData.big[0].completed ? 'progress-bg-green progress-border-green text-white' : 'border-neutral-400 hover:border-neutral-700'
+                }`}
+              >
+                {otfData.big[0].completed && <Check className="w-2 h-2 stroke-[3]" />}
+              </button>
+              <input
+                type="text"
+                value={otfData.big[0].text}
+                onChange={(e) => handleTextOtf('big', 0, e.target.value)}
+                placeholder="The single major accomplishment..."
+                className={`flex-1 min-w-0 bg-transparent text-xs sm:text-[13px] font-semibold focus:outline-none placeholder-neutral-400/40 ${
+                  otfData.big[0].completed ? 'line-through text-neutral-400' : 'text-neutral-900 dark:text-white'
+                }`}
+              />
+            </div>
+          </div>
+
+          {/* 3 Medium Things */}
+          <div>
+            <div className="flex items-center justify-between pb-1 mb-1 border-b border-black/[0.08] dark:border-white/[0.08]">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">
+                3 Medium Priorities (Supporting Work)
+              </span>
+            </div>
+            <div className="space-y-0.5">
+              {otfData.medium.map((item, idx) => (
+                <div key={item.id} className="flex items-center gap-2.5 h-[28px] px-1 -mx-1 rounded-xs hover:bg-black/[0.02] dark:hover:bg-white/[0.03] transition-colors">
+                  <span className="text-[10px] font-bold text-neutral-400 w-3 select-none">0{idx + 1}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleToggleOtf('medium', idx)}
+                    className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center shrink-0 cursor-pointer ${
+                      item.completed ? 'progress-bg-green progress-border-green text-white' : 'border-neutral-400 hover:border-neutral-700'
+                    }`}
+                  >
+                    {item.completed && <Check className="w-2 h-2 stroke-[3]" />}
+                  </button>
+                  <input
+                    type="text"
+                    value={item.text}
+                    onChange={(e) => handleTextOtf('medium', idx, e.target.value)}
+                    placeholder={`Medium priority 0${idx + 1}...`}
+                    className={`flex-1 min-w-0 bg-transparent text-xs focus:outline-none placeholder-neutral-400/40 ${
+                      item.completed ? 'line-through text-neutral-400' : 'text-neutral-800 dark:text-neutral-200'
+                    }`}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 5 Small Things */}
+          <div>
+            <div className="flex items-center justify-between pb-1 mb-1 border-b border-black/[0.08] dark:border-white/[0.08]">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">
+                5 Quick Wins (Momentum Tasks)
+              </span>
+            </div>
+            <div className="space-y-0.5">
+              {otfData.small.map((item, idx) => (
+                <div key={item.id} className="flex items-center gap-2.5 h-[26px] px-1 -mx-1 rounded-xs hover:bg-black/[0.02] dark:hover:bg-white/[0.03] transition-colors">
+                  <span className="text-[10px] font-bold text-neutral-400 w-3 select-none">0{idx + 1}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleToggleOtf('small', idx)}
+                    className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center shrink-0 cursor-pointer ${
+                      item.completed ? 'progress-bg-green progress-border-green text-white' : 'border-neutral-400 hover:border-neutral-700'
+                    }`}
+                  >
+                    {item.completed && <Check className="w-2 h-2 stroke-[3]" />}
+                  </button>
+                  <input
+                    type="text"
+                    value={item.text}
+                    onChange={(e) => handleTextOtf('small', idx, e.target.value)}
+                    placeholder={`Quick win 0${idx + 1}...`}
+                    className={`flex-1 min-w-0 bg-transparent text-xs focus:outline-none placeholder-neutral-400/40 ${
+                      item.completed ? 'line-through text-neutral-400' : 'text-neutral-800 dark:text-neutral-200'
+                    }`}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* --- RENDER 5: MOSCOW METHOD (Unboxed Tiers with Multi-Task Support, Hardcoded Zero-Scroll) --- */}
+      {activeFramework === 'moscow' && (
+        <div className="flex-1 min-h-0 space-y-2 pt-1 overflow-hidden">
+          {[
+            { key: 'must', label: 'MUST DO', desc: 'Critical non-negotiables' },
+            { key: 'should', label: 'SHOULD DO', desc: 'High priority' },
+            { key: 'could', label: 'COULD DO', desc: 'Nice-to-have' },
+            { key: 'wont', label: 'WON\'T DO', desc: 'Eliminated/deferred' }
+          ].map((tier) => {
+            const list = moscowData[tier.key] || [];
+            return (
+              <div
+                key={tier.key}
+                className="flex flex-col pb-1.5 border-b border-black/[0.04] dark:border-white/[0.04] last:border-b-0"
+              >
+                <div className="flex items-center justify-between mb-1 select-none h-[24px]">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-black/[0.04] dark:bg-white/[0.06] text-neutral-800 dark:text-neutral-200 whitespace-nowrap">
+                      {tier.label}
+                    </span>
+                    <span className="text-[10px] text-neutral-400 dark:text-neutral-500 whitespace-nowrap">
+                      {tier.desc}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleAddTaskMoscow(tier.key)}
+                    className="text-[10px] font-semibold text-neutral-400 hover:text-neutral-900 dark:hover:text-white px-1.5 py-0.5 rounded hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors cursor-pointer"
+                    title={`Add task to ${tier.label}`}
+                  >
+                    + Add
+                  </button>
+                </div>
+
+                <div className="space-y-0.5">
+                  {list.map((item, idx) => {
+                    const isDone = item.completed;
+                    return (
+                      <div
+                        key={item.id || idx}
+                        className="flex items-center gap-2.5 h-[28px] px-1 -mx-1 rounded-xs hover:bg-black/[0.02] dark:hover:bg-white/[0.03] transition-colors group"
+                      >
+                        <button
+                          type="button"
+                          onClick={() => handleToggleMoscow(tier.key, idx)}
+                          className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center shrink-0 cursor-pointer ${
+                            isDone ? 'progress-bg-green progress-border-green text-white' : 'border-neutral-400 hover:border-neutral-700'
+                          }`}
+                        >
+                          {isDone && <Check className="w-2 h-2 stroke-[3]" />}
+                        </button>
+
+                        <input
+                          type="text"
+                          value={item.text || ''}
+                          onChange={(e) => handleTextMoscow(tier.key, idx, e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              handleAddTaskMoscow(tier.key);
+                            } else if (e.key === 'Backspace' && item.text === '' && list.length > 1) {
+                              e.preventDefault();
+                              handleDeleteTaskMoscow(tier.key, idx);
+                            }
+                          }}
+                          placeholder={idx === 0 ? `Define ${tier.label.toLowerCase()} outcome...` : "Next item..."}
+                          className={`flex-1 min-w-0 bg-transparent text-xs sm:text-[13px] focus:outline-none placeholder-neutral-400/40 ${
+                            isDone ? 'line-through text-neutral-400' : 'text-neutral-900 dark:text-neutral-100'
+                          }`}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* --- RENDER 7: PARETO 80/20 (Unboxed Paper Layout with Multi-Task Support, Hardcoded Zero-Scroll) --- */}
+      {activeFramework === 'pareto' && (
+        <div className="flex-1 min-h-0 space-y-4 pt-1 overflow-hidden">
+          {/* Vital 20% */}
+          <div>
+            <div className="text-[11px] font-bold uppercase tracking-wider text-neutral-900 dark:text-white pb-1 mb-1.5 border-b border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between select-none h-[24px]">
+              <div className="flex items-center gap-1.5">
+                <span>Vital 20% (Yields 80% Output)</span>
+                <span className="text-[10px] text-neutral-400 font-normal">Core Leverage</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleAddTaskPareto('vital')}
+                className="text-[10px] font-semibold text-neutral-400 hover:text-neutral-900 dark:hover:text-white px-1.5 py-0.5 rounded hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors cursor-pointer"
+                title="Add Vital task"
+              >
+                + Add
+              </button>
+            </div>
+            <div className="space-y-1">
+              {paretoData.vital.map((item, idx) => (
+                <div key={item.id || idx} className="flex items-center gap-2.5 h-[32px] px-1 -mx-1 rounded-xs hover:bg-black/[0.02] dark:hover:bg-white/[0.03] transition-colors group">
+                  <span className="text-[10px] font-bold text-neutral-400 w-3 select-none">0{idx + 1}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleTogglePareto('vital', idx)}
+                    className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center shrink-0 cursor-pointer ${
+                      item.completed ? 'progress-bg-green progress-border-green text-white' : 'border-neutral-400'
+                    }`}
+                  >
+                    {item.completed && <Check className="w-2 h-2 stroke-[3]" />}
+                  </button>
+                  <input
+                    type="text"
+                    value={item.text}
+                    onChange={(e) => handleTextPareto('vital', idx, e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleAddTaskPareto('vital');
+                      } else if (e.key === 'Backspace' && item.text === '' && paretoData.vital.length > 1) {
+                        e.preventDefault();
+                        handleDeleteTaskPareto('vital', idx);
+                      }
+                    }}
+                    placeholder={`High-leverage action 0${idx + 1}...`}
+                    className={`flex-1 min-w-0 bg-transparent text-xs sm:text-[13px] font-semibold focus:outline-none placeholder-neutral-400/40 ${
+                      item.completed ? 'line-through text-neutral-400' : 'text-neutral-900 dark:text-white'
+                    }`}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Operational 80% */}
+          <div>
+            <div className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 pb-1 mb-1.5 border-b border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between select-none h-[24px]">
+              <span>Operational 80% (Routine Maintenance & Admin)</span>
+              <button
+                type="button"
+                onClick={() => handleAddTaskPareto('operational')}
+                className="text-[10px] font-semibold text-neutral-400 hover:text-neutral-900 dark:hover:text-white px-1.5 py-0.5 rounded hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors cursor-pointer"
+                title="Add Operational task"
+              >
+                + Add
+              </button>
+            </div>
+            <div className="space-y-1">
+              {paretoData.operational.map((item, idx) => (
+                <div key={item.id || idx} className="flex items-center gap-2.5 h-[28px] px-1 -mx-1 rounded-xs hover:bg-black/[0.02] dark:hover:bg-white/[0.03] transition-colors group">
+                  <span className="text-[10px] font-bold text-neutral-400 w-3 select-none">0{idx + 1}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleTogglePareto('operational', idx)}
+                    className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center shrink-0 cursor-pointer ${
+                      item.completed ? 'progress-bg-green progress-border-green text-white' : 'border-neutral-400'
+                    }`}
+                  >
+                    {item.completed && <Check className="w-2 h-2 stroke-[3]" />}
+                  </button>
+                  <input
+                    type="text"
+                    value={item.text}
+                    onChange={(e) => handleTextPareto('operational', idx, e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleAddTaskPareto('operational');
+                      } else if (e.key === 'Backspace' && item.text === '' && paretoData.operational.length > 1) {
+                        e.preventDefault();
+                        handleDeleteTaskPareto('operational', idx);
+                      }
+                    }}
+                    placeholder={`Routine task 0${idx + 1}...`}
+                    className={`flex-1 min-w-0 bg-transparent text-xs focus:outline-none placeholder-neutral-400/40 ${
+                      item.completed ? 'line-through text-neutral-400' : 'text-neutral-700 dark:text-neutral-300'
+                    }`}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+    </section>
+  );
+}

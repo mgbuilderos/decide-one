@@ -1,0 +1,239 @@
+# Decision Register — Current State
+
+> **What is true today.** `VISION.md` says *why*; `DECISION_LOG.md` records *how we got here*, session by session. This document is neither history nor rationale — it is the single page you read to know where things stand.
+>
+> Last updated: September 9, 2026 (rev. 4 — brand model, the single leaflet, and the changed naming brief added).
+> **Status key:** ✅ Decided · 🟡 Recommended, awaiting founder confirmation · ⬜ Open · ⚠️ Blocker
+
+---
+
+## 1. The product
+
+| # | Decision | Status | Detail |
+| :--- | :--- | :--- | :--- |
+| P1 | **The left page is one page** — today's date, a small number of lines, nothing else. *(The bi-fold was cut when the right page emptied, and briefly returned in §1B once the right page had a job. **That revival is superseded — see P11, settled Sept 10.**)* | ✅ | `VISION.md` §10.2, §1B |
+| P2 | **Habit tracking removed.** A different product in a different category. | ✅ | §10.1 |
+| P3 | **Evening reflection removed.** Gratitude journalling has its own market. | ✅ | §10.1 |
+| P4 | **Day closure kept** — not reflection, just *the day is done*. Without an ending the product is morning-only and there is no reason to return at night. | ✅ | §10.2 |
+| P5 | **Three frameworks survive, not six and not one.** Rule of 3, Ivy Lee, Eisenhower. | ✅ | §10.3 |
+| P6 | **Cut: 1-3-5** (duplicates Rule of 3), **MoSCoW** (Eisenhower for team scope, not one person's morning), **Pareto** (a principle, not a method — belongs in copy). | ✅ | §10.1 |
+| P7 | **Symptom is the door; the method is named behind it.** The user clicks *"I keep not finishing things"*; the page then shows *Ivy Lee Method · 1918*. Plain language at the entry satisfies Gate 5 without concealing whose method it is. **Amended Sept 9 — the earlier "never by method name" rule was superseded**, see M-A1. | ✅ | `FRAMEWORKS.md` §7.1 |
+| P8 | **No quiz, no gate.** Default to Rule of 3; the other two sit behind a quiet switch. *"What does your day look like?"* is unanswerable by a confused person. | ✅ | §10.3 |
+| P9 | **Frameworks must be enforced, not drawn.** Three lines with no fourth. #2 locked until #1 is done. Classification required before writing. | ✅ | §10.4 |
+| P10 | **The product is neutral, not directive.** It never suggests, ranks, or decides content. It is opinionated about *form* only. | ✅ | §10.3 |
+| P11 | **The page is a single leaflet, not a book.** One sheet: **recto** is what deserves the day, **verso** is where the time went. No spine, no cover, no ribbon, no month illustrations. A book accumulates and the backlog stares at you; a leaf is finite and replaced tomorrow — Rule of 3 rendered as an object. **Confirmed Sept 10, on a reason P11 originally lacked:** the question was never one surface versus two — both have two. It is **simultaneous versus sequential**. Durations attach per line (R4), so the capacity check happens on the **recto**, beside the items, where the decision is. The verso is not part of deciding; it is *where the time went* — **a report, read once, at closure. Something read once a day does not deserve permanent half-screen residency.** | ✅ | `DECISION_LOG.md` §1.43 |
+| P12 | **Turning the sheet over is the day-closure gesture.** P4 currently has no physical act. This gives it one, and it satisfies R3 structurally rather than by discipline — **a verso cannot introduce objects of its own.** **Confirmed Sept 10.** The structural argument is the decisive one: the old right page died because it drifted into being a separate thing, and a *permanently visible* verso invites that drift back every day. A verso you must turn to is protected by geometry rather than by vigilance. | ✅ | §1.43 |
+| P13 | **The clock is unaffected and lives on the recto.** R11 stands exactly as recorded; the leaflet question never touched it. | ✅ | §1.40, §1.43 |
+
+| P14 | **The clock has three jobs, and only one requires the user present — the one that happens before it starts.** **(a) When the duration is set:** assigning a time to a line is a **capacity check**, not a stopwatch. Three tasks at three hours is nine hours, and the day has not got nine hours — discovered at 9am rather than 6pm. Without durations, "three things" can be three impossible things and Rule of 3 fails while appearing to work. **The clock is how Rule of 3 discovers it is actually Rule of 2** — Little's Law made visible (`FOUNDATIONS.md` §1); the cap is only real if it caps *time*, not line count. **(b) While running:** it measures, and unobserved measurement is the normal case for an instrument. This produces R7's planned-vs-actual. **(c) At closure:** it reports where the time went. **Resolves the founder's objection of Sept 10** — that users leave to do the work, so a live clock has no audience. Job (a) is complete before the timer starts, and it is the one that matters most. | ✅ | §1B, `FOUNDATIONS.md` §1 |
+| P15 | **The user leaving is the success case. The product is built to be closed.** This inverts the category the R6 warning flagged: Forest kills your tree if you leave, Session and Flow want the window in front of you, every Pomodoro clone is built to retain. **Design constraints that follow, binding:** no countdown anxiety, no notifications pulling the user back, no overrun alarm — R8 extended from a tone rule into a retention rule. **Positioning claim now sayable:** *Most focus apps are built so you stay. This one is built so you leave.* | ✅ | R6, R8, R12 |
+
+**The statement (canonical, `VISION.md` §11):**
+
+> **Open it confused. Close it decided.**
+>
+> Most tools hand you a blank page and wish you luck. This one asks what's going wrong first — *too much to do, nothing getting finished, everything feeling urgent* — and gives you the method built for that exact problem. Then it holds you to the time you set, and shows you afterwards where the time actually went.
+>
+> Three methods, all older than the software industry. One page. Nothing leaves your device. **$39 once, never a subscription.**
+
+---
+
+## 1B. The right page — the execution layer
+
+Settled September 9, 2026 after studying `~/Documents/Claude/Projects/Plan & Do` (built as **Focus**). Detail in `FRAMEWORKS.md` §3–4 and `BORROW_FROM_FOCUS.md`.
+
+| # | Decision | Status | Detail |
+| :--- | :--- | :--- | :--- |
+| R1 | **Frameworks split into two layers that stack rather than compete.** *Selection* answers "which things"; *execution* answers "when and how long". Only one selection method runs at a time; execution applies on top of whichever it is. | ✅ | `FRAMEWORKS.md` §1 |
+| R2 | **The right page is the execution layer for the left page's items.** Left: what deserves the day. Right: how long, and how it actually went. | ✅ | §4 |
+| R3 | **The right page may never introduce objects of its own.** This is the rule that stops it becoming the old right page again — habits and reflection failed precisely because they were separate things sharing a spread. | ✅ | §4.1 |
+| R4 | **Timeboxing** — a duration per line. Grounded in Parkinson's Law (1955). Treats tasks expanding to fill the day. | ✅ | §3.1 |
+| R5 | **If-then planning** — an optional *when and where* per line. Gollwitzer, 1999. Treats planning without starting. | ✅ | §3.2 |
+| R6 | **The timer is the enforcement mechanism, not a feature.** §10.4 demanded frameworks be enforced rather than drawn; a paper metaphor cannot enforce anything. A clock can: Ivy Lee's #2 will not start until #1 is closed. | ✅ | `BORROW_FROM_FOCUS.md` §2 |
+| R7 | **Planned vs actual accounting** — `plannedDurationSec`, `actualFocusSec`, `pausedDurationSec`, `overtimeSec`, with `timingAccuracy` provenance marking. Answers a question no competitor asks: *are your timeboxes honest?* | ✅ | §1.2 |
+| R8 | **Overrun is never punitive.** "Need more time" adds time as information. No red alarm, no lost streak, no falling score. The product observes; it does not scold. | ✅ | §3.3 |
+| R9 | **`BREATHING` state kept** — a deliberate pause between pressing start and the clock running. | ✅ | §1.3 |
+| R10 | **Also taken:** finish-early time redistribution, session outcome (done/partial/blocked), plan reuse. | ✅ | §4.1 |
+| R11 | **The analogue clock is taken — as *the* clock, not as a mode.** No switcher, no cycling, no gallery. A face renders duration spatially where digits render an instant. | ✅ | §5.1, §5.4 |
+| R12 | **Gamified visualisers dropped** — SPACE, MOUNTAIN, RACE. They are the psychology of the habit streaks already cut; they contradict the neutrality decision; and a progress metaphor with a protagonist implies failure states. **A clock face has no protagonist, so it never judges.** | ✅ | §5.2 |
+| R13 | **Subtasks refused.** A subtask is how you have more than three things while telling yourself you have three. Defeats Rule of 3's enforcement. | ✅ | §1.5 |
+| R14 | **Hard veto: no Supabase, PostHog, cloud sync or PartyKit.** Importing a sync layer would turn a fixable inconsistency (blocker B3) into a false claim. | ✅ | §3.4 |
+| R15 | **Nothing crosses as code.** Focus is Next.js + Zustand; this is Vite + localStorage. The *model* crosses — types, state machine, accounting — reimplemented here. | ✅ | §3.4 |
+| R16 | `doneDefinition` — stating what "done" looks like. Genuine forcing function, but a second morning question. If taken: optional, never required, never before the first line is written. | ⬜ | §4.3 |
+| R17 | **Abandoned sessions are handled by provenance, not by guessing.** P15's "built to be closed" creates one real problem: a laptop shut at 11am and reopened at 4pm reads five hours on a ninety-minute task, corrupting the measurement that is the clock's remaining purpose. **R7's `timingAccuracy` field already exists for exactly this.** On return, ask once — *"Still on this?"* — and mark the session accordingly. **Honest data beats clean data**, and a figure that is inferred must never be presented as one that was measured. | 🟡 | R7, P15 |
+
+**Category warning on the record:** a timer moves the product toward a crowded category (Forest, Session, Flow, every Pomodoro clone). **The diagnosis stays in front; the timer is how the method is enforced, never the headline.**
+
+---
+
+## 1C. Methods and attribution
+
+| # | Decision | Status | Detail |
+| :--- | :--- | :--- | :--- |
+| M-A1 | **Founder standard: use only completely free frameworks, and never rename them.** Renaming to avoid crediting an originator is passing off — lawful, and still wrong. | ✅ | `FRAMEWORKS.md` §7 |
+| M-A2 | **The five methods, all clear:** Rule of 3 (ownerless) · Ivy Lee (1918, no rights holder) · Urgent/Important Matrix · Timeboxing (Parkinson, 1955) · If-Then Planning (Gollwitzer, 1999). | ✅ | §6.2, §7.3 |
+| M-A3 | **Attribution correction: the "Eisenhower Matrix" is misattributed.** Eisenhower quoted the urgent/important distinction in 1954; **Covey built the matrix in 1989.** The product will credit both and use *The Urgent/Important Matrix*. Covey's coined vocabulary — Quadrant II, Big Rocks, First Things First — stays out. | ✅ | §7.2 |
+| M-A4 | **Legal principle:** methods are not ownable, names are. Copyright excludes "any idea, procedure, process, system, method of operation" (17 U.S.C. §102(b), *Baker v. Selden* 1879). Trademark is the only live exposure, and it protects names used as brands. | ✅ | §6.1 |
+| M-A5 | **Blacklist — never in UI, marketing, metadata or store copy:** Pomodoro · GTD · Bullet Journal/BuJo · Eat That Frog · 7 Habits/Quadrant II/Big Rocks/First Things First · WOOP · 12 Week Year · EOS · Buffett 5/25. Do not frame *Deep Work* or *Essentialism* as named methods. | ✅ | §6.3 |
+| M-A6 | **One honest scientific claim is available**, and only one: Gollwitzer & Sheeran (2006) — 94 studies, 8,000+ participants, **d = 0.65**. Applies to if-then planning *only*. The combined position: *"One of these is backed by 94 studies. The others have a century of use."* | ✅ | §3.2 |
+| M-A7 | **Methods & Attributions page** — each method, originator, date and the problem it treats, in the product's own words. Marketing, not just defence: *"We did not invent these. They have worked for a century, and we credit the people who found them."* | ⬜ | §7.4 |
+| M-A8 | **IP attorney review of method names and marketing copy** before commercial launch. | ⬜ | §6.6 |
+
+---
+
+## 2. The name
+
+| # | Decision | Status | Detail |
+| :--- | :--- | :--- | :--- |
+| N1 | **Clearing** — recommended. Only name of twelve searched to come back clean. Scored 34; Primacy scores 19. **Chosen under the pre-Casio brief; see N7, which changes the target.** | 🟡 | `STRATEGY_AND_NAMING.md` §1.31 |
+| N2 | **Twelve searched, eleven taken:** Kanso, Occam, Viveka, Crux, Winnow, Heed, Quire, Vantage, Loupe, Glean, Compass, North Star. All occupied, most in productivity software. | ✅ | §1.28–1.34 |
+| N3 | **Rule discovered:** a famous principle is a crowded name by definition. The better a word names the idea, the more certainly someone reached it first. | ✅ | §1.23 |
+| N4 | **Merit** — previously recommended, superseded by Clearing. Merit's flaw was abstraction (concreteness 2, the same defect that sank Primacy). | ✅ | §1.26, §1.31 |
+| N5 | **Professional trademark clearance** in Classes 9 and 42. Not started. | ⬜ | §2.11 |
+| N6 | **The rename window closes at the first sale.** Today it costs ~1 day: ~105 display strings, persisted keys untouched behind the existing shim, new licence prefix added while honouring the old, four QC gates updated. After launch it becomes a permanent second identity. | ⚠️ | §2.9 |
+| N7 | **The naming brief has changed.** Under BR7 the target is no longer a *beautiful* word but a **plain** one. Nineteen-plus names have been lost and nearly every one died *because it was a good word* — good words in "decisive / essential / clear" are gone precisely because they are good. Asking for a more beautiful name is asking for a more contested one. | ✅ | `DECISION_LOG.md` §1.43 |
+| N8 | **Structural finding: the paper register is picked clean; the mechanism register is nearly empty.** Foolscap, Deckle, Quire, Longhand, Daybook, Recto — all occupied, because everyone building a journal app reaches for paper words and nobody reaches for machine parts. | ✅ | §1.43 |
+| N9 | **Six searched Sept 9, one survivor.** Foolscap ✗ · Docket ✗ · Chit ✗ · Recto ~ · Escapement ~ · **Detent** — lightest collision found in the whole exercise (one iOS fidget-wheel toy; no productivity occupant, no filing). The catch that holds a position until deliberately released — literally the enforcement layer. **Stated flaw:** ambiguous stress and *détente* close in the ear, the Chronometer failure mode. | 🟡 | §1.43 |
+| N10 | ⚠️ **Correction to §1.42 — Foolscap is dead.** `foolscap.app` is a live *"quiet writing app — notes, journal, tasks. No AI, no tracking… like a sheet of paper."* The agency round passed it as clean. **Every remaining agency survivor — Shears, Nagi, Decidere, Verdict, Fude, Chop, Escapement, Thirty-Nine — must be re-searched before use.** | ✅ | §1.42, §1.43 |
+| N11 | **"Leaflet" is unusable as a wordmark.** Leaflet.js is among the most-used mapping libraries on the web. The metaphor is available; the word is not. | ✅ | §1.43 |
+| N12 | **Founder clarified the naming standard: familiar authority.** The name may be an instrument, system, command term or technical concept. It must be widely known, easy to say and spell, and inherit real competence from an existing meaning. *Submarine* is the reference example. | ✅ | `NAMING_DIRECTION.md` §1 |
+| N20 | **Scientist-eponym round run and closed.** Schmitt, Fermi and Pauli evaluated under the founder's standing constraint: state the principle, invent no quotation. **Fermi K1 rejected** (equilibrium device, not an edge device; Radar's directional failure; Fermi-estimation and NVIDIA occupancy; permanent Manhattan Project shadow). **Pauli rejected** (N21). **Schmitt D1 survives as runner-up** — the better name if commitment ever becomes the thesis. The proposed `D1` suffix derives from N19's `DECIDE D-01`. | ✅ | `AGENCY_NAMING_ROUND.md` §9 |
+| N21 | **§6A extended — eponyms are a third class.** Not tool words, not state words. *An eponym has no shape; it has a citation.* This is the **concreteness defect a third time** — Merit (N4), Primacy (19), now Pauli. **Operative rule: distrust eponyms.** A mechanism is re-explained every time the product is used; a citation can only be re-told. The Tesla comparison flatters the candidate — teaching budget, a physical object teaching for free, far broader popular recognition of the eponym, and survivorship bias. | ✅ | §9.4 |
+| N22 | **PAULI's trademark and branding weaknesses share one root.** Lanham Act §2(e)(4) refuses marks "primarily merely a surname" absent acquired distinctiveness. A *Benthin* escape is plausible, **but the brand story and the trademark argument pull in opposite directions** — leaning on "named after the physicist" supplies the examiner's evidence. EU has no surname bar; India s.14 inapplicable (died 1958). FC St. Pauli enforces in the EU; different classes, likely survivable, must be checked. Not clearance, not legal advice. | ✅ | §9.4, N5 |
+| N23 | ⚠️ **Detent re-examined and N13 re-confirmed — it stays superseded.** The Sept 10 pass found that Detent absorbs both physics candidates (Schmitt's hysteresis; Pauli's exclusion) and would write the interaction spec, then independently rediscovered the exact two flaws N13 had already recorded: **familiarity and the spoken-word test.** Recognition among software founders is roughly one in ten; it fails N12's *Submarine* standard; search results skew to AR-15 parts. **N13 was right and is not reopened.** Retain from the pass: the *lock versus detent* category position, and the three interaction requirements — resistance on change, a discrete snap on commit, a visible push-back at the cap — **none enforced in code today, and all valid under any name.** | ✅ | §10, N13 |
+| N24 | **The spoken-referral test is the deciding filter, and it is now generalised.** *"You should try Pauli"* → written as "Pauly," carries nothing. *"You should try Detent"* → written as "détente," carries everything. **Distributional, not aesthetic** — it breaks the cheapest growth channel. This is the same test N13 applied to Detent; it now applies to every candidate. Recorded against the recommendation: **on sayability PAULI is stronger**, and Figma/Miro/Asana/Zapier are meaningless and easily said — but all bought their teaching. Extend step 5: five outsiders spell it back and guess the product. *(Step 5's script says "priorities"; the plural contradicts the Pauli doctrine if adopted.)* | 🟡 | §10.1 |
+| N25 | **EMPTY HEAD rejected.** "Empty-headed" means stupid; the idea is GTD's most famous line; it describes a **capture** product when the thesis is subtraction (O Space files this as *Planning Obsession*); §6A state word. **Mechanism error in the proposed line** — writing does not free the head, deciding does; the relief comes from the cap, not the capture. Salvaged as **"Decide once. Carry one."** | ✅ | §11 |
+| N26 | **The Pauli doctrine survives its wordmark's rejection.** *Nothing shares first* — exclusion applies to every state, so the whole ordering is exclusive, which **describes** Rule of 3 and Ivy Lee rather than resembling them. And **exclusion displaces, it does not delete** — what cannot be first moves up a shell, intact, answering the anxiety that prevents prioritising. Available to any name, including `DECIDE D-01`. The etymological convergence (*priority* had no plural) is a **popularised framing** — usable as a claim about English, never as a citation. | ✅ | §9.3 |
+| N27 | 🔧 **Numbering defect in this table, pre-existing.** N18 and N19 are each used twice (rows for Selector/coined-name rule and Decisive/Decide). Left untouched to preserve inbound references; the Sept 10 round therefore starts at N20. Renumber only alongside a pass over `NAMING_DIRECTION.md` §9–§11. | ⬜ | this file |
+| N28 | **Knock-out search run on the DECIDE family (Sept 10).** **No occupant found for "Decide One"** — no product, company, app or brand. **Principal flag: `D1 DECISIONONE`**, Reg. 4665646, DecisionOne Corporation, ~15 marks mostly in Class 42; goods are IT hardware support and warranty services, so likely survivable but must be assessed by counsel. `Decide Software Inc.`, `Decide Inc.` and `DecideIT` occupy the space with different marks. App stores are crowded with random-choice "Decide" novelty apps — a **discoverability** problem more than a legal one. `decideone.com` and `decide.one` are parked; `decideone.app` and `.in` are free. ⚠️ **Web knock-out, not clearance — the same method that wrongly passed Foolscap (N10).** | 🟡 | `AGENCY_NAMING_ROUND.md` §13 |
+| N29 | **The register independently prefers DECIDE ONE over DECIDE D-01.** `D1 DECISIONONE` registers the exact string that is `D-01`'s only distinguishing element, so the model-designation form carries more collision risk than the word form. This is a second reason for ONE, arrived at from the trademark register rather than from N18 or the spoken-referral test. | ✅ | §13.4 |
+| **N30** | ✅ **THE NAME IS DECIDED: `DECIDE ONE` · Priority instrument · *Nothing shares first.*** Supersedes N1 (Clearing), N17 (Select), N19 (Decide D-01) and the shipped Primacy identity. Chosen on four grounds: *decidere* = **to cut off**, so §1's directional test is met by the word's own meaning (§14 shows the cut-metaphor is a cross-linguistic universal, not a clever etymology); it is the only candidate where **Rule 5 is the wordmark** — it names what the *person* does, where Radar, Detent, Selector, Schmitt and Pauli all named the machine; `ONE` satisfies N18's coined-name rule by carrying the doctrine rather than decorating (N26); and it survives the spoken-referral test that killed Detent and Pauli (N24), in both Indian and global English. | ✅ | `AGENCY_NAMING_ROUND.md` §9–§13 |
+| **N31** | **Domain secured: `decideone.app`.** `.app` is on the HSTS preload list, so the TLD itself compels HTTPS — a factual privacy claim, not a marketing one. `decideone.com` (registered 1999) and `decide.one` are parked third-party holdings and were **not** acquired; the brand does not depend on either. **`decideone.in` deliberately not purchased** (founder, Sept 10) — `.app` serves the India-first market as well as the global one, and a defensive ccTLD is optional. If the `.com` is ever wanted, enquire through a broker *before* the brand is public. | ✅ | §13 |
+| **N32** | **Rename executed — 80 display strings across 25 files, build and all 21 QC gates passing.** Persistence is untouched behind an extended shim, following the precedent set by the POCKETBOOK→PRIMACY rename: **licence storage** now writes `DECIDEONE_PATRON_LICENSE` and reads a `LEGACY_STORAGE_KEYS` chain (PRIMACY, then POCKETBOOK); **key format** accepts `D1-` and still accepts `PR-` and `PB-`; **every legacy promo key stays valid forever**, with `DECIDEONE-PATRON-2026` added and now shown in the Patron modal. `DECIDEONE_MONOGRAM_STYLE` and `DECIDEONE_BREAKER_INTENTIONS_*` write new and fall back through both earlier identities. Service-worker cache bumped to `decideone-priority-v1.0.3`. **Verified:** D1/PR/PB format keys and all eight promo keys accept; malformed keys reject. **No existing user loses Patron status or data.** | ✅ | `src/utils/licenseManager.js` |
+| **N33** | **Two rename residues, deliberately left.** (a) **Render assets keep `primacy-*` filenames** (`public/renders/`, ~5MB across six files) — filenames are not display strings and renaming them churns every reference for no user-visible gain. (b) **`Top3HardTasks` slot 01 label was `PRIMACY`** — a *rank* word sibling to STRATEGIC and ANCHOR, not the brand. Renamed to **`FIRST` / "First (Nothing Shares First)"**, which now carries the doctrine. A blanket brand replace would have wrongly written "DECIDE ONE" into a slot label. | ✅ | `src/components/Top3HardTasks.jsx:16` |
+| **N34** | ⚠️ **Clearance is now the blocking legal item, and N6's window is open but closing.** Professional search in **Classes 9 and 42** for `DECIDE ONE`, with **`D1 DECISIONONE`** (Reg. 4665646, DecisionOne Corporation, ~15 marks mostly Class 42) put in front of counsel as the known flag. N28's knock-out was a web search only — the same method that wrongly passed Foolscap (N10). **The window closes at the first sale.** | ⬜ | N5, N6, N28 |
+| **N35** | **Canonical identity pass completed for `DECIDE ONE` and `decideone.app`.** The public metadata, manifest, landing wordmark, D1 app icon, README, engineering handoff and telemetry dashboard now use the selected identity. New browser storage writes use `DECIDEONE_*`; prior PocketBook/Primacy identifiers and patron keys remain read-only compatibility fallbacks so no existing journal, setting or licence is lost. Historical naming analysis and render filenames remain unchanged because they are provenance and implementation references, not current branding. Build, 21 structural QC gates and 11 telemetry tests pass. | ✅ | `index.html`, `public/icon.svg`, `src/hooks/useJournalStorage.js` |
+| N35 | **Cross-linguistic doctrine recorded — the strongest copy foundation in the project, and it needs no teaching.** *Decide* is built from **cut** or **separate** in five unrelated language families (Latin *decidere*, French *trancher*, German *entscheiden*, Japanese *ketsudan*, Chinese *juéduàn*, Arabic *faṣl*/*ḥasm*, Greek *krinein*, Sanskrit *viveka*, Finnish *päättää*). *Priority* is **always positional** — never cutting. **The split maps onto §1B**: recto = the cut (decision), verso = position (priority). Third framing, unclaimed: German *Vorfahrt* / Dutch *voorrang* / Swedish *företräde* mean priority **and right of way** — *two things arrive at once; something has to have right of way* — which satisfies Rule 5 by construction. **Caveat: the "priority had no plural" line is a popularised framing, usable as a claim about English, never as a citation.** | ✅ | `AGENCY_NAMING_ROUND.md` §14 |
+| N36 | **Ten registers searched and closed, with kill reasons, so none is re-entered.** Eponyms · coaching/symptom words · foreign words for priority/decide · mythological instruments · feeling/state names · binary and CS vocabulary · gate and task compounds · deliberate misspellings · symbols and Morse · domain-as-brand · booster suffixes. **Meta-finding: every one closed because the known words are taken or the available words are unknown** — N7's saturation thesis in ten new costumes. **Stopping rule, learned the hard way:** after nineteen names the remaining choice is between two failure modes, and no further analysis resolves a judgment call — only contact with a real person does. | ✅ | §15 |
+| F1 | **`FOUNDATIONS.md` created — the formal basis for the method.** **Little's Law** (L = λW; halving WIP halves cycle time) is the arithmetic behind Rule of 3, replacing an argument that rested on tradition. **No universally optimal scheduler exists** — SJF minimises average wait, EDF meets deadlines, neither dominates — which is the formal defence of the diagnostic step (C3), the half of the product the wordmark does not name. **NP-hardness** defends shipping heuristics rather than an optimiser, and cuts directly against AI planners. Plus a failure-mode glossary: starvation, **aging** (the Pauli insight already in every OS scheduler), priority inversion (Mars Pathfinder, 1997), thrashing, head-of-line blocking, non-preemptive scheduling, Amdahl. **§5 carries honesty guardrails** — these are results about computing systems, not psychology; no clinical or "science proves" claims. | ✅ | `FOUNDATIONS.md` |
+| C1 | **Competitive scan — The O Space** (`o-space.me`, crawled Sept 10). Runs our architecture: diagnose first, prescribe second. **Validates the core bet** (15,000 cases, services overbooked) and **is not a competitor for the same money** — €300–€3,000 coaching against $39 once. **They diagnose the person; we diagnose the day.** Pricing signal referred to `MONETIZATION_PLAN.md`. Copy collision to avoid: *"Your Productivity Isn't Broken. Your System Is."* | ✅ | `AGENCY_NAMING_ROUND.md` §12 |
+| C2 | **"The O Space" is an empty name paying its tax, in our category.** Semantically empty, ambiguous spoken, unsearchable — compensated by the founder's face, story and credentials pushed to the front. She can pay that tax because the person *is* the product. **We cannot:** the F-91W thesis is an instrument with no personality behind it. The most concrete argument against PAULI in the round. | ✅ | §12.3 |
+| C3 | **Adopt named conditions as the entry surface.** Their 24 labels prove people self-identify with a named condition; *"Everything feels urgent"* beats a dropdown reading *Select framework*. The morning question offers plain-language conditions and routes silently — the user need never learn Eisenhower exists until after it has helped. **Do not adopt the pathology framing:** their list names 24 things wrong with *you*; ours must name conditions of the **day**. A day can be overloaded without the person being defective. **Shipped Sept 10 — see C5.** | ✅ | §12.4 |
+| C4 | **The coaching register yields no instrument names.** Full lexicon harvested across four pages — all symptom labels, a rung below state words. Only *Signal* has pull; dead as a wordmark and sitting under Detect, the function that killed Radar. **Do not search this register again.** | ✅ | §12.2 |
+| C5 | **C3 shipped — the morning entry surface is live.** `src/data/dayConditions.js` holds six **conditions of the day**, each routing to a method: *There is too much on today* → Rule of 3 · *Everything looks urgent* → Eisenhower · *Yesterday's work is still open* → Ivy Lee · *A deadline, and not enough room* → MoSCoW · *A mix of big and small* → 1-3-5 · *Plenty of activity, nothing moving* → Pareto. Each carries an `effect` line stating what the instrument will do in plain mechanism terms. **No method is named on the prompt** — the user meets "Eisenhower Matrix" only after it is already working for them. `DayConditionPrompt.jsx` is the morning counterpart to the evening closure ritual: it asks **once per day, on today only, and only before a method is chosen**; skipping is remembered for the session so it never nags (Rule 5 — every path out is available, including declining). Selection persists as `dailyLog.dayCondition`. **Verified in-browser:** prompt renders, routing to Eisenhower confirmed, and it does not reappear after a full reload. Build and all 21 QC gates pass. Telemetry: `day_condition_selected` / `day_condition_skipped`. **Formal basis in `FOUNDATIONS.md` §2** — no universally optimal scheduler exists, so diagnosing before prescribing is required, not decorative. | ✅ | `src/components/DayConditionPrompt.jsx` |
+| C6 | **Stale copy fixed in passing:** the method switcher's tooltip claimed *"Cycle through all 9 productivity frameworks."* Six ship. Now reads "Switch method." This is the nine-vs-six drift `LANDING_PROTOTYPE.md` already flagged in the older documents. | ✅ | `src/components/ProductivityFrameworks.jsx` |
+| N13 | **Detent is superseded as the standing direction.** It met the machine-part brief but failed the familiarity and spoken-word tests. | ✅ | `VISION.md` §12.6 |
+| N14 | **Radar is rejected.** It maximises detection so nothing escapes notice; the product removes almost everything from attention. It names the disease rather than the cure and is also heavily occupied in software. | ✅ | `NAMING_DIRECTION.md` §6 |
+| N15 | **Directional test:** does the borrowed meaning add to what the user sees, or take away from it? The name should itself perform reduction through judgment, criteria or constraint. | ✅ | `VISION.md` §12.6 |
+| N16 | **Active territory:** Edit, Select, Refine, Reduce, Shortlist. These are working candidates, not selected or legally cleared names. | 🟡 | `NAMING_DIRECTION.md` §7 |
+| N17 | **The aspiration belongs to the operator.** The name should express the capability the instrument gives the user—discernment, command or decisiveness. Current lead expression: **SELECT · A decision instrument · Decide what deserves your day.** Not selected or cleared. | 🟡 | `NAMING_DIRECTION.md` §8 |
+| N18 | **Selector is rejected.** The verb-to-instrument move was correct, but the `-or` form is a generic software functional descriptor without a distinct body. Future candidates must have a picturable body, a genuinely selective mechanism, aspiration for the operator, and some prospect of ownership. | ✅ | `NAMING_DIRECTION.md` §9 |
+| N19 | **Decisive is rejected by the founder.** Preserve Decide as the exact semantic root and explore an instrument-grade brand/model hierarchy: **DECIDE · D-01 · Daily Decision Instrument**. Write DECIDE D-01, not Decide-01. The composite still requires formal clearance. | 🟡 | `NAMING_DIRECTION.md` §11 |
+| N19 | **Decide is the exact strategic root but weak as an ownable bare mark.** Its original meaning, “to cut off,” supplies the subtraction mechanism; *decisive* supplies the operator aspiration. Decido, Decisio and Decida are occupied by direct decision products. **Decisive** is the current carved form for evaluation, not a selected or cleared name. | 🟡 | `NAMING_DIRECTION.md` §10 |
+| N18 | **Coined-name rule:** retain a legible root and add semantic function, not decorative syllables. **Selector** is the strongest current form because it is a real technical mechanism for choosing among options. Selecto, Decido, Priora and Selora are occupied. Selector is not selected or cleared. | 🟡 | `NAMING_DIRECTION.md` §9 |
+
+---
+
+## 2B. The brand model — the Casio F-91W
+
+Founder's own frame, September 9, 2026: *"there are so many watches out there but this is built for simplicity and durability… we want the tool to rule even if it is simple and has fewer features."* **It is a brand model, not a form factor** — the analogue clock (R11) was never in question.
+
+| # | Decision | Status | Detail |
+| :--- | :--- | :--- | :--- |
+| BR1 | **The brand is modelled on the Casio F-91W.** Simple, durable, cheap, unfashionable, and it rules its category anyway. | ✅ | `DECISION_LOG.md` §1.43 |
+| BR2 | **Unchanged since 1989, and no feature has ever been added.** Time, date, alarm, stopwatch, light — thirty-seven years, nothing added. This is the model's central fact, not a footnote. | ✅ | §1.43 |
+| BR3 | **The promise available to us and to no competitor:** *"This will look the same in ten years. No features will be added."* Every competitor's changelog is their marketing; that commitment is structurally unavailable to them. It converts the one-person constraint into the brand. | 🟡 | §1.43 |
+| BR4 | **Cheap and unembarrassed, not premium.** The F-91W is not a luxury object performing restraint — that is Muji, Leica, a Hermès notebook. Its dignity is honesty about what it costs to make. | ✅ | §1.43 |
+| BR5 | **The price never moves.** $39 once, forever. **This settles the Jobs contradiction:** `STRATEGY_AND_NAMING.md` §1.2 argued $49–99 premium forever; the F-91W is a $12 watch. The two point opposite ways and Casio has been chosen. | ✅ | M2, §1.43 |
+| BR6 | **Ubiquity is the moat, not exclusivity.** Casio operates no paid tier. The free/paid line (M1) must be pressure-tested against this rather than assumed compatible. | ⬜ | §1.43 |
+| BR7 | **The name is a part number, and the object made it beloved.** Beauty is carried by behaviour, not by the wordmark. Governs the naming brief — see N7. | ✅ | §1.43 |
+| BR8 | ⚠️ **Open conflict: most of the built craft is off-brand under this model.** Three.js journal scene, twelve month illustrations, woven twill tag, studio lighting, spine curvature — **Leica register, the opposite of F-91W.** C6 defends that craft on retention grounds, which is a real argument for *a different brand than the one now named*. F-91W's retention comes from being so plain and reliable that replacing it never occurs to anyone. **Either position is holdable; both are not, and this register currently holds both.** | ⬜ | §1.43, C6 |
+
+**BR8 is the highest-value unresolved question in this document.** It is not a copy problem. It decides whether roughly the whole of `JournalScene.jsx`, the monthly artwork and the physical-object detailing survive.
+
+---
+
+## 3. Money
+
+| # | Decision | Status | Detail |
+| :--- | :--- | :--- | :--- |
+| M1 | **Free core, paid perspective.** Daily use free forever including full search of your own history. The pass adds weekly review, monthly and yearly views, multiple volumes, archival exports. | 🟡 | `MONETIZATION_PLAN.md` §1, §4 |
+| M2 | **$39 / ₹999, one-time.** Ladder declined; the price holds from launch. **Reinforced by BR5** — under the F-91W model the price never moves, and this settles the Jobs $49–99 argument against it. | ✅ | §5.3, BR5 |
+| M3 | **No subscription, ever.** Position, not pricing preference. | ✅ | `GROWTH_CHARTER.md` §2 |
+| M4 | **60-day no-questions refund.** | ✅ | §5.3 |
+| M5 | **Paid major versions** — v2 in 2–3 years with an owner's discount. The anti-SaaS way to be paid twice. State it in the terms now. | ✅ | §5.1 |
+| M6 | **Search stays free.** Withholding a person's own history reads as punitive and no comparable product does it. | ✅ | §4A |
+| M7 | **Regional pricing beyond India** — Brazil, Indonesia, Nigeria, Philippines, Vietnam, Egypt, Mexico. Highest-leverage reach lever after the free tier. Not started. | ⬜ | §6A |
+| M8 | **Quiet hardship line** — *"If $39 is a barrier for you, write to me."* No form, no proof. | ✅ | §6A |
+
+---
+
+## 4. Growth
+
+| # | Decision | Status | Detail |
+| :--- | :--- | :--- | :--- |
+| G1 | **Growth pod exists** as four agent definitions plus a charter. Strategy decides what costs money; Lifecycle decides when the user is asked; Acquisition decides how it is described; Revenue-ops decides whether it may ship. | ✅ | `.claude/agents/`, `GROWTH_CHARTER.md` |
+| G2 | **Founder's intent is the root constraint:** maximum reach, a fair portion not a greedy one, and charging less must never signal a substandard tool. | ✅ | `GROWTH_CHARTER.md` §0 |
+| G3 | **A user's own words are never held hostage.** Writing, reading and export stay free in every state. | ✅ | §2, invariant 1 |
+| G4 | **1M users is above the ceiling of the current positioning** (~250–500K at saturation). Reaching it requires widening the audience — the product does not change, only the copy. | ✅ | `SCALE_PLAN.md` §1 |
+| G5 | **The binding constraint is that there is no viral loop.** The Victory Card and gift-a-pass are already built and buried; they are the only loops available that do not violate privacy. | ✅ | §2 |
+| G6 | **Framework SEO is the biggest unused free channel** — one interactive page per method, compounding forever at zero cost. | ⬜ | §3.1 |
+| G7 | **Native apps for store distribution.** You cannot reach 1M from a web page. Capacitor or Tauri around the existing React app. | ⬜ | §3.2 |
+| G8 | **Honest horizon to 1M: 4–6 years.** | ✅ | §4 |
+
+---
+
+## 5. Philosophy and claims
+
+| # | Decision | Status | Detail |
+| :--- | :--- | :--- | :--- |
+| C1 | **Kanso** is the stated design philosophy — simplicity reached by subtraction. Cite Hisamatsu Shin'ichi accurately; never claim the product *is* the concept. | ✅ | `VISION.md` §8 |
+| C2 | **Laozi ch. 48** — *"in the pursuit of the Tao, every day something is dropped."* Kanso as a daily practice, 2,500 years earlier. | ✅ | §8 |
+| C3 | **Two etymologies that argue the case for free:** *priority* had no plural for 500 years; *decide* means to cut off. | ✅ | §8 |
+| C4 | **Never say "scientifically proven."** Ivy Lee is a business anecdote, Eisenhower's matrix is Covey's model from a 1954 speech line, Pareto is an observed distribution. Forbidden by the creative brief, legally exposed, and false. | ✅ | §10.5 |
+| C5 | **Say "time-tested" instead** — *methods that have worked for a century, not another blank page.* | ✅ | §10.5 |
+| C6 | **The craft is defended on retention, not clarity.** A 3D page turn clarifies nothing; it makes people return, and day-30 retention is the metric everything rests on. Hold the right defence consciously. **⚠️ Now contested by BR8** — under the F-91W brand model this craft is the wrong register entirely, and retention there comes from plainness, not beauty. | 🟡 | §10.5, BR8 |
+| C7 | **Primary line: *Open it confused. Close it decided.*** States the whole transformation in four words; restates `VISION.md` §4; *decided* carries the *decidere* etymology. Approved alternates: *Decide what deserves your day* · *You don't need another list. You need to know which three* · *It asks what's wrong before it tells you what to do.* | ✅ | `VISION.md` §11.1 |
+| C8 | **No clinical vocabulary in shipped copy.** Never *diagnose · prescribe · treat*. Write *asks what's going wrong* / *the method built for that problem*. Medical structure is fine; medical language invites health-claim scrutiny. | ✅ | §11.3 |
+| C9 | **No judgment in copy or UI.** Never *whether you were honest*, no failure states, no falling scores. Write *shows you where the time actually went*. Breaking this breaks the non-punitive rule the timer design rests on. | ✅ | §11.3 |
+| C10 | **The product is a regimen for a day** — assess, route, dose, review. Use the structure as the mental model; never the vocabulary. | ✅ | §11.2 |
+
+---
+
+## 6. Launch blockers — none started
+
+| # | Blocker | Where |
+| :--- | :--- | :--- |
+| B0 | ⚠️ **No version control.** Everything below is unsafe without it. | repo root |
+| B1 | ⚠️ **Checkout is simulated** — a 1.5s timer, no money requested or taken. | `PatronUpgradeModal.jsx:77` |
+| B2 | ⚠️ **Six hardcoded licence keys**, one published in the README, all readable in the bundle. Fix: Ed25519-signed per-buyer keys verified in-browser with WebCrypto. | `licenseManager.js:9` |
+| B3 | ⚠️ **"Zero telemetry" claimed while the SDK is live.** Resolve in the user's favour — opt-in, and change the copy to *"your journal never leaves your device."* | `telemetry.js` vs landing |
+| B4 | ⚠️ **No terms, privacy page, or refund policy.** A merchant of record requires all three. | absent |
+
+---
+
+## 7. The gap that now matters most
+
+**Every decision above is a document. The codebase is still the old product.**
+
+On disk today: habits, evening reflection, six frameworks, the bi-fold spread, forty components, and twenty-one QC gates that encode the *previous* design — gates 7, 11, 12 and 17 will actively block the new one until rewritten.
+
+There is also a documentation hazard. Roughly twenty legacy files — `README.md`, `HANDOFF.md`, `PROJECT_BLUEPRINT.md`, `feature.md`, `project.md`, `purpose.md`, `roadmap.md` and others — now contradict `VISION.md` on almost every point. They already described a product that did not exist; they now describe one that has been deliberately cancelled. **Any future session or agent reading them will build the wrong thing.** They should be moved to an `archive/` directory with a header pointing at `VISION.md`.
+
+**And a second gap opened on September 9: the brand model now questions work that is already finished.** BR8 puts `JournalScene.jsx`, the twelve monthly illustrations and the physical-object detailing under review — not because they are badly made, but because they are the wrong register for the brand the founder has named. **Resolve BR8 before any further craft investment;** every hour spent polishing the book is an hour spent on a register that may be deleted.
+
+---
+
+## 8. Next actions, in order
+
+1. **`git init` and commit.** Nothing else is safe first.
+2. **Archive the twenty stale documents.** They will otherwise mislead the next session.
+3. **Apply the simplification** — cut habits, reflection, three frameworks; rewrite gates 7, 11, 12, 17. The two-layer structure survives, but **as a leaflet rather than a bi-fold** (P11): recto is the selection layer, verso is the execution layer (§1B).
+4. **Resolve BR8** — Leica register or Casio register. It decides whether the 3D scene and the monthly artwork survive, and it blocks further craft work either way.
+5. **Run the phone test on the chosen candidate** — say *"I keep my priorities in ___"* to five strangers. If it lands, start professional clearance. Re-search every §1.42 survivor first (N10).
+6. **Clear blockers B1–B4.**
+7. **Ship to one real stranger** and hear what they say.
+
+Steps 1–3 are cheap today and expensive after launch. Step 7 is worth more than steps 1–6 combined.
+
+**Then, in build order for the new shape:** port the Focus model (types, state machine, planned-vs-actual accounting) against `localStorage`; wire the timer as the enforcement mechanism per method (R6); bring `AnalogueClock` across as the clock (R11); write the Methods & Attributions page (M-A7).

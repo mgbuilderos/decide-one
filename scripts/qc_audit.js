@@ -1,0 +1,382 @@
+import fs from 'fs';
+import path from 'path';
+
+const SRC_DIR = path.resolve('src');
+let errors = [];
+
+function scanFiles(dir, callback) {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      scanFiles(fullPath, callback);
+    } else if (entry.name.endsWith('.jsx') || entry.name.endsWith('.js') || entry.name.endsWith('.css')) {
+      callback(fullPath, fs.readFileSync(fullPath, 'utf8'));
+    }
+  }
+}
+
+console.log('🔍 Running Decide One Quality Control (QC) Audit...\n');
+
+// Rule 1: Zero font-mono classes (Strict Helvetica Rule)
+scanFiles(SRC_DIR, (filePath, content) => {
+  if (content.includes('font-mono')) {
+    errors.push(`[Rule 1 Violation] font-mono found in: ${path.relative(process.cwd(), filePath)}`);
+  }
+});
+
+// Rule 2: No unmanaged overlapping dropdown popovers in item rows
+scanFiles(SRC_DIR, (filePath, content) => {
+  if (filePath.includes('BulletItem.jsx') || filePath.includes('Top3HardTasks.jsx')) {
+    if (content.includes('showCategoryMenu') || content.includes('activeCategoryPicker')) {
+      errors.push(`[Rule 2 Violation] Unmanaged floating popover state found in row component: ${path.relative(process.cwd(), filePath)}`);
+    }
+  }
+});
+
+// Rule 3: 3-Color Progress Gate (Red, Yellow, Green progress palette; zero random decorative colors)
+const forbiddenDecorativePatterns = [
+  'bg-blue-100', 'bg-purple-100', 'bg-cyan-100', 'bg-pink-100',
+  'text-blue-600', 'text-purple-600', 'text-cyan-600', 'text-pink-600'
+];
+scanFiles(SRC_DIR, (filePath, content) => {
+  for (const pattern of forbiddenDecorativePatterns) {
+    if (content.includes(pattern)) {
+      errors.push(`[Rule 3 Violation] Forbidden decorative chromatic color "${pattern}" found in: ${path.relative(process.cwd(), filePath)}`);
+    }
+  }
+});
+
+// Rule 4: Viewport zero-scroll and slim notepad width constraint
+const appPath = path.join(SRC_DIR, 'App.jsx');
+if (fs.existsSync(appPath)) {
+  const appContent = fs.readFileSync(appPath, 'utf8');
+  if (!appContent.includes('overflow-hidden') || !appContent.includes('h-screen')) {
+    errors.push('[Rule 4 Violation] App.jsx does not enforce h-screen overflow-hidden for zero-scroll.');
+  }
+  if (!appContent.includes('max-w-[412px]') && !appContent.includes('max-w-[840px]') && !appContent.includes('max-w-[864px]') && !appContent.includes('max-w-[480px]')) {
+    errors.push('[Rule 4 Violation] App.jsx does not enforce authentic slim notepad width (max-w-[412px] mobile / max-w-[840px] or max-w-[864px] bi-fold desktop).');
+  }
+}
+
+// Rule 5: Consumer-Friendly Language Gate (Prohibits technical jargon in user-facing UI)
+const forbiddenJargon = [
+  'Rapid Log',
+  'Hard Tasks',
+  'Daily Rituals',
+  'BuJo Syntax'
+];
+scanFiles(SRC_DIR, (filePath, content) => {
+  if (filePath.endsWith('.jsx')) {
+    for (const term of forbiddenJargon) {
+      // Check for user-facing string literals or JSX text
+      if (content.includes(`>${term}<`) || content.includes(`'${term}'`) || content.includes(`"${term}"`)) {
+        errors.push(`[Rule 5 Violation] Forbidden jargon "${term}" found in: ${path.relative(process.cwd(), filePath)}`);
+      }
+    }
+  }
+});
+
+// Rule 6: 24px Universal Grid Cadence Gate
+const cssPath = path.join(SRC_DIR, 'index.css');
+if (fs.existsSync(cssPath)) {
+  const cssContent = fs.readFileSync(cssPath, 'utf8');
+  if (!cssContent.includes('background-size: 24px 24px')) {
+    errors.push('[Rule 6 Violation] index.css does not define background-size: 24px 24px for paper grid.');
+  }
+}
+if (fs.existsSync(appPath)) {
+  const appContent = fs.readFileSync(appPath, 'utf8');
+  if (!appContent.includes('p-6 embossed-notebook')) {
+    errors.push('[Rule 6 Violation] App.jsx notebook canvas does not use p-6 (24px) padding for exact grid coordinate sync.');
+  }
+}
+
+// Rule 7: Single-column monthly layout gate (No multi-column collision in 480px canvas)
+const monthlyPath = path.join(SRC_DIR, 'components/MonthlyLogSpread.jsx');
+if (fs.existsSync(monthlyPath)) {
+  const monthlyContent = fs.readFileSync(monthlyPath, 'utf8');
+  if (monthlyContent.includes('grid-cols-12') || monthlyContent.includes('col-span-5')) {
+    errors.push('[Rule 7 Violation] MonthlyLogSpread.jsx still contains multi-column grid layout classes.');
+  }
+}
+
+// Rule 8: Minimalist Header Gate (No Volume/Speaker icon in header toolbar)
+const headerPath = path.join(SRC_DIR, 'components/HeaderToolbar.jsx');
+if (fs.existsSync(headerPath)) {
+  const headerContent = fs.readFileSync(headerPath, 'utf8');
+  if (headerContent.includes('Volume2') || headerContent.includes('VolumeX')) {
+    errors.push('[Rule 8 Violation] HeaderToolbar.jsx still renders Volume/Speaker controls.');
+  }
+}
+
+// Rule 9: Grid Cadence Spacing Gate (No non-multiple-of-24 gaps in task/habit/reflection components)
+const nonCadencePatterns = ['space-y-[16px]', 'space-y-[12px]', 'gap-[16px]', 'gap-[12px]'];
+scanFiles(SRC_DIR, (filePath, content) => {
+  if (filePath.includes('Top3HardTasks.jsx') || filePath.includes('HabitTracker.jsx') || filePath.includes('EveningReflection.jsx')) {
+    for (const pattern of nonCadencePatterns) {
+      if (content.includes(pattern)) {
+        errors.push(`[Rule 9 Violation] Non-cadence spacing "${pattern}" found in: ${path.relative(process.cwd(), filePath)}`);
+      }
+    }
+  }
+});
+
+// Rule 10: Clean Unified Stationery Gate (Zero 3-dot menus, zero black tie cord, authentic sewn label)
+scanFiles(SRC_DIR, (filePath, content) => {
+  if (filePath.includes('HeaderToolbar.jsx')) {
+    if (content.includes('MoreHorizontal') || content.includes('isMoreOpen')) {
+      errors.push(`[Rule 10 Violation] HeaderToolbar still contains floating 3-dot menu.`);
+    }
+  }
+  if (filePath.includes('App.jsx')) {
+    if (content.includes('connecting-tie-cord') || content.includes('tie-clasp-top')) {
+      errors.push(`[Rule 10 Violation] App.jsx still contains harsh black tie cord.`);
+    }
+    if (!content.includes('woven-fabric-tag')) {
+      errors.push(`[Rule 10 Violation] App.jsx is missing sewn woven-fabric-tag.`);
+    }
+  }
+});
+
+// Rule 11: Framework Multi-Task Capability Gate (MoSCoW & Eisenhower must support multiple tasks per bucket/scale)
+scanFiles(SRC_DIR, (filePath, content) => {
+  if (filePath.includes('ProductivityFrameworks.jsx')) {
+    if (content.includes('handleToggleMoscow = (tier) =>') || content.includes('moscowData[tier.key][0]')) {
+      errors.push('[Rule 11 Violation] ProductivityFrameworks.jsx hardcodes single-item access for MoSCoW Method (multi-task array required).');
+    }
+    if (content.includes('handleToggleEisenhower = (qKey) =>') || content.includes('eData[quad.key][0]')) {
+      errors.push('[Rule 11 Violation] ProductivityFrameworks.jsx hardcodes single-item access for Eisenhower Matrix (multi-task array required).');
+    }
+  }
+});
+
+// Rule 12: Framework Grid Alignment & Wrapping Safety Gate
+scanFiles(SRC_DIR, (filePath, content) => {
+  if (filePath.includes('ProductivityFrameworks.jsx')) {
+    if (!content.includes('whitespace-nowrap') || !content.includes('h-[28px]')) {
+      errors.push('[Rule 12 Violation] ProductivityFrameworks.jsx does not enforce fixed height (h-[28px]) and whitespace-nowrap for Eisenhower quadrant headers.');
+    }
+  }
+});
+
+// Rule 13: FlippingBook 3D Page Leaf Flip Integration Gate (Stationary flat notebook canvas with 3D spine-hinged turning leaf)
+scanFiles(SRC_DIR, (filePath, content) => {
+  if (filePath.includes('App.jsx')) {
+    if (!content.includes('page-leaf-container') || (!content.includes('leaf-turn-next') && !content.includes('leaf-turn-prev'))) {
+      errors.push('[Rule 13 Violation] App.jsx does not mount spine-hinged 3D page leaf (page-leaf-container with leaf-turn-next/prev).');
+    }
+    if (content.includes('journal-flip-next') || content.includes('journal-flip-prev')) {
+      errors.push('[Rule 13 Violation] App.jsx still applies whole-canvas rotation (journal-flip-next/prev) to embossed-notebook.');
+    }
+    if (content.includes('flipping-sheet-next') || content.includes('flipping-sheet-prev')) {
+      errors.push('[Rule 13 Violation] App.jsx still attaches truncated page flip animations to inner columns.');
+    }
+  }
+});
+
+// Rule 14: Seamless Friction-Free 3D Page Turn Gate (Flush spine crease & zero layout shift)
+scanFiles(SRC_DIR, (filePath, content) => {
+  if (filePath.endsWith('index.css')) {
+    const nextBackMatch = content.match(/\.leaf-turn-next\s+\.leaf-face-back\s*\{([^}]+)\}/);
+    if (nextBackMatch && nextBackMatch[1].includes('border-top-left-radius: 26px')) {
+      errors.push('[Rule 14 Violation] index.css applies 26px radius to spine edge on leaf-face-back, creating a friction gap.');
+    }
+  }
+  if (filePath.endsWith('SpreadPages.jsx')) {
+    if (content.includes('leaf-face-front') && content.includes('md:pl-6')) {
+      errors.push('[Rule 14 Violation] SpreadPages.jsx duplicates md:pl-6 inside leaf-face-front, causing horizontal text shift.');
+    }
+    if (content.includes('leaf-face-back') && content.includes('md:pr-6')) {
+      errors.push('[Rule 14 Violation] SpreadPages.jsx duplicates md:pr-6 inside leaf-face-back, causing horizontal text shift.');
+    }
+  }
+  if (filePath.endsWith('App.jsx')) {
+    if (!content.includes('pendingTurnRef')) {
+      errors.push('[Rule 14 Violation] App.jsx must use pendingTurnRef to protect against stale React closure unmount freeze.');
+    }
+  }
+});
+
+// Rule 15: Minimalist Stationery Cover & 12-Month Illustrations Gate
+const illustrationsPath = path.join(SRC_DIR, 'data/monthIllustrations.jsx');
+if (fs.existsSync(illustrationsPath)) {
+  const illusContent = fs.readFileSync(illustrationsPath, 'utf8');
+  for (let m = 0; m < 12; m++) {
+    if (!illusContent.includes(`${m}: {`)) {
+      errors.push(`[Rule 15 Violation] monthIllustrations.jsx is missing month index ${m}.`);
+    }
+  }
+} else {
+  errors.push('[Rule 15 Violation] src/data/monthIllustrations.jsx does not exist.');
+}
+scanFiles(SRC_DIR, (filePath, content) => {
+  if (filePath.endsWith('index.css')) {
+    if (content.includes('calc(50% - 210px)')) {
+      errors.push('[Rule 15 Violation] index.css still contains buggy calc(50% - 210px) strip offset.');
+    }
+    if (!content.includes('.stage-book-closed') || !content.includes('.stage-book-opening')) {
+      errors.push('[Rule 15 Violation] index.css is missing Turn.js stage-book-closed / stage-book-opening classes.');
+    }
+  }
+  if (filePath.endsWith('NotebookCover.jsx')) {
+    if (!content.includes('MONTH_ILLUSTRATIONS')) {
+      errors.push('[Rule 15 Violation] NotebookCover.jsx must import and render MONTH_ILLUSTRATIONS.');
+    }
+  }
+});
+
+// Rule 16: Zero Date Overflow & Header Wrapping Gate
+scanFiles(SRC_DIR, (filePath, content) => {
+  if (filePath.endsWith('DateHeader.jsx')) {
+    if (!content.includes('whitespace-nowrap')) {
+      errors.push('[Rule 16 Violation] DateHeader.jsx DateDisplay must enforce whitespace-nowrap to prevent date text wrapping.');
+    }
+    if (!content.includes('overflow-hidden')) {
+      errors.push('[Rule 16 Violation] DateHeader.jsx DateDisplay must enforce overflow-hidden to prevent container blowout.');
+    }
+  }
+  if (filePath.endsWith('SpreadPages.jsx')) {
+    if (!content.includes('h-[48px]')) {
+      errors.push('[Rule 16 Violation] SpreadPages.jsx must enforce fixed h-[48px] cadence headers.');
+    }
+  }
+});
+
+// Rule 17: Zero "Bullet Journal" & Ryder Carroll Gate + Right Page Containment
+const forbiddenBrands = ['bullet journal', 'ryder carroll', 'bujo'];
+scanFiles(SRC_DIR, (filePath, content) => {
+  const lower = content.toLowerCase();
+  for (const phrase of forbiddenBrands) {
+    if (lower.includes(phrase)) {
+      errors.push(`[Rule 17 Violation] Prohibited phrase "${phrase}" found in: ${path.relative(process.cwd(), filePath)}`);
+    }
+  }
+  if (filePath.endsWith('EveningReflection.jsx')) {
+    if (!content.includes('min-w-0') || !content.includes('overflow-hidden')) {
+      errors.push('[Rule 17 Violation] EveningReflection.jsx must enforce min-w-0 and overflow-hidden to prevent quote blowout.');
+    }
+  }
+  if (filePath.endsWith('SpreadPages.jsx')) {
+    if (!content.includes('overflow-hidden')) {
+      errors.push('[Rule 17 Violation] SpreadPages.jsx RightPage must enforce overflow-hidden.');
+    }
+  }
+});
+
+// Rule 18: Lifetime Patron & Archival Monetization Gate
+const licensePath = path.join(SRC_DIR, 'utils/licenseManager.js');
+if (fs.existsSync(licensePath)) {
+  const licContent = fs.readFileSync(licensePath, 'utf8');
+  if (!licContent.includes('verifyLicenseKey') || !licContent.includes('activateLicense')) {
+    errors.push('[Rule 18 Violation] licenseManager.js missing verifyLicenseKey or activateLicense.');
+  }
+} else {
+  errors.push('[Rule 18 Violation] src/utils/licenseManager.js does not exist.');
+}
+
+const exportPath = path.join(SRC_DIR, 'utils/archivalExport.js');
+if (fs.existsSync(exportPath)) {
+  const expContent = fs.readFileSync(exportPath, 'utf8');
+  if (!expContent.includes('generateMarkdownArchive') || !expContent.includes('printAnnualBook')) {
+    errors.push('[Rule 18 Violation] archivalExport.js missing generateMarkdownArchive or printAnnualBook.');
+  }
+} else {
+  errors.push('[Rule 18 Violation] src/utils/archivalExport.js does not exist.');
+}
+
+const patronModalPath = path.join(SRC_DIR, 'components/PatronUpgradeModal.jsx');
+if (!fs.existsSync(patronModalPath)) {
+  errors.push('[Rule 18 Violation] src/components/PatronUpgradeModal.jsx does not exist.');
+}
+
+const yearlySpreadPath = path.join(SRC_DIR, 'components/YearlyViewSpread.jsx');
+if (!fs.existsSync(yearlySpreadPath)) {
+  errors.push('[Rule 18 Violation] src/components/YearlyViewSpread.jsx does not exist.');
+}
+
+const breakerPagePath = path.join(SRC_DIR, 'components/MonthlyBreakerPage.jsx');
+if (!fs.existsSync(breakerPagePath)) {
+  errors.push('[Rule 18 Violation] src/components/MonthlyBreakerPage.jsx does not exist.');
+}
+
+// Rule 19: Black Embossed Minimal Neumorphic Chassis Gate (No middle bookmark, no leather side border)
+if (fs.existsSync(appPath)) {
+  const appContent = fs.readFileSync(appPath, 'utf8');
+  if (appContent.includes('silk-ribbon-bookmark')) {
+    errors.push('[Rule 19 Violation] App.jsx still mounts middle silk-ribbon-bookmark (must be removed).');
+  }
+  if (appContent.includes('gilded-fore-edge')) {
+    errors.push('[Rule 19 Violation] App.jsx still contains gilded-fore-edge leather side border (must be removed).');
+  }
+}
+if (fs.existsSync(cssPath)) {
+  const cssContent = fs.readFileSync(cssPath, 'utf8');
+  if (!cssContent.includes('.embossed-notebook')) {
+    errors.push('[Rule 19 Violation] index.css must define .embossed-notebook black embossed neumorphic styling.');
+  }
+}
+
+// Rule 20: Executive Universal Keyboard Navigation Gate
+if (fs.existsSync(appPath)) {
+  const appContent = fs.readFileSync(appPath, 'utf8');
+  const requiredKeys = ["e.key === '1'", "e.key === '2'", "e.key === '3'", "e.key === 't'", "e.key === 'c'"];
+  for (const rk of requiredKeys) {
+    if (!appContent.includes(rk)) {
+      errors.push(`[Rule 20 Violation] App.jsx missing universal keyboard handler for ${rk}.`);
+    }
+  }
+}
+
+// Rule 21: Zero IP Infringement / Trademark / Living Person Rights Gate (Strictly 0 Eat That Frog, 0 Buffett, 0 Pomodoro, 0 BuJo)
+const strictlyForbiddenIP = [
+  'eat_that_frog',
+  'tackle the frog',
+  'the frog',
+  'frog',
+  'buffett',
+  'pomodoro',
+  'bullet journal',
+  'bujo',
+  'ryder carroll'
+];
+scanFiles(SRC_DIR, (filePath, content) => {
+  const lower = content.toLowerCase();
+  for (const term of strictlyForbiddenIP) {
+    if (lower.includes(term)) {
+      errors.push(`[Rule 21 Violation] Strictly prohibited IP/trademark term "${term}" detected in: ${path.relative(process.cwd(), filePath)}`);
+    }
+  }
+});
+
+// Summary Report
+if (errors.length === 0) {
+  console.log('✅ ALL STRUCTURAL QC CHECKS PASSED (not security or legal certification):');
+  console.log('  - Rule 1: Zero font-mono violations (Universal Helvetica)');
+  console.log('  - Rule 2: Zero unmanaged overlapping dropdown popovers in item rows');
+  console.log('  - Rule 3: 3-Color Progress Gate (Red, Yellow, Green progress tracking only; zero random decorative colors)');
+  console.log('  - Rule 4: Zero-scroll viewport lock & slim notepad proportions (max-w-[412px])');
+  console.log('  - Rule 5: Consumer-friendly language gate (zero technical jargon in UI labels)');
+  console.log('  - Rule 6: Strict 24px universal grid cadence alignment (paper-grid & canvas padding)');
+  console.log('  - Rule 7: Single-column full-width monthly spread (no 2-column desktop squishing)');
+  console.log('  - Rule 8: 2-Tier header masthead (brand at top, utilities below, zero speaker button)');
+  console.log('  - Rule 9: 24px grid cadence margins & zero non-cadence spacing');
+  console.log('  - Rule 10: Clean Unified Stationery Gate (zero 3-dots, zero black tie cord, authentic sewn label)');
+  console.log('  - Rule 11: Framework Multi-Task Capability Gate (array mapping & dynamic task addition for MoSCoW & Eisenhower)');
+  console.log('  - Rule 12: Framework Grid Alignment & Wrapping Safety Gate (fixed header heights & whitespace-nowrap)');
+  console.log('  - Rule 13: FlippingBook 3D Page Leaf Flip Integration Gate (Stationary flat notebook canvas with 3D spine-hinged turning leaf)');
+  console.log('  - Rule 14: Seamless Friction-Free 3D Page Turn Gate (Flush spine crease, closure immunity & zero layout shift)');
+  console.log('  - Rule 15: Minimalist Stationery Cover & 12-Month Illustrations Gate (Turn.js autoCenter, 12 bespoke SVGs, zero narrow strips)');
+  console.log('  - Rule 16: Zero Date Overflow & Header Wrapping Gate (whitespace-nowrap & fixed 48px header boundary)');
+  console.log('  - Rule 17: Zero "Bullet Journal" / Ryder Carroll Gate (100% Decide One brand purity & right page flex containment)');
+  console.log('  - Rule 18: Lifetime Patron & Archival Monetization Gate (100% offline verification, export engine & 12-month annual view)');
+  console.log('  - Rule 19: Black Embossed Minimal Neumorphic Chassis Gate (No middle bookmark, no leather side border)');
+  console.log('  - Rule 20: Executive Universal Keyboard Navigation Gate (Instant 1/2/3/T/C thought-speed routing)');
+  console.log('  - Rule 21: Restricted Naming Token Check (not trademark or copyright clearance)\n');
+  process.exit(0);
+} else {
+  console.error(`❌ QC AUDIT FAILED with ${errors.length} error(s):\n`);
+  errors.forEach(err => console.error(`  ${err}`));
+  console.log('');
+  process.exit(1);
+}

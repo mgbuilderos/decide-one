@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Decide One — Priority Instrument</title>
+    <meta name="description" content="List your tasks. Choose a prioritization framework. Decide what comes first with Decide One, your personal priority instrument." />
+    <link rel="canonical" href="https://decideone.app/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Decide One" />
+    <meta property="og:title" content="Decide One — Priority Instrument" />
+    <meta property="og:description" content="List your tasks. Choose a framework. Decide what comes first." />
+    <meta property="og:url" content="https://decideone.app/" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Decide One — Priority Instrument" />
+    <meta name="twitter:description" content="List your tasks. Choose a framework. Decide what comes first." />
+    
+    <!-- PWA & Mobile Web App Meta Tags -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#0B0B0D" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Decide One" />
+    <link rel="apple-touch-icon" href="/icon.svg" />
+    
+    <!-- Clean Helvetica / Inter Typography Stack -->
+  </head>
+  <body class="bg-[#E1E1E6] dark:bg-[#0B0B0D] text-neutral-900 dark:text-neutral-100 antialiased selection:bg-neutral-900 selection:text-white dark:selection:bg-white dark:selection:text-neutral-900">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    <script>
+      // Register local-first offline service worker with immediate cache-busting
+      if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
+            .then((registration) => {
+              registration.update().catch(() => {});
+            })
+            .catch(() => {});
+        });
+      }
+    </script>
+  </body>
+</html>
