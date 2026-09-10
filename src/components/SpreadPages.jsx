@@ -3,8 +3,7 @@ import { Check, X, ArrowRight, Star, Minus } from 'lucide-react';
 import { DateDisplay, DateNavControls } from './DateHeader';
 import ProductivityFrameworks from './ProductivityFrameworks';
 import RapidLogSection from './RapidLogSection';
-import HabitTracker from './HabitTracker';
-import EveningReflection from './EveningReflection';
+import ExecutionLayer from './ExecutionLayer';
 import { playSound } from '../utils/audio';
 import { formatDateKey } from '../hooks/useJournalStorage';
 
@@ -125,18 +124,15 @@ export function LeftPage({
 }
 
 /**
- * RightPage: Habit Tracker, Evening Reflection, Date Navigation Controls, and Page Edition.
+ * RightPage: the execution layer (R2) — how long each decided item takes, and
+ * how it actually went. Habits (P2) and evening reflection (P3) were cut: both
+ * were separate products sharing a spread, which is exactly what R3 forbids.
  * Spans exact 50% width on bi-fold desktop spread.
  */
 export function RightPage({
   date,
   dailyLog,
-  habits,
-  onToggleHabit,
-  onAddHabit,
-  onDeleteHabit,
-  reflection,
-  onUpdateReflection,
+  onUpdateExecution,
   paperLabel,
   settings,
   updateSettings,
@@ -159,35 +155,13 @@ export function RightPage({
         />
       </header>
 
-      {/* Main Page Body: Habits (Cadence-Locked) & Evening Reflection */}
-      <div className="w-full min-w-0 flex-1 min-h-0 flex flex-col overflow-hidden">
-        
-        {/* Habits Tracker (Exact 24px rows with border-b on square grid line) */}
-        <div className="w-full min-w-0 shrink-0 border-b border-black/[0.08] dark:border-white/[0.08]">
-          <HabitTracker
-            habits={habits}
-            completedHabits={dailyLog?.completedHabits || []}
-            onToggleHabit={(habitId) => onToggleHabit(formatDateKey(date), habitId)}
-            onAddHabit={onAddHabit}
-            onDeleteHabit={onDeleteHabit}
-            isMuted={settings?.isMuted}
-            isFoldMode={true}
-          />
-        </div>
-
-        {/* 1-Line Blank Space between Habits and Reflect (Exact 24px Cadence Spacer) */}
-        <div className="h-[24px] shrink-0" aria-hidden="true" />
-
-        {/* Evening Reflection & Curated Wisdom */}
-        <div className="w-full min-w-0 flex-1 min-h-0 flex flex-col justify-between overflow-hidden">
-          <EveningReflection
-            reflection={reflection}
-            onUpdateReflection={onUpdateReflection}
-            isFocusMode={false}
-          />
-        </div>
-
-      </div>
+      {/* Main Page Body: the execution layer for the left page's items */}
+      <ExecutionLayer
+        dailyLog={dailyLog}
+        onUpdateExecution={onUpdateExecution}
+        isMuted={settings?.isMuted}
+        isInteractive={isInteractive}
+      />
 
       {/* Bottom Footer: Paper Edition (Exact 24px Baseline, Zero Clutter) */}
       <footer className="shrink-0 h-[24px] border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-[10px] text-neutral-500 dark:text-neutral-400 select-none whitespace-nowrap px-1 overflow-hidden">
@@ -258,12 +232,6 @@ export function PageTurnLeaf({
             <RightPage
               date={currentDate}
               dailyLog={currentDailyLog}
-              habits={habits}
-              onToggleHabit={onToggleHabit}
-              onAddHabit={onAddHabit}
-              onDeleteHabit={onDeleteHabit}
-              reflection={currentDailyLog?.reflection}
-              onUpdateReflection={onUpdateReflection}
               paperLabel={paperLabel}
               settings={settings}
               updateSettings={updateSettings}
@@ -338,12 +306,6 @@ export function PageTurnLeaf({
           <RightPage
             date={targetDate}
             dailyLog={targetDailyLog}
-            habits={habits}
-            onToggleHabit={onToggleHabit}
-            onAddHabit={onAddHabit}
-            onDeleteHabit={onDeleteHabit}
-            reflection={targetDailyLog?.reflection}
-            onUpdateReflection={onUpdateReflection}
             paperLabel={paperLabel}
             settings={settings}
             updateSettings={updateSettings}

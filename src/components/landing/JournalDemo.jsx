@@ -5,9 +5,6 @@ const EXAMPLES = {
   rule_of_3: ['Make progress on the work that matters', 'Protect an hour for deep thinking', 'Finish the day with a clear mind'],
   ivy_lee: ['Write the first draft', 'Review the design', 'Call a collaborator', 'Read the research', 'Take a long walk', 'Reflect on the day'],
   eisenhower: ['Do · Send the proposal', 'Schedule · Plan the next chapter', 'Delegate · Organise the details', 'Eliminate · Another status meeting'],
-  moscow: ['Must · Finish the core experience', 'Should · Refine the small details', 'Could · Explore a new direction', 'Won’t · Add more to this week'],
-  one_three_five: ['Big · Shape the next release', 'Medium · Review the prototype', 'Medium · Write the brief', 'Medium · Align the team', 'Small · Reply to Alex', 'Small · Send the notes', 'Small · Book the room', 'Small · Clear the inbox', 'Small · Plan tomorrow'],
-  pareto: ['Vital 20% · Build the core product', 'Vital 20% · Listen to a customer', 'Other 80% · Review routine admin']
 };
 export default function JournalDemo({
   onLaunchJournal

@@ -139,11 +139,17 @@ scanFiles(SRC_DIR, (filePath, content) => {
   }
 });
 
-// Rule 11: Framework Multi-Task Capability Gate (MoSCoW & Eisenhower must support multiple tasks per bucket/scale)
+// Rule 11: Framework Roster Gate (P5/P6 — exactly three methods ship; the cut three must not return)
 scanFiles(SRC_DIR, (filePath, content) => {
   if (filePath.includes('ProductivityFrameworks.jsx')) {
-    if (content.includes('handleToggleMoscow = (tier) =>') || content.includes('moscowData[tier.key][0]')) {
-      errors.push('[Rule 11 Violation] ProductivityFrameworks.jsx hardcodes single-item access for MoSCoW Method (multi-task array required).');
+    const shipped = (content.match(/^\s*id: '(rule_of_3|ivy_lee|eisenhower)',/gm) || []).length;
+    if (shipped !== 3) {
+      errors.push(`[Rule 11 Violation] Expected exactly 3 shipped frameworks; found ${shipped}.`);
+    }
+    for (const cut of ['moscow', 'one_three_five', 'pareto']) {
+      if (content.includes(`id: '${cut}'`)) {
+        errors.push(`[Rule 11 Violation] Framework "${cut}" was cut by P6 and must not return.`);
+      }
     }
     if (content.includes('handleToggleEisenhower = (qKey) =>') || content.includes('eData[quad.key][0]')) {
       errors.push('[Rule 11 Violation] ProductivityFrameworks.jsx hardcodes single-item access for Eisenhower Matrix (multi-task array required).');
@@ -252,17 +258,47 @@ scanFiles(SRC_DIR, (filePath, content) => {
       errors.push(`[Rule 17 Violation] Prohibited phrase "${phrase}" found in: ${path.relative(process.cwd(), filePath)}`);
     }
   }
-  if (filePath.endsWith('EveningReflection.jsx')) {
-    if (!content.includes('min-w-0') || !content.includes('overflow-hidden')) {
-      errors.push('[Rule 17 Violation] EveningReflection.jsx must enforce min-w-0 and overflow-hidden to prevent quote blowout.');
-    }
-  }
+  // R3 — the right page may never introduce objects of its own. Habits (P2) and
+  // evening reflection (P3) were cut precisely because they were separate
+  // products sharing a spread; re-importing either reopens that failure.
   if (filePath.endsWith('SpreadPages.jsx')) {
     if (!content.includes('overflow-hidden')) {
       errors.push('[Rule 17 Violation] SpreadPages.jsx RightPage must enforce overflow-hidden.');
     }
+    if (content.includes('HabitTracker') || content.includes('EveningReflection')) {
+      errors.push('[Rule 17 Violation] RightPage must not reintroduce habits or reflection (P2, P3, R3).');
+    }
   }
 });
+
+// Rule 22: Execution Layer Enforcement Gate — frameworks must be enforced, not
+// drawn (P9). A method that can be ignored is a theme, which is the thing this
+// product exists not to be.
+const execModelPath = path.join(SRC_DIR, 'utils/executionModel.js');
+if (!fs.existsSync(execModelPath)) {
+  errors.push('[Rule 22 Violation] executionModel.js is missing — it is what enforces the methods (R6).');
+} else {
+  const execModel = fs.readFileSync(execModelPath, 'utf8');
+  const required = {
+    'export function isItemLocked': 'Ivy Lee order enforcement missing — without it the method is a numbered list (R6).',
+    BREATHING: 'BREATHING state missing (R9).',
+    timingAccuracy: 'timingAccuracy provenance missing — inferred figures must never read as measured (R7, R17).',
+    'export function extendSession': 'extendSession missing — overrun must add time as information, never punish (R8).',
+    'export function computeCapacity': 'computeCapacity missing — setting a duration is the capacity check (P14).'
+  };
+  for (const [token, message] of Object.entries(required)) {
+    if (!execModel.includes(token)) errors.push(`[Rule 22 Violation] ${message}`);
+  }
+}
+const execLayerPath = path.join(SRC_DIR, 'components/ExecutionLayer.jsx');
+if (fs.existsSync(execLayerPath)) {
+  const execLayer = fs.readFileSync(execLayerPath, 'utf8');
+  for (const punitive of ['You failed', 'Try harder', 'streak lost', 'You are late']) {
+    if (execLayer.includes(punitive)) {
+      errors.push(`[Rule 22 Violation] Punitive overrun language "${punitive}" found — R8 forbids scolding.`);
+    }
+  }
+}
 
 // Rule 18: Lifetime Patron & Archival Monetization Gate
 const licensePath = path.join(SRC_DIR, 'utils/licenseManager.js');
@@ -362,7 +398,7 @@ if (errors.length === 0) {
   console.log('  - Rule 8: 2-Tier header masthead (brand at top, utilities below, zero speaker button)');
   console.log('  - Rule 9: 24px grid cadence margins & zero non-cadence spacing');
   console.log('  - Rule 10: Clean Unified Stationery Gate (zero 3-dots, zero black tie cord, authentic sewn label)');
-  console.log('  - Rule 11: Framework Multi-Task Capability Gate (array mapping & dynamic task addition for MoSCoW & Eisenhower)');
+  console.log('  - Rule 11: Framework Roster Gate (exactly 3 methods ship; MoSCoW, 1-3-5 and Pareto stay cut)');
   console.log('  - Rule 12: Framework Grid Alignment & Wrapping Safety Gate (fixed header heights & whitespace-nowrap)');
   console.log('  - Rule 13: FlippingBook 3D Page Leaf Flip Integration Gate (Stationary flat notebook canvas with 3D spine-hinged turning leaf)');
   console.log('  - Rule 14: Seamless Friction-Free 3D Page Turn Gate (Flush spine crease, closure immunity & zero layout shift)');
@@ -372,7 +408,8 @@ if (errors.length === 0) {
   console.log('  - Rule 18: Lifetime Patron & Archival Monetization Gate (100% offline verification, export engine & 12-month annual view)');
   console.log('  - Rule 19: Black Embossed Minimal Neumorphic Chassis Gate (No middle bookmark, no leather side border)');
   console.log('  - Rule 20: Executive Universal Keyboard Navigation Gate (Instant 1/2/3/T/C thought-speed routing)');
-  console.log('  - Rule 21: Restricted Naming Token Check (not trademark or copyright clearance)\n');
+  console.log('  - Rule 21: Restricted Naming Token Check (not trademark or copyright clearance)');
+  console.log('  - Rule 22: Execution Layer Enforcement Gate (Ivy Lee order lock, breathing state, non-punitive overrun, timing provenance)\n');
   process.exit(0);
 } else {
   console.error(`❌ QC AUDIT FAILED with ${errors.length} error(s):\n`);

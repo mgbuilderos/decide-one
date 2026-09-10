@@ -66,6 +66,27 @@ Settled September 9, 2026 after studying `~/Documents/Claude/Projects/Plan & Do`
 
 ---
 
+## 1D. Build record — the model implemented, September 10, 2026
+
+The decisions in §1 and §1B existed on paper; the app still shipped habits, evening reflection and six frameworks. This section records the pass that made the code match the register. **Frameworks are now enforced rather than drawn (P9) — a method that can be ignored is a theme, which is the thing this product exists not to be.**
+
+| # | Built | Status | Detail |
+| :--- | :--- | :--- | :--- |
+| B-1 | **P2 and P3 applied — habits and evening reflection are gone.** Both components deleted, not merely unmounted; dead components invite reimport. The right page is now the execution layer (R2). | ✅ | `SpreadPages.jsx` |
+| B-2 | **P5 and P6 applied — three methods ship.** MoSCoW, 1-3-5 and Pareto removed: array entries, render blocks, handlers, completion branches and landing-demo content. | ✅ | `ProductivityFrameworks.jsx` |
+| B-3 | **C3 rerouted — six doors, three rooms.** The day-conditions surface kept all six conditions and routes them to the three surviving methods, following P6's own reasoning (MoSCoW → Eisenhower, 1-3-5 and Pareto → Rule of 3). **More ways in than there are methods is the point:** the user describes a day, not a technique. | ✅ | `src/data/dayConditions.js` |
+| B-4 | **R6 enforcement is real: Ivy Lee's #2 will not start until #1 is closed.** `isItemLocked` greys the row, shows a lock, withholds the timer and states the reason — *"Finish the one above first. That is the method."* **Verified in-browser.** | ✅ | `executionModel.js` |
+| B-5 | **R7 accounting built** — `plannedDurationSec`, `actualFocusSec`, `pausedDurationSec`, `overtimeSec` and `timingAccuracy`, persisted per decided item under `dailyLog.execution`. **R9 BREATHING** sits between pressing start and the clock running. **R17** suspends a session left running across a closed laptop and marks it *inferred*; the UI labels such figures "estimated" so a guessed number never reads as a measured one. | ✅ | `executionModel.js` |
+| B-6 | **P14 built — the capacity check, which is the clock's job before it ever runs.** Setting durations totals them against the clock left in the day. **Verified in-browser:** three items at 2h against a 6pm end produced *"6h planned · 5h 13m until 18:00 — that is 46m more than the day has left. Something moves to tomorrow."* | ✅ | `ExecutionLayer.jsx` |
+| B-7 | ⚠️ **Capacity honesty correction.** The first implementation compared planned time to remaining wall clock, so nine hours planned into nine remaining read as *"fits"* — the exact dishonesty P14 exists to prevent. Split into two signals: **overcommitted** (literally impossible) and **noSlack** (*"fills the day back-to-back, with no gap for anything else"*). **No focus-hours ceiling is asserted**, because `FOUNDATIONS.md` §5 forbids claiming research this product does not have. The instrument states the arithmetic; the person judges (Rule 5). | ✅ | `executionModel.js` |
+| B-8 | **R11 built — the analogue clock, as *the* clock.** No switcher, no gallery. A swept arc renders how much of the box has gone; overrun draws as a second, quieter inner arc — information, never alarm (R8). **R12 holds: the face has no protagonist, so it never judges.** | ✅ | `AnalogueClock.jsx` |
+| B-9 | **R8 built — "Need more time" adds fifteen minutes as information.** No red state, no lost streak, no scolding. Gate 22 fails the build if punitive language appears in the execution layer. | ✅ | `ExecutionLayer.jsx` |
+| B-10 | **§8 step 3 done — gates rewritten, and they now bite.** Gate 11 became the **Framework Roster Gate** (exactly three ship; the cut three must not return). Gate 17 dropped its dead reflection clause and gained **R3 containment** (the right page may not reimport habits or reflection). **New Gate 22 — Execution Layer Enforcement:** order lock, breathing state, timing provenance, capacity check and non-punitive language. **All four negative-tested** — each was made to fail deliberately, then restored. | ✅ | `scripts/qc_audit.js` |
+| B-11 | ⬜ **Residue: the weekly review still renders habits.** P2 was applied to the daily view; `WeeklyReviewSpread.jsx` still shows a habit-consistency grid and `App.jsx` still passes `habits` to the weekly and monthly views. The daily product is consistent; these two views are not. **Next clearly-scoped piece.** | ⬜ | `WeeklyReviewSpread.jsx` |
+| B-12 | ⬜ **Not yet built: P11/P12, the leaflet.** The two surfaces exist and carry the right content, but they are still a simultaneous spread rather than a sheet turned over, and the closure gesture is unchanged. | ⬜ | §1, P11–P12 |
+
+---
+
 ## 1C. Methods and attribution
 
 | # | Decision | Status | Detail |

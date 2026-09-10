@@ -29,30 +29,6 @@ export function getFrameworkCompletion(dailyLog) {
       total: tasks.length
     };
   }
-  if (fw === 'one_three_five') {
-    const otf = currentFwData.otf || { big: [], medium: [], small: [] };
-    const all = [...(otf.big || []), ...(otf.medium || []), ...(otf.small || [])].filter(t => t && t.text && t.text.trim());
-    return {
-      done: all.filter(t => t.completed).length,
-      total: all.length
-    };
-  }
-  if (fw === 'moscow') {
-    const m = currentFwData.moscow || {};
-    const all = Object.values(m).map(arr => arr[0]).filter(t => t && t.text && t.text.trim());
-    return {
-      done: all.filter(t => t.completed).length,
-      total: all.length
-    };
-  }
-  if (fw === 'pareto') {
-    const p = currentFwData.pareto || { vital: [], operational: [] };
-    const all = [...(p.vital || []), ...(p.operational || [])].filter(t => t && t.text && t.text.trim());
-    return {
-      done: all.filter(t => t.completed).length,
-      total: all.length
-    };
-  }
   return { done: 0, total: 0 };
 }
 

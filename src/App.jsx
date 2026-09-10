@@ -553,6 +553,13 @@ export default function App() {
     setIsDayConditionOpen(true);
   }, [activeView, dateKey, todayKey, dailyLog.dayCondition, dailyLog.activeFramework, dayConditionDismissedFor]);
 
+  // R7 — planned-versus-actual accounting, stored per decided item.
+  const handleUpdateExecution = (itemId, session) => {
+    saveDailyLog(dateKey, {
+      execution: { ...(dailyLog.execution || {}), [itemId]: session }
+    });
+  };
+
   const handleUpdateHardTasks = (updatedHardTasks) => {
     telemetry.track('framework_task_added', { count: updatedHardTasks.length });
     saveDailyLog(dateKey, { hardTasks: updatedHardTasks });
@@ -808,12 +815,7 @@ export default function App() {
                       <RightPage
                         date={flipState === 'flipping-next' && targetDate ? targetDate : currentDate}
                         dailyLog={flipState === 'flipping-next' && targetDailyLog ? targetDailyLog : dailyLog}
-                        habits={habits}
-                        onToggleHabit={toggleHabit}
-                        onAddHabit={addHabit}
-                        onDeleteHabit={deleteHabit}
-                        reflection={flipState === 'flipping-next' && targetDailyLog ? targetDailyLog.reflection : dailyLog.reflection}
-                        onUpdateReflection={handleUpdateReflection}
+                        onUpdateExecution={handleUpdateExecution}
                         paperLabel={paperLabel}
                         settings={settings}
                         updateSettings={updateSettings}

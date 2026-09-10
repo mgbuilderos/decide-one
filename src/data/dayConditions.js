@@ -15,6 +15,11 @@
  *     Eisenhower exists until after it has helped them.
  *
  * `effect` describes what the instrument will do, in plain mechanism terms.
+ *
+ * Six doors, three rooms. P6 cut 1-3-5, MoSCoW and Pareto on the grounds that
+ * they duplicate or restate the survivors — so the conditions they answered are
+ * routed to the method that actually does the work. More ways in than there are
+ * methods is the point: the user describes a day, not a technique.
  */
 
 export const DAY_CONDITIONS = [
@@ -39,20 +44,20 @@ export const DAY_CONDITIONS = [
   {
     id: 'deadline',
     label: 'A deadline, and not enough room.',
-    effect: 'Then decide now what must ship and what will not.',
-    framework: 'moscow'
+    effect: 'Then decide now what must ship, and what will not.',
+    framework: 'eisenhower'
   },
   {
     id: 'mixed_load',
     label: 'A mix of big and small.',
-    effect: 'Then one big thing, three medium, five small.',
-    framework: 'one_three_five'
+    effect: 'Then today gets three, and the big one goes first.',
+    framework: 'rule_of_3'
   },
   {
     id: 'busy_static',
     label: 'Plenty of activity, nothing moving.',
-    effect: 'Then find the few that carry the rest.',
-    framework: 'pareto'
+    effect: 'Then three that actually move something. The rest can wait.',
+    framework: 'rule_of_3'
   }
 ];
 
