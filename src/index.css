@@ -1583,7 +1583,9 @@ body {
 /* Decide One: navigation stays quiet; work owns the page. */
 .instrument-header { width: min(100%, 960px); margin: 0 auto 20px; position: relative; z-index: 60; flex-shrink: 0; color: #242424; }
 .instrument-masthead { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; min-height: 48px; padding: 0 8px; }
-.instrument-wordmark { font-size: 16px; font-weight: 650; letter-spacing: 3px; text-align: center; }
+.instrument-wordmark { font-size: 16px; font-weight: 650; letter-spacing: 3px; text-align: center;
+  /* 24px minimum target: it is a real control that returns to the overview. */
+  min-height: 24px; display: inline-flex; align-items: center; justify-content: center; }
 .instrument-quiet-action { display: inline-flex; align-items: center; gap: 8px; justify-self: start; font-size: 12px; color: #737373; min-height: 40px; }
 .instrument-tools-trigger { justify-self: end; }
 .instrument-navigation { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #00000010; gap: 16px; padding: 0 8px 8px; }

@@ -42,8 +42,10 @@ export function LeftPage({
       <header className="w-full h-[48px] flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] select-none shrink-0">
         <DateDisplay currentDate={date} />
 
-        {/* Mobile-Only Date Navigation Controls */}
-        <div className="md:hidden">
+        {/* Day navigation lives on the recto at every width. It was mobile-only
+            when the two pages sat side by side and the verso carried it; the
+            leaflet shows one side at a time, which stranded it out of reach. */}
+        <div>
           <DateNavControls
             currentDate={date}
             setCurrentDate={setCurrentDate}

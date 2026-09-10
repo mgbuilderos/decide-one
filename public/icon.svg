@@ -3,5 +3,5 @@
   <desc id="description">A white D1 monogram on a black rounded square.</desc>
   <rect width="512" height="512" rx="112" fill="#050505"/>
   <rect x="10" y="10" width="492" height="492" rx="102" fill="none" stroke="#FFFFFF" stroke-opacity=".22" stroke-width="4"/>
-  <text x="256" y="324" fill="#FFFFFF" text-anchor="middle" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="220" font-weight="700" letter-spacing="-16">D1</text>
+  <text x="261" y="322" fill="#FFFFFF" text-anchor="middle" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="212" font-weight="700" letter-spacing="10">D1</text>
 </svg>

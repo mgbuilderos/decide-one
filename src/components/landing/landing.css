@@ -57,9 +57,16 @@
   font-family: Helvetica,Arial,sans-serif;
   font-size: 22px;
   font-weight: 750;
-  letter-spacing: -1px;
+  /* Was -1px, which jammed the D against the 1. The mark is two characters and
+     needs air between them, not less. */
+  letter-spacing: .04em;
+  /* The 1 is narrower than the D, so centring the string optically needs the
+     tracking discounted from the right edge. */
+  text-indent: .04em;
   line-height: 1;
-  margin-right: 8px
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 .pm-nav nav {
   display: flex;
@@ -2388,14 +2395,16 @@
   border-color: rgba(255,255,255,.10);
 }
 .pm-nav>.pm-brand {
-  gap: 15px;
-  font-size: 15px;
-  font-weight: 650;
-  letter-spacing: .18em;
+  gap: 14px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: .16em;
   text-transform: uppercase;
 }
 .pm-nav>.pm-brand .pm-brand-mark {
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 44px;
   min-width: 44px;
   height: 44px;
@@ -2551,8 +2560,8 @@
 }
 .pm-footer>.pm-brand {
   gap: 11px;
-  font-size: 12px;
-  font-weight: 650;
+  font-size: 14px;
+  font-weight: 700;
   letter-spacing: .14em;
   text-transform: uppercase;
 }
