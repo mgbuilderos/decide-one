@@ -2,67 +2,75 @@
 
 > **`npm run build` first, always.** The site is `dist/` — 18 files, ~13MB.
 
-## Why this file exists
+## The host, established 10 September 2026
 
-`decideone.app` served a build from before 10 September for most of a day
-because nothing in the repo recorded how it is published, so nobody noticed the
-drift. That is what this file fixes.
+**Cloudflare Pages. Project name: `decide-one`.**
 
-## What is known
-
-- The domain resolves through **Cloudflare** (`cf-ray` headers, Cloudflare IPs).
-- `.openai/hosting.json` names a Sites project — **that config appears stale**,
-  since it does not match where the domain actually points.
-- There is **no CI**: no `.github/workflows`, no GitHub Pages, and zero
-  deployments on the repo. **Pushing to GitHub does not deploy anything.**
-- No deploy credentials exist on this machine: Vercel CLI reports *Not
-  authorized*, and there is no wrangler config or Cloudflare token.
-
-## Fill this in
-
-Whoever deploys, record the command here so this never drifts again.
+Confirmed by fingerprint, not by guessing: `decide-one.pages.dev` serves the
+identical bundle **and the identical etag** as `decideone.app`.
 
 ```
-Host:     ???
-Command:  ???
+decideone.app         assets/index-DsE169m7.js  etag "a1453b54206a0979dc4f77a668db1bc8"
+decide-one.pages.dev  assets/index-DsE169m7.js  etag "a1453b54206a0979dc4f77a668db1bc8"
 ```
 
-### If it is Cloudflare Pages
+The domain's nameservers are Cloudflare (`jermaine`/`celeste.ns.cloudflare.com`),
+so DNS and the Pages project sit in the same Cloudflare account.
+
+**`.openai/hosting.json` is stale.** It names a Sites project that has nothing
+to do with where this domain is served from. Correct or delete it.
+
+## The deploy command
 
 ```bash
 npm run build
-npx wrangler pages deploy dist --project-name <project>
+npx wrangler pages deploy dist --project-name decide-one --force
+npm run verify:live
 ```
 
-### If it is Cloudflare Pages via the dashboard
+`--force` is required: current wrangler tries to delegate Pages deploys to
+Workers, fails, and deploys nothing. The flag takes the direct Pages path.
 
-Build locally, then drag the **`dist` folder** into the project's *Create
-deployment* screen. Do not upload the zip of the repo — only `dist`.
+## ⚠️ The account problem — read before deploying
 
-### If it is Vercel
+`wrangler` on this machine **is authenticated, but to the wrong account.**
+
+```
+authenticated as : Maulik.payment@gmail.com's Account
+account id       : 00f21e5724f9ebf7b1ab0cb42ae76b1e
+pages projects   : none
+deploy result    : The Pages project "decide-one" does not exist
+```
+
+`decide-one` lives in a **different Cloudflare account**. Nothing can be
+deployed until wrangler is pointed at that one:
 
 ```bash
-npm run build
-vercel login          # once
-vercel --prod
+npx wrangler logout
+npx wrangler login        # sign in with the account that owns decide-one
+npx wrangler pages project list   # 'decide-one' must appear
 ```
 
-### If it is the OpenAI Sites project in `.openai/hosting.json`
+Alternatively, set `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` for the
+correct account in `.env` — which is gitignored, and must stay that way.
 
-Publish through whichever tool wrote that file, then either correct or delete
-it so it stops pointing at a target that is not serving the domain.
+## Two other Pages sites exist on some account
 
-## After deploying, always
+`journal-app.pages.dev` serves a page titled *Journal App*, and
+`primacy.pages.dev` resolves as well. Both look like earlier deployments of
+this same product under its former names. Worth deleting once `decideone.app`
+is confirmed current, so no stale copy of the app stays reachable.
 
-1. **Hard-refresh.** `public/sw.js` is a service worker. Its cache name is
-   bumped on each release, which evicts the old one — but a tab left open can
-   keep the previous worker alive until every `decideone.app` tab is closed.
-2. **Check the bundle changed**, which is the check that would have caught the
-   drift:
+## After every deploy
 
 ```bash
-curl -s https://decideone.app/ | grep -o 'assets/index-[A-Za-z0-9_-]*\.js'
+npm run verify:live
 ```
 
-   Compare it to `ls dist/assets/index-*.js`. If they differ, the deploy did
-   not land.
+It compares the live bundle hash against `dist/` and says MATCH or DIFFERENT.
+The live site sat a day behind on 10 September precisely because nothing
+performed this check.
+
+Then **hard-refresh**. `public/sw.js` is a service worker; its cache name is
+bumped each release, but a tab left open can keep the old worker alive until
+every `decideone.app` tab is closed.
