@@ -61,7 +61,7 @@ Found while verifying B-12. All pre-existing; none introduced by this week's wor
 | # | Item | What is blocked | Status |
 | :--- | :--- | :--- | :--- |
 | **BR8** | **Leica register or Casio register** | The cover, the 3D scene, the monthly artwork, and the rest of P11's chrome (no cover, no ribbon, no month illustrations). **Blocks further craft work either way** | 🔒 👤 |
-| **N34 / N5** | **Professional trademark clearance**, Classes 9 and 42, with `D1 DECISIONONE` as the known flag | Legally safe launch. **N6: the window closes at the first sale** | 🔒 👤 |
+| **N5** | ~~Professional trademark clearance~~ **Declined by the founder, Sept 10 — not a blocker.** The knock-out search found no product, company or app named *Decide One* (N28). A paid clearance search is a separate decision from filing, and remains available at any time; neither is commissioned. **The accepted trade: the risk of a forced rename is carried, not removed.** | ✅ |
 | **M-A8** | IP attorney review of method names and marketing copy | Same review, same appointment | 🔒 👤 |
 
 ---
