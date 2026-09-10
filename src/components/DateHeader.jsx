@@ -23,11 +23,11 @@ export function DateDisplay({ currentDate }) {
       </h1>
 
       <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 whitespace-nowrap shrink-0">
-        <span className="px-1.5 sm:px-2 py-0.5 bg-black/[0.04] dark:bg-white/[0.06] rounded-full text-[9px] sm:text-[10px] text-neutral-700 dark:text-neutral-300 font-bold tracking-wide whitespace-nowrap">
+        <span className="hidden sm:inline px-1.5 sm:px-2 py-0.5 bg-black/[0.04] dark:bg-white/[0.06] rounded-full text-[10px] text-neutral-700 dark:text-neutral-300 font-bold tracking-wide whitespace-nowrap">
           {formattedWeekday}
         </span>
         <span className="opacity-30 hidden xs:inline">•</span>
-        <span className="text-[9px] sm:text-[10px] tracking-wider uppercase hidden xs:inline whitespace-nowrap tabular-nums">
+        <span className="text-[10px] tracking-wider uppercase hidden xs:inline whitespace-nowrap tabular-nums">
           Day {dayOfYear}
         </span>
       </div>
@@ -84,7 +84,7 @@ export function DateNavControls({
         type="button"
         onClick={() => handleStepDay(-1)}
         title="Previous Day (or Left Arrow)"
-        className="p-1 text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-full transition-colors cursor-pointer"
+        className="p-1 min-w-[24px] min-h-[24px] flex items-center justify-center text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-full transition-colors cursor-pointer"
       >
         <ChevronLeft className="w-3.5 h-3.5" />
       </button>
@@ -92,7 +92,7 @@ export function DateNavControls({
       <button
         type="button"
         onClick={handleGoToday}
-        className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all cursor-pointer ${
+        className={`px-2.5 min-h-[24px] text-[11px] font-medium rounded-full transition-all cursor-pointer ${
           isToday 
             ? 'bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white shadow-xs font-semibold' 
             : 'text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200'
@@ -105,7 +105,7 @@ export function DateNavControls({
         type="button"
         onClick={() => handleStepDay(1)}
         title="Next Day (or Right Arrow)"
-        className="p-1 text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-full transition-colors cursor-pointer"
+        className="p-1 min-w-[24px] min-h-[24px] flex items-center justify-center text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-full transition-colors cursor-pointer"
       >
         <ChevronRight className="w-3.5 h-3.5" />
       </button>

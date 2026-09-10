@@ -52,7 +52,7 @@ export default function DayReport({
     const breathing = session.state === STATES.BREATHING;
     const over = isOvertime(session);
     return (
-      <div className="w-full min-w-0 flex-1 min-h-0 flex flex-col items-center justify-center text-center px-6 select-none">
+      <div className="w-full min-w-0 flex-1 min-h-0 flex flex-col items-center justify-center text-center px-6 py-8 select-none">
         <p className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 mb-1">
           {breathing ? 'Getting ready' : over ? 'Past the box' : 'Running'}
         </p>
@@ -105,7 +105,7 @@ export default function DayReport({
 
   if (items.length === 0) {
     return (
-      <div className="w-full min-w-0 flex-1 min-h-0 flex flex-col items-center justify-center text-center px-6 select-none">
+      <div className="w-full min-w-0 flex-1 min-h-0 flex flex-col items-center justify-center text-center px-6 py-8 select-none">
         <AnalogueClock size={96} />
         <p className="mt-4 text-sm font-semibold text-neutral-700 dark:text-neutral-300">Nothing decided yet.</p>
         <p className="mt-1 text-[11px] leading-[18px] text-neutral-400 max-w-[220px]">

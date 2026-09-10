@@ -130,7 +130,7 @@ export default function ExecutionLayer({
   // R3 in practice: nothing to execute until the left page says what matters.
   if (items.length === 0) {
     return (
-      <div className="w-full min-w-0 flex-1 min-h-0 flex flex-col items-center justify-center text-center px-6 select-none">
+      <div className="w-full min-w-0 flex-1 min-h-0 flex flex-col items-center justify-center text-center px-6 py-8 select-none">
         <AnalogueClock size={96} />
         <p className="mt-4 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
           Nothing decided yet.

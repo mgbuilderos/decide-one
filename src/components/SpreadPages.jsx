@@ -101,7 +101,7 @@ export function LeftPage({
       </div>
 
       {/* Bottom Footer: Decide One Journaling System Notation Legend (Exact 24px Baseline, Unified Swiss Typography) */}
-      <footer className="shrink-0 h-[24px] border-t border-black/[0.08] dark:border-white/[0.08] flex items-center text-[10px] text-neutral-500 dark:text-neutral-400 select-none whitespace-nowrap overflow-hidden px-1">
+      <footer className="shrink-0 h-[24px] border-t border-black/[0.08] dark:border-white/[0.08] flex items-center overflow-x-auto legend-scroll text-[10px] text-neutral-500 dark:text-neutral-400 select-none whitespace-nowrap overflow-hidden px-1">
         <div className="flex items-center gap-2 font-semibold uppercase tracking-[0.14em] shrink-0">
           <span className="flex items-center gap-1 hover:text-neutral-900 dark:hover:text-neutral-200 transition-colors whitespace-nowrap" title="Task To Do">
             <span className="w-2 h-2 rounded-full border border-neutral-400 dark:border-neutral-500 inline-block shrink-0" />

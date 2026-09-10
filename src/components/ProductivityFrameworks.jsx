@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Check, Flame } from 'lucide-react';
+import { Check, Flame, Lock } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { CATEGORIES, detectCategoryFromText } from '../types/journal';
 import { playSound } from '../utils/audio';
 
 export const FRAMEWORKS = [
@@ -10,17 +9,17 @@ export const FRAMEWORKS = [
     id: 'rule_of_3',
     cluster: 'Focus',
     name: 'Top 3',
-    subtitle: 'Your 3 most important tasks',
-    description: 'Focus exclusively on the 3 highest-leverage outcomes for today.',
-    bestFor: 'Daily high-impact clarity without overwhelm'
+    subtitle: 'Choose the three that deserve today',
+    description: 'Reduce the day to three priorities and put them in a clear order.',
+    bestFor: 'A clear daily starting point'
   },
   {
     id: 'ivy_lee',
     cluster: 'Focus',
     name: 'Ivy Lee Method',
-    subtitle: '6 sequential priorities',
-    description: 'Execute 6 prioritized tasks strictly one at a time in numerical order.',
-    bestFor: 'Eliminating context-switching and procrastination'
+    subtitle: 'Six priorities, one at a time',
+    description: 'Order six priorities, then work through them one at a time.',
+    bestFor: 'Protecting focus from task switching'
   },
 
   // Cluster 2: Decision
@@ -31,9 +30,9 @@ export const FRAMEWORKS = [
     // distinction in 1954; Covey built the matrix in 1989. The id stays
     // `eisenhower` so stored days keep loading; only the label changes.
     name: 'The Urgent/Important Matrix',
-    subtitle: 'Four quadrants, decided by two questions',
+    subtitle: 'Sort work with two questions',
     description: 'Answer whether a task is urgent and whether it matters; the quadrant follows.',
-    bestFor: 'Separating urgent noise from work that actually matters'
+    bestFor: 'Separating urgency from importance'
   }
 ];
 
@@ -74,9 +73,9 @@ export default function ProductivityFrameworks({
 
   // --- 1. RULE OF 3 HANDLERS ---
   const slotLabels = [
-    { num: '01', title: 'Needle Mover', placeholder: 'Priority 1: Highest-leverage outcome...' },
-    { num: '02', title: 'Strategic Core', placeholder: 'Priority 2: Strategic focus goal...' },
-    { num: '03', title: 'Essential Anchor', placeholder: 'Priority 3: Essential anchor task...' }
+    { num: '01', title: 'First', placeholder: 'What deserves your day first?' },
+    { num: '02', title: 'Next', placeholder: 'What comes next?' },
+    { num: '03', title: 'Then', placeholder: 'What can wait until these are done?' }
   ];
 
   const handleToggleHardTask = (index) => {
@@ -96,22 +95,6 @@ export default function ProductivityFrameworks({
   const handleHardTaskTextChange = (index, newText) => {
     const updated = [...hardTasks];
     const task = { ...updated[index], text: newText };
-    const detected = detectCategoryFromText(newText);
-    if (detected && (!task.category || task.category === 'personal')) {
-      task.category = detected;
-    }
-    updated[index] = task;
-    onUpdateHardTasks(updated);
-  };
-
-  const categoryKeys = Object.keys(CATEGORIES);
-  const handleCycleCategory = (index) => {
-    playSound('click', isMuted);
-    const updated = [...hardTasks];
-    const task = updated[index] || { text: '', completed: false, category: 'personal' };
-    const currentIndex = categoryKeys.findIndex(k => CATEGORIES[k].id === task.category);
-    const nextIndex = (currentIndex + 1) % categoryKeys.length;
-    task.category = CATEGORIES[categoryKeys[nextIndex]].id;
     updated[index] = task;
     onUpdateHardTasks(updated);
   };
@@ -243,20 +226,13 @@ export default function ProductivityFrameworks({
 
   const currentMeta = FRAMEWORKS.find(f => f.id === activeFramework) || FRAMEWORKS[0];
 
-  const handleCycleFramework = () => {
-    playSound('click', isMuted);
-    const idx = FRAMEWORKS.findIndex(f => f.id === activeFramework);
-    const nextIdx = (idx + 1) % FRAMEWORKS.length;
-    onSelectFramework(FRAMEWORKS[nextIdx].id);
-  };
-
   return (
     <section className={`flex flex-col ${isFullPage ? 'flex-1 min-h-0' : 'shrink-0 border-b border-black/[0.08] dark:border-white/[0.08]'}`}>
       
       {/* Universal 24px Grid Cadence Header Bar */}
       <div className="h-[24px] leading-[24px] flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] shrink-0">
         <div className="flex items-baseline gap-2">
-          <h2 className="text-sm sm:text-base font-bold uppercase tracking-wider text-neutral-900 dark:text-neutral-100">
+          <h2 className="text-sm sm:text-base font-semibold tracking-wide text-neutral-900 dark:text-neutral-100">
             {currentMeta.name}
           </h2>
           <span className="text-[11px] text-neutral-400 dark:text-neutral-500 italic hidden xs:inline">
@@ -264,17 +240,8 @@ export default function ProductivityFrameworks({
           </span>
         </div>
 
-        {/* Right Switcher & Progress */}
+        {/* Quiet progress only; method selection lives in the icon group above. */}
         <div className="flex items-center gap-2 select-none no-print">
-          <button
-            type="button"
-            onClick={handleCycleFramework}
-            className="text-[10px] uppercase tracking-wider font-semibold text-neutral-500 hover:text-neutral-900 dark:hover:text-white px-1.5 py-0.5 rounded bg-black/[0.04] dark:bg-white/[0.06] transition-colors cursor-pointer"
-            title="Switch method"
-          >
-            Switch ▾
-          </button>
-
           <div className="text-[10px] font-semibold">
             <span className={`font-bold ${
               doneCount === 0 
@@ -294,9 +261,8 @@ export default function ProductivityFrameworks({
       {activeFramework === 'rule_of_3' && (
         <div className="space-y-0">
           {[0, 1, 2].map((idx) => {
-            const task = hardTasks[idx] || { text: '', completed: false, category: 'personal' };
+            const task = hardTasks[idx] || { text: '', completed: false };
             const meta = slotLabels[idx];
-            const currentCat = Object.values(CATEGORIES).find(c => c.id === task.category) || CATEGORIES.PERSONAL;
             const isMissed = !task.completed && isPastDay && task.text && task.text.trim() !== '';
 
             return (
@@ -315,7 +281,8 @@ export default function ProductivityFrameworks({
                 <button
                   type="button"
                   onClick={() => handleToggleHardTask(idx)}
-                  className={`w-3.5 h-3.5 rounded-full border transition-all flex items-center justify-center shrink-0 cursor-pointer ${
+                  aria-label={`${task.completed ? 'Mark incomplete' : 'Complete'} priority ${idx + 1}`}
+                  className={`w-3.5 h-3.5 rounded-full border relative before:absolute before:-inset-[5px] before:content-[''] transition-all flex items-center justify-center shrink-0 cursor-pointer ${
                     task.completed
                       ? 'progress-bg-green progress-border-green text-white'
                       : isMissed
@@ -346,14 +313,6 @@ export default function ProductivityFrameworks({
                   />
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => handleCycleCategory(idx)}
-                  title={`Category: ${currentCat.label} (Click to cycle)`}
-                  className="text-[10px] font-semibold text-neutral-400 hover:text-neutral-900 dark:hover:text-white px-1.5 py-0.5 rounded transition-colors select-none shrink-0 cursor-pointer"
-                >
-                  #{currentCat.label.toLowerCase()}
-                </button>
               </div>
             );
           })}
@@ -427,11 +386,11 @@ export default function ProductivityFrameworks({
                     {quad.title}
                   </span>
                   <div className="flex items-center gap-1.5 shrink-0">
-                    <span className="text-[9px] text-neutral-400 dark:text-neutral-500 font-medium whitespace-nowrap">
+                    <span className="text-[10px] text-neutral-400 dark:text-neutral-500 font-medium whitespace-nowrap">
                       {quad.tag}
                     </span>
                     <span
-                      className="text-[9px] text-neutral-300 dark:text-neutral-600 font-semibold tabular-nums"
+                      className="text-[10px] text-neutral-300 dark:text-neutral-600 font-semibold tabular-nums"
                       title="Tasks arrive here by being classified, not by choosing this box"
                     >
                       {tasks.filter(t => t.text && t.text.trim()).length}
@@ -451,7 +410,8 @@ export default function ProductivityFrameworks({
                         <button
                           type="button"
                           onClick={() => handleToggleEisenhower(quad.key, idx)}
-                          className={`w-3.5 h-3.5 rounded-full border transition-all flex items-center justify-center shrink-0 cursor-pointer ${
+                          aria-label={`${isDone ? 'Mark incomplete' : 'Complete'} ${quad.title.toLowerCase()} item ${idx + 1}`}
+                          className={`w-3.5 h-3.5 rounded-full border relative before:absolute before:-inset-[5px] before:content-[''] transition-all flex items-center justify-center shrink-0 cursor-pointer ${
                             isDone
                               ? 'progress-bg-green progress-border-green text-white'
                               : 'border-neutral-400 dark:border-neutral-500 hover:border-neutral-700 bg-transparent'
@@ -495,11 +455,12 @@ export default function ProductivityFrameworks({
         <div className="flex-1 min-h-0 space-y-1 pt-1">
           {ivyTasks.map((task, idx) => {
             const isDone = task.completed;
+            const isLocked = idx > 0 && !ivyTasks[idx - 1]?.completed;
             return (
               <div
                 key={task.id || idx}
                 className={`flex items-center gap-3 h-[36px] sm:h-[40px] px-1 -mx-1 border-b border-black/[0.04] dark:border-white/[0.04] last:border-b-0 transition-all rounded-xs ${
-                  isDone ? 'opacity-40' : 'hover:bg-black/[0.02] dark:hover:bg-white/[0.03]'
+                  isDone ? 'opacity-40' : isLocked ? 'opacity-55' : 'hover:bg-black/[0.02] dark:hover:bg-white/[0.03]'
                 }`}
               >
                 <span className="font-bold text-xs sm:text-sm w-5 text-neutral-400 dark:text-neutral-500 select-none">
@@ -508,14 +469,16 @@ export default function ProductivityFrameworks({
 
                 <button
                   type="button"
+                  disabled={isLocked}
                   onClick={() => handleToggleIvy(idx)}
+                  aria-label={isLocked ? `Priority ${idx + 1} is locked until priority ${idx} is complete` : `${isDone ? 'Mark incomplete' : 'Complete'} priority ${idx + 1}`}
                   className={`w-4 h-4 rounded-full border transition-all flex items-center justify-center shrink-0 cursor-pointer ${
                     isDone
                       ? 'progress-bg-green progress-border-green text-white'
                       : 'border-neutral-400 dark:border-neutral-500 hover:border-neutral-700 bg-transparent'
                   }`}
                 >
-                  {isDone && <Check className="w-2.5 h-2.5 stroke-[3]" />}
+                  {isLocked ? <Lock className="w-2.5 h-2.5" /> : isDone && <Check className="w-2.5 h-2.5 stroke-[3]" />}
                 </button>
 
                 <input
