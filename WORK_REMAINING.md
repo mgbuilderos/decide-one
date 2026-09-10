@@ -36,8 +36,8 @@ From `DECISIONS.md` §6. **B0 is now closed** (the repo is on GitHub, private).
 | **B0** | No version control | `mgbuilderos/decide-one`, private, pushed | ✅ |
 | **B1** | **Checkout is simulated** — a 1.5s timer, no money requested or taken | Real Dodo Payments checkout. **Needs your merchant account and keys.** | 👤 |
 | **B2** | **Six hardcoded licence keys**, one published in the README, all readable in the bundle | Ed25519-signed per-buyer keys, verified offline against a public key in the app. The legacy keys must keep working (N32) | ⬜ |
-| **B3** | **"Zero telemetry" claimed while the SDK is live** | Resolve in the user's favour: make it opt-in and default off, then correct every claim. This is the honesty item `LANDING_PROTOTYPE.md` already flagged | ⬜ |
-| **B4** | **No terms, privacy page, or refund policy** | A merchant of record requires all three | ⬜ |
+| **B3** | ~~"Zero telemetry" claimed while the SDK is live~~ **Done.** Telemetry needs **two** gates — the build flag *and* stored consent on this device — and defaults to off, because an unanswered question is not consent. A control in the menu turns it on or off. README corrected: no "zero telemetry" claim, three methods not nine, $39/₹999 not $24/₹1,999, live storage stated as **unencrypted**, and the licence key no longer printed in it. | ✅ |
+| **B4** | ~~No terms, privacy page, or refund policy~~ **Drafted.** `LegalPages.jsx`, linkable at `?view=legal` and from the landing footer. Terms, Privacy, and a 60-day no-questions refund policy matching M-A rows. **Five bracketed facts are yours to fill: legal entity, registered address, support email, jurisdiction, effective date.** M-A8 still stands — an attorney reviews before the first sale. | 👤 |
 
 ---
 
@@ -50,6 +50,7 @@ Found while verifying B-12. All pre-existing; none introduced by this week's wor
 | **C-1** | **The landing hero pictures a habit grid** — a notebook captioned *Progress* with M–S checkboxes, advertising a feature that no longer exists. **The asset is a Blender render (`decideone-studio-d1.png`); fixing it means re-rendering, which is craft work §8 step 4 puts behind BR8.** Interim option: drop the still and let the live 3D scene carry the hero, since it renders the actual app | P2 | 🔒 |
 | **C-2** | ~~The closure ritual speaks in streaks~~ **Done.** The streak badge, *Conquered*, *Flawless 100% execution*, *Needle-Movers*, *Shutdown Complete* and the Mental Shutdown Guarantee are gone. It now says **"What today came to — N of M finished"** and **"Nothing is lost: what was not first today is not deleted, it moves up."** Gate 22 extended to the closure ritual and the verso, and negative-tested. | R8, R12 | ✅ |
 | **C-3** | **Render assets still named `decideone-*` but depict the old bifold notebook** with habit columns | P2, P11 | ⬜ |
+| **C-6** | ⚠️ **The privacy shutter was decorative and the README sold it as security.** Empty input reopened it; `authenticateWithBiometrics` returned success on unsupported hardware, on unexpected errors, and unconditionally at the end. **Fixed:** the function now reports what actually happened, the shutter is described as a shutter, and the default PIN is no longer printed on screen. | ✅ |
 | **C-4** | **`archivalExport.js` still writes a Habit Consistency section.** Deliberately left so old journals stay exportable — but it must be conditional on legacy data only, never offered as a feature | P2 | ⬜ |
 | **C-5** | **Twenty stale documents** overstate what is built. `LANDING_PROTOTYPE.md` is the honest one. §8 step 2 says archive them | — | ⬜ |
 

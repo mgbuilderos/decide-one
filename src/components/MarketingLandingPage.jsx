@@ -26,6 +26,7 @@ function Scene(props) {
 }
 export default function MarketingLandingPage({
   onLaunchJournal,
+  onOpenLegal,
   onOpenUpgrade,
   updateSettings,
   isPatron = false
@@ -127,6 +128,6 @@ export default function MarketingLandingPage({
       <section className="pm-section pm-pricing-section" id="pricing"><div className="pm-pricing-copy"><p className="pm-eyebrow">Less To Manage. More To Own.</p><h2>Make it<br /><span>part of your day.</span></h2><p>A little structure. A little space.<br />A daily ritual that belongs to you.</p><button className="pm-text-link" onClick={onLaunchJournal}>Start With Decide One <ArrowUpRight size={17} /></button></div><div className="pm-pricing-card"><div className="pm-pricing-top"><BookOpen size={22} strokeWidth={1.4} /><span>Decide One Patron</span><span>Lifetime</span></div><div className="pm-price">$24<span>USD / one time</span></div><p className="pm-inr">or ₹1,999 INR · No recurring subscription.</p><ul>{['Daily, weekly, monthly & yearly perspectives', 'Six ways to find your priorities', 'Timeboxes, planned vs actual & decision notes', 'Portable exports and printable reviews'].map(text => <li key={text}><Check size={15} />{text}</li>)}</ul><button className="pm-button" onClick={isPatron ? onLaunchJournal : onOpenUpgrade}>{isPatron ? 'Open Decide One' : 'Explore Lifetime Access'}<ArrowRight size={16} /></button><p className="pm-pricing-disclosure">Prototype checkout. No payment will be taken.</p></div></section>
       <section className="pm-section pm-faq-section" id="faq"><div><p className="pm-eyebrow">A Few Things To Know.</p><h2>Simply answered.</h2></div><div>{FAQ.map(([question, answer], i) => <div className="pm-faq-item" key={question}><h3><button aria-expanded={faq === i} aria-controls={`pm-answer-${i}`} onClick={() => setFaq(faq === i ? null : i)}>{question}{faq === i ? <Minus size={17} /> : <Plus size={17} />}</button></h3><div id={`pm-answer-${i}`} hidden={faq !== i}><p>{answer}</p></div></div>)}</div></section>
       <section className="pm-final-cta"><p className="pm-eyebrow">A Clearer Day Starts Here.</p><h2>Make room<br />for what matters.</h2><button className="pm-button" onClick={onLaunchJournal}>Open Decide One <ArrowRight size={16} /></button></section>
-    </main><footer className="pm-footer"><a className="pm-brand" href="#overview"><span className="pm-brand-mark">D1</span> Decide One</a><p>The Priority Instrument.</p><div><a href="#privacy">Your Data</a><a href="#faq">Questions</a><a href="https://decideone.app/">decideone.app</a><span>© {new Date().getFullYear()} Decide One</span></div></footer>
+    </main><footer className="pm-footer"><a className="pm-brand" href="#overview"><span className="pm-brand-mark">D1</span> Decide One</a><p>The Priority Instrument.</p><div><a href="#privacy">Your Data</a><a href="#faq">Questions</a><button type="button" className="pm-footer-link" onClick={onOpenLegal}>Terms, Privacy &amp; Refunds</button><a href="https://decideone.app/">decideone.app</a><span>© {new Date().getFullYear()} Decide One</span></div></footer>
   </div>;
 }

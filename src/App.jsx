@@ -30,6 +30,7 @@ import WeeklyReviewSpread from './components/WeeklyReviewSpread';
 import ExecutiveDecisionLogModal from './components/ExecutiveDecisionLogModal';
 import ExecutiveClosureRitualModal from './components/ExecutiveClosureRitualModal';
 import DayConditionPrompt from './components/DayConditionPrompt';
+import LegalPages from './components/LegalPages';
 import { getFrameworkItems } from './utils/executionModel';
 import VolumeSwitcherBar from './components/VolumeSwitcherBar';
 import ExecutiveVoiceHUD from './components/ExecutiveVoiceHUD';
@@ -44,7 +45,9 @@ export default function App() {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const v = params.get('view');
-      if (v === 'daily' || v === 'weekly' || v === 'monthly' || v === 'yearly' || v === 'breaker' || v === 'landing') return v;
+      // 'legal' is directly linkable on purpose: a merchant of record needs a
+      // stable URL for terms, privacy and refunds (B4).
+      if (['daily', 'weekly', 'monthly', 'yearly', 'breaker', 'landing', 'legal'].includes(v)) return v;
       if (window.location.hash && ['#overview', '#highlights', '#design', '#craft', '#devices', '#privacy', '#pricing', '#anatomy', '#audience'].includes(window.location.hash)) {
         return 'landing';
       }
@@ -660,10 +663,15 @@ export default function App() {
   const effectiveSettings = { ...settings, paperStyle: effectivePaperStyle };
 
   // Single-Page Marketing Website Route (Natural Window Scrolling)
+  if (activeView === 'legal') {
+    return <LegalPages onBack={() => setActiveView('landing')} />;
+  }
+
   if (activeView === 'landing') {
     return (
       <div className="w-full min-h-screen selection:bg-neutral-900 selection:text-white dark:selection:bg-white dark:selection:text-neutral-900">
         <MarketingLandingPage
+          onOpenLegal={() => setActiveView('legal')}
           onLaunchJournal={() => {
             playSound('page', settings.isMuted);
             const url = new URL(window.location.href);
