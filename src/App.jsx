@@ -1041,7 +1041,6 @@ export default function App() {
         onClose={() => setIsAnalyticsOpen(false)}
         dailyMetrics={dailyMetrics}
         categoryDistribution={categoryDistribution}
-        streak={streak}
         monthlyStats={monthlyStats}
         reflection={dailyLog.reflection}
       />
@@ -1099,7 +1098,6 @@ export default function App() {
         onClose={() => setIsClosureModalOpen(false)}
         dateString={formatDateKey(currentDate)}
         dailyLog={dailyLog}
-        streak={streak}
         onMigrateTask={(taskText, category) => {
           const tomorrow = new Date(currentDate);
           tomorrow.setDate(tomorrow.getDate() + 1);

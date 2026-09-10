@@ -290,12 +290,26 @@ if (!fs.existsSync(execModelPath)) {
     if (!execModel.includes(token)) errors.push(`[Rule 22 Violation] ${message}`);
   }
 }
-const execLayerPath = path.join(SRC_DIR, 'components/ExecutionLayer.jsx');
-if (fs.existsSync(execLayerPath)) {
-  const execLayer = fs.readFileSync(execLayerPath, 'utf8');
-  for (const punitive of ['You failed', 'Try harder', 'streak lost', 'You are late']) {
-    if (execLayer.includes(punitive)) {
-      errors.push(`[Rule 22 Violation] Punitive overrun language "${punitive}" found — R8 forbids scolding.`);
+// R8 and R12 — the product observes; it does not scold, and it does not
+// congratulate on a curve. Streaks went out with habit tracking, and a
+// progress metaphor with a protagonist implies a failure state.
+const surfacesThatMustNotGamify = [
+  'components/ExecutionLayer.jsx',
+  'components/DayReport.jsx',
+  'components/ExecutiveClosureRitualModal.jsx'
+];
+const forbiddenTone = [
+  'You failed', 'Try harder', 'You are late',
+  'Day Streak', 'streak lost', 'Conquered', 'Flawless',
+  'Shutdown Complete', 'Needle-Movers'
+];
+for (const rel of surfacesThatMustNotGamify) {
+  const full = path.join(SRC_DIR, rel);
+  if (!fs.existsSync(full)) continue;
+  const body = fs.readFileSync(full, 'utf8');
+  for (const phrase of forbiddenTone) {
+    if (body.includes(phrase)) {
+      errors.push(`[Rule 22 Violation] Gamified or punitive language "${phrase}" in ${rel} — R8/R12 forbid streaks, verdicts and scolding.`);
     }
   }
 }

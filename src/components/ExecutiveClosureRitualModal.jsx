@@ -10,7 +10,6 @@ import {
   UserCheck, 
   Calendar,
   Lock,
-  Flame,
   Award
 } from 'lucide-react';
 import { playSound } from '../utils/audio';
@@ -21,7 +20,6 @@ export default function ExecutiveClosureRitualModal({
   onClose,
   dateString,
   dailyLog,
-  streak = 0,
   onMigrateTask,
   onCloseDay,
   onLockShutter,
@@ -126,28 +124,20 @@ export default function ExecutiveClosureRitualModal({
         {/* Modal Body */}
         <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-5">
           
-          {/* Section 1: Accomplishment Scorecard */}
+          {/* Section 1: What the day came to. A statement, not a scorecard —
+              R8 and R12: no streak, no verdict, no protagonist. */}
           <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between">
             <div className="space-y-0.5">
               <div className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">
-                Today's Needle-Movers
+                What today came to
               </div>
               <div className="text-xl font-black text-neutral-900 dark:text-white">
-                {completedCount} of {totalCount} Conquered
+                {completedCount} of {totalCount} finished
               </div>
               <div className="text-[11px] text-neutral-500">
-                {completedCount === totalCount && totalCount > 0 
-                  ? 'Flawless 100% execution day. High-leverage momentum.'
-                  : completedCount > 0
-                    ? 'Substantial progress achieved on core priorities.'
-                    : 'A day of contemplation and strategy.'}
-              </div>
-            </div>
-
-            <div className="text-right space-y-0.5">
-              <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-bold">
-                <Flame className="w-3.5 h-3.5" />
-                <span>{streak} Day Streak</span>
+                {totalCount === 0
+                  ? 'Nothing was decided today.'
+                  : 'Whatever is left is carried, not lost.'}
               </div>
             </div>
           </div>
@@ -255,20 +245,20 @@ export default function ExecutiveClosureRitualModal({
             />
           </div>
 
-          {/* Mental Shutdown Guarantee Box */}
+          {/* Nothing is lost — the anti-Zeigarnik promise, stated plainly */}
           <div className="p-3.5 rounded-2xl border border-black/[0.06] dark:border-white/[0.08] bg-black/[0.015] dark:bg-white/[0.02] text-xs text-neutral-500 space-y-1">
             <div className="font-bold text-neutral-800 dark:text-neutral-200 flex items-center gap-1.5">
-              <Moon className="w-3.5 h-3.5 text-indigo-500" />
-              <span>The Mental Shutdown Guarantee</span>
+              <Moon className="w-3.5 h-3.5 text-neutral-500" />
+              <span>Nothing is lost</span>
             </div>
             <p className="text-[11px] leading-relaxed">
-              Once you trigger "Shutdown Complete", all unfinished loops are categorized. Your mind is officially permitted to disengage from work until tomorrow morning.
+              Everything unfinished has somewhere to go before the day closes. What was not first today is not deleted — it moves up, and it will be here tomorrow.
             </p>
           </div>
 
         </div>
 
-        {/* Modal Bottom Bar: The Golden Shutdown Action */}
+        {/* Modal Bottom Bar: closing the day */}
         <div className="p-4 sm:p-5 bg-black/[0.02] dark:bg-white/[0.02] border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between shrink-0">
           <div className="text-[11px] text-neutral-400 font-medium">
             {ownerName} • Day Closure
@@ -282,8 +272,7 @@ export default function ExecutiveClosureRitualModal({
               isShuttingDown ? 'opacity-80 scale-98 pointer-events-none' : ''
             }`}
           >
-            <Sparkles className="w-4 h-4 text-amber-400" />
-            <span>{isShuttingDown ? 'Singing Bowl Resonating...' : 'Shutdown Complete (Lock Day)'}</span>
+            <span>{isShuttingDown ? 'Closing…' : 'The day is done'}</span>
           </button>
         </div>
 
