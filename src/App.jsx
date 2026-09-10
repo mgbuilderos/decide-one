@@ -372,7 +372,13 @@ export default function App() {
     const turningToVerso = fold === 'side2';
     const hasSomethingToClose = getFrameworkItems(dailyLog).length > 0;
     const alreadyClosedToday = !!dailyLog.closedAt || closureOfferedFor === dateKey;
-    if (turningToVerso && hasSomethingToClose && !alreadyClosedToday && dateKey === todayKey) {
+    // Mid-session the verso is the focus stage, not the ledger. Turning over to
+    // watch the clock must not be read as "I am done for the day" — the closure
+    // ritual waits until nothing is actually running.
+    const somethingRunning = Object.values(dailyLog.execution || {}).some(
+      (x) => x.state === 'RUNNING' || x.state === 'BREATHING'
+    );
+    if (turningToVerso && hasSomethingToClose && !alreadyClosedToday && !somethingRunning && dateKey === todayKey) {
       setClosureOfferedFor(dateKey);
       setTimeout(() => setIsClosureModalOpen(true), 620);
     }
@@ -848,6 +854,7 @@ export default function App() {
                         date={flipState === 'flipping-next' && targetDate ? targetDate : currentDate}
                         dailyLog={flipState === 'flipping-next' && targetDailyLog ? targetDailyLog : dailyLog}
                         onCloseDay={() => setIsClosureModalOpen(true)}
+                        onUpdateExecution={handleUpdateExecution}
                         paperLabel={paperLabel}
                         settings={settings}
                         updateSettings={updateSettings}

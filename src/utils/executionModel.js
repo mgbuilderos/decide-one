@@ -15,6 +15,7 @@ export const STATES = {
   BREATHING: 'BREATHING',
   RUNNING: 'RUNNING',
   PAUSED: 'PAUSED',
+  FINISHED: 'FINISHED',
   DONE: 'DONE'
 };
 
@@ -29,14 +30,40 @@ export const DURATION_CHOICES = [15, 25, 45, 60, 90, 120];
 export function emptySession(plannedDurationSec = 0) {
   return {
     plannedDurationSec,
+    // Time banked from previous runs of this item. The current run is measured
+    // from runStartedAt against the wall clock rather than counted in ticks.
+    accumulatedSec: 0,
     actualFocusSec: 0,
     pausedDurationSec: 0,
     overtimeSec: 0,
     state: STATES.IDLE,
     timingAccuracy: 'measured',
     startedAt: null,
+    runStartedAt: null,
     lastTickAt: null
   };
+}
+
+/**
+ * Elapsed focus for a session, right now.
+ *
+ * Anchored to the wall clock, not accumulated from ticks. A `setInterval`
+ * stops firing when a tab is backgrounded and drifts even when it is not, so a
+ * tick-counted timer under-reports exactly when the person has actually gone
+ * away to do the work — which is the case this product is built for (P15).
+ * Reading the clock instead makes the figure correct whether anyone watched or
+ * not, which is also what makes it honest data (R7).
+ */
+export function elapsedSeconds(session, now = Date.now()) {
+  const banked = session?.accumulatedSec || 0;
+  if (session?.state !== STATES.RUNNING || !session?.runStartedAt) return banked;
+  const live = Math.max(0, Math.floor((now - new Date(session.runStartedAt).getTime()) / 1000));
+  return banked + live;
+}
+
+/** Seconds left in the box; negative once it is spent. */
+export function remainingSeconds(session, now = Date.now()) {
+  return (session?.plannedDurationSec || 0) - elapsedSeconds(session, now);
 }
 
 export function getSession(dailyLog, itemId) {
@@ -93,31 +120,52 @@ export function isItemLocked(framework, items, index) {
 }
 
 export function startSession(session) {
+  const now = new Date().toISOString();
   return {
     ...session,
     state: STATES.BREATHING,
-    startedAt: session.startedAt || new Date().toISOString(),
-    lastTickAt: new Date().toISOString()
+    startedAt: session.startedAt || now,
+    lastTickAt: now
   };
 }
 
 export function beginRunning(session) {
-  return { ...session, state: STATES.RUNNING, lastTickAt: new Date().toISOString() };
+  const now = new Date().toISOString();
+  return { ...session, state: STATES.RUNNING, runStartedAt: now, lastTickAt: now };
 }
 
-export function pauseSession(session) {
-  return { ...session, state: STATES.PAUSED, lastTickAt: new Date().toISOString() };
-}
-
-/** One second of measured focus. Overtime accrues separately so it stays legible. */
-export function tick(session) {
-  const planned = session.plannedDurationSec || 0;
-  const nextFocus = session.actualFocusSec + 1;
+/** Banks the current run's time, so a pause never loses or double-counts it. */
+export function pauseSession(session, now = Date.now()) {
+  const banked = elapsedSeconds(session, now);
   return {
     ...session,
-    actualFocusSec: nextFocus,
-    overtimeSec: planned > 0 ? Math.max(0, nextFocus - planned) : 0,
-    lastTickAt: new Date().toISOString()
+    state: STATES.PAUSED,
+    accumulatedSec: banked,
+    actualFocusSec: banked,
+    runStartedAt: null,
+    lastTickAt: new Date(now).toISOString()
+  };
+}
+
+/**
+ * Recomputes the stored figures from the wall clock. Called on each display
+ * tick so what is persisted matches what is shown; the clock is the source of
+ * truth and this only writes it down.
+ */
+export function syncSession(session, now = Date.now()) {
+  const elapsed = elapsedSeconds(session, now);
+  const planned = session.plannedDurationSec || 0;
+  const overtime = planned > 0 ? Math.max(0, elapsed - planned) : 0;
+  const reachedEnd = planned > 0 && elapsed >= planned;
+  return {
+    ...session,
+    actualFocusSec: elapsed,
+    overtimeSec: overtime,
+    // FINISHED marks the box as spent. It is not a failure state: the session
+    // keeps running into overtime, because R8 says overrun is information.
+    state: reachedEnd && session.state === STATES.RUNNING ? STATES.RUNNING : session.state,
+    reachedEnd,
+    lastTickAt: new Date(now).toISOString()
   };
 }
 
@@ -126,8 +174,22 @@ export function extendSession(session, extraSec) {
   return { ...session, plannedDurationSec: (session.plannedDurationSec || 0) + extraSec, overtimeSec: 0 };
 }
 
-export function completeSession(session) {
-  return { ...session, state: STATES.DONE, lastTickAt: new Date().toISOString() };
+/** True when a running session has spent its box and is into overtime. */
+export function isOvertime(session, now = Date.now()) {
+  const planned = session?.plannedDurationSec || 0;
+  return planned > 0 && elapsedSeconds(session, now) > planned;
+}
+
+export function completeSession(session, now = Date.now()) {
+  const banked = elapsedSeconds(session, now);
+  return {
+    ...session,
+    state: STATES.DONE,
+    accumulatedSec: banked,
+    actualFocusSec: banked,
+    runStartedAt: null,
+    lastTickAt: new Date(now).toISOString()
+  };
 }
 
 /**
@@ -140,7 +202,22 @@ export function reconcileOnReturn(session, now = new Date()) {
   if (session.state !== STATES.RUNNING || !session.lastTickAt) return session;
   const gapSec = (now - new Date(session.lastTickAt)) / 1000;
   if (gapSec < STALE_SESSION_SECONDS) return session;
-  return { ...session, state: STATES.PAUSED, timingAccuracy: 'inferred' };
+  // The wall clock would happily report five hours on a ninety-minute box.
+  // Bank only the time up to the last sign of life, and mark it inferred so a
+  // guessed figure is never presented as a measured one (R17).
+  const trusted = Math.max(
+    0,
+    Math.floor((new Date(session.lastTickAt).getTime() - new Date(session.runStartedAt || session.lastTickAt).getTime()) / 1000)
+  );
+  const banked = (session.accumulatedSec || 0) + trusted;
+  return {
+    ...session,
+    state: STATES.PAUSED,
+    accumulatedSec: banked,
+    actualFocusSec: banked,
+    runStartedAt: null,
+    timingAccuracy: 'inferred'
+  };
 }
 
 /** Flattens the active method's items into one ordered list the right page can render. */

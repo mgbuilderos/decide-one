@@ -5,8 +5,9 @@ import { playSound } from '../utils/audio';
 import {
   STATES, BREATHING_SECONDS, DURATION_CHOICES,
   getSession, emptySession, formatDuration, computeCapacity,
-  isItemLocked, startSession, beginRunning, pauseSession, tick,
-  extendSession, completeSession, reconcileOnReturn, getFrameworkItems
+  isItemLocked, startSession, beginRunning, pauseSession, syncSession,
+  extendSession, completeSession, reconcileOnReturn, getFrameworkItems,
+  elapsedSeconds
 } from '../utils/executionModel';
 
 /**
@@ -44,14 +45,23 @@ export default function ExecutionLayer({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // One tick per second for whichever session is running. Nobody needs to watch
-  // it — the app is built to be closed (P15); this is measurement, not theatre.
+  /**
+   * A display tick, not a counter.
+   *
+   * The elapsed figure is read from the wall clock, so this interval only
+   * writes down what is already true. If the tab is backgrounded and the
+   * interval stops firing, nothing is lost — which matters, because the app is
+   * built to be closed while the work happens (P15).
+   */
   useEffect(() => {
     if (!runningItem) return;
-    const id = setInterval(() => {
-      onUpdateExecution?.(runningItem.id, tick(getSession(dailyLog, runningItem.id)));
-    }, 1000);
-    return () => clearInterval(id);
+    const write = () => onUpdateExecution?.(runningItem.id, syncSession(getSession(dailyLog, runningItem.id)));
+    const id = setInterval(write, 1000);
+    document.addEventListener('visibilitychange', write);
+    return () => {
+      clearInterval(id);
+      document.removeEventListener('visibilitychange', write);
+    };
   }, [runningItem?.id, dailyLog, onUpdateExecution]);
 
   // R9 — BREATHING: a deliberate pause between pressing start and the clock running.
@@ -138,7 +148,7 @@ export default function ExecutionLayer({
           const isBreathing = breathingFor === item.id;
           const isRunning = session.state === STATES.RUNNING;
           const isDone = item.completed || session.state === STATES.DONE;
-          const elapsed = session.actualFocusSec || 0;
+          const elapsed = elapsedSeconds(session);
           const planned = session.plannedDurationSec || 0;
           const over = session.overtimeSec || 0;
 
@@ -200,9 +210,7 @@ export default function ExecutionLayer({
                 {planned > 0 && (
                   <div className="shrink-0 flex items-center gap-2">
                     <AnalogueClock
-                      plannedSec={planned}
-                      elapsedSec={elapsed}
-                      state={isBreathing ? STATES.BREATHING : session.state}
+                      session={isBreathing ? { ...session, state: STATES.BREATHING } : session}
                       size={40}
                     />
                     {!isDone && !locked && (

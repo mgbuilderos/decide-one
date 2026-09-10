@@ -5,6 +5,7 @@ import ProductivityFrameworks from './ProductivityFrameworks';
 import RapidLogSection from './RapidLogSection';
 import ExecutionLayer from './ExecutionLayer';
 import DayReport from './DayReport';
+import { getSession, pauseSession, completeSession, extendSession } from '../utils/executionModel';
 import { playSound } from '../utils/audio';
 import { formatDateKey } from '../hooks/useJournalStorage';
 
@@ -148,6 +149,7 @@ export function RightPage({
   date,
   dailyLog,
   onCloseDay,
+  onUpdateExecution,
   paperLabel,
   settings,
   updateSettings,
@@ -175,6 +177,9 @@ export function RightPage({
         dailyLog={dailyLog}
         dateLabel={date?.toLocaleDateString(undefined, { weekday: 'long' }) || ''}
         onCloseDay={onCloseDay}
+        onPause={(id) => onUpdateExecution?.(id, pauseSession(getSession(dailyLog, id)))}
+        onComplete={(id) => onUpdateExecution?.(id, completeSession(getSession(dailyLog, id)))}
+        onExtend={(id, sec) => onUpdateExecution?.(id, extendSession(getSession(dailyLog, id), sec))}
         isInteractive={isInteractive}
       />
 

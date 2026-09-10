@@ -1,7 +1,10 @@
-import React from 'react';
-import { Check } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Check, Pause, Play, Plus } from 'lucide-react';
 import AnalogueClock from './AnalogueClock';
-import { getSession, formatDuration, getFrameworkItems } from '../utils/executionModel';
+import {
+  STATES, getSession, formatDuration, getFrameworkItems,
+  elapsedSeconds, remainingSeconds, isOvertime
+} from '../utils/executionModel';
 
 /**
  * The verso — where the time went (P11).
@@ -13,8 +16,86 @@ import { getSession, formatDuration, getFrameworkItems } from '../utils/executio
  * R3 holds absolutely here: a verso cannot introduce objects of its own. Every
  * line is a line the recto already decided.
  */
-export default function DayReport({ dailyLog, dateLabel = '', onCloseDay, isInteractive = true }) {
+export default function DayReport({
+  dailyLog,
+  dateLabel = '',
+  onCloseDay,
+  onPause,
+  onResume,
+  onComplete,
+  onExtend,
+  isInteractive = true
+}) {
   const items = getFrameworkItems(dailyLog);
+
+  // Redraw once a second so the hands sweep. The figures come from the wall
+  // clock; this only makes the face move.
+  const [, setBeat] = useState(0);
+  const running = items
+    .map(item => ({ item, session: getSession(dailyLog, item.id) }))
+    .find(x => x.session.state === STATES.RUNNING || x.session.state === STATES.BREATHING);
+
+  useEffect(() => {
+    if (!running) return;
+    const id = setInterval(() => setBeat(b => b + 1), 1000);
+    return () => clearInterval(id);
+  }, [running?.item?.id]);
+
+  /**
+   * While something is running, this side is the focus stage: one task, one
+   * clock, nothing else. It is not here to hold anyone's attention — P15 says
+   * the success case is the person leaving to do the work — but if the window
+   * is open, what it shows should be the one thing that matters.
+   */
+  if (running) {
+    const { item, session } = running;
+    const breathing = session.state === STATES.BREATHING;
+    const over = isOvertime(session);
+    return (
+      <div className="w-full min-w-0 flex-1 min-h-0 flex flex-col items-center justify-center text-center px-6 select-none">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 mb-1">
+          {breathing ? 'Getting ready' : over ? 'Past the box' : 'Running'}
+        </p>
+        <p className="text-sm font-semibold text-neutral-900 dark:text-neutral-100 max-w-[260px] mb-4 leading-[20px]">
+          {item.text}
+        </p>
+
+        <AnalogueClock session={session} size={168} showReadout />
+
+        <p className="mt-3 text-[11px] text-neutral-500 dark:text-neutral-400">
+          {breathing
+            ? 'Starting in a moment.'
+            : `${formatDuration(elapsedSeconds(session))} of ${formatDuration(session.plannedDurationSec)}`}
+        </p>
+
+        {!breathing && (
+          <div className="mt-4 flex items-center gap-2">
+            <button type="button" disabled={!isInteractive} onClick={() => onPause?.(item.id)}
+              className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-xl bg-black/[0.05] dark:bg-white/[0.08] hover:bg-black/10 dark:hover:bg-white/15 transition-colors cursor-pointer">
+              <Pause className="w-3.5 h-3.5" /> Pause
+            </button>
+            <button type="button" disabled={!isInteractive} onClick={() => onComplete?.(item.id)}
+              className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-xl bg-black/[0.05] dark:bg-white/[0.08] hover:bg-black/10 dark:hover:bg-white/15 transition-colors cursor-pointer">
+              <Check className="w-3.5 h-3.5" /> Done
+            </button>
+            {over && (
+              <button type="button" disabled={!isInteractive} onClick={() => onExtend?.(item.id, 15 * 60)}
+                className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-xl bg-black/[0.05] dark:bg-white/[0.08] hover:bg-black/10 dark:hover:bg-white/15 transition-colors cursor-pointer">
+                <Plus className="w-3.5 h-3.5" /> 15 more
+              </button>
+            )}
+          </div>
+        )}
+
+        {over && (
+          <p className="mt-3 text-[11px] text-neutral-400 max-w-[240px] leading-[18px]">
+            The box is spent. Nothing happens automatically — carry on, or give it more time.
+          </p>
+        )}
+      </div>
+    );
+  }
+
   const sessions = items.map(item => ({ item, session: getSession(dailyLog, item.id) }));
 
   const planned = sessions.reduce((s, x) => s + (x.session.plannedDurationSec || 0), 0);
@@ -64,7 +145,7 @@ export default function DayReport({ dailyLog, dateLabel = '', onCloseDay, isInte
                   {session.timingAccuracy === 'inferred' && <span className="italic"> · estimated</span>}
                 </p>
               </div>
-              {p > 0 && <AnalogueClock plannedSec={p} elapsedSec={a} state={session.state} size={36} />}
+              {p > 0 && <AnalogueClock session={session} size={36} />}
             </div>
           );
         })}
