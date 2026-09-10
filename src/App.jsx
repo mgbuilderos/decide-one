@@ -30,6 +30,7 @@ import WeeklyReviewSpread from './components/WeeklyReviewSpread';
 import ExecutiveDecisionLogModal from './components/ExecutiveDecisionLogModal';
 import ExecutiveClosureRitualModal from './components/ExecutiveClosureRitualModal';
 import DayConditionPrompt from './components/DayConditionPrompt';
+import { getFrameworkItems } from './utils/executionModel';
 import VolumeSwitcherBar from './components/VolumeSwitcherBar';
 import ExecutiveVoiceHUD from './components/ExecutiveVoiceHUD';
 import ExecutiveScratchpadModal from './components/ExecutiveScratchpadModal';
@@ -43,12 +44,12 @@ export default function App() {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const v = params.get('view');
-      if (v === 'weekly' || v === 'monthly' || v === 'yearly' || v === 'breaker' || v === 'landing') return v;
+      if (v === 'daily' || v === 'weekly' || v === 'monthly' || v === 'yearly' || v === 'breaker' || v === 'landing') return v;
       if (window.location.hash && ['#overview', '#highlights', '#design', '#craft', '#devices', '#privacy', '#pricing', '#anatomy', '#audience'].includes(window.location.hash)) {
         return 'landing';
       }
     }
-    return 'daily';
+    return 'landing';
   });
   const [currentDate, setCurrentDate] = useState(new Date());
   const [activeFilter, setActiveFilter] = useState('all');
@@ -77,8 +78,10 @@ export default function App() {
   const flipTimerRef = useRef(null);
 
   // Two-Fold Mobile Switcher State ('side1' | 'side2')
+  // P11 — one sheet, two sides. Only ever one is visible; you turn it over.
   const [mobileFold, setMobileFold] = useState('side1');
   const [mobileFlip, setMobileFlip] = useState(false);
+  const [closureOfferedFor, setClosureOfferedFor] = useState(null);
 
   // 24px Universal Grid Cadence Height Snapper for Embossed Notebook Canvas
   const [snappedNotebookHeight, setSnappedNotebookHeight] = useState(null);
@@ -338,13 +341,27 @@ export default function App() {
     }, 750);
   };
 
-  // Mobile Two-Fold Switch with 3D Card Depth
+  /**
+   * P11/P12 — turning the sheet over.
+   *
+   * The turn to the verso is the day-closure gesture. P4 kept day closure but
+   * gave it no physical act; this is the act. It fires once per day, and only
+   * when there is something to close, so the ritual never nags an empty page.
+   */
   const handleMobileFoldSwitch = (fold) => {
     if (mobileFold === fold) return;
     playSound('page', settings.isMuted);
     setMobileFlip(true);
     setMobileFold(fold);
     setTimeout(() => setMobileFlip(false), 560);
+
+    const turningToVerso = fold === 'side2';
+    const hasSomethingToClose = getFrameworkItems(dailyLog).length > 0;
+    const alreadyClosedToday = !!dailyLog.closedAt || closureOfferedFor === dateKey;
+    if (turningToVerso && hasSomethingToClose && !alreadyClosedToday && dateKey === todayKey) {
+      setClosureOfferedFor(dateKey);
+      setTimeout(() => setIsClosureModalOpen(true), 620);
+    }
   };
 
   // Executive Universal Keyboard Shortcuts & Navigation
@@ -749,7 +766,7 @@ export default function App() {
             {/* Authentic Japanese Stationery Paper Block Canvas */}
             <div 
               style={snappedNotebookHeight ? { height: `${snappedNotebookHeight}px`, maxHeight: `${snappedNotebookHeight}px` } : undefined}
-              className={`relative ${paperClass} ${paperToneClass} ${inkClass} rounded-[20px] p-6 embossed-notebook notebook-spine-crease w-full flex-shrink-0 flex flex-col justify-between transition-all`}
+              className={`relative ${paperClass} ${paperToneClass} ${inkClass} rounded-[20px] p-6 embossed-notebook w-full flex-shrink-0 flex flex-col justify-between transition-all`}
             >
               {/* Authentic Folded Woven Twill Brand Tag (Tucked under paper edge) */}
               <button
@@ -774,12 +791,12 @@ export default function App() {
               {activeView === 'daily' ? (
                 <div className="flex-1 min-h-0 flex flex-col">
 
-                  {/* Two-Fold Open Daily Spread (Left Page & Right Page Side-by-Side on Desktop) */}
-                  <div className="flex-1 min-h-0 w-full flex flex-col md:flex-row gap-0 overflow-hidden">
+                  {/* One sheet, one side at a time (P11). No spread at any width. */}
+                  <div className="flex-1 min-h-0 w-full flex flex-col gap-0 overflow-hidden">
 
                     {/* Left Page: Productivity Framework & Execution */}
-                    <div className={`flex-1 min-w-0 min-h-0 flex flex-col md:pr-6 md:border-r border-black/[0.08] dark:border-white/[0.08] bifold-left-page overflow-hidden ${
-                      mobileFold === 'side1' ? 'flex' : 'hidden md:flex'
+                    <div className={`flex-1 min-w-0 min-h-0 flex flex-col border-white/[0.08] bifold-left-page overflow-hidden ${
+                      mobileFold === 'side1' ? 'flex' : 'hidden'
                     } ${mobileFlip && mobileFold === 'side1' ? 'mobile-fold-turn' : ''}`}>
                       <LeftPage
                         date={flipState === 'flipping-prev' && targetDate ? targetDate : currentDate}
@@ -792,6 +809,7 @@ export default function App() {
                         onUpdateFrameworkData={handleUpdateFrameworkData}
                         rapidLog={flipState === 'flipping-prev' && targetDailyLog ? targetDailyLog.rapidLog : dailyLog.rapidLog}
                         onUpdateRapidLog={handleUpdateRapidLog}
+                        onUpdateExecution={handleUpdateExecution}
                         activeFilter={activeFilter}
                         setActiveFilter={setActiveFilter}
                         settings={settings}
@@ -804,13 +822,13 @@ export default function App() {
                     </div>
 
                     {/* Right Page: the execution layer (R2) */}
-                    <div className={`flex-1 min-w-0 min-h-0 flex flex-col md:pl-6 bifold-right-page extension-booklet-paper overflow-hidden ${
-                      mobileFold === 'side2' ? 'flex' : 'hidden md:flex'
+                    <div className={`flex-1 min-w-0 min-h-0 flex flex-col bifold-right-page extension-booklet-paper overflow-hidden ${
+                      mobileFold === 'side2' ? 'flex' : 'hidden'
                     } ${mobileFlip && mobileFold === 'side2' ? 'mobile-fold-turn' : ''}`}>
                       <RightPage
                         date={flipState === 'flipping-next' && targetDate ? targetDate : currentDate}
                         dailyLog={flipState === 'flipping-next' && targetDailyLog ? targetDailyLog : dailyLog}
-                        onUpdateExecution={handleUpdateExecution}
+                        onCloseDay={() => setIsClosureModalOpen(true)}
                         paperLabel={paperLabel}
                         settings={settings}
                         updateSettings={updateSettings}
@@ -919,10 +937,10 @@ export default function App() {
 
       {/* Mobile Ergonomic Bottom Thumb-Zone Navigation Bar */}
       {activeView === 'daily' && !showCover && (
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#141416]/95 backdrop-blur-xl border-t border-black/[0.08] dark:border-white/[0.1] px-4 py-2 flex items-center justify-around no-print">
+        <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#141416]/95 backdrop-blur-xl border-t border-black/[0.08] dark:border-white/[0.1] px-4 py-2 flex items-center justify-around no-print">
           {[
             { id: 'side1', label: 'Decide' },
-            { id: 'side2', label: 'Time' }
+            { id: 'side2', label: 'Turn over' }
           ].map(tab => (
             <button
               key={tab.id}

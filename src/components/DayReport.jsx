@@ -1,0 +1,96 @@
+import React from 'react';
+import { Check } from 'lucide-react';
+import AnalogueClock from './AnalogueClock';
+import { getSession, formatDuration, getFrameworkItems } from '../utils/executionModel';
+
+/**
+ * The verso — where the time went (P11).
+ *
+ * Not part of deciding. A report, read once, at closure. That is exactly why it
+ * does not deserve permanent half-screen residency, and why reaching it is a
+ * turn of the sheet rather than a glance across a spread.
+ *
+ * R3 holds absolutely here: a verso cannot introduce objects of its own. Every
+ * line is a line the recto already decided.
+ */
+export default function DayReport({ dailyLog, dateLabel = '', onCloseDay, isInteractive = true }) {
+  const items = getFrameworkItems(dailyLog);
+  const sessions = items.map(item => ({ item, session: getSession(dailyLog, item.id) }));
+
+  const planned = sessions.reduce((s, x) => s + (x.session.plannedDurationSec || 0), 0);
+  const actual = sessions.reduce((s, x) => s + (x.session.actualFocusSec || 0), 0);
+  const done = items.filter(i => i.completed).length;
+  const anyInferred = sessions.some(x => x.session.timingAccuracy === 'inferred');
+
+  if (items.length === 0) {
+    return (
+      <div className="w-full min-w-0 flex-1 min-h-0 flex flex-col items-center justify-center text-center px-6 select-none">
+        <AnalogueClock size={96} />
+        <p className="mt-4 text-sm font-semibold text-neutral-700 dark:text-neutral-300">Nothing decided yet.</p>
+        <p className="mt-1 text-[11px] leading-[18px] text-neutral-400 max-w-[220px]">
+          Turn back and write what deserves today. This side records how it went.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full min-w-0 flex-1 min-h-0 flex flex-col overflow-hidden">
+      <div className="h-[24px] leading-[24px] shrink-0 flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] text-[10px] uppercase tracking-wider">
+        <span className="font-bold text-neutral-900 dark:text-neutral-100">Where the time went</span>
+        <span className="text-neutral-500 dark:text-neutral-400 normal-case tracking-normal">{dateLabel}</span>
+      </div>
+
+      <div className="flex-1 min-h-0 overflow-y-auto">
+        {sessions.map(({ item, session }) => {
+          const p = session.plannedDurationSec || 0;
+          const a = session.actualFocusSec || 0;
+          const delta = p > 0 ? a - p : 0;
+          return (
+            <div key={item.id} className="py-3 border-b border-black/[0.05] dark:border-white/[0.07] flex items-start gap-3">
+              <div className="flex-1 min-w-0">
+                <p className={`text-[13px] leading-[20px] font-medium truncate ${item.completed ? 'text-neutral-400 line-through' : 'text-neutral-900 dark:text-neutral-100'}`}>
+                  {item.text}
+                </p>
+                <p className="mt-1 text-[10px] text-neutral-500 dark:text-neutral-400">
+                  {p === 0
+                    ? 'No time was set'
+                    : `${formatDuration(a)} spent · ${formatDuration(p)} planned`}
+                  {p > 0 && delta !== 0 && (
+                    <span className="text-neutral-400">
+                      {' '}· {delta > 0 ? `${formatDuration(delta)} over` : `${formatDuration(-delta)} under`}
+                    </span>
+                  )}
+                  {session.timingAccuracy === 'inferred' && <span className="italic"> · estimated</span>}
+                </p>
+              </div>
+              {p > 0 && <AnalogueClock plannedSec={p} elapsedSec={a} state={session.state} size={36} />}
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="shrink-0 border-t border-black/[0.08] dark:border-white/[0.08] pt-2">
+        <p className="text-[11px] leading-[18px] text-neutral-600 dark:text-neutral-300">
+          {done} of {items.length} finished.{' '}
+          {planned > 0 ? `${formatDuration(actual)} against ${formatDuration(planned)} planned.` : 'No time was set today.'}
+        </p>
+        {anyInferred && (
+          <p className="mt-0.5 text-[10px] text-neutral-400 italic">
+            Some figures are estimated — a session was left running rather than measured.
+          </p>
+        )}
+        {onCloseDay && (
+          <button
+            type="button"
+            disabled={!isInteractive}
+            onClick={onCloseDay}
+            className="mt-2 mb-1 w-full inline-flex items-center justify-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider py-2 rounded-xl bg-black/[0.05] dark:bg-white/[0.08] text-neutral-700 dark:text-neutral-200 hover:bg-black/10 dark:hover:bg-white/15 transition-colors cursor-pointer"
+          >
+            <Check className="w-3.5 h-3.5" /> The day is done
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}

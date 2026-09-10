@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sunrise, X } from 'lucide-react';
+import { ArrowRight, X } from 'lucide-react';
 import { DAY_CONDITIONS } from '../data/dayConditions';
 import { playSound } from '../utils/audio';
 import { telemetry } from '../utils/telemetry';
@@ -39,28 +39,27 @@ export default function DayConditionPrompt({
   };
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-center justify-center p-3 sm:p-5 bg-black/70 dark:bg-black/85 backdrop-blur-lg animate-in fade-in select-none">
+    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-6 bg-black/60 dark:bg-black/80 backdrop-blur-[3px] animate-in fade-in select-none">
 
       <div className="fixed inset-0" onClick={handleSkip} />
 
       <div
-        className="relative z-10 w-full max-w-lg bg-white dark:bg-[#141416] text-neutral-900 dark:text-neutral-100 rounded-3xl shadow-2xl border border-black/[0.12] dark:border-white/[0.15] flex flex-col max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-150"
+        className="relative z-10 w-full max-w-[620px] bg-white dark:bg-[#111113] text-neutral-950 dark:text-neutral-100 rounded-[18px] shadow-[0_40px_120px_rgba(0,0,0,0.34)] border border-black/[0.12] dark:border-white/[0.14] flex flex-col max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-150 font-sans"
         onClick={e => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-label="What does today look like?"
       >
-        {/* Header — 24px cadence pair inside a 56px bar */}
-        <div className="h-14 px-5 sm:px-6 flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] shrink-0 bg-black/[0.015] dark:bg-white/[0.02]">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
-              <Sunrise className="w-4 h-4" />
+        <div className="min-h-[72px] px-5 sm:px-7 py-4 flex items-center justify-between border-b border-black/[0.10] dark:border-white/[0.10] shrink-0">
+          <div className="flex items-center gap-4">
+            <div className="text-[11px] font-bold tracking-[-0.02em] leading-none border border-black/20 dark:border-white/25 rounded-[4px] px-2 py-1.5">
+              D1
             </div>
             <div>
-              <div className="text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
+              <div className="text-[13px] font-semibold tracking-[-0.01em] text-neutral-950 dark:text-white">
                 What does today look like?
               </div>
-              <div className="text-[10px] text-neutral-400">
+              <div className="mt-1 text-[10px] uppercase tracking-[0.12em] text-neutral-400 dark:text-neutral-500">
                 {dateLabel || 'Answer once. The instrument does the rest.'}
               </div>
             </div>
@@ -68,7 +67,7 @@ export default function DayConditionPrompt({
 
           <button
             onClick={handleSkip}
-            className="p-1.5 rounded-full text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer"
+            className="w-9 h-9 grid place-items-center rounded-full text-neutral-400 hover:text-neutral-950 hover:bg-black/[0.04] dark:hover:text-white dark:hover:bg-white/[0.06] transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
             title="Skip"
             aria-label="Skip"
           >
@@ -76,37 +75,35 @@ export default function DayConditionPrompt({
           </button>
         </div>
 
-        {/* Conditions */}
-        <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-4">
-          <ul className="flex flex-col gap-2">
-            {DAY_CONDITIONS.map(condition => (
+        <div className="flex-1 overflow-y-auto px-5 sm:px-7 py-2">
+          <ul className="divide-y divide-black/[0.09] dark:divide-white/[0.09]">
+            {DAY_CONDITIONS.map((condition, index) => (
               <li key={condition.id}>
                 <button
                   type="button"
                   onClick={() => handleChoose(condition)}
-                  className="w-full text-left px-4 py-3 rounded-2xl border border-black/[0.08] dark:border-white/[0.10] bg-black/[0.015] dark:bg-white/[0.03] hover:bg-black/[0.05] dark:hover:bg-white/[0.07] hover:border-black/20 dark:hover:border-white/25 transition-colors cursor-pointer"
+                  className="group w-full min-h-[72px] grid grid-cols-[28px_1fr_20px] items-center gap-3 text-left py-3.5 transition-colors cursor-pointer hover:bg-black/[0.025] dark:hover:bg-white/[0.035] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px]"
                 >
-                  <span className="block text-sm font-semibold leading-[24px] text-neutral-900 dark:text-neutral-100">
-                    {condition.label}
+                  <span className="text-[10px] tabular-nums text-neutral-400 dark:text-neutral-500">{String(index + 1).padStart(2, '0')}</span>
+                  <span>
+                    <span className="block text-[14px] font-medium leading-5 tracking-[-0.01em] text-neutral-950 dark:text-neutral-100">{condition.label}</span>
+                    <span className="block mt-1 text-[11px] leading-4 text-neutral-500 dark:text-neutral-400">{condition.effect}</span>
                   </span>
-                  <span className="block text-[11px] leading-[24px] text-neutral-500 dark:text-neutral-400">
-                    {condition.effect}
-                  </span>
+                  <ArrowRight className="w-4 h-4 text-neutral-300 dark:text-neutral-600 transition-transform group-hover:translate-x-0.5 group-hover:text-neutral-700 dark:group-hover:text-neutral-300" />
                 </button>
               </li>
             ))}
           </ul>
         </div>
 
-        {/* Footer — the person always keeps the decision */}
-        <div className="h-[48px] px-5 sm:px-6 flex items-center justify-between border-t border-black/[0.08] dark:border-white/[0.08] shrink-0">
-          <span className="text-[10px] text-neutral-400">
+        <div className="h-[56px] px-5 sm:px-7 flex items-center justify-between border-t border-black/[0.10] dark:border-white/[0.10] shrink-0">
+          <span className="text-[10px] uppercase tracking-[0.12em] text-neutral-400 dark:text-neutral-500">
             Nothing shares first.
           </span>
           <button
             type="button"
             onClick={handleSkip}
-            className="text-[10px] uppercase tracking-wider font-semibold text-neutral-500 hover:text-neutral-900 dark:hover:text-white px-2 py-1 rounded bg-black/[0.04] dark:bg-white/[0.06] transition-colors cursor-pointer"
+            className="text-[10px] uppercase tracking-[0.12em] font-semibold text-neutral-600 hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-white px-3 py-2 rounded-full border border-black/[0.10] dark:border-white/[0.12] transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
           >
             I already know
           </button>

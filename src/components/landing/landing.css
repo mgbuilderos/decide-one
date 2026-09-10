@@ -6,7 +6,7 @@
   --pm-gold: #b9b9b9;
   background: var(--pm-bg);
   color: var(--pm-text);
-  font-family: Inter,Helvetica,Arial,sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, -apple-system, BlinkMacSystemFont, sans-serif;
   line-height: 1.5;
   overflow: clip;
   isolation: isolate;
@@ -2368,3 +2368,224 @@
 @media(max-width:1100px) { .pm-demo-icon-toolbar { flex-wrap:wrap; gap:12px; }.pm-appearance-pickers { margin-left:auto; }.pm-studio-detail>img { height:460px; }.pm-studio-detail>div { padding:28px; } }
 @media(max-width:700px) { .pm-hero h1 { font-size:clamp(37px,6.6vw,52px); letter-spacing:-2px; }.pm-hero-copy { padding-top:40px; }.pm-hero-description { font-size:14px; max-width:360px; }.pm-hero-product { margin-top:22px; }.pm-product-caption { padding-inline:22px; font-size:8px; }.pm-product-caption>span { max-width:120px; }.pm-studio-detail { grid-template-columns:1fr; }.pm-studio-detail>img { height:auto; }.pm-studio-detail>div { padding:30px; }.pm-explorer-toolbar { flex-direction:column; align-items:center; }.pm-segmented button { padding:10px 15px; }.pm-perspective-stage .pm-scene { height:380px; }.pm-perspective-caption { grid-template-columns:1fr; gap:12px; }.pm-perspective-caption>span { grid-column:1; }.pm-device-stage .pm-scene { height:390px; }.pm-approach-picker { display:grid; grid-template-columns:repeat(6,1fr); width:100%; gap:2px; }.pm-approach-picker button { min-width:0; padding:10px 4px; }.pm-approach-picker button span { font-size:8px; }.pm-appearance-pickers { margin:auto; gap:10px; }.pm-appearance-pickers>div:first-child { border:0; padding-left:0; }.pm-approach-description { flex-wrap:wrap; gap:4px 10px; }.pm-device-tabs button { padding:10px; font-size:11px; }.pm-device-tabs svg { display:none; } }
 @media(prefers-reduced-motion:reduce) { .pm-hero-render img { animation:none; } }
+
+/* Decide One D1 — Swiss instrument refinement. Keep this final so it resolves
+   the earlier concept iterations into one deliberate public-facing system. */
+.pm-landing {
+  --pm-bg: #050505;
+  --pm-panel: #111111;
+  --pm-text: #f5f5f3;
+  --pm-muted: #979797;
+  --pm-gold: #c8c8c5;
+  font-family: "Helvetica Neue", Helvetica, Arial, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.006em;
+}
+.pm-nav {
+  height: 78px;
+  padding-inline: clamp(24px, 5vw, 72px);
+  border-color: rgba(255,255,255,.10);
+}
+.pm-nav>.pm-brand {
+  gap: 11px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+.pm-nav>.pm-brand .pm-brand-mark {
+  display: inline-grid;
+  place-items: center;
+  min-width: 27px;
+  height: 27px;
+  margin: 0;
+  border: 1px solid rgba(255,255,255,.38);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: -.03em;
+}
+.pm-nav>nav {
+  gap: 28px;
+}
+.pm-nav>nav a {
+  color: #969696;
+  font-size: 11px;
+  letter-spacing: .015em;
+}
+.pm-theme-button {
+  width: 36px;
+  height: 36px;
+}
+.pm-button {
+  min-height: 48px;
+  padding: 13px 23px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .01em;
+  box-shadow: none;
+}
+.pm-button-small {
+  min-height: 38px;
+  padding: 9px 17px;
+  font-size: 11px;
+}
+.pm-button:hover {
+  transform: translateY(-1px);
+}
+.pm-hero {
+  background: #050505;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.pm-hero-copy {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 78px 28px 8px;
+}
+.pm-eyebrow {
+  margin-bottom: 22px;
+  color: #a6a6a3;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .19em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+.pm-hero h1 {
+  max-width: 1080px;
+  margin-inline: auto;
+  font-size: clamp(54px, 6.35vw, 94px);
+  font-weight: 450;
+  line-height: .98;
+  letter-spacing: -.062em;
+}
+.pm-hero h1 span {
+  color: #8b8b89;
+  font-weight: 400;
+}
+.pm-hero-description {
+  max-width: 570px;
+  margin: 28px auto 26px;
+  color: #aaa;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.62;
+  letter-spacing: -.01em;
+}
+.pm-actions {
+  gap: 26px;
+}
+.pm-text-link {
+  font-size: 12px;
+  color: #b3b3b0!important;
+}
+.pm-hero-product {
+  max-width: 1120px;
+  margin-top: 4px;
+}
+.pm-hero-render {
+  width: min(100%, 1030px);
+}
+.pm-hero-render img {
+  filter: contrast(1.025) saturate(.86);
+}
+.pm-stage-glow {
+  opacity: .56;
+}
+.pm-product-caption {
+  padding-inline: clamp(28px, 5vw, 64px);
+  padding-bottom: 30px;
+  color: #777;
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.pm-product-caption i {
+  width: 4px;
+  height: 4px;
+  background: #d7d7d4;
+}
+.pm-belief-strip {
+  padding-block: 24px;
+  border-color: rgba(255,255,255,.10);
+}
+.pm-belief-strip>span,
+.pm-belief-strip>div {
+  font-size: 10px;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+.pm-section-heading h2,
+.pm-highlight-copy h3,
+.pm-material-copy h3,
+.pm-studio-detail h3,
+.pm-final-cta h2 {
+  font-family: "Helvetica Neue", Helvetica, Arial, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 450;
+}
+.pm-highlight-card,
+.pm-studio-detail,
+.pm-perspective-stage,
+.pm-pricing-card {
+  border-radius: 12px;
+}
+.pm-demo blockquote,
+.pm-demo cite {
+  font-family: "Helvetica Neue", Helvetica, Arial, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+.pm-demo blockquote {
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: -.02em;
+}
+.pm-light .pm-nav>.pm-brand .pm-brand-mark {
+  border-color: rgba(0,0,0,.34);
+}
+
+@media (max-width: 700px) {
+  .pm-nav {
+    height: 68px;
+    padding-inline: 18px;
+  }
+  .pm-nav>nav {
+    display: none;
+  }
+  .pm-nav>.pm-brand {
+    grid-column: 1;
+    justify-self: start;
+    font-size: 10px;
+    letter-spacing: .13em;
+  }
+  .pm-nav>.pm-nav-actions {
+    grid-column: 3;
+  }
+  .pm-hero-copy {
+    padding: 58px 20px 10px;
+  }
+  .pm-hero h1 {
+    font-size: clamp(44px, 12.3vw, 66px);
+    line-height: .99;
+    letter-spacing: -.055em;
+  }
+  .pm-hero-description {
+    max-width: 330px;
+    margin-top: 24px;
+    font-size: 14px;
+  }
+  .pm-actions {
+    flex-direction: column;
+    gap: 18px;
+  }
+  .pm-hero-product {
+    margin-top: 18px;
+  }
+  .pm-product-caption {
+    font-size: 8px;
+  }
+  .pm-belief-strip>div {
+    flex-wrap: wrap;
+    white-space: normal;
+  }
+}

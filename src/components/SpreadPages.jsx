@@ -4,6 +4,7 @@ import { DateDisplay, DateNavControls } from './DateHeader';
 import ProductivityFrameworks from './ProductivityFrameworks';
 import RapidLogSection from './RapidLogSection';
 import ExecutionLayer from './ExecutionLayer';
+import DayReport from './DayReport';
 import { playSound } from '../utils/audio';
 import { formatDateKey } from '../hooks/useJournalStorage';
 
@@ -22,6 +23,7 @@ export function LeftPage({
   onUpdateFrameworkData,
   rapidLog,
   onUpdateRapidLog,
+  onUpdateExecution,
   activeFilter,
   setActiveFilter,
   settings,
@@ -50,8 +52,9 @@ export function LeftPage({
         </div>
       </header>
 
-      {/* Main Page Body: Open-Source Productivity Framework Suite */}
-      <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
+      {/* Main Page Body: the method, then the time it will take. One column,
+          because a leaf has one side at a time and it scrolls (P11). */}
+      <div className="flex-1 min-h-0 flex flex-col overflow-y-auto pocket-scroll">
         <ProductivityFrameworks
           activeFramework={activeFramework}
           onSelectFramework={onSelectFramework}
@@ -61,8 +64,20 @@ export function LeftPage({
           onUpdateFrameworkData={onUpdateFrameworkData}
           isMuted={settings?.isMuted}
           isPastDay={isPastDay}
-          isFullPage={activeFramework !== 'rule_of_3'}
+          isFullPage={false}
         />
+
+        {/* Timeboxes — P11: durations attach per line, on the recto, beside the
+            decision. Three tasks at three hours is nine hours, and the day has
+            not got nine hours; that is found out here, not on the verso. */}
+        <div className="shrink-0 flex flex-col border-t border-black/[0.08] dark:border-white/[0.08] mt-3 pt-1">
+          <ExecutionLayer
+            dailyLog={dailyLog}
+            onUpdateExecution={onUpdateExecution}
+            isMuted={settings?.isMuted}
+            isInteractive={isInteractive}
+          />
+        </div>
 
         {/* 1-Line Blank Space between Top 3 and Today (Exact 24px Cadence Spacer) */}
         {activeFramework === 'rule_of_3' && (
@@ -132,7 +147,7 @@ export function LeftPage({
 export function RightPage({
   date,
   dailyLog,
-  onUpdateExecution,
+  onCloseDay,
   paperLabel,
   settings,
   updateSettings,
@@ -156,10 +171,10 @@ export function RightPage({
       </header>
 
       {/* Main Page Body: the execution layer for the left page's items */}
-      <ExecutionLayer
+      <DayReport
         dailyLog={dailyLog}
-        onUpdateExecution={onUpdateExecution}
-        isMuted={settings?.isMuted}
+        dateLabel={date?.toLocaleDateString(undefined, { weekday: 'long' }) || ''}
+        onCloseDay={onCloseDay}
         isInteractive={isInteractive}
       />
 
@@ -203,6 +218,7 @@ export function PageTurnLeaf({
   onUpdateHardTasks,
   onUpdateFrameworkData,
   onUpdateRapidLog,
+  onUpdateExecution,
   activeFilter,
   setActiveFilter,
   paperClass,
