@@ -73,8 +73,8 @@ Found while verifying B-12. All pre-existing; none introduced by this week's wor
 | **P-1** | **R16 `doneDefinition`** — stating what "done" looks like. Optional, never required, never before the first line is written | ⬜ |
 | **P-2** | **M-A7 Methods & Attributions page** — each method, its originator, date and licence status. Required before launch: the product's whole claim is that these are public-domain methods used honestly | ⬜ |
 | **P-3** | **R17 return prompt** — the model marks abandoned sessions `inferred`, but nothing yet *asks* "still on this?" on return. The provenance is honest; the prompt is missing | ⬜ |
-| **P-4** | **Rule of 3 hard cap** — P9 says three lines with no fourth. The recto still allows a fourth line through the Today stream | ⬜ |
-| **P-5** | **Eisenhower classification-before-writing** — P9 requires it; currently you can type into any quadrant freely | ⬜ |
+| **P-4** | ~~Rule of 3 hard cap~~ **Was my error — already enforced.** The slots are hardcoded to exactly three. What is genuinely open is **B-23**: the Today stream beneath is unbounded and can become where priority #4 lives. Needs a ruling on what that stream is for, not code. | 👤 |
+| **P-5** | ~~Eisenhower classification before writing~~ **Done.** One *Add a task* control asks *Is it urgent?* then *Does it actually matter?* and places the result. The per-quadrant `+` buttons are gone — the quadrant is a consequence of a judgment, not a destination you pick. | ✅ |
 
 ---
 

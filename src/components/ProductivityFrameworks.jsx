@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Check, Flame } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { CATEGORIES, detectCategoryFromText } from '../types/journal';
@@ -144,6 +144,33 @@ export default function ProductivityFrameworks({
   const handleTextEisenhower = (qKey, idx, text) => {
     const list = [...eData[qKey]];
     list[idx] = { ...list[idx], text };
+    updateActiveData({ quadrants: { ...eData, [qKey]: list } });
+  };
+
+  /**
+   * P9 — classification is required before writing.
+   *
+   * Eisenhower asks two questions — is it urgent, does it matter — and the
+   * quadrant *falls out* of the answers. Choosing a box directly skips the only
+   * judgment the matrix exists to force, which turns the method into four
+   * labelled lists. So the instrument asks, and places the result: it decides
+   * the form, never the content (P10).
+   */
+  const [classifier, setClassifier] = useState(null);
+
+  const QUADRANT_FOR = {
+    'true|true': 'q1',    // urgent and important  -> do first
+    'false|true': 'q2',   // important, not urgent -> schedule
+    'true|false': 'q3',   // urgent, not important -> delegate
+    'false|false': 'q4'   // neither               -> eliminate
+  };
+
+  const classifyAndAdd = (urgent, important) => {
+    const qKey = QUADRANT_FOR[`${urgent}|${important}`];
+    const list = [...(eData[qKey] || [])];
+    if (list.length >= 4) return;
+    list.push({ id: `${qKey}_${Date.now()}`, text: '', completed: false });
+    playSound('check', isMuted);
     updateActiveData({ quadrants: { ...eData, [qKey]: list } });
   };
 
@@ -332,6 +359,54 @@ export default function ProductivityFrameworks({
 
       {/* --- RENDER 2: EISENHOWER MATRIX (Unboxed Symmetrical Quadrants with Multi-Task Support) --- */}
       {activeFramework === 'eisenhower' && (
+        <div className="shrink-0 pt-1">
+          {classifier === null ? (
+            <button
+              type="button"
+              onClick={() => { playSound('click', isMuted); setClassifier({}); }}
+              className="w-full h-[28px] rounded-lg border border-dashed border-black/[0.14] dark:border-white/[0.16] text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:border-black/25 dark:hover:border-white/30 transition-colors cursor-pointer"
+            >
+              + Add a task
+            </button>
+          ) : (
+            <div className="h-[28px] flex items-center justify-between gap-3 px-2 rounded-lg bg-black/[0.04] dark:bg-white/[0.06]">
+              <span className="text-[11px] font-semibold text-neutral-800 dark:text-neutral-200 whitespace-nowrap">
+                {classifier.urgent === undefined ? 'Is it urgent?' : 'Does it actually matter?'}
+              </span>
+              <div className="flex items-center gap-1.5 shrink-0">
+                {[['Yes', true], ['No', false]].map(([label, value]) => (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => {
+                      if (classifier.urgent === undefined) {
+                        playSound('click', isMuted);
+                        setClassifier({ urgent: value });
+                      } else {
+                        classifyAndAdd(classifier.urgent, value);
+                        setClassifier(null);
+                      }
+                    }}
+                    className="text-[11px] font-semibold px-2.5 py-0.5 rounded bg-white dark:bg-[#141416] border border-black/[0.1] dark:border-white/[0.14] hover:border-black/30 dark:hover:border-white/35 transition-colors cursor-pointer"
+                  >
+                    {label}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setClassifier(null)}
+                  className="text-[10px] text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 px-1 cursor-pointer"
+                  title="Cancel"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {activeFramework === 'eisenhower' && (
         <div className="flex-1 min-h-0 grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 pt-1">
           {[
             { key: 'q1', title: '01. DO FIRST', tag: 'Urgent' },
@@ -352,14 +427,12 @@ export default function ProductivityFrameworks({
                     <span className="text-[9px] text-neutral-400 dark:text-neutral-500 font-medium whitespace-nowrap">
                       {quad.tag}
                     </span>
-                    <button
-                      type="button"
-                      onClick={() => handleAddTaskEisenhower(quad.key)}
-                      className="w-4 h-4 rounded-full flex items-center justify-center text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-black/[0.05] dark:hover:bg-white/[0.08] transition-colors cursor-pointer text-xs font-bold leading-none"
-                      title={`Add task to ${quad.title}`}
+                    <span
+                      className="text-[9px] text-neutral-300 dark:text-neutral-600 font-semibold tabular-nums"
+                      title="Tasks arrive here by being classified, not by choosing this box"
                     >
-                      +
-                    </button>
+                      {tasks.filter(t => t.text && t.text.trim()).length}
+                    </span>
                   </div>
                 </div>
 
@@ -391,7 +464,9 @@ export default function ProductivityFrameworks({
                           onKeyDown={(e) => {
                             if (e.key === 'Enter') {
                               e.preventDefault();
-                              handleAddTaskEisenhower(quad.key);
+                              // Not another line in this box: the next task gets
+                              // classified like the first one did (P9).
+                              setClassifier({});
                             } else if (e.key === 'Backspace' && item.text === '' && tasks.length > 1) {
                               e.preventDefault();
                               handleDeleteTaskEisenhower(quad.key, idx);
