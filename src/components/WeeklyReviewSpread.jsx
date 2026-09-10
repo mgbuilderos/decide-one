@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { formatDuration } from '../utils/executionModel';
 import { 
   ChevronLeft, 
   ChevronRight, 
@@ -23,7 +24,6 @@ export default function WeeklyReviewSpread({
   saveDailyLog,
   getWeeklyReview,
   saveWeeklyReview,
-  habits = [],
   settings = {},
   isMuted = false,
   onBackToDaily
@@ -59,15 +59,18 @@ export default function WeeklyReviewSpread({
     totalPriorities, 
     completedPriorities, 
     priorityRate,
-    totalHabitChecks,
-    maxHabitChecks,
-    habitRate,
-    compositeScore,
+    weekPlannedSec,
+    weekActualSec,
+    daysWithPlans,
+    dayTimeStrip,
+    timeboxAccuracy,
     pendingTasks
   } = useMemo(() => {
     let totalP = 0;
     let compP = 0;
-    let habitChecks = 0;
+    let plannedSec = 0;
+    let actualSec = 0;
+    const strip = [];
     const uncompleted = [];
 
     weekDates.forEach(({ dateKey, dayName, monthDay }) => {
@@ -109,27 +112,42 @@ export default function WeeklyReviewSpread({
         }
       });
 
-      // Habits
-      const compH = log.completedHabits || [];
-      habitChecks += compH.length;
+      // R7 — the week's planned-versus-actual, the question no competitor asks.
+      const sessions = Object.values(log.execution || {});
+      const dayPlanned = sessions.reduce((sum, x) => sum + (x.plannedDurationSec || 0), 0);
+      const dayActual = sessions.reduce((sum, x) => sum + (x.actualFocusSec || 0), 0);
+      plannedSec += dayPlanned;
+      actualSec += dayActual;
+      // The loop yields dateKey, not a Date; parse at local midnight to avoid
+      // a timezone shift dropping the strip onto the wrong weekday.
+      const dayDate = new Date(`${dateKey}T00:00:00`);
+      strip.push({
+        key: dateKey,
+        dayLetter: dayDate.toLocaleDateString(undefined, { weekday: 'narrow' }),
+        label: dayDate.toLocaleDateString(undefined, { weekday: 'long' }),
+        plannedSec: dayPlanned,
+        actualSec: dayActual
+      });
     });
 
-    const maxH = Math.max(1, habits.length * 7);
     const pRate = totalP > 0 ? Math.round((compP / totalP) * 100) : 0;
-    const hRate = Math.round((habitChecks / maxH) * 100);
-    const compScore = totalP > 0 ? Math.round(pRate * 0.6 + hRate * 0.4) : hRate;
+    // Honesty, not performance: how close the estimates were, in either direction.
+    const accuracy = plannedSec > 0
+      ? Math.max(0, Math.round(100 - (Math.abs(actualSec - plannedSec) / plannedSec) * 100))
+      : null;
 
     return {
       totalPriorities: totalP,
       completedPriorities: compP,
       priorityRate: pRate,
-      totalHabitChecks: habitChecks,
-      maxHabitChecks: maxH,
-      habitRate: hRate,
-      compositeScore: compScore,
+      weekPlannedSec: plannedSec,
+      weekActualSec: actualSec,
+      daysWithPlans: strip.filter(x => x.plannedSec > 0).length,
+      dayTimeStrip: strip,
+      timeboxAccuracy: accuracy,
       pendingTasks: uncompleted
     };
-  }, [weekDates, data.dailyLogs, habits.length]);
+  }, [weekDates, data.dailyLogs]);
 
   // Review fields update handlers
   const handleUpdateVictory = (index, value) => {
@@ -167,7 +185,6 @@ export default function WeeklyReviewSpread({
 
       const targetLog = (data.dailyLogs && data.dailyLogs[targetDateKey]) || {
         dateString: targetDateKey,
-        completedHabits: [],
         hardTasks: [],
         rapidLog: [],
         reflection: ''
@@ -200,7 +217,6 @@ export default function WeeklyReviewSpread({
         startDate: weekStart.dateObj,
         data,
         settings,
-        habits,
         pageSize: 'a4'
       });
     } catch (e) {
@@ -301,7 +317,7 @@ export default function WeeklyReviewSpread({
       {/* Two-Fold Spread Stage (Bi-Fold on Desktop, Tabbed on Mobile) */}
       <div className="flex-1 min-h-0 w-full flex flex-col md:flex-row gap-0 overflow-hidden">
         
-        {/* Left Page: Weekly Alignment, Habits & Carryover Triage */}
+        {/* Left Page: Weekly Alignment, Time & Carryover Triage */}
         <div className={`flex-1 min-w-0 min-h-0 flex flex-col md:pr-6 md:border-r border-black/[0.08] dark:border-white/[0.08] overflow-y-auto pocket-scroll ${
           mobileTab === 'alignment' ? 'flex' : 'hidden md:flex'
         }`}>
@@ -322,84 +338,67 @@ export default function WeeklyReviewSpread({
 
             <div>
               <div className="text-[9px] uppercase tracking-wider font-bold text-neutral-400 dark:text-neutral-500">
-                Habit Compounding
+                Time
               </div>
               <div className="text-sm font-bold text-neutral-900 dark:text-white mt-0.5">
-                {totalHabitChecks} / {maxHabitChecks}
+                {formatDuration(weekActualSec)}
               </div>
               <div className="text-[10px] text-neutral-500">
-                {habitRate}% Consistency
+                of {formatDuration(weekPlannedSec)} planned
               </div>
             </div>
 
             <div>
               <div className="text-[9px] uppercase tracking-wider font-bold text-neutral-400 dark:text-neutral-500">
-                Focus Quotient
+                Estimate accuracy
               </div>
-              <div className={`text-sm font-bold mt-0.5 ${
-                compositeScore >= 80 
-                  ? 'progress-ink-green' 
-                  : compositeScore >= 40 
-                    ? 'progress-ink-yellow' 
-                    : 'progress-ink-red'
-              }`}>
-                {compositeScore}%
+              <div className="text-sm font-bold text-neutral-900 dark:text-white mt-0.5">
+                {timeboxAccuracy === null ? '—' : `${timeboxAccuracy}%`}
               </div>
               <div className="text-[10px] text-neutral-500">
-                {compositeScore >= 80 ? 'Peak Flow' : compositeScore >= 40 ? 'Steady Cadence' : 'Restoration'}
+                {timeboxAccuracy === null ? 'No timeboxes yet' : 'How close the guesses were'}
               </div>
             </div>
           </div>
 
-          {/* 7-Day Compounding Habit Heatmap */}
+          {/* Where the week's time went — planned against actual (R7). */}
           <div className="mb-3 shrink-0">
             <div className="flex items-center justify-between mb-1.5 px-0.5">
               <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400">
-                7-Day Compounding Matrix
+                Planned vs Actual
               </span>
               <span className="text-[10px] text-neutral-400">
-                {habits.length} Monitored
+                {daysWithPlans} of 7 days planned
               </span>
             </div>
-
-            <div className="border border-black/[0.08] dark:border-white/[0.08] rounded-xl overflow-hidden bg-white/50 dark:bg-black/20">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-black/[0.06] dark:border-white/[0.06] bg-black/[0.02] dark:bg-white/[0.02]">
-                    <th className="py-1 px-2 text-[10px] font-bold text-neutral-400 uppercase tracking-wider">Habit</th>
-                    {weekDates.map(d => (
-                      <th key={d.dateKey} className="py-1 px-1 text-center text-[10px] font-bold text-neutral-500">
-                        {d.dayName.slice(0, 2)}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-black/[0.04] dark:divide-white/[0.04]">
-                  {habits.slice(0, 5).map(h => (
-                    <tr key={h.id} className="h-6">
-                      <td className="py-0.5 px-2 text-xs truncate font-medium text-neutral-700 dark:text-neutral-300 max-w-[110px]">
-                        <span className="mr-1">{h.emoji || '•'}</span>
-                        <span>{h.label}</span>
-                      </td>
-                      {weekDates.map(d => {
-                        const log = (data.dailyLogs && data.dailyLogs[d.dateKey]) || {};
-                        const done = (log.completedHabits || []).includes(h.id);
-                        return (
-                          <td key={d.dateKey} className="py-0.5 px-1 text-center">
-                            <span className={`inline-block w-3.5 h-3.5 rounded-full transition-all ${
-                              done 
-                                ? 'bg-neutral-900 dark:bg-white shadow-2xs' 
-                                : 'border border-black/15 dark:border-white/15'
-                            }`} />
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="grid grid-cols-7 gap-1">
+              {dayTimeStrip.map(day => {
+                const ratio = day.plannedSec > 0 ? day.actualSec / day.plannedSec : 0;
+                return (
+                  <div key={day.key} className="flex flex-col items-center gap-1">
+                    <div className="w-full h-10 rounded bg-black/[0.04] dark:bg-white/[0.06] relative overflow-hidden" title={day.label}>
+                      {day.plannedSec > 0 && (
+                        <div
+                          className="absolute bottom-0 left-0 right-0 bg-neutral-800 dark:bg-neutral-200"
+                          style={{ height: `${Math.min(ratio, 1) * 100}%` }}
+                        />
+                      )}
+                      {ratio > 1 && (
+                        <div className="absolute top-0 left-0 right-0 h-[3px] bg-neutral-400 dark:bg-neutral-500" title="Ran over" />
+                      )}
+                    </div>
+                    <span className="text-[9px] text-neutral-400">{day.dayLetter}</span>
+                  </div>
+                );
+              })}
             </div>
+            <p className="mt-1.5 text-[10px] text-neutral-400 leading-[16px]">
+              {weekPlannedSec > 0
+                ? `${formatDuration(weekActualSec)} spent against ${formatDuration(weekPlannedSec)} planned.`
+                : 'No time was set this week, so there is nothing to compare.'}
+            </p>
           </div>
+
 
           {/* Weekly Carryover Triage */}
           <div className="flex-1 min-h-0 flex flex-col">

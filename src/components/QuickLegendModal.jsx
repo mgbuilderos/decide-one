@@ -139,7 +139,7 @@ export default function QuickLegendModal({ isOpen, onClose }) {
                     <div className="flex items-center gap-1.5 font-bold progress-ink-green mb-1">
                       <span>✓ Done (Bamboo Green)</span>
                     </div>
-                    <p className="text-[11px] text-neutral-500">Applied when a task or habit is conquered. Drives mastery & score.</p>
+                    <p className="text-[11px] text-neutral-500">Applied when a decided task is finished.</p>
                   </div>
 
                   <div className="p-2.5 rounded-lg border border-black/[0.06] dark:border-white/[0.08] bg-black/[0.015] dark:bg-white/[0.02]">
@@ -153,7 +153,7 @@ export default function QuickLegendModal({ isOpen, onClose }) {
                     <div className="flex items-center gap-1.5 font-bold progress-ink-red mb-1">
                       <span>✕ Dropped (Crimson)</span>
                     </div>
-                    <p className="text-[11px] text-neutral-500">Deliberately eliminated tasks or neglected habit triggers.</p>
+                    <p className="text-[11px] text-neutral-500">Deliberately eliminated tasks.</p>
                   </div>
                 </div>
               </div>

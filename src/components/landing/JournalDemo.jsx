@@ -19,7 +19,7 @@ export default function JournalDemo({
   const [ink, setInk] = useState('carbon');
   const [notes, setNotes] = useState(['A thought worth holding on to.', 'Leave a little room for the unexpected.']);
   const [newNote, setNewNote] = useState('');
-  const [habits, setHabits] = useState([[true, true, true, false, false], [true, true, false, true, false], [true, true, true, true, false]]);
+  const [minutes, setMinutes] = useState([90, 45, 60]);
   const [reflection, setReflection] = useState('Today, I made time for what matters.');
   const [locked, setLocked] = useState(false);
   const completed = tasks[method].filter(t => t.done).length;
@@ -55,7 +55,7 @@ export default function JournalDemo({
               setNewNote('');
             }
           }}><input value={newNote} onChange={e => setNewNote(e.target.value)} aria-label="Add a passing thought" placeholder="A little room for a new thought…" maxLength={140} /><button type="submit" aria-label="Add note"><Plus size={17} /></button></form></div>
-        <div className="pm-demo-page"><div className="pm-demo-masthead"><span>A Little Better, Every Day</span><span>01</span></div><h3>Small rituals.<br />Lasting change.</h3><div className="pm-demo-section-label"><span>Keep Coming Back</span><span>M · T · W · T · F</span></div><div className="pm-demo-habits">{['Read a few pages', 'Move my body', 'One quiet moment'].map((name, row) => <div key={name}><span>{name}</span><div>{habits[row].map((done, day) => <button key={day} role="checkbox" aria-checked={done} aria-label={`${name}, ${['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'][day]}`} className={done ? 'is-done' : ''} onClick={() => setHabits(prev => prev.map((r, ri) => ri === row ? r.map((d, di) => di === day ? !d : d) : r))}>{done && <Check size={10} />}</button>)}</div></div>)}</div><div className="pm-demo-section-label"><span>A Moment To Reflect</span></div><label className="pm-reflection-label" htmlFor="pm-reflection">What made today worthwhile?</label><textarea id="pm-reflection" rows={3} value={reflection} onChange={e => setReflection(e.target.value)} /><div className="pm-demo-reminder">Your priorities guide the day.<br />You do the work.</div></div>
+        <div className="pm-demo-page"><div className="pm-demo-masthead"><span>Where The Time Went</span><span>02</span></div><h3>Decide once.<br />Then give it time.</h3><div className="pm-demo-section-label"><span>Planned</span><span>{Math.floor(minutes.reduce((a, b) => a + b, 0) / 60)}h {minutes.reduce((a, b) => a + b, 0) % 60}m</span></div><div className="pm-demo-habits">{tasks[method].slice(0, 3).map((task, row) => <div key={row}><span>{task.text.slice(0, 22)}</span><div>{[15, 45, 90].map(m => <button key={m} type="button" aria-label={`Set ${m} minutes`} className={minutes[row] === m ? 'is-on' : ''} onClick={() => setMinutes(prev => prev.map((v, r) => r === row ? m : v))}>{m}m</button>)}</div></div>)}</div><p className="pm-demo-subtitle">Three tasks at three hours is nine hours, and the day has not got nine hours. You find that out now, not at six.</p></div>
       </div>
       {locked && <div className="pm-demo-shutter"><Lock size={28} /><h3>A moment of privacy.</h3><p>The preview is hidden from view.</p><button className="pm-button" onClick={() => setLocked(false)}><Unlock size={15} /> Reveal preview</button></div>}
     </div>

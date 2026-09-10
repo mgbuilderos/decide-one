@@ -47,11 +47,20 @@ export function getISOWeekNumber(date) {
 /**
  * Main PDF Generation Entry Point
  */
+// Local duration formatter; this engine deliberately imports nothing from the app.
+function fmtDur(totalSec) {
+  const s = Math.max(0, Math.round(totalSec));
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  if (h && m) return `${h}h ${m}m`;
+  if (h) return `${h}h`;
+  return `${m}m`;
+}
+
 export async function generateExecutiveWeeklyBriefingPDF({
   startDate = new Date(),
   data,
   settings = {},
-  habits = [],
   pageSize = 'a4'
 }) {
   const weekDates = getWeekDates(startDate);
@@ -98,24 +107,23 @@ export async function generateExecutiveWeeklyBriefingPDF({
   let totalRapidTasks = 0;
   let completedRapidTasks = 0;
   const categoryCounts = {};
-  const habitCompletionMatrix = {};
-
-  habits.forEach(h => {
-    habitCompletionMatrix[h.id] = [false, false, false, false, false, false, false];
-  });
+  let weekPlannedSec = 0;
+  let weekActualSec = 0;
+  const dayTimeStrip = [];
 
   const dailySummaries = weekDates.map((wd, dayIdx) => {
     const log = data?.dailyLogs?.[wd.dateKey] || {};
     const hardTasks = (log.hardTasks || []).filter(t => t && t.text && t.text.trim());
     const rapidLog = (log.rapidLog || []).filter(r => r && r.text && r.text.trim());
     const reflection = log.reflection || '';
-    const completedHabits = log.completedHabits || [];
 
-    habits.forEach(h => {
-      if (completedHabits.includes(h.id)) {
-        habitCompletionMatrix[h.id][dayIdx] = true;
-      }
-    });
+    // R7 — the week's planned-versus-actual, per day.
+    const sessions = Object.values(log.execution || {});
+    const dayPlanned = sessions.reduce((sum, x) => sum + (x.plannedDurationSec || 0), 0);
+    const dayActual = sessions.reduce((sum, x) => sum + (x.actualFocusSec || 0), 0);
+    weekPlannedSec += dayPlanned;
+    weekActualSec += dayActual;
+    dayTimeStrip.push({ dayLabel: wd.dayName ? String(wd.dayName).slice(0, 3) : `D${dayIdx + 1}`, plannedSec: dayPlanned, actualSec: dayActual });
 
     hardTasks.forEach(t => {
       totalHardTasks++;
@@ -145,12 +153,6 @@ export async function generateExecutiveWeeklyBriefingPDF({
   const totalCompleted = completedHardTasks + completedRapidTasks;
   const overallRate = totalActionable > 0 ? Math.round((totalCompleted / totalActionable) * 100) : 100;
 
-  const totalHabitOpportunities = habits.length * 7;
-  let totalHabitsDone = 0;
-  Object.values(habitCompletionMatrix).forEach(arr => {
-    totalHabitsDone += arr.filter(Boolean).length;
-  });
-  const habitRate = totalHabitOpportunities > 0 ? Math.round((totalHabitsDone / totalHabitOpportunities) * 100) : 100;
 
   // =============================================================
   // PAGE 1: EXECUTIVE STRATEGIC SYNTHESIS
@@ -189,7 +191,7 @@ export async function generateExecutiveWeeklyBriefingPDF({
     { label: 'EXECUTION VELOCITY', value: `${overallRate}%`, sub: `${totalCompleted}/${totalActionable} Total Items` },
     { label: 'KEY PRIORITIES', value: `${completedHardTasks}/${totalHardTasks}`, sub: `${totalHardTasks > 0 ? Math.round((completedHardTasks/totalHardTasks)*100) : 100}% Conquered` },
     { label: 'TACTICAL DISPATCHES', value: `${completedRapidTasks}`, sub: `${totalRapidTasks} Stream Items Done` },
-    { label: 'HABIT CONSISTENCY', value: `${habitRate}%`, sub: `${totalHabitsDone}/${totalHabitOpportunities} Checked` }
+    { label: 'TIME ON THE WORK', value: fmtDur(weekActualSec), sub: `of ${fmtDur(weekPlannedSec)} planned` }
   ];
 
   kpis.forEach((kpi, idx) => {
@@ -220,7 +222,7 @@ export async function generateExecutiveWeeklyBriefingPDF({
   drawLine(ML, curY, PAGE_W - MR, curY, INK_LIGHT, 0.5);
   curY += 14;
 
-  // 2-Column Split: Strategic Priorities & Habit Heatmap
+  // 2-Column Split: Strategic Priorities & Planned vs Actual
   const LEFT_COL_W = 310;
   const RIGHT_COL_W = CONTENT_W - LEFT_COL_W - 16;
   const RIGHT_COL_X = ML + LEFT_COL_W + 16;
@@ -288,77 +290,51 @@ export async function generateExecutiveWeeklyBriefingPDF({
     }
   });
 
-  // Habit Heatmap
-  let habitY = curY;
+  // Planned vs Actual — the week's timeboxes, honestly reported (R7).
+  let timeY = curY;
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(9);
   doc.setTextColor(...INK_BLACK);
-  doc.text('HABIT HEATMAP MATRIX', RIGHT_COL_X, habitY);
+  doc.text('PLANNED VS ACTUAL', RIGHT_COL_X, timeY);
+  timeY += 6;
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(7.5);
   doc.setTextColor(...INK_MUTED);
-  doc.text('7-Day Consistency Grid', RIGHT_COL_X, habitY + 10);
 
-  habitY += 24;
-
-  const cellW = 14;
-  const cellH = 14;
-  const nameW = RIGHT_COL_W - (7 * (cellW + 3)) - 24;
-
-  ['M', 'T', 'W', 'T', 'F', 'S', 'S'].forEach((dLetter, dIdx) => {
-    const dX = RIGHT_COL_X + nameW + (dIdx * (cellW + 3));
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(7);
-    doc.setTextColor(...INK_MUTED);
-    doc.text(dLetter, dX + cellW / 2, habitY, { align: 'center' });
-  });
-
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(6.5);
-  doc.setTextColor(...INK_MUTED);
-  doc.text('%', RIGHT_COL_X + RIGHT_COL_W - 8, habitY, { align: 'right' });
-
-  habitY += 6;
-  drawLine(RIGHT_COL_X, habitY, RIGHT_COL_X + RIGHT_COL_W, habitY, INK_LIGHT, 0.5);
-  habitY += 10;
-
-  habits.forEach(h => {
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7.5);
-    doc.setTextColor(...INK_BLACK);
-    const labelTrunc = doc.splitTextToSize(h.label || h.id, nameW - 4)[0];
-    doc.text(labelTrunc, RIGHT_COL_X, habitY + 9);
-
-    const completedArr = habitCompletionMatrix[h.id] || [];
-    const doneCount = completedArr.filter(Boolean).length;
-    const rate = Math.round((doneCount / 7) * 100);
-
-    completedArr.forEach((done, dIdx) => {
-      const cX = RIGHT_COL_X + nameW + (dIdx * (cellW + 3));
-      if (done) {
+  if (weekPlannedSec === 0) {
+    doc.text('No time was set this week, so there is nothing to compare.', RIGHT_COL_X, timeY);
+    timeY += 8;
+  } else {
+    dayTimeStrip.forEach(day => {
+      const barW = 26;
+      const ratio = day.plannedSec > 0 ? Math.min(day.actualSec / day.plannedSec, 1) : 0;
+      doc.setTextColor(...INK_MUTED);
+      doc.text(day.dayLabel, RIGHT_COL_X, timeY + 3);
+      doc.setFillColor(232, 232, 232);
+      doc.rect(RIGHT_COL_X + 16, timeY, barW, 3.2, 'F');
+      if (ratio > 0) {
         doc.setFillColor(...INK_BLACK);
-        doc.roundedRect(cX, habitY, cellW, cellH, 2, 2, 'F');
-        doc.setDrawColor(255, 255, 255);
-        doc.setLineWidth(1.0);
-        doc.line(cX + 3.5, habitY + 7, cX + 6, habitY + 10.5);
-        doc.line(cX + 6, habitY + 10.5, cX + 10.5, habitY + 3.5);
-      } else {
-        doc.setFillColor(248, 248, 250);
-        doc.roundedRect(cX, habitY, cellW, cellH, 2, 2, 'F');
-        doc.setDrawColor(230, 230, 235);
-        doc.setLineWidth(0.5);
-        doc.roundedRect(cX, habitY, cellW, cellH, 2, 2, 'S');
+        doc.rect(RIGHT_COL_X + 16, timeY, barW * ratio, 3.2, 'F');
       }
+      doc.setTextColor(...INK_MUTED);
+      doc.text(
+        day.plannedSec > 0 ? `${fmtDur(day.actualSec)} / ${fmtDur(day.plannedSec)}` : '—',
+        RIGHT_COL_X + 16 + barW + 4,
+        timeY + 3
+      );
+      timeY += 6;
     });
+    timeY += 2;
+    doc.setTextColor(...INK_MUTED);
+    doc.text(
+      `${fmtDur(weekActualSec)} spent against ${fmtDur(weekPlannedSec)} planned.`,
+      RIGHT_COL_X,
+      timeY
+    );
+    timeY += 8;
+  }
 
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(7);
-    doc.setTextColor(...(rate >= 80 ? INK_BLACK : INK_MUTED));
-    doc.text(`${rate}%`, RIGHT_COL_X + RIGHT_COL_W - 6, habitY + 9.5, { align: 'right' });
-
-    habitY += cellH + 5;
-  });
 
   // Category Distribution Bar
   const bottomBarY = PAGE_H - MB - 50;

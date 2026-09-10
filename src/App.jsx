@@ -117,10 +117,6 @@ export default function App() {
 
   const {
     data,
-    habits,
-    toggleHabit,
-    addHabit,
-    deleteHabit,
     getDailyLog,
     saveDailyLog,
     getMonthlyLog,
@@ -440,7 +436,6 @@ export default function App() {
       startDate: currentDate,
       data,
       settings,
-      habits: data.habits || [],
       pageSize: 'a4'
     });
   };
@@ -808,7 +803,7 @@ export default function App() {
                       />
                     </div>
 
-                    {/* Right Page: Habits & Evening Reflection */}
+                    {/* Right Page: the execution layer (R2) */}
                     <div className={`flex-1 min-w-0 min-h-0 flex flex-col md:pl-6 bifold-right-page extension-booklet-paper overflow-hidden ${
                       mobileFold === 'side2' ? 'flex' : 'hidden md:flex'
                     } ${mobileFlip && mobileFold === 'side2' ? 'mobile-fold-turn' : ''}`}>
@@ -839,7 +834,6 @@ export default function App() {
                   saveDailyLog={saveDailyLog}
                   getWeeklyReview={getWeeklyReview}
                   saveWeeklyReview={saveWeeklyReview}
-                  habits={habits}
                   settings={settings}
                   isMuted={settings.isMuted}
                   onBackToDaily={() => setActiveView('daily')}
@@ -908,11 +902,6 @@ export default function App() {
                   onUpdateRapidLog={handleUpdateRapidLog}
                   activeFilter={activeFilter}
                   setActiveFilter={setActiveFilter}
-                  habits={habits}
-                  onToggleHabit={toggleHabit}
-                  onAddHabit={addHabit}
-                  onDeleteHabit={deleteHabit}
-                  onUpdateReflection={handleUpdateReflection}
                   paperClass={paperClass}
                   paperLabel={paperLabel}
                   settings={settings}
@@ -932,8 +921,8 @@ export default function App() {
       {activeView === 'daily' && !showCover && (
         <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#141416]/95 backdrop-blur-xl border-t border-black/[0.08] dark:border-white/[0.1] px-4 py-2 flex items-center justify-around no-print">
           {[
-            { id: 'side1', label: 'Tasks & Priorities' },
-            { id: 'side2', label: 'Habits & Reflection' }
+            { id: 'side1', label: 'Decide' },
+            { id: 'side2', label: 'Time' }
           ].map(tab => (
             <button
               key={tab.id}

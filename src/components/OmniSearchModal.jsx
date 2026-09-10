@@ -19,9 +19,7 @@ const FACET_PILLS = [
   { id: 'all', label: 'All Entries' },
   { id: 'completed', label: 'Completed', icon: CheckCircle2 },
   { id: 'hardTasks', label: 'Key Priorities', icon: Flame },
-  { id: 'reflections', label: 'Reflections', icon: Feather },
   { id: 'decisions', label: 'Notes & Ideas', icon: BookOpen },
-  { id: 'habitStreak', label: 'Habit Streaks', icon: Sparkles }
 ];
 
 export default function OmniSearchModal({
