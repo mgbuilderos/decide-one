@@ -7,10 +7,11 @@
 
 ## 🌟 Overview
 
-**Decide One** is a stationery-grade daily priority instrument built with **React**, **Vite**, and **Tailwind CSS**. It combines the focused calm of paper with nine decision frameworks and private, on-device storage.
+**Decide One** is a stationery-grade daily priority instrument built with **React**, **Vite**, and **Tailwind CSS**. It combines the focused calm of paper with three public-domain decision methods and on-device storage.
 
-* **Anti-SaaS Philosophy**: $24 USD / ₹1,999 INR one-time purchase. Zero recurring subscriptions.
-* **100% On-Device Sovereignty**: Zero cloud servers, zero telemetry, zero trackers. What you write on your machine stays on your machine.
+* **One payment, not a subscription**: $39 USD / ₹999 INR one-time. Sixty-day refund, no questions.
+* **Your journal stays on your device**: entries are saved in your browser's local storage and are never uploaded. There is no account, no cloud sync, and no server copy of anything you write.
+* **Anonymous usage analytics are off by default and opt-in.** A telemetry module exists in `src/utils/telemetry.js`. It sends nothing unless *both* a build flag and your explicit consent are set, it strips journal text, notes and reflections before sending, and you can turn it off again at any time from the menu. **This is why the project does not claim "zero telemetry"** — the honest claim is that nothing is collected without being asked for.
 * **Strict 24px Universal Swiss Grid**: Mathematical architectural cadence across all line heights, margins, and paper textures.
 * **Zero-Scroll Viewport Lock**: Complete daily operating system contained within `100vh`.
 
@@ -39,7 +40,7 @@ npm run build
 * **Production Domain**: [https://decideone.app/](https://decideone.app/)
 * **Daily Executive Instrument**: [http://localhost:3000/](http://localhost:3000/)
 * **Apple Marketing Landing Page**: [http://localhost:3000/?view=landing](http://localhost:3000/?view=landing)
-* **Instant 1-Click Lifetime Patron Activation**: [http://localhost:3000/?key=DECIDEONE-PATRON-2026](http://localhost:3000/?key=DECIDEONE-PATRON-2026)
+* **Patron activation**: paste a licence key in the app. *(Development promo keys are defined in `src/utils/licenseManager.js`; they are not published here — B2 replaces them with signed per-buyer keys before launch.)*
 * **Weekly Alignment Spread**: [http://localhost:3000/?view=weekly](http://localhost:3000/?view=weekly)
 * **12-Month Annual Index**: [http://localhost:3000/?view=yearly](http://localhost:3000/?view=yearly)
 
@@ -47,10 +48,12 @@ npm run build
 
 ## 🛡️ Security & Privacy Architecture
 
-* **WebCrypto AES-GCM-256**: Client-side encryption of all local records.
-* **WebAuthn Biometric Lock**: Touch ID, Face ID, and Windows Hello hardware unlock.
-* **0.18s Tactical Privacy Shutter**: Instant panic frost on `Esc`, idle timeout, or window blur.
-* **Air-Gapped Vault File**: `.vault` export with PBKDF2 key derivation and HMAC-SHA256 signature.
+Stated precisely, because the previous version of this section overclaimed.
+
+* **Encrypted exports**: `.vault` files are encrypted with WebCrypto AES-GCM-256, PBKDF2 key derivation and an HMAC-SHA256 signature, using a passphrase you choose.
+* **Live storage is *not* encrypted.** Day-to-day entries are plain JSON in `localStorage`. Anyone with access to your unlocked device and browser profile can read them. Encryption applies to exports only.
+* **The privacy shutter is a shutter, not a vault.** It clears the screen from the room — shoulders, screen-shares, a passing colleague — on `Esc`, idle, or window blur. **It is not a security boundary and reopening it requires no secret**, because the data behind it is readable from the browser anyway. Describing it as a lock would be dishonest.
+* **Biometrics where the platform provides them**: WebAuthn is used when a platform authenticator exists. Where it does not, the app reports that plainly rather than reporting a check that never ran.
 
 ---
 
@@ -64,4 +67,4 @@ npm run build
 
 ## ⚖️ Legal & IP Safety Certification
 
-The nine productivity frameworks, naming conventions, typography choices, and layout standards used in Decide One must remain independently reviewed for commercial use. Historical license keys and storage identifiers are retained only as compatibility fallbacks.
+The three public-domain productivity methods, naming conventions, typography choices, and layout standards used in Decide One must remain independently reviewed for commercial use. Historical license keys and storage identifiers are retained only as compatibility fallbacks.

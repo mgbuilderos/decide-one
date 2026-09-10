@@ -23,6 +23,7 @@ import {
   Upload
 } from 'lucide-react';
 import { playSound } from '../utils/audio';
+import { hasTelemetryConsent, setTelemetryConsent } from '../utils/telemetry';
 import { FRAMEWORKS } from './ProductivityFrameworks';
 
 export default function UnifiedMenuModal({
@@ -73,6 +74,16 @@ export default function UnifiedMenuModal({
     } else {
       document.documentElement.classList.remove('dark');
     }
+  };
+
+  // B3 — the person decides, and can change their mind. Default is off, and
+  // an unanswered question counts as no.
+  const [analyticsOn, setAnalyticsOn] = React.useState(() => hasTelemetryConsent());
+  const toggleAnalytics = () => {
+    const next = !analyticsOn;
+    playSound('click', settings.isMuted);
+    setTelemetryConsent(next);
+    setAnalyticsOn(next);
   };
 
   const toggleSound = () => {
@@ -509,6 +520,30 @@ export default function UnifiedMenuModal({
               >
                 {settings.isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
                 <span>{settings.isMuted ? 'Muted' : 'Audio On'}</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Anonymous usage — off unless asked for (B3) */}
+          <div className="p-3.5 sm:p-4 rounded-2xl border border-black/[0.08] dark:border-white/[0.08] space-y-2">
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
+                  Anonymous usage
+                </div>
+                <p className="mt-1 text-[11px] leading-[16px] text-neutral-500 dark:text-neutral-400">
+                  {analyticsOn
+                    ? 'Sharing which features get used. No journal text is ever sent — only that something happened, never what you wrote.'
+                    : 'Off. Nothing about how you use this leaves the device.'}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={toggleAnalytics}
+                aria-pressed={analyticsOn}
+                className="shrink-0 py-1.5 px-2.5 rounded-xl border border-black/[0.08] dark:border-white/[0.1] hover:bg-black/[0.03] dark:hover:bg-white/[0.06] text-[11px] font-semibold transition-colors cursor-pointer"
+              >
+                {analyticsOn ? 'On' : 'Off'}
               </button>
             </div>
           </div>

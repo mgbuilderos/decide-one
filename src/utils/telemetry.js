@@ -1,7 +1,17 @@
 /**
- * Decide One Executive Telemetry & Behavioral Analytics SDK
- * 
- * Top 1% Zero-Knowledge Product Analytics:
+ * Decide One — product analytics, off unless the person says otherwise.
+ *
+ * B3 resolved in the user's favour. Two independent gates, both of which must
+ * be true before a single event is sent:
+ *
+ *   1. VITE_ENABLE_TELEMETRY === 'true' at build time (deployment's choice)
+ *   2. Stored consent of 'granted' on this device (the person's choice)
+ *
+ * Default is off. Absence of an answer is not consent, so an unset value keeps
+ * everything silent. No claim of "zero telemetry" may be made anywhere while
+ * this file exists — the honest claim is that nothing is sent unless asked for,
+ * and that journal text never leaves the device either way.
+ *
  * - Strictly strips private journal text, reflections, and notes
  * - High-throughput micro-batching with 5-second cadence
  * - Guaranteed delivery via navigator.sendBeacon on tab unload
@@ -9,6 +19,25 @@
  * - Rage-click detection and automatic client error tracking
  * - Offline queueing via localStorage
  */
+
+export const CONSENT_KEY = 'decideone_telemetry_consent';
+
+/** Consent is explicit or it does not exist. Unset means no. */
+export function hasTelemetryConsent() {
+  try {
+    return localStorage.getItem(CONSENT_KEY) === 'granted';
+  } catch (e) {
+    return false;
+  }
+}
+
+export function setTelemetryConsent(granted) {
+  try {
+    localStorage.setItem(CONSENT_KEY, granted ? 'granted' : 'denied');
+  } catch (e) {
+    /* storage unavailable — stays off, which is the safe direction */
+  }
+}
 
 const INGEST_URL = '/api/v1/telemetry/events';
 const HEARTBEAT_URL = '/api/v1/telemetry/heartbeat';
@@ -41,8 +70,12 @@ function getOrCreateId(storage, key, prefix, legacyKey) {
 
 class TelemetrySDK {
   constructor() {
-    // Analytics stays off until a deliberate deployment configuration and consent design exist.
-    this.isBrowser = typeof window !== 'undefined' && import.meta.env.VITE_ENABLE_TELEMETRY === 'true';
+    // Both gates, every time. A build with the flag on still sends nothing
+    // until this person, on this device, has said yes.
+    this.isBrowser =
+      typeof window !== 'undefined' &&
+      import.meta.env.VITE_ENABLE_TELEMETRY === 'true' &&
+      hasTelemetryConsent();
     if (!this.isBrowser) return;
 
     this.anonymousId = getOrCreateId(localStorage, 'decideone_anon_id', 'usr', 'pocketbook_anon_id');

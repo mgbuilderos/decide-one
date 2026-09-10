@@ -17,7 +17,7 @@ export default function ExecutivePrivacyOverlay({
   updateSettings = null
 }) {
   const [passphrase, setPassphrase] = useState('');
-  const [error, setError] = useState(false);
+  const [biometricNote, setBiometricNote] = useState('');
   const [currentTime, setCurrentTime] = useState('');
 
   const dateObj = currentDate || new Date();
@@ -46,35 +46,39 @@ export default function ExecutivePrivacyOverlay({
     playSound('patron-chime', isMuted);
     onUnlockVault?.();
     setPassphrase('');
-    setError(false);
   }, [isMuted, onUnlockVault]);
 
-  // Biometric Unlock with seamless fallback
+  /**
+   * This is a shutter, not a vault.
+   *
+   * It hides the page from the room — shoulders, screen-shares, a passing
+   * colleague. It is not a security boundary and must never be described as
+   * one: entries live in this browser's localStorage, so anyone with the
+   * unlocked device can read them without going through this screen at all.
+   *
+   * Where the platform provides real biometrics we use them, because it costs
+   * nothing and is a nicer gesture. Where it does not, we say so rather than
+   * reporting a check that never ran.
+   */
   const handleBiometricUnlock = async () => {
     playSound('click', isMuted);
-    try {
-      const res = await authenticateWithBiometrics(ownerName);
-      if (res?.success) {
-        handleUnlock();
-        return;
-      }
-    } catch (err) {
-      // In dev sandbox or browser without hardware prompt, unlock smoothly
+    const res = await authenticateWithBiometrics(ownerName).catch(() => ({ success: false }));
+    if (res?.success) {
       handleUnlock();
       return;
     }
-    handleUnlock();
+    setBiometricNote(
+      res?.reason === 'cancelled'
+        ? 'Cancelled.'
+        : 'This device has no biometric check available.'
+    );
   };
 
+  // Any input reopens the shutter, deliberately: it exists to clear the screen,
+  // not to withhold the data. Pretending otherwise would be the dishonest part.
   const handleFormSubmit = (e) => {
     e?.preventDefault();
-    // Friction-free unlock: empty input defaults to 1234, or explicit 1234 or any PIN >= 4 chars
-    if (!passphrase.trim() || passphrase.trim() === '1234' || passphrase.trim().length >= 4) {
-      handleUnlock();
-    } else {
-      playSound('click', isMuted);
-      setError(true);
-    }
+    handleUnlock();
   };
 
   const toggleTheme = () => {
@@ -217,11 +221,10 @@ export default function ExecutivePrivacyOverlay({
                 <div className="flex gap-2">
                   <input
                     type="password"
-                    placeholder="Enter PIN (e.g. 1234)"
+                    placeholder="Press enter to reopen"
                     value={passphrase}
                     onChange={(e) => {
                       setPassphrase(e.target.value);
-                      setError(false);
                     }}
                     className="flex-1 h-10 px-4 rounded-xl bg-black/[0.04] dark:bg-white/[0.06] border border-black/10 dark:border-white/15 text-center text-xs tracking-widest font-semibold text-neutral-900 dark:text-white placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none focus:border-neutral-900 dark:focus:border-white transition-colors"
                     autoFocus
@@ -239,15 +242,15 @@ export default function ExecutivePrivacyOverlay({
                     type="button"
                     onClick={handleUnlock}
                     className="text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer"
-                    title="Unlock with Default PIN 1234"
+                    title="Reopen the page"
                   >
-                    Quick Unlock (PIN: 1234)
+                    Reopen
                   </button>
                 </div>
 
-                {error && (
-                  <p className="text-red-500 dark:text-red-400 text-[11px] font-medium pt-0.5">
-                    Incorrect passcode. Enter 1234 or use Touch ID.
+                {biometricNote && (
+                  <p className="text-neutral-500 dark:text-neutral-400 text-[11px] font-medium pt-0.5">
+                    {biometricNote}
                   </p>
                 )}
               </form>
@@ -257,8 +260,8 @@ export default function ExecutivePrivacyOverlay({
             {/* Bottom Security Footer: Apple Card Language (User Benefit Focus) */}
             <div className="w-full pt-3 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-[10px] text-neutral-500 dark:text-neutral-400 uppercase tracking-[0.14em] px-2 font-semibold">
               <span className="flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                <span>Complete Privacy</span>
+                <ShieldCheck className="w-3.5 h-3.5 text-neutral-500" />
+                <span>Screen hidden</span>
               </span>
               <span>Uncompromised Focus</span>
             </div>

@@ -3,7 +3,8 @@
  * 100% Client-Side Zero-Knowledge Cryptography (WebCrypto API)
  * - AES-GCM-256 Encryption
  * - PBKDF2 Key Derivation (100,000 iterations, SHA-256)
- * - Hardware Biometrics (Apple Touch ID, Face ID, Windows Hello via WebAuthn)
+ * - Hardware biometrics via WebAuthn, where the platform actually provides them.
+ *   Where it does not, this reports failure rather than pretending to have checked.
  * - Air-Gapped Sovereign Vault (.vault) Export / Import
  * Zero Cloud Servers • Zero Third-Party Telemetry
  */
@@ -141,12 +142,14 @@ export async function authenticateWithBiometrics(username = 'Executive Owner') {
   const challenge = new Uint8Array(32);
   window.crypto.getRandomValues(challenge);
 
-  // Fallback / mock support for environments where platform credentials require full domain registration
+  // This function reports what actually happened. It previously returned
+  // success when no authentication had taken place — on unsupported hardware,
+  // on any unexpected error, and unconditionally at the end — which made every
+  // caller believe a check had passed that never ran.
   try {
     const isAvailable = await checkBiometricHardwareSupport();
     if (!isAvailable) {
-      // In dev sandbox or non-biometric desktop, return simulated success
-      return { success: true, method: 'local-hardware-simulated' };
+      return { success: false, reason: 'unsupported', method: 'none' };
     }
 
     const credential = await navigator.credentials.get({
@@ -161,16 +164,13 @@ export async function authenticateWithBiometrics(username = 'Executive Owner') {
     if (credential) {
       return { success: true, credentialId: credential.id, method: 'webauthn-hardware' };
     }
+    return { success: false, reason: 'no-credential', method: 'none' };
   } catch (err) {
-    // If user cancelled or dev origin restrictions apply, surface error
-    console.info('Biometric prompt feedback:', err.message);
-    // Graceful fallback for demo/development environments
     if (err.name === 'NotAllowedError') {
-      throw new Error('Biometric authentication was cancelled or timed out.');
+      return { success: false, reason: 'cancelled', method: 'none' };
     }
+    return { success: false, reason: err.name || 'error', method: 'none' };
   }
-
-  return { success: true, method: 'fallback-quick-pass' };
 }
 
 /**
