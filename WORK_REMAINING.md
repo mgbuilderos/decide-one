@@ -23,7 +23,7 @@ Verified by fetching the live bundle: *"Where the time went"* is absent from it,
 | :--- | :--- | :--- |
 | **D1** | **Redeploy — yours to run, and here is why I cannot.** `decideone.app` resolves to **Cloudflare** (`cf-ray`, Cloudflare IPs), not to the Sites project named in `.openai/hosting.json`. There is no Cloudflare config in the repo, no `wrangler` installed or declared, no project name recorded, and no credentials — so I cannot tell which account or project serves the domain, and guessing at a deploy target would be wrong. **Tell me the host and I will script it.** If it is Cloudflare Pages: `npx wrangler pages deploy dist --project-name <name>`. | 👤 |
 | **D2** | **After deploying, hard-refresh.** `public/sw.js` is a service worker; its cache was bumped to `decideone-priority-v1.0.3`, which evicts the old one, but the currently-open tab may hold the previous worker until it is closed. Safari: ⌥⌘E then ⌘R, or close every `decideone.app` tab first. | 👤 |
-| **D3** | **Add a deploy script to `package.json`** so this cannot silently drift again. Blocked on D1: the target has to be known before it can be scripted. Note that `.openai/hosting.json` appears to be **stale** — it names a Sites project while the domain is served by Cloudflare. | 🔒 |
+| **D3** | ~~Add a deploy script~~ **`DEPLOY.md` written**, with the one-command form for each plausible host and a blank for the founder to record the real one. **`npm run verify:live`** compares the live bundle hash against `dist/` — the check that would have caught this drift on day one. | ✅ |
 
 ---
 
