@@ -1,49 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <defs>
-    <radialGradient id="leatherBg" cx="40%" cy="35%" r="65%">
-      <stop offset="0%" stop-color="#27272A" />
-      <stop offset="60%" stop-color="#18181B" />
-      <stop offset="100%" stop-color="#09090B" />
-    </radialGradient>
-    <linearGradient id="embossGold" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#D4AF37" />
-      <stop offset="50%" stop-color="#F3E5AB" />
-      <stop offset="100%" stop-color="#AA771C" />
-    </linearGradient>
-    <filter id="chassisShadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#000000" flood-opacity="0.55" />
-    </filter>
-  </defs>
-
-  <!-- Background rounded squircle / chassis -->
-  <rect x="32" y="32" width="448" height="448" rx="104" fill="url(#leatherBg)" filter="url(#chassisShadow)" stroke="#3F3F46" stroke-width="2" />
-
-  <!-- Debossed Cover Frame Line -->
-  <rect x="64" y="64" width="384" height="384" rx="72" fill="none" stroke="#27272A" stroke-width="3" opacity="0.8" />
-
-  <!-- Book Spine Crease on Left -->
-  <line x1="128" y1="64" x2="128" y2="448" stroke="#09090B" stroke-width="6" opacity="0.7" />
-  <line x1="132" y1="64" x2="132" y2="448" stroke="#3F3F46" stroke-width="1.5" opacity="0.4" />
-
-  <!-- Minimalist Stationery Ribbon Bookmark (Top to Center) -->
-  <polygon points="340,64 372,64 372,210 356,194 340,210" fill="#991B1B" opacity="0.9" />
-
-  <!-- Geometric Decide One monogram debossed in center -->
-  <g transform="translate(176, 196)" fill="none" stroke="url(#embossGold)" stroke-width="20" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M 10,0 L 10,120 L 58,120 C 94,120 112,96 112,60 C 112,24 94,0 58,0 Z" />
-    <path d="M 142,22 L 162,4 L 162,120" />
-  </g>
-
-  <!-- Subtle 24px Swiss Dot Grid Pattern on right side -->
-  <circle cx="340" cy="300" r="3" fill="#52525B" opacity="0.4" />
-  <circle cx="376" cy="300" r="3" fill="#52525B" opacity="0.4" />
-  <circle cx="412" cy="300" r="3" fill="#52525B" opacity="0.4" />
-
-  <circle cx="340" cy="336" r="3" fill="#52525B" opacity="0.4" />
-  <circle cx="376" cy="336" r="3" fill="#52525B" opacity="0.4" />
-  <circle cx="412" cy="336" r="3" fill="#52525B" opacity="0.4" />
-
-  <circle cx="340" cy="372" r="3" fill="#52525B" opacity="0.4" />
-  <circle cx="376" cy="372" r="3" fill="#52525B" opacity="0.4" />
-  <circle cx="412" cy="372" r="3" fill="#52525B" opacity="0.4" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title description">
+  <title id="title">Decide One D1 monogram</title>
+  <desc id="description">A white D1 monogram on a black rounded square.</desc>
+  <rect width="512" height="512" rx="112" fill="#050505"/>
+  <rect x="10" y="10" width="492" height="492" rx="102" fill="none" stroke="#FFFFFF" stroke-opacity=".22" stroke-width="4"/>
+  <text x="256" y="324" fill="#FFFFFF" text-anchor="middle" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="220" font-weight="700" letter-spacing="-16">D1</text>
 </svg>

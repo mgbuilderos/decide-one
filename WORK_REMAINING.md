@@ -21,9 +21,9 @@ Verified by fetching the live bundle: *"Where the time went"* is absent from it,
 
 | # | Task | Status |
 | :--- | :--- | :--- |
-| **D1** | **Redeploy `dist/` to the Sites project** in `.openai/hosting.json` (`appgprj_6aa060ea93fc819198302b9398806888`). Run `npm run build` first. **I cannot do this — there is no deploy CLI in this repo, so it is yours to run.** | 👤 |
+| **D1** | **Redeploy — yours to run, and here is why I cannot.** `decideone.app` resolves to **Cloudflare** (`cf-ray`, Cloudflare IPs), not to the Sites project named in `.openai/hosting.json`. There is no Cloudflare config in the repo, no `wrangler` installed or declared, no project name recorded, and no credentials — so I cannot tell which account or project serves the domain, and guessing at a deploy target would be wrong. **Tell me the host and I will script it.** If it is Cloudflare Pages: `npx wrangler pages deploy dist --project-name <name>`. | 👤 |
 | **D2** | **After deploying, hard-refresh.** `public/sw.js` is a service worker; its cache was bumped to `decideone-priority-v1.0.3`, which evicts the old one, but the currently-open tab may hold the previous worker until it is closed. Safari: ⌥⌘E then ⌘R, or close every `decideone.app` tab first. | 👤 |
-| **D3** | **Add a deploy script to `package.json`** so this cannot silently drift again. Nothing in the repo currently records how the site is published. | ⬜ |
+| **D3** | **Add a deploy script to `package.json`** so this cannot silently drift again. Blocked on D1: the target has to be known before it can be scripted. Note that `.openai/hosting.json` appears to be **stale** — it names a Sites project while the domain is served by Cloudflare. | 🔒 |
 
 ---
 
@@ -34,8 +34,8 @@ From `DECISIONS.md` §6. **B0 is now closed** (the repo is on GitHub, private).
 | # | Blocker | What has to change | Status |
 | :--- | :--- | :--- | :--- |
 | **B0** | No version control | `mgbuilderos/decide-one`, private, pushed | ✅ |
-| **B1** | **Checkout is simulated** — a 1.5s timer, no money requested or taken | Real Dodo Payments checkout. **Needs your merchant account and keys.** | 👤 |
-| **B2** | **Six hardcoded licence keys**, one published in the README, all readable in the bundle | Ed25519-signed per-buyer keys, verified offline against a public key in the app. The legacy keys must keep working (N32) | ⬜ |
+| **B1** | **Checkout is simulated** — a timer, no money requested or taken. Deferred by the founder, Sept 10. The demo path no longer activates a licence key: it writes a record marked `demo: true`, so nothing bundle-readable grants Patron | 👤 |
+| **B2** | ~~Six hardcoded licence keys, all readable in the bundle~~ **Done.** Signed per-order licences: `D1.<payload>.<signature>`, ECDSA P-256, verified offline against a public key embedded in the app. **All six promo keys are gone — verified absent from the built bundle.** Anyone who activated with one is migrated to a demo grant rather than dropped. Signing key lives offline and is gitignored; Gate 23 fails the build if a shared key returns or a private key component appears in source. **Deviation from the brief:** P-256 not Ed25519 — Ed25519 in browser WebCrypto only reached Chrome 137, and a buyer on an older browser must never be locked out of software they paid for. | ✅ |
 | **B3** | ~~"Zero telemetry" claimed while the SDK is live~~ **Done.** Telemetry needs **two** gates — the build flag *and* stored consent on this device — and defaults to off, because an unanswered question is not consent. A control in the menu turns it on or off. README corrected: no "zero telemetry" claim, three methods not nine, $39/₹999 not $24/₹1,999, live storage stated as **unencrypted**, and the licence key no longer printed in it. | ✅ |
 | **B4** | ~~No terms, privacy page, or refund policy~~ **Drafted.** `LegalPages.jsx`, linkable at `?view=legal` and from the landing footer. Terms, Privacy, and a 60-day no-questions refund policy matching M-A rows. **Five bracketed facts are yours to fill: legal entity, registered address, support email, jurisdiction, effective date.** M-A8 still stands — an attorney reviews before the first sale. | 👤 |
 

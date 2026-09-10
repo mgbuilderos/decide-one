@@ -17,7 +17,7 @@ import {
   CreditCard
 } from 'lucide-react';
 import { playSound } from '../utils/audio';
-import { activateLicense, verifyLicenseKey } from '../utils/licenseManager';
+import { activateLicense, activateDemoPatron } from '../utils/licenseManager';
 
 export default function PatronUpgradeModal({
   isOpen,
@@ -43,14 +43,14 @@ export default function PatronUpgradeModal({
 
   if (!isOpen) return null;
 
-  const handleActivate = (keyToTry = null) => {
+  const handleActivate = async (keyToTry = null) => {
     const key = (keyToTry || licenseKeyInput).trim();
     if (!key) {
       setActivationError('Please enter your license key.');
       return;
     }
 
-    const res = activateLicense(key);
+    const res = await activateLicense(key);
     if (res.success) {
       playSound('patron-chime', isMuted);
       setActivationSuccess(true);
@@ -61,14 +61,24 @@ export default function PatronUpgradeModal({
       }, 1400);
     } else {
       playSound('click', isMuted);
-      setActivationError('Invalid license key. Format should be PB-XXXX-XXXX-XXXX or valid promo pass.');
+      setActivationError('That licence key could not be verified. Check it was pasted in full.');
+    }
+  };
+
+  const grantDemo = () => {
+    const res = activateDemoPatron();
+    if (res.success) {
+      playSound('patron-chime', isMuted);
+      setActivationSuccess(true);
+      setActivationError('');
+      onLicenseUpdated?.();
+      setTimeout(() => onClose(), 900);
     }
   };
 
   const handleApplyDemoKey = () => {
     playSound('click', isMuted);
-    setLicenseKeyInput('DECIDEONE-PATRON-2026');
-    handleActivate('DECIDEONE-PATRON-2026');
+    grantDemo();
   };
 
   const handleSimulateCheckout = () => {
@@ -77,7 +87,7 @@ export default function PatronUpgradeModal({
     // Instant simulation for frictionless client-side upgrade
     setTimeout(() => {
       setIsProcessingCheckout(false);
-      handleActivate('DECIDEONE-PATRON-2026');
+      grantDemo();
     }, 800);
   };
 
@@ -254,7 +264,7 @@ export default function PatronUpgradeModal({
                   </span>
                 </div>
                 <span className="text-[10px] font-semibold tracking-wider text-neutral-400">
-                  DECIDEONE-PATRON-2026
+                  From your receipt
                 </span>
               </div>
 
@@ -266,7 +276,9 @@ export default function PatronUpgradeModal({
                     setLicenseKeyInput(e.target.value);
                     setActivationError('');
                   }}
-                  placeholder="e.g. DECIDEONE-PATRON-2026"
+                  placeholder="Paste the licence key from your receipt"
+                  spellCheck={false}
+                  autoComplete="off"
                   className="flex-1 px-3 py-1.5 text-xs rounded-lg border border-black/[0.12] dark:border-white/[0.15] bg-transparent text-neutral-900 dark:text-white focus:outline-none focus:border-neutral-900 dark:focus:border-white uppercase placeholder:normal-case"
                 />
                 <button

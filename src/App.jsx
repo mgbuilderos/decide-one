@@ -19,7 +19,7 @@ import MarketingLandingPage from './components/MarketingLandingPage';
 import { useJournalStorage, formatDateKey } from './hooks/useJournalStorage';
 import { useProductivity } from './hooks/useProductivity';
 import { playSound } from './utils/audio';
-import { getStoredLicense } from './utils/licenseManager';
+import { getStoredLicense, migrateLegacyActivation, revalidateStoredLicense } from './utils/licenseManager';
 import { downloadMarkdownVault, printAnnualBook } from './utils/archivalExport';
 import OmniSearchModal from './components/OmniSearchModal';
 import ExecutivePrivacyOverlay from './components/ExecutivePrivacyOverlay';
@@ -63,7 +63,18 @@ export default function App() {
   const [isVictoryCardOpen, setIsVictoryCardOpen] = useState(false);
   const [isGiftModalOpen, setIsGiftModalOpen] = useState(false);
   const [selectedBreakerMonth, setSelectedBreakerMonth] = useState(() => new Date().getMonth());
-  const [license, setLicense] = useState(() => getStoredLicense());
+  const [license, setLicense] = useState(() => {
+    // B2 — anyone who activated with a retired promo key keeps access as a
+    // demo rather than being silently dropped to the free version.
+    migrateLegacyActivation();
+    return getStoredLicense();
+  });
+
+  // A stored signed licence is re-verified against the public key after mount,
+  // so a forged or corrupted record cannot grant Patron past the first render.
+  useEffect(() => {
+    revalidateStoredLicense().then(setLicense);
+  }, []);
   const [showCover, setShowCover] = useState(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);

@@ -314,6 +314,42 @@ for (const rel of surfacesThatMustNotGamify) {
   }
 }
 
+// Rule 23: Licence Integrity Gate (B2) — no shared secret may unlock Patron,
+// and the signing key must never reach the repository or the bundle.
+const licKeysPath = path.join(SRC_DIR, 'utils/licenseKeys.js');
+const licMgrPath = path.join(SRC_DIR, 'utils/licenseManager.js');
+if (!fs.existsSync(licKeysPath)) {
+  errors.push('[Rule 23 Violation] licenseKeys.js is missing — signed per-buyer licences are what replaced the shared promo keys.');
+} else {
+  const keys = fs.readFileSync(licKeysPath, 'utf8');
+  if (!keys.includes('verifySignedLicense')) {
+    errors.push('[Rule 23 Violation] verifySignedLicense is missing.');
+  }
+  // A JWK private key carries a "d" member. It must never appear in source.
+  if (/"d"\s*:/.test(keys)) {
+    errors.push('[Rule 23 Violation] A private key component ("d") appears in licenseKeys.js — the signing key must stay offline.');
+  }
+}
+if (fs.existsSync(licMgrPath)) {
+  const mgr = fs.readFileSync(licMgrPath, 'utf8');
+  // The retired promo keys unlocked every copy and were readable in the bundle.
+  // Substring match, not quote-adjacent: 'DECIDEONE-PATRON-2026' must trip the
+  // 'PATRON-2026' check. Comments in this file deliberately never name a key.
+  for (const retired of ['PATRON-2026', 'VIP-2026', 'FOUNDER-LIFETIME-PASS', 'EXECUTIVE-PATRON-ACCESS']) {
+    if (mgr.includes(retired)) {
+      errors.push(`[Rule 23 Violation] Shared promo key containing "${retired}" is back in licenseManager.js — one leaked string would unlock every copy.`);
+    }
+  }
+}
+// The signing key file must be ignored by git if it exists at all.
+const signingKeyPath = path.join(process.cwd(), 'licence-signing-key.json');
+if (fs.existsSync(signingKeyPath)) {
+  const gitignore = fs.existsSync('.gitignore') ? fs.readFileSync('.gitignore', 'utf8') : '';
+  if (!gitignore.includes('licence-signing-key.json')) {
+    errors.push('[Rule 23 Violation] licence-signing-key.json exists but is not gitignored.');
+  }
+}
+
 // Rule 18: Lifetime Patron & Archival Monetization Gate
 const licensePath = path.join(SRC_DIR, 'utils/licenseManager.js');
 if (fs.existsSync(licensePath)) {
@@ -423,7 +459,8 @@ if (errors.length === 0) {
   console.log('  - Rule 19: Black Embossed Minimal Neumorphic Chassis Gate (No middle bookmark, no leather side border)');
   console.log('  - Rule 20: Executive Universal Keyboard Navigation Gate (Instant 1/2/3/T/C thought-speed routing)');
   console.log('  - Rule 21: Restricted Naming Token Check (not trademark or copyright clearance)');
-  console.log('  - Rule 22: Execution Layer Enforcement Gate (Ivy Lee order lock, breathing state, non-punitive overrun, timing provenance)\n');
+  console.log('  - Rule 22: Execution Layer Enforcement Gate (Ivy Lee order lock, breathing state, non-punitive overrun, timing provenance)');
+  console.log('  - Rule 23: Licence Integrity Gate (signed per-buyer keys; no shared secret, no private key in source)\n');
   process.exit(0);
 } else {
   console.error(`❌ QC AUDIT FAILED with ${errors.length} error(s):\n`);
