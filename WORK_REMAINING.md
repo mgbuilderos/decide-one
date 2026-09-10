@@ -71,8 +71,8 @@ Found while verifying B-12. All pre-existing; none introduced by this week's wor
 | # | Task | Status |
 | :--- | :--- | :--- |
 | **P-1** | **R16 `doneDefinition`** — stating what "done" looks like. Optional, never required, never before the first line is written | ⬜ |
-| **P-2** | **M-A7 Methods & Attributions page** — each method, its originator, date and licence status. Required before launch: the product's whole claim is that these are public-domain methods used honestly | ⬜ |
-| **P-3** | **R17 return prompt** — the model marks abandoned sessions `inferred`, but nothing yet *asks* "still on this?" on return. The provenance is honest; the prompt is missing | ⬜ |
+| **P-2** | ~~Methods & Attributions page~~ **Done.** `?view=methods`, linked from the landing footer. Each method with originator, date, the problem it treats and its legal standing; the §102(b) reasoning; and the single evidence claim scoped strictly to if-then planning. **Corrects the Eisenhower misattribution rather than repeating it**, and observes the M-A5 blacklist throughout. | ✅ |
+| **P-3** | ~~R17 return prompt~~ **Done.** On return: *Still on "X"?* with Still on it / I stopped, stating that the figure is an estimate. Only the trusted interval is banked — a five-hour absence banked one hour, not five. | ✅ |
 | **P-4** | ~~Rule of 3 hard cap~~ **Was my error — already enforced.** The slots are hardcoded to exactly three. What is genuinely open is **B-23**: the Today stream beneath is unbounded and can become where priority #4 lives. Needs a ruling on what that stream is for, not code. | 👤 |
 | **P-5** | ~~Eisenhower classification before writing~~ **Done.** One *Add a task* control asks *Is it urgent?* then *Does it actually matter?* and places the result. The per-quadrant `+` buttons are gone — the quadrant is a consequence of a judgment, not a destination you pick. | ✅ |
 

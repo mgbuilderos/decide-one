@@ -27,10 +27,13 @@ export const FRAMEWORKS = [
   {
     id: 'eisenhower',
     cluster: 'Decision',
-    name: 'Eisenhower Matrix',
-    subtitle: 'Urgent & important decision matrix',
-    description: 'Organize tasks into 4 decision quadrants: Do, Schedule, Delegate, Eliminate.',
-    bestFor: 'Distinguishing urgent noise from truly important work'
+    // M-A3 — the popular name is a misattribution. Eisenhower quoted the
+    // distinction in 1954; Covey built the matrix in 1989. The id stays
+    // `eisenhower` so stored days keep loading; only the label changes.
+    name: 'The Urgent/Important Matrix',
+    subtitle: 'Four quadrants, decided by two questions',
+    description: 'Answer whether a task is urgent and whether it matters; the quadrant follows.',
+    bestFor: 'Separating urgent noise from work that actually matters'
   }
 ];
 

@@ -31,6 +31,7 @@ import ExecutiveDecisionLogModal from './components/ExecutiveDecisionLogModal';
 import ExecutiveClosureRitualModal from './components/ExecutiveClosureRitualModal';
 import DayConditionPrompt from './components/DayConditionPrompt';
 import LegalPages from './components/LegalPages';
+import MethodsPage from './components/MethodsPage';
 import { getFrameworkItems } from './utils/executionModel';
 import VolumeSwitcherBar from './components/VolumeSwitcherBar';
 import ExecutiveVoiceHUD from './components/ExecutiveVoiceHUD';
@@ -47,7 +48,7 @@ export default function App() {
       const v = params.get('view');
       // 'legal' is directly linkable on purpose: a merchant of record needs a
       // stable URL for terms, privacy and refunds (B4).
-      if (['daily', 'weekly', 'monthly', 'yearly', 'breaker', 'landing', 'legal'].includes(v)) return v;
+      if (['daily', 'weekly', 'monthly', 'yearly', 'breaker', 'landing', 'legal', 'methods'].includes(v)) return v;
       if (window.location.hash && ['#overview', '#highlights', '#design', '#craft', '#devices', '#privacy', '#pricing', '#anatomy', '#audience'].includes(window.location.hash)) {
         return 'landing';
       }
@@ -532,7 +533,7 @@ export default function App() {
   const dailyLog = getDailyLog(dateKey);
   const monthlyLog = getMonthlyLog(monthKey);
 
-  // Active Productivity Framework (Rule of 3 / Eisenhower Matrix / Ivy Lee Method)
+  // Active method (Rule of 3 / The Urgent/Important Matrix / Ivy Lee Method)
   const activeFramework = dailyLog.activeFramework || settings.activeFramework || 'rule_of_3';
 
   // Productivity metrics
@@ -684,11 +685,16 @@ export default function App() {
     return <LegalPages onBack={() => setActiveView('landing')} />;
   }
 
+  if (activeView === 'methods') {
+    return <MethodsPage onBack={() => setActiveView('landing')} />;
+  }
+
   if (activeView === 'landing') {
     return (
       <div className="w-full min-h-screen selection:bg-neutral-900 selection:text-white dark:selection:bg-white dark:selection:text-neutral-900">
         <MarketingLandingPage
           onOpenLegal={() => setActiveView('legal')}
+          onOpenMethods={() => setActiveView('methods')}
           onLaunchJournal={() => {
             playSound('page', settings.isMuted);
             const url = new URL(window.location.href);

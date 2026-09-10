@@ -12,7 +12,7 @@
  *     whole difference in register between a coaching brand and an instrument.
  *
  *  2. No method is ever named here. The user should not need to learn that
- *     Eisenhower exists until after it has helped them.
+ *     the Urgent/Important Matrix exists until after it has helped them.
  *
  * `effect` describes what the instrument will do, in plain mechanism terms.
  *

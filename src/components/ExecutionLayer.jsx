@@ -34,16 +34,41 @@ export default function ExecutionLayer({
   const capacity = computeCapacity(sessions);
   const runningItem = items.find(item => getSession(dailyLog, item.id).state === STATES.RUNNING);
 
-  // R17 — a session left running across a closed laptop is suspended and marked
-  // inferred on return. Honest data beats clean data.
+  /**
+   * R17 — a session left running across a closed laptop is suspended on return
+   * and its figure marked inferred. Honest data beats clean data.
+   *
+   * P-3 is the other half: the instrument then *asks*. Silently banking a
+   * guessed number and moving on would be the dishonest version — the person
+   * is the only one who knows whether they were still working, so the question
+   * goes to them, once, and either answer is fine.
+   */
+  const [askingAbout, setAskingAbout] = useState([]);
+
   useEffect(() => {
+    const reconciledIds = [];
     items.forEach(item => {
       const session = getSession(dailyLog, item.id);
       const reconciled = reconcileOnReturn(session);
-      if (reconciled !== session) onUpdateExecution?.(item.id, reconciled);
+      if (reconciled !== session) {
+        onUpdateExecution?.(item.id, reconciled);
+        reconciledIds.push(item.id);
+      }
     });
+    if (reconciledIds.length) setAskingAbout(reconciledIds);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const answerStillOn = (item, stillOn) => {
+    const session = getSession(dailyLog, item.id);
+    playSound('click', isMuted);
+    if (stillOn) {
+      // Resume from now. The gap stays inferred — resuming does not retroactively
+      // turn a guessed stretch into a measured one.
+      onUpdateExecution?.(item.id, beginRunning(session));
+    }
+    setAskingAbout(prev => prev.filter(id => id !== item.id));
+  };
 
   /**
    * A display tick, not a counter.
@@ -139,6 +164,38 @@ export default function ExecutionLayer({
         <p className="shrink-0 text-[11px] leading-[24px] text-neutral-500 dark:text-neutral-400 border-b border-black/[0.08] dark:border-white/[0.08]">
           That fills the day back-to-back, with no gap for anything else.
         </p>
+      )}
+
+      {askingAbout.length > 0 && (
+        <div className="shrink-0 border-b border-black/[0.08] dark:border-white/[0.08] py-2 space-y-2">
+          {askingAbout.map(id => {
+            const item = items.find(i => i.id === id);
+            if (!item) return null;
+            const session = getSession(dailyLog, id);
+            return (
+              <div key={id} className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-[11px] font-semibold text-neutral-800 dark:text-neutral-200 truncate">
+                    Still on “{item.text}”?
+                  </p>
+                  <p className="text-[10px] text-neutral-400 leading-[16px]">
+                    It was left running, so {formatDuration(session.actualFocusSec || 0)} is an estimate rather than a measurement.
+                  </p>
+                </div>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button type="button" onClick={() => answerStillOn(item, true)}
+                    className="text-[10px] font-semibold px-2 py-1 rounded bg-black/[0.05] dark:bg-white/[0.08] hover:bg-black/10 dark:hover:bg-white/15 transition-colors cursor-pointer">
+                    Still on it
+                  </button>
+                  <button type="button" onClick={() => answerStillOn(item, false)}
+                    className="text-[10px] font-semibold px-2 py-1 rounded text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer">
+                    I stopped
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       )}
 
       <div className="flex-1 min-h-0 overflow-y-auto">
