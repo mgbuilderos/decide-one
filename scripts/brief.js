@@ -60,7 +60,8 @@ for (const [f, why] of [
   ['DEPLOY.md', 'one command: npm run deploy'],
   ['FRAMEWORKS.md', 'which methods ship, and their attribution'],
   ['FOUNDATIONS.md', 'why the methods are sound'],
-  ['LANDING_PROTOTYPE.md', 'the honest description of what is built']
+  ['LANDING_PROTOTYPE.md', 'the honest description of what is built'],
+  ['TELEMETRY_SPEC.md', 'what to measure, and what must never be measured']
 ]) {
   if (!fs.existsSync(f)) continue;
   const w = fs.readFileSync(f, 'utf8').split(/\s+/).length;
