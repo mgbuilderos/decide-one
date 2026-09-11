@@ -18,12 +18,27 @@ function scanFiles(dir, callback) {
 
 console.log('🔍 Running Decide One Quality Control (QC) Audit...\n');
 
-// Rule 0: Governed surfaces must exist.
+// Rule 0: Governed surfaces must exist — and must still be reached.
 //
 // Most rules below read their subject inside `if (fs.existsSync(...))`, so a
 // deleted or renamed file does not fail the audit — it silently stops being
 // checked, and the audit still prints green. A rule that cannot see its
 // subject has not passed; it has abstained.
+//
+// Existing is not the same as being reached. On 12 September
+// MonthlyBreakerPage.jsx was still on disk, still governed by Rule 18, and had
+// no importer at all: a `git add -A` in 4e68de4 swept away another agent's
+// in-progress App.jsx and carried the import out with it. The file existed, so
+// Rule 0 passed, and a governed surface sat unreachable while the audit
+// printed green. So the second clause walks the real import graph out from
+// src/main.jsx — static imports, `React.lazy(() => import(...))` and CSS
+// `@import` alike — and fails any surface the running application never
+// arrives at.
+//
+// That walk is transitive on purpose. RapidLogSection imports BulletItem
+// imports TaskNaturalLanguageParser; asking only "does something import this"
+// clears all three, because each does have an importer. Asking "does the
+// application reach this" clears none of them, which is the truth.
 //
 // This gate names every file the rules depend on. Removing one is then a
 // failure with a reason, rather than a quiet gap in the contract between three
@@ -41,18 +56,97 @@ const governedSurfaces = [
   ['utils/archivalExport.js', 'Rule 18 — the export engine the Patron tier promises'],
   ['components/PatronUpgradeModal.jsx', 'Rule 18 — the upgrade surface'],
   ['components/YearlyViewSpread.jsx', 'Rule 18 — the twelve-month annual view'],
-  ['components/MonthlyBreakerPage.jsx', 'Rule 18 — the month breaker'],
   ['components/ExecutionLayer.jsx', 'Rule 22 — capacity and the active clock'],
   ['components/DayReport.jsx', 'Rule 22 — closure without a verdict'],
   ['components/ExecutiveClosureRitualModal.jsx', 'Rule 22 — the closure ritual'],
   ['components/InlineTimeControl.jsx', 'Rule 22 and B-35 — per-line time control']
 ];
+
+// The import graph, walked from the one file index.html actually loads.
+const ENTRY_POINT = path.join(SRC_DIR, 'main.jsx');
+const RESOLVE_SUFFIXES = ['', '.jsx', '.js', '.css', '/index.jsx', '/index.js'];
+
+function stripComments(content) {
+  // A commented-out import is not an import, and the specifier pattern below
+  // cannot tell the difference on its own — which is how the first version of
+  // this check passed its own negative test by accident. Only whole-line `//`
+  // comments are cut: a `//` in the middle of a line is far more often a URL
+  // than a disabled import, and halving one would leave an unterminated string
+  // for the pattern to misread.
+  return content
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/^[ \t]*\/\/.*$/gm, '');
+}
+
+function importSpecifiers(rawContent, isCss) {
+  const content = stripComments(rawContent);
+  // `from '…'`, bare `import '…'` and `import('…')` all reduce to a quoted
+  // specifier following `from` or `import`. CSS states its own `@import`.
+  const pattern = isCss
+    ? /@import\s+(?:url\()?['"]([^'"]+)['"]/g
+    : /(?:from\s*|import\s*\(?\s*)['"]([^'"]+)['"]/g;
+  const found = [];
+  let match;
+  while ((match = pattern.exec(content)) !== null) found.push(match[1]);
+  return found;
+}
+
+function resolveSpecifier(fromFile, specifier) {
+  if (!specifier.startsWith('.')) return null; // node_modules — not ours to walk
+  const base = path.resolve(path.dirname(fromFile), specifier);
+  for (const suffix of RESOLVE_SUFFIXES) {
+    const candidate = base + suffix;
+    if (fs.existsSync(candidate) && fs.statSync(candidate).isFile()) return candidate;
+  }
+  return null;
+}
+
+function filesReachableFromEntry() {
+  const reached = new Set();
+  const queue = [ENTRY_POINT];
+  while (queue.length > 0) {
+    const file = queue.pop();
+    if (reached.has(file)) continue;
+    reached.add(file);
+    let content;
+    try {
+      content = fs.readFileSync(file, 'utf8');
+    } catch {
+      continue;
+    }
+    for (const specifier of importSpecifiers(content, file.endsWith('.css'))) {
+      const resolved = resolveSpecifier(file, specifier);
+      if (resolved !== null && !reached.has(resolved)) queue.push(resolved);
+    }
+  }
+  return reached;
+}
+
+const entryExists = fs.existsSync(ENTRY_POINT);
+if (!entryExists) {
+  errors.push(
+    '[Rule 0 Violation] src/main.jsx is missing — it is the entry point every ' +
+    'reachability check starts from, and index.html loads nothing else.'
+  );
+}
+const reachedFiles = entryExists ? filesReachableFromEntry() : new Set();
+
 for (const [rel, why] of governedSurfaces) {
-  if (!fs.existsSync(path.join(SRC_DIR, rel))) {
+  const fullPath = path.join(SRC_DIR, rel);
+  if (!fs.existsSync(fullPath)) {
     errors.push(
       `[Rule 0 Violation] Governed surface src/${rel} is missing — ${why}. ` +
       'Deleting it disables those checks silently; amend the governedSurfaces ' +
       'list and record why in DECISIONS.md first.'
+    );
+  } else if (entryExists && !reachedFiles.has(fullPath)) {
+    errors.push(
+      `[Rule 0 Violation] Governed surface src/${rel} exists but nothing reaches ` +
+      `it from src/main.jsx — ${why}. Vite tree-shakes it, so it never reaches ` +
+      'the bundle: the rule above is asserting a guarantee about something the ' +
+      'product does not contain. Either wire it back into the running ' +
+      'application, or take it off governedSurfaces and record in DECISIONS.md ' +
+      'why those rules no longer need to guard anything.'
     );
   }
 }
@@ -426,10 +520,13 @@ if (!fs.existsSync(yearlySpreadPath)) {
   errors.push('[Rule 18 Violation] src/components/YearlyViewSpread.jsx does not exist.');
 }
 
-const breakerPagePath = path.join(SRC_DIR, 'components/MonthlyBreakerPage.jsx');
-if (!fs.existsSync(breakerPagePath)) {
-  errors.push('[Rule 18 Violation] src/components/MonthlyBreakerPage.jsx does not exist.');
-}
+// The month breaker is deliberately NOT checked here. MonthlyBreakerPage.jsx is
+// still on disk, but nothing has reached it since 4e68de4 and Rule 0's new
+// second clause said so out loud. Asserting the file exists was the weakest
+// possible version of this rule: it passed for a day while the feature was
+// absent from the product. Whether the breaker comes back or the 215 lines go
+// is an open product question — B-36 in DECISIONS.md. If it is wired back in,
+// restore it to governedSurfaces rather than to a bare existsSync here.
 
 // Rule 19: Black Embossed Minimal Neumorphic Chassis Gate (No middle bookmark, no leather side border)
 if (fs.existsSync(appPath)) {
