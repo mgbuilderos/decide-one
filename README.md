@@ -10,10 +10,10 @@
 **Decide One** is a stationery-grade daily priority instrument built with **React**, **Vite**, and **Tailwind CSS**. It combines the focused calm of paper with three public-domain decision methods and on-device storage.
 
 * **One payment, not a subscription**: $39 USD / ₹999 INR one-time. Sixty-day refund, no questions.
-* **Your journal stays on your device**: entries are saved in your browser's local storage and are never uploaded. There is no account, no cloud sync, and no server copy of anything you write.
-* **Anonymous usage analytics are off by default and opt-in.** A telemetry module exists in `src/utils/telemetry.js`. It sends nothing unless *both* a build flag and your explicit consent are set, it strips journal text, notes and reflections before sending, and you can turn it off again at any time from the menu. **This is why the project does not claim "zero telemetry"** — the honest claim is that nothing is collected without being asked for.
+* **Your work stays on your device**: entries are saved in your browser's local storage and are never uploaded. There is no account, no cloud sync, and no server copy of anything you write.
+* **Anonymous usage analytics are off by default and opt-in.** A telemetry module exists in `src/utils/telemetry.js`. It sends nothing unless *both* a build flag and your explicit consent are set, strips private entry text before sending, and can be turned off again from the menu. **This is why the project does not claim "zero telemetry"** — the honest claim is that nothing is collected without consent.
 * **Strict 24px Universal Swiss Grid**: Mathematical architectural cadence across all line heights, margins, and paper textures.
-* **Zero-Scroll Viewport Lock**: Complete daily operating system contained within `100vh`.
+* **Responsive by design**: the landing page scrolls naturally, while the daily instrument keeps its primary controls within easy reach on desktop and mobile.
 
 ---
 
@@ -38,11 +38,11 @@ npm run build
 ## 🧭 Live URLs & Access
 
 * **Production Domain**: [https://decideone.app/](https://decideone.app/)
-* **Daily Executive Instrument**: [http://localhost:3000/](http://localhost:3000/)
-* **Apple Marketing Landing Page**: [http://localhost:3000/?view=landing](http://localhost:3000/?view=landing)
-* **Patron activation**: paste a licence key in the app. *(Development promo keys are defined in `src/utils/licenseManager.js`; they are not published here — B2 replaces them with signed per-buyer keys before launch.)*
-* **Weekly Alignment Spread**: [http://localhost:3000/?view=weekly](http://localhost:3000/?view=weekly)
-* **12-Month Annual Index**: [http://localhost:3000/?view=yearly](http://localhost:3000/?view=yearly)
+* **Daily Priority Instrument**: [http://localhost:3000/?view=daily](http://localhost:3000/?view=daily)
+* **Marketing Landing Page**: [http://localhost:3000/?view=landing](http://localhost:3000/?view=landing)
+* **Licence activation**: paste a signed per-buyer licence key in the app. Checkout is intentionally disconnected in this build.
+* **Weekly Review**: [http://localhost:3000/?view=weekly](http://localhost:3000/?view=weekly)
+* **Year View**: [http://localhost:3000/?view=yearly](http://localhost:3000/?view=yearly)
 
 ---
 

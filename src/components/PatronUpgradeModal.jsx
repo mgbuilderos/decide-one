@@ -6,30 +6,23 @@ import {
   KeyRound, 
   ShieldCheck, 
   Feather, 
-  FileText, 
-  Calendar, 
-  ArrowRight,
   Printer,
   Search,
   Lock,
-  BookOpen,
-  QrCode,
-  CreditCard
+  BookOpen
 } from 'lucide-react';
 import { playSound } from '../utils/audio';
-import { activateLicense, activateDemoPatron } from '../utils/licenseManager';
+import { activateLicense } from '../utils/licenseManager';
 
 export default function PatronUpgradeModal({
   isOpen,
   onClose,
   isMuted = false,
-  onLicenseUpdated,
-  currentLicense
+  onLicenseUpdated
 }) {
   const [licenseKeyInput, setLicenseKeyInput] = useState('');
   const [activationError, setActivationError] = useState('');
   const [activationSuccess, setActivationSuccess] = useState(false);
-  const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -65,32 +58,6 @@ export default function PatronUpgradeModal({
     }
   };
 
-  const grantDemo = () => {
-    const res = activateDemoPatron();
-    if (res.success) {
-      playSound('patron-chime', isMuted);
-      setActivationSuccess(true);
-      setActivationError('');
-      onLicenseUpdated?.();
-      setTimeout(() => onClose(), 900);
-    }
-  };
-
-  const handleApplyDemoKey = () => {
-    playSound('click', isMuted);
-    grantDemo();
-  };
-
-  const handleSimulateCheckout = () => {
-    playSound('click', isMuted);
-    setIsProcessingCheckout(true);
-    // Instant simulation for frictionless client-side upgrade
-    setTimeout(() => {
-      setIsProcessingCheckout(false);
-      grantDemo();
-    }, 800);
-  };
-
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center p-3 sm:p-4 bg-black/50 dark:bg-black/80 backdrop-blur-md animate-in fade-in select-none">
       
@@ -108,7 +75,7 @@ export default function PatronUpgradeModal({
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-neutral-900 dark:bg-white" />
             <span className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-900 dark:text-neutral-100">
-              Decide One Patron
+              Decide One Access
             </span>
           </div>
           <button
@@ -130,13 +97,13 @@ export default function PatronUpgradeModal({
           <div className="text-center space-y-1.5 pt-1">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/[0.05] dark:bg-white/[0.08] text-[10px] font-bold uppercase tracking-wider text-neutral-700 dark:text-neutral-300">
               <Sparkles className="w-3 h-3" />
-              <span>Lifetime Stationery Ownership</span>
+              <span>Lifetime Access</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-900 dark:text-white">
-              Own Decide One Forever.
+              Keep Decide One Forever.
             </h2>
             <p className="text-xs text-neutral-500 dark:text-neutral-400 max-w-sm mx-auto leading-relaxed">
-              Explore lifetime access to your priority instrument. This prototype demonstrates activation and does not take payment.
+              One purchase will unlock the complete priority instrument. Checkout is intentionally disconnected in this launch build.
             </p>
           </div>
 
@@ -147,8 +114,8 @@ export default function PatronUpgradeModal({
                 Lifetime License
               </div>
               <div className="flex items-baseline gap-1.5 mt-0.5">
-                <span className="text-2xl font-bold text-neutral-900 dark:text-white">$24</span>
-                <span className="text-xs text-neutral-500 dark:text-neutral-400">USD • ₹1,999 INR one-time</span>
+                <span className="text-2xl font-bold text-neutral-900 dark:text-white">$39</span>
+                <span className="text-xs text-neutral-500 dark:text-neutral-400">USD • ₹999 INR one-time</span>
               </div>
             </div>
             <div className="flex items-center gap-1 text-[11px] font-semibold text-neutral-600 dark:text-neutral-400">
@@ -157,18 +124,18 @@ export default function PatronUpgradeModal({
             </div>
           </div>
 
-          {/* Feature List: The 4 High-Converting Executive Pillars */}
+          {/* Feature list */}
           <div className="space-y-2.5">
             <div className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 dark:text-neutral-500 px-1">
-              Included in Lifetime Executive Edition
+              Included With Lifetime Access
             </div>
 
             <div className="space-y-2">
               {[
                 {
                   icon: BookOpen,
-                  title: 'Multi-Volume Executive Domains',
-                  desc: 'Unlimited dedicated notebooks. Keep Executive Strategy, Ventures, Personal Life, and Private Reflections in separate private volumes.'
+                  title: 'Separate Workspaces',
+                  desc: 'Keep priorities for work, projects, and personal life in distinct on-device spaces.'
                 },
                 {
                   icon: Search,
@@ -182,7 +149,7 @@ export default function PatronUpgradeModal({
                 },
                 {
                   icon: Printer,
-                  title: 'Executive Weekly Briefing PDF Engine',
+                  title: 'Weekly Review PDF',
                   desc: 'Create a printable weekly summary for review or a personal backup.'
                 },
                 {
@@ -211,47 +178,14 @@ export default function PatronUpgradeModal({
             </div>
           </div>
 
-          {/* Checkout & Activation Segment (Dodo Payments Dual Rail) */}
+          {/* Checkout is deliberately absent until the payment integration is complete. */}
           <div className="space-y-3 pt-1">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={handleSimulateCheckout}
-                disabled={isProcessingCheckout || activationSuccess}
-                className="py-3 px-3 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200 font-bold text-xs flex items-center justify-center gap-1.5 shadow-md transition-all cursor-pointer disabled:opacity-50"
-              >
-                <CreditCard className="w-3.5 h-3.5" />
-                <span>{isProcessingCheckout ? 'Activating demo...' : 'Try Patron demo — $24 plan'}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={handleSimulateCheckout}
-                disabled={isProcessingCheckout || activationSuccess}
-                className="py-3 px-3 rounded-xl border border-neutral-900/20 dark:border-white/25 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] text-neutral-900 dark:text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs transition-all cursor-pointer disabled:opacity-50"
-              >
-                <QrCode className="w-3.5 h-3.5" />
-                <span>Try UPI demo — ₹1,999 plan</span>
-              </button>
-            </div>
-
-            {/* Quick 1-Click Instant Unlock Pass */}
-            <div className="p-3.5 rounded-xl bg-amber-500/[0.08] border border-amber-500/25 flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2 min-w-0">
-                <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
-                <div className="text-left">
-                  <div className="text-xs font-bold text-neutral-900 dark:text-white">Instant Patron Pass</div>
-                  <div className="text-[10px] text-neutral-500 dark:text-neutral-400">Unlock all executive features with one tap</div>
-                </div>
+            <div className="p-3.5 rounded-xl bg-black/[0.035] dark:bg-white/[0.055] border border-black/[0.10] dark:border-white/[0.12] flex items-start gap-3">
+              <Lock className="w-4 h-4 text-neutral-700 dark:text-neutral-300 shrink-0 mt-0.5" />
+              <div>
+                <div className="text-xs font-bold text-neutral-900 dark:text-white">Checkout Connection Pending</div>
+                <div className="text-[11px] text-neutral-500 dark:text-neutral-400 mt-0.5 leading-relaxed">No payment is requested or processed in this build. Existing licence holders can still activate below.</div>
               </div>
-              <button
-                type="button"
-                onClick={handleApplyDemoKey}
-                disabled={activationSuccess}
-                className="px-3.5 py-1.5 rounded-lg bg-amber-500 text-black font-bold text-xs hover:bg-amber-400 transition-colors shadow-xs cursor-pointer whitespace-nowrap shrink-0"
-              >
-                {activationSuccess ? 'Unlocked ✓' : 'Unlock Now (1-Click)'}
-              </button>
             </div>
 
             {/* In-App License Activation Dialog */}
@@ -300,7 +234,7 @@ export default function PatronUpgradeModal({
               {activationSuccess && (
                 <div className="text-[11px] text-green-600 dark:text-green-400 font-bold flex items-center gap-1">
                   <Check className="w-3.5 h-3.5 stroke-[3]" />
-                  <span>Lifetime Patron Activated! Welcome aboard.</span>
+                  <span>Lifetime Access Activated.</span>
                 </div>
               )}
             </div>
@@ -310,7 +244,7 @@ export default function PatronUpgradeModal({
 
         {/* Modal Footer */}
         <div className="h-11 px-6 bg-black/[0.02] dark:bg-white/[0.03] border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-[10px] text-neutral-400 shrink-0">
-          <span>100% Offline • Zero Server Cost</span>
+          <span>On-Device By Default</span>
           <span>Version 2.0</span>
         </div>
 

@@ -3,11 +3,6 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import HeaderToolbar from './components/HeaderToolbar';
 import DateHeader from './components/DateHeader';
 import { LeftPage, RightPage, PageTurnLeaf } from './components/SpreadPages';
-import ProductivityDrawer from './components/ProductivityDrawer';
-import QuickLegendModal from './components/QuickLegendModal';
-import UnifiedMenuModal from './components/UnifiedMenuModal';
-import DailyVictoryCardModal from './components/DailyVictoryCardModal';
-import GiftAccessModal from './components/GiftAccessModal';
 import { FRAMEWORKS } from './components/ProductivityFrameworks';
 import NotebookCover, { NotebookCoverFrontFace, NotebookCoverEndpaperFace, InteractiveNotebookCover } from './components/NotebookCover';
 import MarketingLandingPage from './components/MarketingLandingPage';
@@ -17,17 +12,12 @@ import { useProductivity } from './hooks/useProductivity';
 import { playSound } from './utils/audio';
 import { getStoredLicense, migrateLegacyActivation, revalidateStoredLicense } from './utils/licenseManager';
 import { downloadMarkdownVault, printAnnualBook } from './utils/archivalExport';
-import OmniSearchModal from './components/OmniSearchModal';
 import ExecutivePrivacyOverlay from './components/ExecutivePrivacyOverlay';
 import { usePrivacyShutter } from './hooks/usePrivacyShutter';
 import { useLicenseAutoActivation } from './hooks/useLicenseAutoActivation';
 import { generateExecutiveWeeklyBriefingPDF } from './utils/weeklyBriefingPDF';
-import ExecutiveDecisionLogModal from './components/ExecutiveDecisionLogModal';
-import ExecutiveClosureRitualModal from './components/ExecutiveClosureRitualModal';
 import { getFrameworkItems } from './utils/executionModel';
 import VolumeSwitcherBar from './components/VolumeSwitcherBar';
-import ExecutiveVoiceHUD from './components/ExecutiveVoiceHUD';
-import ExecutiveScratchpadModal from './components/ExecutiveScratchpadModal';
 import SpineAmbientGlow from './components/SpineAmbientGlow';
 import { useExecutiveDictation } from './hooks/useExecutiveDictation';
 import { useAmbientReminders } from './hooks/useAmbientReminders';
@@ -39,6 +29,16 @@ const WeeklyReviewSpread = lazy(() => import('./components/WeeklyReviewSpread'))
 const LegalPages = lazy(() => import('./components/LegalPages'));
 const MethodsPage = lazy(() => import('./components/MethodsPage'));
 const PatronUpgradeModal = lazy(() => import('./components/PatronUpgradeModal'));
+const ProductivityDrawer = lazy(() => import('./components/ProductivityDrawer'));
+const QuickLegendModal = lazy(() => import('./components/QuickLegendModal'));
+const UnifiedMenuModal = lazy(() => import('./components/UnifiedMenuModal'));
+const DailyVictoryCardModal = lazy(() => import('./components/DailyVictoryCardModal'));
+const GiftAccessModal = lazy(() => import('./components/GiftAccessModal'));
+const OmniSearchModal = lazy(() => import('./components/OmniSearchModal'));
+const ExecutiveDecisionLogModal = lazy(() => import('./components/ExecutiveDecisionLogModal'));
+const ExecutiveClosureRitualModal = lazy(() => import('./components/ExecutiveClosureRitualModal'));
+const ExecutiveVoiceHUD = lazy(() => import('./components/ExecutiveVoiceHUD'));
+const ExecutiveScratchpadModal = lazy(() => import('./components/ExecutiveScratchpadModal'));
 
 const ViewLoading = () => <div className="w-full min-h-[320px] flex-1 grid place-items-center bg-white text-sm text-neutral-500">Opening Decide One…</div>;
 
@@ -960,7 +960,7 @@ export default function App() {
       )}
 
       {/* Unified Settings & Productivity Frameworks Modal */}
-      <UnifiedMenuModal
+      {isMenuOpen && <Suspense fallback={null}><UnifiedMenuModal
         isOpen={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}
         settings={settings}
@@ -996,10 +996,10 @@ export default function App() {
             switchVolume(volId);
           }
         }}
-      />
+      /></Suspense>}
 
       {/* Sub-Millisecond Omnisearch & Command Palette Modal (Cmd+K) */}
-      <OmniSearchModal
+      {isSearchOpen && <Suspense fallback={null}><OmniSearchModal
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
         dailyLogs={data.dailyLogs}
@@ -1010,7 +1010,7 @@ export default function App() {
           setIsSearchOpen(false);
           setIsUpgradeModalOpen(true);
         }}
-      />
+      /></Suspense>}
 
       {/* Executive Biometric / Privacy Shutter Overlay */}
       <ExecutivePrivacyOverlay
@@ -1036,23 +1036,23 @@ export default function App() {
       /></Suspense>}
 
       {/* Analytics Drawer (Monochrome) */}
-      <ProductivityDrawer
+      {isAnalyticsOpen && <Suspense fallback={null}><ProductivityDrawer
         isOpen={isAnalyticsOpen}
         onClose={() => setIsAnalyticsOpen(false)}
         dailyMetrics={dailyMetrics}
         categoryDistribution={categoryDistribution}
         monthlyStats={monthlyStats}
         reflection={dailyLog.reflection}
-      />
+      /></Suspense>}
 
       {/* About Decide One & 9-model methodology guide modal */}
-      <QuickLegendModal
+      {isHelpOpen && <Suspense fallback={null}><QuickLegendModal
         isOpen={isHelpOpen}
         onClose={() => setIsHelpOpen(false)}
-      />
+      /></Suspense>}
 
       {/* Daily Victory Card Modal (Viral Loop / Aesthetic Accomplishment Snapshot) */}
-      <DailyVictoryCardModal
+      {isVictoryCardOpen && <Suspense fallback={null}><DailyVictoryCardModal
         isOpen={isVictoryCardOpen}
         onClose={() => setIsVictoryCardOpen(false)}
         date={currentDate}
@@ -1060,18 +1060,18 @@ export default function App() {
         activeFrameworkName={FRAMEWORKS.find(f => f.id === activeFramework)?.name || 'Top 3'}
         isMuted={settings.isMuted}
         ownerName={settings.ownerName}
-      />
+      /></Suspense>}
 
       {/* Peer Gift Referral Modal (Viral Peer Invitation Engine) */}
-      <GiftAccessModal
+      {isGiftModalOpen && <Suspense fallback={null}><GiftAccessModal
         isOpen={isGiftModalOpen}
         onClose={() => setIsGiftModalOpen(false)}
         ownerName={settings.ownerName}
         isMuted={settings.isMuted}
-      />
+      /></Suspense>}
 
       {/* Executive Decision Ledger Modal (Cmd+D) */}
-      <ExecutiveDecisionLogModal
+      {isDecisionLogOpen && <Suspense fallback={null}><ExecutiveDecisionLogModal
         isOpen={isDecisionLogOpen}
         onClose={() => setIsDecisionLogOpen(false)}
         decisions={decisions}
@@ -1079,9 +1079,9 @@ export default function App() {
         onUpdateDecision={updateDecision}
         onDeleteDecision={deleteDecision}
         isMuted={settings.isMuted}
-      />
+      /></Suspense>}
 
-      <ExecutiveClosureRitualModal
+      {isClosureModalOpen && <Suspense fallback={null}><ExecutiveClosureRitualModal
         isOpen={isClosureModalOpen}
         onClose={() => setIsClosureModalOpen(false)}
         dateString={formatDateKey(currentDate)}
@@ -1108,10 +1108,10 @@ export default function App() {
         }}
         isMuted={settings.isMuted}
         ownerName={settings.ownerName}
-      />
+      /></Suspense>}
 
       {/* Executive Voice HUD Horological Capsule */}
-      <ExecutiveVoiceHUD
+      {isListening && <Suspense fallback={null}><ExecutiveVoiceHUD
         isListening={isListening}
         interimTranscript={interimTranscript}
         finalTranscript={finalTranscript}
@@ -1119,10 +1119,10 @@ export default function App() {
         targetSection={dictationTarget}
         onSelectTarget={setDictationTarget}
         onStop={stopDictation}
-      />
+      /></Suspense>}
 
       {/* Quick Thought Scratchpad Modal (Cmd+N) */}
-      <ExecutiveScratchpadModal
+      {isScratchpadOpen && <Suspense fallback={null}><ExecutiveScratchpadModal
         isOpen={isScratchpadOpen}
         onClose={() => setIsScratchpadOpen(false)}
         onCommitDraft={({ text, target }) => {
@@ -1154,7 +1154,7 @@ export default function App() {
           }
         }}
         isMuted={settings.isMuted}
-      />
+      /></Suspense>}
 
     </div>
   );

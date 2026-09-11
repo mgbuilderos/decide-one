@@ -118,7 +118,7 @@ export default function UnifiedMenuModal({
             {/* Subtle Patron Pill */}
             {isPatron ? (
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-2xs whitespace-nowrap">
-                Patron Active
+                Lifetime Access
               </span>
             ) : (
               <button
@@ -130,7 +130,7 @@ export default function UnifiedMenuModal({
                 }}
                 className="px-2.5 py-0.5 rounded-full text-[10px] font-bold border border-black/15 dark:border-white/20 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer whitespace-nowrap"
               >
-                Upgrade ($24)
+                Lifetime Access
               </button>
             )}
 
@@ -618,7 +618,7 @@ export default function UnifiedMenuModal({
                   <Printer className="w-3.5 h-3.5 text-neutral-700 dark:text-neutral-300" />
                   {!isPatron && <Lock className="w-2.5 h-2.5 text-neutral-400" />}
                 </div>
-                <span className="text-[11px] font-bold whitespace-nowrap">Weekly Briefing</span>
+                <span className="text-[11px] font-bold whitespace-nowrap">Weekly Review</span>
                 <span className="text-[9px] text-neutral-400 whitespace-nowrap">Weekly PDF</span>
               </button>
 

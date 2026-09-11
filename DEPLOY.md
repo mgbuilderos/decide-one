@@ -1,76 +1,84 @@
 # Deploying Decide One
 
-> **`npm run build` first, always.** The site is `dist/` — 18 files, ~13MB.
+> **`npm run build` first, always.** The site is `dist/`.
 
-## The host, established 10 September 2026
+## Correction, 11 September 2026
 
-**Cloudflare Pages. Project name: `decide-one`.**
+An earlier version of this file said the host was **Cloudflare Pages, project
+`decide-one`**, on the strength of `decide-one.pages.dev` serving an identical
+bundle and etag to `decideone.app`. **That was a CDN fingerprint, not the
+publisher, and the conclusion was wrong.**
 
-Confirmed by fingerprint, not by guessing: `decide-one.pages.dev` serves the
-identical bundle **and the identical etag** as `decideone.app`.
+Checked against the Cloudflare API with the founder's own credential:
 
+| | |
+| :--- | :--- |
+| `decideone.app` zone in this account | **yes** |
+| Pages projects in this account | **0** |
+| Workers in this account | **0** |
+
+So Cloudflare holds the DNS and proxies the domain, but **serves nothing**. The
+origin is external. `decide-one.pages.dev` is real and serves the same bytes,
+but it is not in this account — it belongs to the hosting provider's own
+infrastructure, which is why it is unreachable from here.
+
+`wrangler` cannot deploy this site. Not a permissions problem: the token
+carries `pages (write)`. There is simply no project in this account to deploy to.
+
+## What actually publishes it
+
+The only hosting configuration this repository has ever contained is
+`.openai/hosting.json`, committed at the initial commit:
+
+```json
+{
+  "project_id": "appgprj_6aa060ea93fc819198302b9398806888",
+  "static": { "directory": "dist" }
+}
 ```
-decideone.app         assets/index-DsE169m7.js  etag "a1453b54206a0979dc4f77a668db1bc8"
-decide-one.pages.dev  assets/index-DsE169m7.js  etag "a1453b54206a0979dc4f77a668db1bc8"
+
+`LANDING_PROTOTYPE.md` records the same: *the Sites project identifier is
+recorded in `.openai/hosting.json`; static output is `dist`.*
+
+**The site is published through that Sites integration** — the publish action
+in the tool that created the file — and not through any Cloudflare command.
+
+⚠️ **That file is currently deleted in the working tree.** It is still in git
+history. If publishing is expected to keep working, restore it:
+
+```bash
+git checkout .openai/hosting.json
 ```
 
-The domain's nameservers are Cloudflare (`jermaine`/`celeste.ns.cloudflare.com`),
-so DNS and the Pages project sit in the same Cloudflare account.
-
-**`.openai/hosting.json` is stale.** It names a Sites project that has nothing
-to do with where this domain is served from. Correct or delete it.
-
-## The deploy command
+## To deploy
 
 ```bash
 npm run build
-npx wrangler pages deploy dist --project-name decide-one --force
-npm run verify:live
 ```
 
-`--force` is required: current wrangler tries to delegate Pages deploys to
-Workers, fails, and deploys nothing. The flag takes the direct Pages path.
+Then publish `dist/` through the Sites integration that owns
+`appgprj_6aa060ea93fc819198302b9398806888`. **This cannot be driven from this
+repository** — there is no CLI for it here.
 
-## ⚠️ The account problem — read before deploying
-
-`wrangler` on this machine **is authenticated, but to the wrong account.**
-
-```
-authenticated as : Maulik.payment@gmail.com's Account
-account id       : 00f21e5724f9ebf7b1ab0cb42ae76b1e
-pages projects   : none
-deploy result    : The Pages project "decide-one" does not exist
-```
-
-`decide-one` lives in a **different Cloudflare account**. Nothing can be
-deployed until wrangler is pointed at that one:
+If you would rather own the hosting outright, Cloudflare Pages in your own
+account is a clean alternative, and the zone is already there:
 
 ```bash
-npx wrangler logout
-npx wrangler login        # sign in with the account that owns decide-one
-npx wrangler pages project list   # 'decide-one' must appear
+npx wrangler pages project create decide-one
+npm run build && npx wrangler pages deploy dist --project-name decide-one --force
 ```
 
-Alternatively, set `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` for the
-correct account in `.env` — which is gitignored, and must stay that way.
+Then point `decideone.app` at the new project in the Cloudflare dashboard.
+**This changes who hosts the site**, so it is a decision, not a step.
 
-## Two other Pages sites exist on some account
-
-`journal-app.pages.dev` serves a page titled *Journal App*, and
-`primacy.pages.dev` resolves as well. Both look like earlier deployments of
-this same product under its former names. Worth deleting once `decideone.app`
-is confirmed current, so no stale copy of the app stays reachable.
-
-## After every deploy
+## After any deploy
 
 ```bash
 npm run verify:live
 ```
 
-It compares the live bundle hash against `dist/` and says MATCH or DIFFERENT.
-The live site sat a day behind on 10 September precisely because nothing
-performed this check.
+Compares the live bundle hash against `dist/` and says MATCH or DIFFERENT. The
+live site sat a day behind on 10 September because nothing ran this check.
 
-Then **hard-refresh**. `public/sw.js` is a service worker; its cache name is
-bumped each release, but a tab left open can keep the old worker alive until
-every `decideone.app` tab is closed.
+Then hard-refresh: `public/sw.js` is a service worker, and a tab left open can
+hold the previous worker until every `decideone.app` tab is closed.

@@ -13,7 +13,7 @@
     "server:seed": "node server/src/seed_analytics.js",
     "test:telemetry": "node server/src/test_telemetry.js",
     "verify:live": "node -e \"const{execSync}=require('child_process'),fs=require('fs');const live=execSync('curl -s --max-time 20 https://decideone.app/').toString().match(/assets\\\\/index-[A-Za-z0-9_-]+\\\\.js/)?.[0];const local=fs.readdirSync('dist/assets').find(f=>/^index-.*\\\\.js$/.test(f));console.log('live: '+live+'\\\\nlocal: assets/'+local+'\\\\n'+(live==='assets/'+local?'MATCH - the deploy landed':'DIFFERENT - the live site is not this build'))\"",
-    "deploy": "npm run test:launch && npm run build && npx wrangler pages deploy dist --project-name decide-one --force && npm run verify:live"
+    "deploy": "echo 'See DEPLOY.md \u2014 this site publishes through the Sites integration in .openai/hosting.json, not wrangler.' && exit 1"
   },
   "dependencies": {
     "canvas-confetti": "^1.9.4",

@@ -15,33 +15,33 @@ export const EXECUTIVE_VOLUMES = [
   {
     id: 'vol_strategy',
     volumeNumber: 'I',
-    name: 'Executive Strategy',
-    subtitle: 'Ventures, Capital & Board Agendas',
-    tagline: 'Strategic execution, critical milestones, and high-impact leverage',
+    name: 'Work',
+    subtitle: 'Work Priorities',
+    tagline: 'Choose what deserves attention at work',
     theme: 'charcoal'
   },
   {
     id: 'vol_personal',
     volumeNumber: 'II',
-    name: 'Personal Life & Health',
-    subtitle: 'Health, Family & Deep Contemplation',
-    tagline: 'Vitality, presence, rest, and personal clarity',
+    name: 'Personal',
+    subtitle: 'Personal Priorities',
+    tagline: 'Choose what deserves attention outside work',
     theme: 'slate'
   },
   {
     id: 'vol_creative',
     volumeNumber: 'III',
-    name: 'Creative Codex',
-    subtitle: 'Architecture, Systems & Product Essays',
-    tagline: 'System design, engineering RFCs, and deep craft',
+    name: 'Projects',
+    subtitle: 'Project Priorities',
+    tagline: 'Choose the next move for a focused project',
     theme: 'espresso'
   },
   {
     id: 'vol_reflections',
     volumeNumber: 'IV',
-    name: 'Private Reflections',
-    subtitle: 'Stoic Evening Closures & Life Audits',
-    tagline: 'Decision retrospectives, mental clarity, and gratitude',
+    name: 'Private',
+    subtitle: 'Private Priorities',
+    tagline: 'Keep sensitive decisions in a separate space',
     theme: 'burgundy'
   }
 ];
@@ -487,6 +487,27 @@ function getVolumeSeedData(volumeId) {
   };
 }
 
+function getEmptyVolumeData() {
+  return {
+    habits: [],
+    dailyLogs: {},
+    monthlyLogs: {},
+    weeklyReviews: {},
+    decisions: [],
+    closureLogs: {},
+    settings: {
+      font: 'sans',
+      paperStyle: 'plain',
+      paperTone: 'white',
+      inkColor: 'carbon',
+      penColor: '#18181B',
+      isMuted: false,
+      darkMode: false,
+      viewMode: 'stream'
+    }
+  };
+}
+
 function loadVolumeDataFromStorage(volumeId) {
   try {
     const key = getVolumeStorageKey(volumeId);
@@ -505,7 +526,7 @@ function loadVolumeDataFromStorage(volumeId) {
     if (stored) {
       const parsed = JSON.parse(stored);
       if (!parsed.habits) {
-        parsed.habits = getVolumeSeedData(volumeId).habits;
+        parsed.habits = [];
       }
       if (!parsed.settings) {
         parsed.settings = { paperStyle: 'dots' };
@@ -516,7 +537,7 @@ function loadVolumeDataFromStorage(volumeId) {
         parsed.weeklyReviews = {};
       }
       if (!parsed.decisions) {
-        parsed.decisions = getVolumeSeedData(volumeId).decisions || [];
+        parsed.decisions = [];
       }
       if (!parsed.closureLogs) {
         parsed.closureLogs = {};
@@ -526,7 +547,7 @@ function loadVolumeDataFromStorage(volumeId) {
   } catch (e) {
     console.error('Error loading volume storage', e);
   }
-  return getVolumeSeedData(volumeId);
+  return getEmptyVolumeData();
 }
 
 export function useJournalStorage() {
