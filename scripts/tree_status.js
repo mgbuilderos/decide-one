@@ -41,8 +41,20 @@ const pendingDeletes = dirty.split('\n').filter(l => /^ ?D /.test(l) && l.includ
 const untrackedSrc = dirty.split('\n').filter(l => /^\?\? /.test(l) && l.includes('src/'));
 const midChange = pendingDeletes.length > 0 || untrackedSrc.length > 0;
 
+// A clean tree has nothing in flight, whatever the mtimes say. Recent writes
+// with nothing uncommitted mean someone committed a moment ago - which is the
+// rule working, not a warning. Reporting that as "SOMEONE IS WORKING" cried
+// wolf on this script's own author within the hour.
 console.log('');
-if (midChange) {
+// The question is whether app code is in flight, so only uncommitted work
+// under src/ counts. An edited script or document is this session's own work
+// and says nothing about whether another agent is mid-change.
+const dirtySrc = dirty.split('\n').filter(l => l.includes('src/') && l.trim());
+
+if (!dirtySrc.length) {
+  console.log(`✅ No uncommitted source — nothing in flight. Last write ${fmt(newest[1])}.`);
+  console.log('   Safe to read, build and deploy.\n');
+} else if (midChange) {
   console.log('⚠️  WORK IN PROGRESS — the tree has changes git can see but mtimes cannot');
   if (pendingDeletes.length) console.log(`   ${pendingDeletes.length} deleted source file(s) — a deletion has no timestamp to age out`);
   if (untrackedSrc.length) console.log(`   ${untrackedSrc.length} new untracked source file(s)`);
@@ -60,4 +72,4 @@ for (const [full, ms] of files.slice(0, 5)) {
   console.log(`  ${fmt(ms).padEnd(12)} ${path.relative(process.cwd(), full)}`);
 }
 
-console.log(dirty ? `\nUncommitted (${dirty.split('\n').length} paths):\n${dirty.split('\n').map(l => '  ' + l).join('\n')}\n` : '\nTree is clean.\n');
+if (dirty) console.log(`\nUncommitted (${dirty.split('\n').length} paths):\n${dirty.split('\n').map(l => '  ' + l).join('\n')}\n`);
