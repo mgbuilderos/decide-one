@@ -149,7 +149,7 @@ export default function OmniSearchModal({
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search across all years, tasks, reflections, decisions (Cmd+K)..."
+            placeholder="Search dates, priorities, and notes (Cmd+K)..."
             className="flex-1 bg-transparent text-sm text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none"
           />
           {query && (
@@ -279,7 +279,7 @@ export default function OmniSearchModal({
                     }`}>
                       <span className="font-semibold">{item.dateKey}</span>
                       <span>•</span>
-                      <span className="capitalize">{item.category}</span>
+                      <span className="capitalize">{item.section === 'reflection' ? 'note' : item.category}</span>
                       {item.isCompleted && (
                         <>
                           <span>•</span>
@@ -321,7 +321,7 @@ export default function OmniSearchModal({
                 {[
                   { label: 'Jump to Yesterday', cmd: 'Type "yesterday"' },
                   { label: 'Jump to Tomorrow', cmd: 'Type "tomorrow"' },
-                  { label: 'Search Reflections', cmd: 'Filter by Reflections' },
+                  { label: 'Search Notes', cmd: 'Find saved notes' },
                   { label: 'Search Decisions', cmd: 'Filter by Notes & Ideas' }
                 ].map((sugg, sIdx) => (
                   <div
@@ -329,7 +329,7 @@ export default function OmniSearchModal({
                     onClick={() => {
                       if (sugg.label.includes('Yesterday')) setQuery('yesterday');
                       else if (sugg.label.includes('Tomorrow')) setQuery('tomorrow');
-                      else if (sugg.label.includes('Reflections')) setSelectedFacet('reflections');
+                      else if (sugg.label.includes('Notes')) setSelectedFacet('reflections');
                       else if (sugg.label.includes('Decisions')) setSelectedFacet('decisions');
                     }}
                     className="p-2.5 rounded-xl border border-black/[0.06] dark:border-white/[0.08] hover:bg-black/[0.03] dark:hover:bg-white/[0.05] cursor-pointer flex items-center justify-between text-xs"

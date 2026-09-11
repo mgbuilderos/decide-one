@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { 
   X, 
   Check, 
@@ -13,12 +13,10 @@ import {
   Feather, 
   Printer, 
   Lock,
-  ChevronDown,
   Target,
   Flame,
   ListOrdered,
   Compass,
-  Heart,
   Shield,
   Upload
 } from 'lucide-react';
@@ -36,8 +34,6 @@ export default function UnifiedMenuModal({
   onExport,
   onOpenGuide,
   onOpenLanding,
-  onOpenVictoryCard,
-  onOpenGiftModal,
   onViewCover,
   isPatron = false,
   onOpenUpgrade,
@@ -50,8 +46,6 @@ export default function UnifiedMenuModal({
   volumes = [],
   onSwitchVolume
 }) {
-  const [showAllFrameworks, setShowAllFrameworks] = useState(false);
-
   // Close on Escape key
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -150,7 +144,7 @@ export default function UnifiedMenuModal({
         {/* Modal Scrollable Body */}
         <div className="flex-1 min-h-0 overflow-y-auto pocket-scroll p-4 sm:p-5 space-y-4">
 
-          {/* Section: Multi-Volume Executive Domain Library */}
+          {/* Workspace library */}
           <div className="p-3.5 sm:p-4 rounded-2xl border border-black/[0.08] dark:border-white/[0.08] bg-black/[0.015] dark:bg-white/[0.02] space-y-2.5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
@@ -215,13 +209,13 @@ export default function UnifiedMenuModal({
             </div>
           </div>
           
-          {/* Section 1: Morning Alignment (Direct, 2-Second Selection in Main Menu) */}
+          {/* Direct method selection */}
           <div className="p-3.5 sm:p-4 rounded-2xl border border-black/[0.08] dark:border-white/[0.08] bg-black/[0.015] dark:bg-white/[0.02] space-y-2.5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-neutral-800 dark:text-neutral-200" />
                 <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
-                  Morning Alignment
+                  Choose Method
                 </span>
               </div>
               <div className="text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 whitespace-nowrap">
@@ -229,25 +223,25 @@ export default function UnifiedMenuModal({
               </div>
             </div>
 
-            {/* 3 Instant Strategic Mindset Cards (Takes 2 seconds to decide) */}
+            {/* Three direct method controls */}
             <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
               {[
                 {
                   id: 'rule_of_3',
-                  label: 'Deep Focus',
-                  sub: 'Top 3',
+                  label: 'Top 3',
+                  sub: 'Choose three',
                   icon: Target
                 },
                 {
                   id: 'eisenhower',
-                  label: 'Triage',
-                  sub: 'Quadrants',
+                  label: 'Matrix',
+                  sub: 'Urgent / Important',
                   icon: Flame
                 },
                 {
                   id: 'ivy_lee',
-                  label: 'Sequential',
-                  sub: '6 Steps',
+                  label: 'Ivy Lee',
+                  sub: 'Work in order',
                   icon: ListOrdered
                 }
               ].map((m) => {
@@ -281,18 +275,7 @@ export default function UnifiedMenuModal({
               })}
             </div>
 
-            {/* All 9 Frameworks Collapsible Row */}
-            <div className="pt-1 flex items-center justify-between text-[10px]">
-              <button
-                type="button"
-                onClick={() => setShowAllFrameworks(!showAllFrameworks)}
-                className="font-semibold text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
-              >
-                <span>{showAllFrameworks ? 'Hide All Methods' : `View All ${FRAMEWORKS.length} Productivity Methods`}</span>
-                <ChevronDown className={`w-3 h-3 transition-transform ${showAllFrameworks ? 'rotate-180' : ''}`} />
-              </button>
-
-              <div className="flex items-center gap-2.5">
+            <div className="pt-1 flex items-center justify-end gap-3 text-[10px]">
                 <button
                   type="button"
                   onClick={() => {
@@ -319,37 +302,7 @@ export default function UnifiedMenuModal({
                   <FileText className="w-3 h-3" />
                   <span>Guide</span>
                 </button>
-              </div>
             </div>
-
-            {/* Expanded 9 Frameworks Selector (Clean Single-Line Buttons) */}
-            {showAllFrameworks && (
-              <div className="grid grid-cols-3 gap-1 pt-1 animate-in fade-in duration-150">
-                {FRAMEWORKS.map((fw) => {
-                  const isSelected = activeFramework === fw.id;
-                  return (
-                    <button
-                      key={fw.id}
-                      type="button"
-                      onClick={() => {
-                        playSound('check', settings.isMuted);
-                        onSelectFramework?.(fw.id);
-                      }}
-                      className={`px-2 py-1.5 rounded-lg border text-left transition-all cursor-pointer flex items-center justify-between ${
-                        isSelected
-                          ? 'border-neutral-900 bg-neutral-900 text-white dark:border-white dark:bg-white dark:text-neutral-900 font-bold shadow-xs'
-                          : 'border-black/[0.06] dark:border-white/[0.06] hover:bg-black/[0.03] dark:hover:bg-white/[0.05] text-neutral-700 dark:text-neutral-300'
-                      }`}
-                    >
-                      <span className="text-[10px] font-semibold truncate whitespace-nowrap pr-1">
-                        {fw.name}
-                      </span>
-                      {isSelected && <Check className="w-2.5 h-2.5 shrink-0" />}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
           </div>
 
           {/* Section 2: Stationery, Paper & Fountain Pen Ink (Pixel-Perfect Single Lines) */}
@@ -552,40 +505,11 @@ export default function UnifiedMenuModal({
           <div className="p-3.5 sm:p-4 rounded-2xl border border-black/[0.08] dark:border-white/[0.08] space-y-2.5">
             <div className="flex items-center justify-between">
               <div className="text-[11px] font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
-                Share Clarity & Vault Backup
+                Backup & Export
               </div>
             </div>
 
-            {/* Row: Share Victory Leaf & Gift Access */}
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  playSound('page', settings.isMuted);
-                  onClose();
-                  onOpenVictoryCard?.();
-                }}
-                className="py-2 px-2.5 rounded-xl border border-black/[0.08] dark:border-white/[0.1] hover:bg-black/[0.03] dark:hover:bg-white/[0.05] text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                <span>Share Daily Leaf</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  playSound('page', settings.isMuted);
-                  onClose();
-                  onOpenGiftModal?.();
-                }}
-                className="py-2 px-2.5 rounded-xl border border-black/[0.08] dark:border-white/[0.1] hover:bg-black/[0.03] dark:hover:bg-white/[0.05] text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap"
-              >
-                <Heart className="w-3.5 h-3.5 text-red-500" />
-                <span>Gift Access</span>
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 border-t border-black/[0.06] dark:border-white/[0.06]">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {/* Free JSON Backup */}
               <button
                 type="button"

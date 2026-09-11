@@ -110,8 +110,7 @@ export function RightPage({
   onStepDay,
   setCurrentDate,
   isInteractive = true,
-  className = '',
-  onOpenVictoryCard
+  className = ''
 }) {
   return (
     <div className={`flex flex-col h-full w-full min-w-0 min-h-0 justify-between overflow-hidden ${className} ${!isInteractive ? 'pointer-events-none select-none' : ''}`}>

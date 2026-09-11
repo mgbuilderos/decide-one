@@ -269,7 +269,7 @@ export default function DailyVictoryCardModal({
 
         {/* Modal Footer */}
         <div className="h-10 px-5 bg-black/[0.015] dark:bg-white/[0.02] border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between text-[10px] text-neutral-400 shrink-0">
-          <span>End-of-Day Clarity Ritual</span>
+          <span>End-of-Day Review</span>
           <span>Close with a clear head</span>
         </div>
 

@@ -142,7 +142,7 @@ export default function ExecutiveScratchpadModal({
           ref={textareaRef}
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder="Capture an executive thought, delegation, or outcome..."
+          placeholder="Capture a priority, decision, or note..."
           rows={4}
           className="w-full bg-transparent resize-none text-sm leading-relaxed focus:outline-none placeholder-neutral-400/50"
         />

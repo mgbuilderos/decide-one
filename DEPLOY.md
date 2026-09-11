@@ -58,16 +58,37 @@ Then publish `dist/` through the Sites integration that owns
 `appgprj_6aa060ea93fc819198302b9398806888`. **This cannot be driven from this
 repository** — there is no CLI for it here.
 
-If you would rather own the hosting outright, Cloudflare Pages in your own
-account is a clean alternative, and the zone is already there:
+## Second host, live and ready (11 September 2026)
+
+The app is now also deployed to the founder's own Cloudflare account, as a
+Worker serving static assets. Pages is part of Workers now and wrangler steers
+new projects there, so this is the current path rather than a legacy Pages
+project. Config is `wrangler.jsonc`; nothing runs server-side.
 
 ```bash
-npx wrangler pages project create decide-one
-npm run build && npx wrangler pages deploy dist --project-name decide-one --force
+npm run build
+npx wrangler deploy
 ```
 
-Then point `decideone.app` at the new project in the Cloudflare dashboard.
-**This changes who hosts the site**, so it is a decision, not a step.
+**Verified serving the current build**, bundle and CSS hashes matching `dist`,
+deep paths returning the app rather than a 404:
+
+    https://decide-one.decide-one-stationery-instrument.workers.dev
+
+**`decideone.app` still points at the Sites project, not at this.** Switching
+it means adding the custom domain:
+
+```jsonc
+// in wrangler.jsonc
+"routes": [{ "pattern": "decideone.app", "custom_domain": true }]
+```
+
+⚠️ **Before switching, note one thing.** The OAuth token wrangler holds can
+read zones but **not DNS records** — it returns an authentication error. So the
+current DNS cannot be backed up from here first. The switch is recoverable, but
+only by re-running the Sites connect flow, not by restoring a saved record.
+Doing it from the Cloudflare dashboard, where the existing records are visible,
+is the safer route.
 
 ## After any deploy
 

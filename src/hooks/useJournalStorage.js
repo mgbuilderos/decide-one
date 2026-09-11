@@ -821,7 +821,7 @@ export function useJournalStorage() {
   const exportEncryptedVault = useCallback(async (passphrase) => {
     telemetry.track('vault_exported', { export_type: 'encrypted_vault' });
     const envelope = await encryptVaultData(data, passphrase);
-    const volName = EXECUTIVE_VOLUMES.find(v => v.id === activeVolumeId)?.name || 'Executive';
+    const volName = EXECUTIVE_VOLUMES.find(v => v.id === activeVolumeId)?.name || 'Work';
     downloadEncryptedVaultFile(envelope, volName);
     return envelope;
   }, [data, activeVolumeId]);

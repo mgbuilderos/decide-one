@@ -3,7 +3,6 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import HeaderToolbar from './components/HeaderToolbar';
 import DateHeader from './components/DateHeader';
 import { LeftPage, RightPage, PageTurnLeaf } from './components/SpreadPages';
-import { FRAMEWORKS } from './components/ProductivityFrameworks';
 import NotebookCover, { NotebookCoverFrontFace, NotebookCoverEndpaperFace, InteractiveNotebookCover } from './components/NotebookCover';
 import MarketingLandingPage from './components/MarketingLandingPage';
 
@@ -32,8 +31,6 @@ const PatronUpgradeModal = lazy(() => import('./components/PatronUpgradeModal'))
 const ProductivityDrawer = lazy(() => import('./components/ProductivityDrawer'));
 const QuickLegendModal = lazy(() => import('./components/QuickLegendModal'));
 const UnifiedMenuModal = lazy(() => import('./components/UnifiedMenuModal'));
-const DailyVictoryCardModal = lazy(() => import('./components/DailyVictoryCardModal'));
-const GiftAccessModal = lazy(() => import('./components/GiftAccessModal'));
 const OmniSearchModal = lazy(() => import('./components/OmniSearchModal'));
 const ExecutiveDecisionLogModal = lazy(() => import('./components/ExecutiveDecisionLogModal'));
 const ExecutiveClosureRitualModal = lazy(() => import('./components/ExecutiveClosureRitualModal'));
@@ -62,8 +59,6 @@ export default function App() {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
-  const [isVictoryCardOpen, setIsVictoryCardOpen] = useState(false);
-  const [isGiftModalOpen, setIsGiftModalOpen] = useState(false);
   const [license, setLicense] = useState(() => {
     // B2 — anyone who activated with a retired promo key keeps access as a
     // demo rather than being silently dropped to the free version.
@@ -549,7 +544,7 @@ export default function App() {
   const activeFramework = dailyLog.activeFramework || settings.activeFramework || 'rule_of_3';
 
   // Productivity metrics
-  const { dailyMetrics, categoryDistribution, streak, monthlyStats } = useProductivity(
+  const { dailyMetrics, monthlyStats } = useProductivity(
     dailyLog,
     data.dailyLogs,
     monthKey
@@ -845,7 +840,6 @@ export default function App() {
                         onStepDay={handleStepDay}
                         setCurrentDate={setCurrentDate}
                         isInteractive={flipState === 'idle' && coverAnimation === 'idle'}
-                        onOpenVictoryCard={() => setIsVictoryCardOpen(true)}
                       />
                     </div>
 
@@ -970,14 +964,6 @@ export default function App() {
         onExport={exportJSON}
         onOpenGuide={() => setIsHelpOpen(true)}
         onOpenLanding={() => setActiveView('landing')}
-        onOpenVictoryCard={() => {
-          setIsMenuOpen(false);
-          setIsVictoryCardOpen(true);
-        }}
-        onOpenGiftModal={() => {
-          setIsMenuOpen(false);
-          setIsGiftModalOpen(true);
-        }}
         onViewCover={handleCloseJournal}
         isPatron={license.isPatron}
         onOpenUpgrade={() => setIsUpgradeModalOpen(true)}
@@ -1032,7 +1018,6 @@ export default function App() {
         onClose={() => setIsUpgradeModalOpen(false)}
         isMuted={settings.isMuted}
         onLicenseUpdated={refreshLicense}
-        currentLicense={license}
       /></Suspense>}
 
       {/* Analytics Drawer (Monochrome) */}
@@ -1040,34 +1025,13 @@ export default function App() {
         isOpen={isAnalyticsOpen}
         onClose={() => setIsAnalyticsOpen(false)}
         dailyMetrics={dailyMetrics}
-        categoryDistribution={categoryDistribution}
         monthlyStats={monthlyStats}
-        reflection={dailyLog.reflection}
       /></Suspense>}
 
       {/* About Decide One & 9-model methodology guide modal */}
       {isHelpOpen && <Suspense fallback={null}><QuickLegendModal
         isOpen={isHelpOpen}
         onClose={() => setIsHelpOpen(false)}
-      /></Suspense>}
-
-      {/* Daily Victory Card Modal (Viral Loop / Aesthetic Accomplishment Snapshot) */}
-      {isVictoryCardOpen && <Suspense fallback={null}><DailyVictoryCardModal
-        isOpen={isVictoryCardOpen}
-        onClose={() => setIsVictoryCardOpen(false)}
-        date={currentDate}
-        tasks={dailyLog?.hardTasks || []}
-        activeFrameworkName={FRAMEWORKS.find(f => f.id === activeFramework)?.name || 'Top 3'}
-        isMuted={settings.isMuted}
-        ownerName={settings.ownerName}
-      /></Suspense>}
-
-      {/* Peer Gift Referral Modal (Viral Peer Invitation Engine) */}
-      {isGiftModalOpen && <Suspense fallback={null}><GiftAccessModal
-        isOpen={isGiftModalOpen}
-        onClose={() => setIsGiftModalOpen(false)}
-        ownerName={settings.ownerName}
-        isMuted={settings.isMuted}
       /></Suspense>}
 
       {/* Executive Decision Ledger Modal (Cmd+D) */}

@@ -1,0 +1,17 @@
+{
+  // Cloudflare hosting for Decide One.
+  //
+  // Pages is now part of Workers, and wrangler steers new projects here, so
+  // this is a Worker serving static assets rather than a legacy Pages project.
+  //
+  // Nothing runs server-side: `dist` is uploaded and served directly. The app
+  // is local-first and has no backend, which is the point.
+  "name": "decide-one",
+  "compatibility_date": "2026-09-10",
+  "assets": {
+    "directory": "./dist",
+    // Every route is the same document; the app reads ?view= from the URL.
+    // Without this a refresh on any path would 404 instead of loading.
+    "not_found_handling": "single-page-application"
+  }
+}

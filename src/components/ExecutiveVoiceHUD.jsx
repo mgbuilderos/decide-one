@@ -79,7 +79,7 @@ export default function ExecutiveVoiceHUD({
                   : 'text-neutral-400 hover:text-white'
               }`}
             >
-              Reflection
+              Note
             </button>
           </div>
 

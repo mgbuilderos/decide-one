@@ -163,7 +163,7 @@ export async function generateExecutiveWeeklyBriefingPDF({
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(13);
   doc.setTextColor(...INK_BLACK);
-  doc.text('DECIDE ONE EXECUTIVE BRIEFING', ML, curY + 12);
+  doc.text('DECIDE ONE WEEKLY REVIEW', ML, curY + 12);
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8.5);
@@ -400,7 +400,7 @@ export async function generateExecutiveWeeklyBriefingPDF({
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(9);
   doc.setTextColor(...INK_BLACK);
-  doc.text('DECIDE ONE EXECUTIVE BRIEFING // TACTICAL DISPATCH & REFLECTION', ML, curY + 10);
+  doc.text('DECIDE ONE WEEKLY REVIEW // PRIORITIES & NOTES', ML, curY + 10);
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8);
@@ -538,14 +538,14 @@ export async function generateExecutiveWeeklyBriefingPDF({
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(6.5);
   doc.setTextColor(...INK_MUTED);
-  doc.text('EXECUTIVE REVIEWER SIGN-OFF', ML, signoffY + 12);
+  doc.text('REVIEWED BY', ML, signoffY + 12);
   doc.setDrawColor(...INK_LIGHT);
   doc.line(ML, signoffY + 36, ML + blockW, signoffY + 36);
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(6.5);
   doc.setTextColor(...INK_MUTED);
-  doc.text('DATE OF EXECUTIVE REVIEW', ML + blockW + 12, signoffY + 12);
+  doc.text('REVIEW DATE', ML + blockW + 12, signoffY + 12);
   doc.setDrawColor(...INK_LIGHT);
   doc.line(ML + blockW + 12, signoffY + 36, ML + (blockW * 2) + 12, signoffY + 36);
 
@@ -569,11 +569,11 @@ export async function generateExecutiveWeeklyBriefingPDF({
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(7);
   doc.setTextColor(...INK_MUTED);
-  doc.text('EXECUTIVE STATIONERY • VECTOR DIGITAL ARCHIVE EDITION', ML, PAGE_H - MB + 14);
+  doc.text('DECIDE ONE • WEEKLY ARCHIVE', ML, PAGE_H - MB + 14);
   doc.text('PAGE 02 OF 02', PAGE_W - MR, PAGE_H - MB + 14, { align: 'right' });
 
   // Download Trigger
-  const filename = `DecideOne-Executive-Briefing-${year}-W${String(weekNum).padStart(2, '0')}.pdf`;
+  const filename = `DecideOne-Weekly-Review-${year}-W${String(weekNum).padStart(2, '0')}.pdf`;
   doc.save(filename);
   return { success: true, filename };
 }

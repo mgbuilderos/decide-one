@@ -104,7 +104,7 @@ export default function ExecutiveClosureRitualModal({
                 Close The Day
               </div>
               <div className="text-[10px] text-neutral-400">
-                Cognitive Detachment Ritual • Zero Cognitive Residue
+                Review what moved and carry forward what still matters
               </div>
             </div>
           </div>
@@ -142,15 +142,15 @@ export default function ExecutiveClosureRitualModal({
             </div>
           </div>
 
-          {/* Section 2: Unfinished Task Triage (Anti-Zeigarnik Loop) */}
+          {/* Section 2: unfinished priorities */}
           {incompleteTasks.length > 0 && (
             <div className="space-y-2.5">
               <div className="flex items-center justify-between">
                 <div className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
-                  Unfinished Task Triage ({incompleteTasks.length})
+                  Unfinished Priorities ({incompleteTasks.length})
                 </div>
                 <div className="text-[10px] text-neutral-400">
-                  Choose a destination to clear mental debt
+                  Choose what happens next
                 </div>
               </div>
 
@@ -226,21 +226,21 @@ export default function ExecutiveClosureRitualModal({
             </div>
           )}
 
-          {/* Section 3: Evening Gratitude & Clarity Insight */}
+          {/* Section 3: one useful note */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <label className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
-                Daily Victory or Key Insight
+                What Changed Today?
               </label>
               <span className="text-[10px] text-neutral-400 font-serif italic">
-                "Simplicity is the ultimate sophistication."
+                Optional
               </span>
             </div>
             <textarea
               rows={2}
               value={reflectionNotes}
               onChange={e => setReflectionNotes(e.target.value)}
-              placeholder="What moved the needle most today? What lesson will compound into tomorrow?"
+              placeholder="What should inform tomorrow's first choice?"
               className="w-full px-3.5 py-2.5 text-xs font-serif leading-relaxed rounded-xl border border-black/[0.12] dark:border-white/[0.15] bg-black/[0.02] dark:bg-white/[0.03] text-neutral-900 dark:text-white focus:outline-none focus:border-neutral-900 dark:focus:border-white transition-colors resize-none"
             />
           </div>

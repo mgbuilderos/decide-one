@@ -134,7 +134,7 @@ export async function checkBiometricHardwareSupport() {
  * WebAuthn Hardware Biometric Authentication (Touch ID / Face ID / Windows Hello)
  * Completely on-device: creates a local verification challenge without needing an external server.
  */
-export async function authenticateWithBiometrics(username = 'Executive Owner') {
+export async function authenticateWithBiometrics(username = 'Decide One Owner') {
   if (!window.PublicKeyCredential) {
     throw new Error('Hardware biometrics not supported on this browser.');
   }
@@ -176,7 +176,7 @@ export async function authenticateWithBiometrics(username = 'Executive Owner') {
 /**
  * Download the encrypted vault as an air-gapped sovereign backup (.vault file)
  */
-export function downloadEncryptedVaultFile(envelope, volumeName = 'Executive') {
+export function downloadEncryptedVaultFile(envelope, volumeName = 'Work') {
   const blob = new Blob([JSON.stringify(envelope, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
