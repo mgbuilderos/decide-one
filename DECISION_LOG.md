@@ -909,3 +909,9 @@ Heatmaps and session replay cut from TELEMETRY_SPEC outright, recorded as §0b s
 ### 2026-09-11 00:29 — claude
 
 Built the first-party PerformanceObserver replacing Cloudflare RUM (TELEMETRY_SPEC §3.2). Measures LCP, INP, CLS and TTFB with no dependency, no network fetch and nothing to allow in the CSP, reporting once through the existing telemetry pipeline as the page is hidden. Scoped to marketing entries by reading the view the page opened on rather than the current one, since LCP is decided during first paint. Records timing only - no coordinates, no element text, no content. Verified: thresholds classify correctly at every boundary, an unavailable metric reports null rather than a flattering zero, layout shifts the person caused are excluded, and the report fires exactly once across visibilitychange and pagehide. Not verifiable here: this browser pane emits zero LCP entries despite supporting the type, because the page never counts as a visible viewport - the same class of limit as WebGL capture.
+
+---
+
+### 2026-09-11 00:30 — claude
+
+Fixed the idle clock reading as 12:00. With no duration set, both hands sat at zero degrees, which points at twelve, so an unset dial looked like a clock telling the wrong time. VISION §13.3 item 3 puts a correct clock above everything else on that list and §13.2 says why: an instrument two degrees out is worse than no instrument, because it is believed. No duration now means no hands - the dial keeps its twelve markers and centre pin, which reads as an instrument at rest rather than a wrong time. The aria-label already said No time set, so only the picture was lying. Verified on the live daily view: zero hand lines, twelve marker lines, label unchanged.

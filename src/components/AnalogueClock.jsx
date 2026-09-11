@@ -88,10 +88,19 @@ export default function AnalogueClock({
             transform={`rotate(${i * 30} 50 50)`} />
         ))}
 
-        {hand(21, 1.5, hourDeg, isResting
+        {/* No duration set means no hands.
+            Both hands at zero degrees point at twelve, so an unset dial used to
+            read as "12:00" - a clock appearing to tell the wrong time. VISION
+            §13.3 item 3 puts a correct clock above everything else on the list,
+            and §13.2 is why: an instrument two degrees out is worse than no
+            instrument, because it is believed.
+            A dial with markers and a centre pin and no hands cannot be misread
+            as a time. It reads as an instrument at rest, which is what it is.
+            The aria-label already said "No time set"; only the picture lied. */}
+        {planned > 0 && hand(21, 1.5, hourDeg, isResting
           ? 'stroke-black/35 dark:stroke-white/35'
           : 'stroke-neutral-900 dark:stroke-neutral-100')}
-        {hand(32, 0.95, minuteDeg, isResting
+        {planned > 0 && hand(32, 0.95, minuteDeg, isResting
           ? 'stroke-black/30 dark:stroke-white/30'
           : 'stroke-neutral-900/80 dark:stroke-neutral-100/80')}
         {activeState === STATES.RUNNING &&
