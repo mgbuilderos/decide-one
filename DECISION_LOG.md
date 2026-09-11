@@ -819,3 +819,9 @@ A date is no longer treated as a verdict. Top3HardTasks, ProductivityFrameworks 
 ### 2026-09-11 22:48 — claude
 
 Carry-forward shipped: on a fresh day, priorities still open from the last day used are offered for today, with per-item choice. Marks the originals as moved rather than leaving them to read as abandoned. Offered once per day, silent if today already has content or the previous day was finished, and the search stops at the first day with content so it can never present a history of absences. Copy follows VISION §11.3's fourth rule - it states what is open, never counts what was missed, and Start fresh is a real answer rather than a dismissal. Verified end to end in the browser: modal appears with the completed task correctly excluded, both priorities land in today's free slots, originals persist as moved, and it does not reappear on reload.
+
+---
+
+### 2026-09-11 22:51 — claude
+
+Brand documents written: BRAND_HOUSE (purpose, pillars, what this brand is not), BRAND_KEY (target, insight, discriminator, with assumptions marked as assumptions since there are no users yet), BRAND_BOOK (the voice, vocabulary, claims register and worked examples). All three are downstream of VISION §11 and say so. Founder direction recorded: always motivating and positive. The book resolves that against Rule 22 by separating encouragement from loss-aversion - streaks and scores are not positive, they are fear of loss, which is why a broken streak makes people delete an app rather than try again. Rule 22 removes the punishing mechanics and positivity fills the space. One surface stays neutral rather than upbeat: returning after a gap, where even Welcome back draws attention to the absence.

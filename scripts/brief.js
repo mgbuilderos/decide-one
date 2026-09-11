@@ -61,7 +61,10 @@ for (const [f, why] of [
   ['FRAMEWORKS.md', 'which methods ship, and their attribution'],
   ['FOUNDATIONS.md', 'why the methods are sound'],
   ['LANDING_PROTOTYPE.md', 'the honest description of what is built'],
-  ['TELEMETRY_SPEC.md', 'what to measure, and what must never be measured']
+  ['TELEMETRY_SPEC.md', 'what to measure, and what must never be measured'],
+  ['BRAND_BOOK.md', 'the voice. Read before writing any user-facing sentence'],
+  ['BRAND_KEY.md', 'positioning: target, insight, discriminator'],
+  ['BRAND_HOUSE.md', 'purpose, pillars, and what this brand is not']
 ]) {
   if (!fs.existsSync(f)) continue;
   const w = fs.readFileSync(f, 'utf8').split(/\s+/).length;
