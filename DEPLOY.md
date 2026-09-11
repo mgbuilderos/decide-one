@@ -83,12 +83,30 @@ it means adding the custom domain:
 "routes": [{ "pattern": "decideone.app", "custom_domain": true }]
 ```
 
-⚠️ **Before switching, note one thing.** The OAuth token wrangler holds can
-read zones but **not DNS records** — it returns an authentication error. So the
-current DNS cannot be backed up from here first. The switch is recoverable, but
-only by re-running the Sites connect flow, not by restoring a saved record.
-Doing it from the Cloudflare dashboard, where the existing records are visible,
-is the safer route.
+### The switch was attempted and is blocked on one thing
+
+Cloudflare refused it:
+
+> Hostname 'decideone.app' already has externally managed DNS records
+> (A, CNAME, etc). Delete them first or try a different hostname. `[code 100117]`
+
+Those records point at the Sites project. **They cannot be removed from here** —
+the OAuth token wrangler holds has no DNS write scope, and cannot even read DNS
+records. This step needs the Cloudflare dashboard.
+
+**`decideone.app` was not touched and kept serving throughout.**
+
+One side effect worth knowing: declaring `routes` replaces the default trigger,
+so the half-applied change took the `workers.dev` address down until
+`workers_dev: true` was added back. That is now explicit in `wrangler.jsonc`.
+
+**To finish the switch:**
+
+1. Cloudflare dashboard → `decideone.app` → DNS. Note the existing apex records
+   — worth writing down before deleting, since nothing here can recover them.
+2. Delete them.
+3. Uncomment the `routes` block in `wrangler.jsonc`.
+4. `npx wrangler deploy && npm run verify:live`
 
 ## After any deploy
 

@@ -8,6 +8,24 @@
   // is local-first and has no backend, which is the point.
   "name": "decide-one",
   "compatibility_date": "2026-09-10",
+  // Keep the workers.dev URL alive. Declaring `routes` alone replaces the
+  // default trigger, which is how the workers.dev address went dark when the
+  // custom-domain attach failed halfway.
+  "workers_dev": true,
+
+  // The live domain, ready to enable. Attaching it fails while decideone.app
+  // still has its existing DNS records:
+  //
+  //   Hostname 'decideone.app' already has externally managed DNS records
+  //   (A, CNAME, etc). Delete them first.  [code 100117]
+  //
+  // Those records point at the Sites project and cannot be removed from here —
+  // the OAuth token has no DNS write scope. Delete them in the Cloudflare
+  // dashboard, then uncomment this and run `npx wrangler deploy`.
+  //
+  // "routes": [
+  //   { "pattern": "decideone.app", "custom_domain": true }
+  // ],
   "assets": {
     "directory": "./dist",
     // Every route is the same document; the app reads ?view= from the URL.
