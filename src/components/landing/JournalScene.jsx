@@ -309,36 +309,167 @@ function roundedPlane(w, h, radius) {
   for (let i = 0; i < pos.count; i++) uv.setXY(i, (pos.getX(i) + w / 2) / w, (pos.getY(i) + h / 2) / h);
   return geo;
 }
-function deviceTexture(kind, textures) {
+/**
+ * The actual Decide One daily screen, drawn at texture resolution.
+ *
+ * VISION §13.5: the render must depict the real product, and must read as a
+ * digital instrument rather than a physical book — nobody should arrive
+ * believing a paper notebook is for sale. A render that misrepresents the
+ * product is not craft; it is an inaccuracy on an instrument.
+ *
+ * So this draws the interface: the masthead, the segmented view control, the
+ * dated card, three priority rows with their checkboxes and minute steppers,
+ * and the countdown dial. Everything here matches something a person will
+ * actually see, at the same proportions.
+ */
+function appScreenTexture(kind) {
   const phone = kind === 'mobile';
   const canvas = document.createElement('canvas');
-  canvas.width = phone ? 1024 : 3072; canvas.height = phone ? 2176 : 1920;
-  const c = canvas.getContext('2d'), w = canvas.width, h = canvas.height;
-  c.fillStyle = '#ffffff'; c.fillRect(0, 0, w, h);
-  c.fillStyle = '#101010'; c.textAlign = 'center';
-  c.font = `600 ${phone ? 42 : 48}px Helvetica, Arial, sans-serif`;
-  c.fillText('D E C I D E  O N E', w / 2, phone ? 136 : 116);
-  c.font = `400 ${phone ? 25 : 30}px Helvetica, Arial, sans-serif`;
-  const labels = ['Daily', 'Weekly', 'Monthly', 'Yearly'];
-  labels.forEach((label, i) => c.fillText(label, w / 2 + (i - 1.5) * (phone ? 188 : 190), phone ? 209 : 184));
-  c.strokeStyle = '#d4d4d4'; c.beginPath(); c.moveTo(w * .075, phone ? 245 : 220); c.lineTo(w * .925, phone ? 245 : 220); c.stroke();
-  const top = phone ? 268 : 254, ph = h - top - 50;
-  if (phone) {
-    const pw = w - 50;
-    c.drawImage(textures[0].image, 25, top, pw, pw * 1.25);
-    c.fillStyle = '#f4f4f4'; c.fillRect(76, h - 320, w - 152, 190);
-    c.fillStyle = '#111111'; c.font = '500 29px Helvetica'; c.textAlign = 'left';
-    c.fillText('A Clear Next Step', 110, h - 253);
-    c.font = '400 26px Helvetica'; c.fillText('Keep what matters in view.', 110, h - 196);
-  } else {
-    const pw = ph / 1.25, start = (w - pw * 2) / 2;
-    c.drawImage(textures[0].image, start, top, pw, ph);
-    c.drawImage(textures[1].image, start + pw, top, pw, ph);
-    c.fillStyle = '#0000000d'; c.fillRect(w / 2 - 1, top + 15, 2, ph - 30);
+  canvas.width = phone ? 1024 : 3072;
+  canvas.height = phone ? 2176 : 1920;
+  const c = canvas.getContext('2d');
+  const W = canvas.width;
+  const H = canvas.height;
+
+  // One scale factor, so every measurement below is in the app's own pixels
+  // and stays in proportion at either texture size.
+  const S = phone ? W / 390 : W / 1280;
+  const px = (n) => n * S;
+  const font = (size, weight = 400) => {
+    c.font = `${weight} ${px(size)}px Helvetica, Arial, sans-serif`;
+  };
+  const text = (s, x, y, size, weight = 400, fill = '#161616', align = 'left') => {
+    c.fillStyle = fill;
+    c.textAlign = align;
+    font(size, weight);
+    c.fillText(s, px(x), px(y));
+  };
+  const roundRect = (x, y, w, h, r, fill, stroke) => {
+    c.beginPath();
+    c.roundRect(px(x), px(y), px(w), px(h), px(r));
+    if (fill) { c.fillStyle = fill; c.fill(); }
+    if (stroke) { c.strokeStyle = stroke; c.lineWidth = Math.max(1, px(1)); c.stroke(); }
+  };
+
+  // The page behind the instrument.
+  c.fillStyle = '#ececeb';
+  c.fillRect(0, 0, W, H);
+
+  const M = phone ? 16 : 120;          // page margin
+  const CW = (W / S) - M * 2;          // content width in app pixels
+
+  // ── Masthead ──
+  text('Search', M + 22, 40, 12, 400, '#737373');
+  text('Decide One', M + CW / 2, 42, 20, 600, '#161616', 'center');
+  text('Tools', M + CW - 4, 40, 12, 400, '#737373', 'right');
+
+  // ── Segmented view control: one track, active view raised on it ──
+  const tabs = ['Daily', 'Weekly', 'Monthly', 'Yearly'];
+  const tabW = phone ? 62 : 74;
+  const trackW = tabW * tabs.length + 6;
+  const trackX = M;
+  const trackY = 66;
+  roundRect(trackX, trackY, trackW, 38, 19, '#00000008', '#00000010');
+  tabs.forEach((label, i) => {
+    const x = trackX + 3 + i * tabW;
+    if (i === 0) roundRect(x, trackY + 3, tabW, 32, 16, '#ffffff', '#00000010');
+    text(label, x + tabW / 2, trackY + 24, 12, i === 0 ? 650 : 500, i === 0 ? '#161616' : '#6f6f6f', 'center');
+  });
+
+  // ── The instrument card ──
+  const cardY = 124;
+  const cardH = (H / S) - cardY - (phone ? 20 : 60);
+  roundRect(M, cardY, CW, cardH, 16, '#ffffff', '#0000000f');
+
+  const pad = phone ? 20 : 40;
+  const inX = M + pad;
+  const inW = CW - pad * 2;
+
+  // Date line, and the Today control that sits opposite it.
+  text('September 11', inX, cardY + 58, phone ? 20 : 24, 700);
+  const dateW = c.measureText('September 11').width / S;
+  text('2026', inX + dateW + 10, cardY + 58, phone ? 20 : 24, 400, '#9a9a9a');
+  roundRect(inX + dateW + 62, cardY + 40, 54, 24, 12, '#00000008');
+  text('Friday', inX + dateW + 89, cardY + 56, 11, 500, '#6f6f6f', 'center');
+  roundRect(inX + inW - 116, cardY + 38, 116, 30, 15, '#00000006', '#00000010');
+  text('Today', inX + inW - 58, cardY + 58, 12, 600, '#303030', 'center');
+
+  // Section label, and the count that never grades anyone.
+  text('Top 3', inX, cardY + 108, 15, 700);
+  text('TIME', inX + inW - 74, cardY + 106, 10, 600, '#a3a3a3', 'right');
+  text('0/3 done', inX + inW, cardY + 106, 10, 600, '#6f6f6f', 'right');
+  c.strokeStyle = '#00000010';
+  c.lineWidth = Math.max(1, px(1));
+  c.beginPath();
+  c.moveTo(px(inX), px(cardY + 122));
+  c.lineTo(px(inX + inW), px(cardY + 122));
+  c.stroke();
+
+  // ── Three priority rows, on the 24px cadence at 48px each ──
+  const rows = [
+    ['01', 'Finish the client proposal', '90'],
+    ['02', 'Review the product direction', '45'],
+    ['03', 'Prepare tomorrow\u2019s brief', '30']
+  ];
+  rows.forEach(([n, label, mins], i) => {
+    const y = cardY + 146 + i * 48;
+    text(n, inX, y + 30, 10, 700, '#8a8a8a');
+    c.beginPath();
+    c.arc(px(inX + 34), px(y + 25), px(8), 0, Math.PI * 2);
+    c.strokeStyle = '#9a9a9a';
+    c.lineWidth = Math.max(1, px(1.4));
+    c.stroke();
+    text(label, inX + 56, y + 30, phone ? 13 : 14, 400, '#2a2a2a');
+    roundRect(inX + inW - 74, y + 10, 74, 30, 8, '#00000005', '#00000012');
+    text(mins, inX + inW - 44, y + 30, 12, 600, '#303030', 'right');
+    text('MIN', inX + inW - 8, y + 30, 9, 600, '#a3a3a3', 'right');
+  });
+
+  // ── The countdown dial. Hands parked at rest, never reading as a wall clock ──
+  const dialY = cardY + 146 + 3 * 48 + (phone ? 70 : 110);
+  const dialR = phone ? 46 : 62;
+  const dialX = M + CW / 2;
+  c.beginPath();
+  c.arc(px(dialX), px(dialY), px(dialR), 0, Math.PI * 2);
+  c.strokeStyle = '#00000018';
+  c.lineWidth = Math.max(1, px(1.2));
+  c.stroke();
+  for (let i = 0; i < 12; i += 1) {
+    const a = (i / 12) * Math.PI * 2 - Math.PI / 2;
+    const r1 = dialR - (i % 3 === 0 ? 12 : 7);
+    c.beginPath();
+    c.moveTo(px(dialX + Math.cos(a) * r1), px(dialY + Math.sin(a) * r1));
+    c.lineTo(px(dialX + Math.cos(a) * (dialR - 3)), px(dialY + Math.sin(a) * (dialR - 3)));
+    c.strokeStyle = i % 3 === 0 ? '#00000040' : '#00000020';
+    c.lineWidth = Math.max(1, px(i % 3 === 0 ? 1.6 : 1));
+    c.stroke();
   }
+  // 90 minutes remaining on a 12-hour dial: the first priority, running.
+  const mAng = (90 / 720) * Math.PI * 2 - Math.PI / 2;
+  c.beginPath();
+  c.moveTo(px(dialX), px(dialY));
+  c.lineTo(px(dialX + Math.cos(mAng) * (dialR - 16)), px(dialY + Math.sin(mAng) * (dialR - 16)));
+  c.strokeStyle = '#161616';
+  c.lineWidth = Math.max(1, px(2));
+  c.lineCap = 'round';
+  c.stroke();
+
+  text('90:00 remaining', dialX, dialY + dialR + (phone ? 34 : 40), phone ? 12 : 13, 600, '#303030', 'center');
+  text('Finish the client proposal', dialX, dialY + dialR + (phone ? 56 : 64), phone ? 11 : 12, 400, '#8a8a8a', 'center');
+
+  // ── Footer ──
+  text('Three choices. One clear order.', inX, cardY + cardH - 22, 11, 600, '#6f6f6f');
+
   const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.SRGBColorSpace; texture.anisotropy = 16;
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = 16;
   return texture;
+}
+
+function deviceTexture(kind) {
+  // Was: the paper page textures pasted onto a screen, which made a digital
+  // product look like a photograph of a notebook. §13.5.
+  return appScreenTexture(kind);
 }
 function buildDevice(kind, textures) {
   const root = new THREE.Group();
@@ -362,7 +493,7 @@ function buildDevice(kind, textures) {
   edge.position.z = depth / 2 + .001; display.add(edge);
   const bezel = new THREE.Mesh(roundedPlane(w - .06, h - .06, phone ? .22 : .12), black);
   bezel.position.z = depth / 2 + .004; display.add(bezel);
-  let texture = deviceTexture(kind, textures);
+  let texture = deviceTexture(kind);
   const screen = new THREE.Mesh(roundedPlane(w - (phone ? .15 : .23), h - (phone ? .17 : .24), phone ? .19 : .065), new THREE.MeshBasicMaterial({ map: texture, toneMapped: false }));
   screen.position.z = depth / 2 + .01; display.add(screen);
   const addLens = (parent, x, y, z, radius = .026) => {
@@ -452,7 +583,7 @@ function buildDevice(kind, textures) {
   return {
     root, pages: [], extraTextures: extras,
     updateTextures: next => {
-      const replacement = deviceTexture(kind, next);
+      const replacement = deviceTexture(kind);
       screen.material.map = replacement; screen.material.needsUpdate = true;
       const at = extras.indexOf(texture); extras[at] = replacement; texture.dispose(); texture = replacement;
     }
