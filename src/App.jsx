@@ -21,8 +21,10 @@ import SpineAmbientGlow from './components/SpineAmbientGlow';
 import { useExecutiveDictation } from './hooks/useExecutiveDictation';
 import { useAmbientReminders } from './hooks/useAmbientReminders';
 import { telemetry, getHistoryDepthDays } from './utils/telemetry';
+import { shouldOfferCarryForward, applyCarryForward, markOffered } from './utils/carryForward';
 
 const MonthlyLogSpread = lazy(() => import('./components/MonthlyLogSpread'));
+const CarryForwardModal = lazy(() => import('./components/CarryForwardModal'));
 const YearlyViewSpread = lazy(() => import('./components/YearlyViewSpread'));
 const WeeklyReviewSpread = lazy(() => import('./components/WeeklyReviewSpread'));
 const LegalPages = lazy(() => import('./components/LegalPages'));
@@ -564,6 +566,46 @@ export default function App() {
   const isPastDay = dateKey < todayKey;
   const monthKey = dateKey.slice(0, 7); // "YYYY-MM"
 
+  // Carrying yesterday's open priorities forward.
+  //
+  // Offered once on a day the person has not started yet, and only when an
+  // earlier day left something genuinely open. VISION §11.3's fourth rule
+  // applies: this is an offer about what is still true, never a reckoning
+  // about what was missed.
+  const [carryCandidate, setCarryCandidate] = useState(null);
+
+  useEffect(() => {
+    if (dateKey !== todayKey) return;
+    const candidate = shouldOfferCarryForward(data.dailyLogs, todayKey);
+    if (candidate) setCarryCandidate(candidate);
+  }, [dateKey, todayKey, data.dailyLogs]);
+
+  const dismissCarryForward = useCallback(() => {
+    markOffered(todayKey);
+    setCarryCandidate(null);
+  }, [todayKey]);
+
+  const handleCarryForward = useCallback((chosenIds) => {
+    if (!carryCandidate) return;
+    const sourceKey = carryCandidate.fromDateKey;
+    const { todayTasks, sourceTasks, placed } = applyCarryForward(
+      getDailyLog(todayKey),
+      getDailyLog(sourceKey),
+      chosenIds
+    );
+    saveDailyLog(todayKey, { hardTasks: todayTasks });
+    saveDailyLog(sourceKey, { hardTasks: sourceTasks });
+    telemetry.track('priorities_carried_forward', {
+      offered: carryCandidate.tasks.length,
+      carried: placed,
+      source_age_days: Math.round(
+        (new Date(todayKey + 'T00:00:00') - new Date(sourceKey + 'T00:00:00')) / 86400000
+      )
+    });
+    markOffered(todayKey);
+    setCarryCandidate(null);
+  }, [carryCandidate, todayKey, getDailyLog, saveDailyLog]);
+
   // Target date calculations (for turning leaf and underlying spread during transition)
   const targetDateKey = targetDate ? formatDateKey(targetDate) : null;
   const targetDailyLog = targetDateKey ? getDailyLog(targetDateKey) : null;
@@ -1062,6 +1104,14 @@ export default function App() {
       /></Suspense>}
 
       {/* About Decide One & 9-model methodology guide modal */}
+      {carryCandidate && <Suspense fallback={null}><CarryForwardModal
+        isOpen={Boolean(carryCandidate)}
+        candidate={carryCandidate}
+        todayKey={todayKey}
+        onCarry={handleCarryForward}
+        onDismiss={dismissCarryForward}
+      /></Suspense>}
+
       {isHelpOpen && <Suspense fallback={null}><QuickLegendModal
         isOpen={isHelpOpen}
         onClose={() => setIsHelpOpen(false)}

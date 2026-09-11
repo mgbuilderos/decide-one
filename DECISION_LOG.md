@@ -813,3 +813,9 @@ TELEMETRY_SPEC.md written: the brief for measuring the free product. Its governi
 ### 2026-09-11 22:42 — claude
 
 A date is no longer treated as a verdict. Top3HardTasks, ProductivityFrameworks and BulletItem all computed a missed state as 'not completed and the day has passed' and rendered it red, so anyone returning after a week away met a week marked red by the software. Red now follows only a mark the person made. Recorded as a fourth rule in VISION §11.3 - the product never infers failure from a date - with the founder's standard attached: what matters is the day that is there when they come, and if one person has one productive day that is a win. Also added a briefing section to AGENTS.md and CLAUDE.md on writing a good brief: say the goal not the mechanism, say what you are afraid of, one thing per ask.
+
+---
+
+### 2026-09-11 22:48 — claude
+
+Carry-forward shipped: on a fresh day, priorities still open from the last day used are offered for today, with per-item choice. Marks the originals as moved rather than leaving them to read as abandoned. Offered once per day, silent if today already has content or the previous day was finished, and the search stops at the first day with content so it can never present a history of absences. Copy follows VISION §11.3's fourth rule - it states what is open, never counts what was missed, and Start fresh is a real answer rather than a dismissal. Verified end to end in the browser: modal appears with the completed task correctly excluded, both priorities land in today's free slots, originals persist as moved, and it does not reappear on reload.
