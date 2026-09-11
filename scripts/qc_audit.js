@@ -18,6 +18,45 @@ function scanFiles(dir, callback) {
 
 console.log('🔍 Running Decide One Quality Control (QC) Audit...\n');
 
+// Rule 0: Governed surfaces must exist.
+//
+// Most rules below read their subject inside `if (fs.existsSync(...))`, so a
+// deleted or renamed file does not fail the audit — it silently stops being
+// checked, and the audit still prints green. A rule that cannot see its
+// subject has not passed; it has abstained.
+//
+// This gate names every file the rules depend on. Removing one is then a
+// failure with a reason, rather than a quiet gap in the contract between three
+// agents. Taking a surface off this list is deliberate work: it means saying
+// in DECISIONS.md why the rules that guarded it no longer need to.
+const governedSurfaces = [
+  ['App.jsx', 'Rules 4 and 20 — viewport lock, slim width, keyboard routing'],
+  ['index.css', 'Rules 6 and 9 — the 24px grid cadence'],
+  ['components/MonthlyLogSpread.jsx', 'Rule 7 — single-column monthly spread'],
+  ['components/HeaderToolbar.jsx', 'Rule 8 — two-tier masthead, no speaker button'],
+  ['data/monthIllustrations.jsx', 'Rule 15 — twelve bespoke month illustrations'],
+  ['utils/executionModel.js', 'Rule 22 — the methods are enforced here, not suggested'],
+  ['utils/licenseManager.js', 'Rules 18 and 23 — offline verification, signed keys'],
+  ['utils/licenseKeys.js', 'Rule 23 — signed per-buyer licences replaced shared keys'],
+  ['utils/archivalExport.js', 'Rule 18 — the export engine the Patron tier promises'],
+  ['components/PatronUpgradeModal.jsx', 'Rule 18 — the upgrade surface'],
+  ['components/YearlyViewSpread.jsx', 'Rule 18 — the twelve-month annual view'],
+  ['components/MonthlyBreakerPage.jsx', 'Rule 18 — the month breaker'],
+  ['components/ExecutionLayer.jsx', 'Rule 22 — capacity and the active clock'],
+  ['components/DayReport.jsx', 'Rule 22 — closure without a verdict'],
+  ['components/ExecutiveClosureRitualModal.jsx', 'Rule 22 — the closure ritual'],
+  ['components/InlineTimeControl.jsx', 'Rule 22 and B-35 — per-line time control']
+];
+for (const [rel, why] of governedSurfaces) {
+  if (!fs.existsSync(path.join(SRC_DIR, rel))) {
+    errors.push(
+      `[Rule 0 Violation] Governed surface src/${rel} is missing — ${why}. ` +
+      'Deleting it disables those checks silently; amend the governedSurfaces ' +
+      'list and record why in DECISIONS.md first.'
+    );
+  }
+}
+
 // Rule 1: Zero font-mono classes (Strict Helvetica Rule)
 scanFiles(SRC_DIR, (filePath, content) => {
   if (content.includes('font-mono')) {
@@ -295,6 +334,7 @@ if (!fs.existsSync(execModelPath)) {
 // progress metaphor with a protagonist implies a failure state.
 const surfacesThatMustNotGamify = [
   'components/ExecutionLayer.jsx',
+  'components/InlineTimeControl.jsx',
   'components/DayReport.jsx',
   'components/ExecutiveClosureRitualModal.jsx'
 ];
@@ -305,7 +345,12 @@ const forbiddenTone = [
 ];
 for (const rel of surfacesThatMustNotGamify) {
   const full = path.join(SRC_DIR, rel);
-  if (!fs.existsSync(full)) continue;
+  if (!fs.existsSync(full)) {
+    // Rule 0 reports this too. Kept here so the check does not quietly reopen
+    // if the surface is ever taken off that list.
+    errors.push(`[Rule 22 Violation] ${rel} is missing — its tone cannot be checked.`);
+    continue;
+  }
   const body = fs.readFileSync(full, 'utf8');
   for (const phrase of forbiddenTone) {
     if (body.includes(phrase)) {
@@ -443,6 +488,7 @@ if (errors.length === 0) {
   console.log('  - Rule 3: 3-Color Progress Gate (Red, Yellow, Green progress tracking only; zero random decorative colors)');
   console.log('  - Rule 4: Zero-scroll viewport lock & slim notepad proportions (max-w-[412px])');
   console.log('  - Rule 5: Consumer-friendly language gate (zero technical jargon in UI labels)');
+  console.log('  - Rule 0: Governed surfaces exist (a deleted file fails rather than skipping its rules)');
   console.log('  - Rule 6: Strict 24px universal grid cadence alignment (paper-grid & canvas padding)');
   console.log('  - Rule 7: Single-column full-width monthly spread (no 2-column desktop squishing)');
   console.log('  - Rule 8: 2-Tier header masthead (brand at top, utilities below, zero speaker button)');
