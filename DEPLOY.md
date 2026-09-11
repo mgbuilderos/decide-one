@@ -43,12 +43,10 @@ recorded in `.openai/hosting.json`; static output is `dist`.*
 **The site is published through that Sites integration** — the publish action
 in the tool that created the file — and not through any Cloudflare command.
 
-⚠️ **That file is currently deleted in the working tree.** It is still in git
-history. If publishing is expected to keep working, restore it:
-
-```bash
-git checkout .openai/hosting.json
-```
+**Restored 11 September 2026.** It had been deleted from the working tree, and
+I then committed that deletion by sweeping it up in a `git add -A` — so it had
+to be recovered from the initial commit rather than simply checked out. It is
+back and committed. **Do not delete it again: publishing depends on it.**
 
 ## To deploy
 
