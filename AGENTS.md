@@ -146,10 +146,19 @@ never reaches the site.
 **Never run `wrangler deploy` on its own.** It skips the audit and the
 verification, and that is the only way an unaudited build gets published.
 
-**One thing is still outstanding.** `decideone.app` points at the old Sites
-project, not at the Worker `npm run deploy` publishes to, so the verify step
-will correctly report DIFFERENT until the DNS moves. `DEPLOY.md` has the four
-steps — one of them needs the Cloudflare dashboard and no agent can do it.
+**`decideone.app` is the Worker, and has been since 11 September.** Older text
+in this repository says the domain still points at the old Sites project and
+that verify will report DIFFERENT until the DNS moves. That was true and is
+not; `80a225c` moved it and changed only `wrangler.jsonc`, which is how the
+prose stayed wrong for a day and cost a later session a false diagnosis.
+
+**So when step 4 says DIFFERENT, re-run it before diagnosing anything.** The
+apex HTML is edge-cached, and for a few minutes after a deploy the edge will
+still hand out the previous page. That is a stale cache, not a routing fault.
+If it persists, the check that settles it is the etag: `decideone.app` should
+match the `workers.dev` address. Matching `decide-one.pages.dev` instead means
+the rollback is live — that host still exists on purpose, and `DEPLOY.md` holds
+the only copy of the DNS record needed to recreate it.
 
 ---
 

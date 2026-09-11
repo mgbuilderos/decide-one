@@ -28,23 +28,72 @@ After it prints MATCH, hard-refresh. `public/sw.js` is a service worker, and a
 tab left open can hold the previous worker until every `decideone.app` tab is
 closed.
 
-## One manual step is still outstanding
+### The zone can put scripts on the page that this repository never served
 
-`decideone.app` still points at the **Sites** project, not at the Cloudflare
-Worker that `npm run deploy` publishes to. Until that changes:
+Cloudflare Web Analytics *automatic setup* injected `beacon.min.js` at the edge
+until it was set to **Disable** on 12 September 2026. It is a zone setting, not
+code: it appears in neither `wrangler.jsonc` nor any build output, and no agent
+can change it — wrangler's token holds `zone (read)` and no RUM scope.
 
-- `npm run deploy` publishes correctly to
-  `decide-one.decide-one-stationery-instrument.workers.dev`
-- step 4 will correctly report **DIFFERENT**, because `decideone.app` is
-  genuinely serving something else
+It injected **only for browser user-agents**, which is why a plain `curl` showed
+a clean page for a day while every real visitor got the script. To check the
+origin honestly, send a browser user-agent:
 
-That is not a bug in the command. It is two hosts, and it resolves when the
-domain moves.
+```bash
+curl -s -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 \
+  (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" \
+  https://decideone.app/ | grep -c cloudflareinsights
+```
 
-### The record being replaced — the only copy of it
+`0` is the expected answer. Anything else is a third-party script on the origin
+where people write their priorities, which `TELEMETRY_SPEC` §1 rule 3 forbids —
+the switch is **Web Analytics → `decideone.app` → Manage site → Disable**.
 
-Read from the Cloudflare dashboard on 11 September 2026. The zone holds
-**exactly one record** (`1 of 200 used`):
+## The domain move is done
+
+`decideone.app` serves the Worker. The apex CNAME to `decide-one.pages.dev` was
+deleted in the dashboard on 11 September 2026 — that deletion was what
+Cloudflare error `100117` had been waiting for — so the `custom_domain` route in
+`wrangler.jsonc` attaches and the domain serves this repository's build
+(`80a225c`).
+
+One command publishes, and step 4 should say MATCH.
+
+### When step 4 says DIFFERENT
+
+**Re-run it before diagnosing anything.** The apex HTML is edge-cached
+(`cf-cache-status: HIT` on a `max-age=0, must-revalidate` document), so for a
+few minutes after a deploy the edge still hands out the previous page. That is
+a stale cache, not a routing fault. It cost a session on 12 September, because
+this file still said the DNS had not moved and the stale page looked like
+proof.
+
+If it persists, the etag settles it:
+
+```bash
+curl -sI https://decideone.app/ | grep -i etag
+curl -sI https://decide-one.decide-one-stationery-instrument.workers.dev/ | grep -i etag
+```
+
+**Equal means the Worker is serving the apex** — the deploy is the question,
+not the routing. If instead the apex matches `decide-one.pages.dev`, the
+rollback below is live.
+
+Note that matching `pages.dev` was the *original* misdiagnosis, recorded at the
+end of this file: an identical bundle and etag fingerprints the CDN, not the
+publisher. The comparison is only evidence because it is made against the
+Worker.
+
+### Rolling back
+
+The Sites project and `decide-one.pages.dev` still exist for exactly this. The
+DNS record below is the only copy — recreate that row and the apex returns to
+the old host.
+
+### The record that was replaced — the only copy of it
+
+Read from the Cloudflare dashboard on 11 September 2026, before it was deleted.
+At that point the zone held **exactly one record** (`1 of 200 used`):
 
 | Name | Type | Content | Proxy status | TTL |
 | :--- | :--- | :--- | :--- | :--- |
@@ -54,27 +103,8 @@ Read from the Cloudflare dashboard on 11 September 2026. The zone holds
 or `www` record exists, so nothing else is at stake — but this row is not
 recoverable from anywhere else, which is why it is written here.
 
-Because it is the *only* record, deleting it takes `decideone.app` offline
-until the Worker route is attached. That window is the deploy, not longer.
-
-### To finish the switch
-
-1. Cloudflare dashboard → `decideone.app` → DNS. **Write down the existing apex
-   records before deleting them** — nothing in this repository can recover them.
-2. Delete them.
-3. Uncomment the `routes` block in `wrangler.jsonc`.
-4. `npm run deploy`
-
-Then delete the Sites project, so there is one host and one command.
-
-Cloudflare refuses step 3 until step 2 is done:
-
-> Hostname 'decideone.app' already has externally managed DNS records
-> (A, CNAME, etc). Delete them first or try a different hostname. `[code 100117]`
-
-The OAuth token wrangler holds has **no DNS scope** — it cannot write DNS
-records, and cannot even read them. This step needs the dashboard; no agent can
-do it.
+It was the *only* record, so deleting it took `decideone.app` offline until the
+Worker route attached. That window was one deploy, and it is closed.
 
 ## Where it is hosted
 

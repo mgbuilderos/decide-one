@@ -1,13 +1,12 @@
 # Work Remaining
 
-Updated 11 September 2026 after the launch design and implementation pass.
+Updated 12 September 2026. Item 3 closed; the hosting move is no longer outstanding.
 
 ## Before Public Launch
 
 1. Provide the five production legal facts in `.env.production`: legal entity, registered address, support email, jurisdiction, and effective date. `npm run test:launch` blocks release while any are missing.
 2. Have the legal pages and method naming reviewed by qualified counsel. The repository contains a practical first-pass review and method attributions, not professional legal advice.
-3. Choose the production path already documented in `DEPLOY.md`: publish `dist/` through the existing Sites project, or move `decideone.app` to the verified Cloudflare Worker after recording and removing the current apex DNS records.
-4. After publishing, run `npm run verify:live` and confirm that the production asset hash matches `dist/`.
+3. ~~Choose the production path documented in `DEPLOY.md`.~~ **Done, 11 September 2026.** `decideone.app` moved to the Cloudflare Worker; the apex CNAME was recorded in `DEPLOY.md` and deleted. `npm run deploy` is the whole publish, and `verify:live` runs as its step 4 rather than being a thing to remember.
 
 ## Deliberately Excluded
 
