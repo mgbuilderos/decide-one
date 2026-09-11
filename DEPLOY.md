@@ -80,16 +80,25 @@ do it.
 
 | Host | Address | Publishes via | Status |
 | :--- | :--- | :--- | :--- |
-| Cloudflare Worker (founder's own account) | `decide-one.decide-one-stationery-instrument.workers.dev` | `npm run deploy` | Current build |
-| Sites project `appgprj_6aa060ea93fc819198302b9398806888` | `decideone.app` | Manual publish in the tool that owns it | To be deleted |
+| Cloudflare Worker (founder's own account) | `decideone.app` and `decide-one.decide-one-stationery-instrument.workers.dev` | `npm run deploy` | **The host** |
+| Sites project `appgprj_6aa060ea93fc819198302b9398806888` | — | Manual publish in the tool that owns it | Decommissioned, still exists |
+
+**The Sites project still exists and is the fallback.** It serves nothing now —
+no DNS points at it — but while it exists, rolling back is recreating one DNS
+record. Delete it once the Worker has held the domain for a few days, not
+before: deleting it is what makes the rollback in this file stop working.
+
+`.openai/hosting.json` named the project for that tool and has been removed,
+since nothing in this repository publishes through Sites any more. It was
+`{"project_id": "appgprj_6aa060ea93fc819198302b9398806888", "static": {"directory": "dist"}}`
+— restore it from git history if Sites is ever needed again.
 
 The Worker serves `dist/` as static assets. Nothing runs server-side — the app
 is local-first and has no backend, which is the point. Config is
 `wrangler.jsonc`, and every claim in it is commented with the reason.
 
-`.openai/hosting.json` is what the Sites project reads. **Do not delete it while
-that host is still live** — it was deleted once by a `git add -A` sweep and had
-to be recovered from the initial commit.
+The Worker serves `dist/` as static assets, and `wrangler.jsonc` comments every
+claim in it with the reason.
 
 ---
 
