@@ -969,3 +969,9 @@ Rule 0 now checks reachability, not existence. It walks the import graph from sr
 ### 2026-09-11 01:34 — unattributed
 
 Rule 25 had the same existence-vs-reachability hole Rule 0 did: walkSrc scanned every file in src/, so a track() call in a file nothing imports counted as an emitter. Direction 1 now tests emittedLive - emitters the application actually reaches - and names the orphan-emitter case separately. Latent rather than live: day_condition_selected and day_condition_skipped are emitted only from the unreachable DayConditionPrompt, but the server does not analyse them today, so no metric is currently a permanent zero. Negative-tested by making the server analyse day_condition_selected and confirming the new branch fires. Also found a fourth name mismatch in the dead spine glow: index.css defines .ambient-gold-spine-glow but the prefers-reduced-motion override targets .spine-ambient-glow, so the animation would not have stopped for reduced motion even if the feature had ever rendered.
+
+---
+
+### 2026-09-11 01:39 — unattributed
+
+C3 restored. DayConditionPrompt is wired back into App.jsx with its original once-a-day effect, recovered from 4e68de4^ rather than rewritten. Verified in-browser: the prompt renders on today before a method exists, 'Everything looks urgent' routes silently to the Urgent/Important Matrix, localStorage holds dayCondition all_urgent and activeFramework eisenhower, it does not reappear on reload, and the console is clean. Static import rather than lazy: it is the first thing shown on a new day and a Suspense flash there is the wrong first impression. Also deleted SpineAmbientGlow entirely - it had four name mismatches and was drawn on the bi-fold spine P11 removed, and the whole useAmbientReminders hook turned out to be dead because notificationsEnabled can only be set by requestPermission, which nothing calls.

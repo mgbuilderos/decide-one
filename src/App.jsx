@@ -16,6 +16,7 @@ import { usePrivacyShutter } from './hooks/usePrivacyShutter';
 import { useLicenseAutoActivation } from './hooks/useLicenseAutoActivation';
 import { generateExecutiveWeeklyBriefingPDF } from './utils/weeklyBriefingPDF';
 import { getFrameworkItems } from './utils/executionModel';
+import DayConditionPrompt from './components/DayConditionPrompt';
 import { useExecutiveDictation } from './hooks/useExecutiveDictation';
 import { useAmbientReminders } from './hooks/useAmbientReminders';
 import { telemetry, getHistoryDepthDays, lengthBucket, wordBucket } from './utils/telemetry';
@@ -185,6 +186,8 @@ export default function App() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isDecisionLogOpen, setIsDecisionLogOpen] = useState(false);
   const [isClosureModalOpen, setIsClosureModalOpen] = useState(false);
+  const [isDayConditionOpen, setIsDayConditionOpen] = useState(false);
+  const [dayConditionDismissedFor, setDayConditionDismissedFor] = useState(null);
   const [isScratchpadOpen, setIsScratchpadOpen] = useState(false);
 
   // Executive Thought Dictation Hook (Cmd+Shift+V)
@@ -662,6 +665,24 @@ export default function App() {
     }
   };
 
+  // C3 — the morning entry surface. The user names the condition of the day;
+  // the instrument routes to the method silently. The method is never named here.
+  const handleChooseDayCondition = (condition) => {
+    saveDailyLog(dateKey, { dayCondition: condition.id });
+    handleSelectFramework(condition.framework);
+    setIsDayConditionOpen(false);
+  };
+
+  // Ask once per day, on today only, and only before a method is chosen.
+  // Skipping is remembered for the session so the question never nags.
+  useEffect(() => {
+    if (activeView !== 'daily') return;
+    if (dateKey !== todayKey) return;
+    if (dailyLog.dayCondition || dailyLog.activeFramework) return;
+    if (dayConditionDismissedFor === dateKey) return;
+    setIsDayConditionOpen(true);
+  }, [activeView, dateKey, todayKey, dailyLog.dayCondition, dailyLog.activeFramework, dayConditionDismissedFor]);
+
   // R7 — planned-versus-actual accounting, stored per decided item.
   const handleUpdateExecution = (itemId, session) => {
     saveDailyLog(dateKey, {
@@ -1133,6 +1154,18 @@ export default function App() {
         onDeleteDecision={deleteDecision}
         isMuted={settings.isMuted}
       /></Suspense>}
+
+      {/* C3 — "What does today look like?", asked before the day has a method. */}
+      <DayConditionPrompt
+        isOpen={isDayConditionOpen}
+        onClose={() => {
+          setDayConditionDismissedFor(dateKey);
+          setIsDayConditionOpen(false);
+        }}
+        onChooseCondition={handleChooseDayCondition}
+        dateLabel={currentDate.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
+        isMuted={settings.isMuted}
+      />
 
       {isClosureModalOpen && <Suspense fallback={null}><ExecutiveClosureRitualModal
         isOpen={isClosureModalOpen}
