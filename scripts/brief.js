@@ -49,18 +49,38 @@ console.log(`LIVE      ${!live ? 'unreachable' : live === 'assets/' + local ? 'd
 console.log('\n\x1b[1mLast 5 commits\x1b[0m');
 console.log(sh('git log -5 --format="  %h  %ad  %s" --date=format:%d-%b').split('\n').join('\n'));
 
-// 5. The three files that are actually current
-console.log('\n\x1b[1mRead only these, and only if you need them\x1b[0m');
+// 5. The documentation, in the three layers it actually has
+console.log('\n\x1b[1mDocumentation — three layers, not a pile\x1b[0m');
 for (const [f, why] of [
-  ['AGENTS.md', 'the rules — start here'],
-  ['DECISIONS.md', 'what was decided and why (§B table at the end is newest)'],
+  ['AGENTS.md', 'the rules. Start here'],
+  ['VISION.md', 'WHY. §11 governs all copy and wins any conflict'],
+  ['DECISIONS.md', 'WHAT IS TRUE NOW. One page, current state'],
+  ['DECISION_LOG.md', 'HOW WE GOT HERE. Append-only; npm run log adds to it'],
   ['WORK_REMAINING.md', 'what is left'],
   ['DEPLOY.md', 'one command: npm run deploy'],
-  ['VISION.md', '§11 governs all copy']
+  ['FRAMEWORKS.md', 'which methods ship, and their attribution'],
+  ['FOUNDATIONS.md', 'why the methods are sound'],
+  ['LANDING_PROTOTYPE.md', 'the honest description of what is built']
 ]) {
-  const w = fs.existsSync(f) ? fs.readFileSync(f, 'utf8').split(/\s+/).length : 0;
-  console.log(`  ${f.padEnd(20)} ${String(w).padStart(6)} words   ${why}`);
+  if (!fs.existsSync(f)) continue;
+  const w = fs.readFileSync(f, 'utf8').split(/\s+/).length;
+  console.log(`  ${f.padEnd(21)}${String(w).padStart(6)} w   ${why}`);
 }
-console.log('\n  Everything else in the root is history. Do not read it unless asked.\n');
+console.log('\n  The other ~33 root .md files are working history from the build-out.');
+console.log('  Do not read them unless asked for something specific.');
 
-console.log('\x1b[1mGates\x1b[0m  npm run tree · npm run test:qc · npm run deploy\n');
+// 6. What the last sessions actually did — the cheap read of a 17,000-word log
+if (fs.existsSync('DECISION_LOG.md')) {
+  const heads = fs.readFileSync('DECISION_LOG.md', 'utf8')
+    .split('\n').filter(l => /^#{2,3} /.test(l)).slice(-4);
+  if (heads.length) {
+    console.log('\n\x1b[1mLast entries in the session log\x1b[0m');
+    heads.forEach(h => console.log('  ' + h.replace(/^#+ /, '')));
+  }
+}
+
+console.log('\n\x1b[1mCommands\x1b[0m');
+console.log('  npm run tree      is anyone else editing right now');
+console.log('  npm run test:qc   23 rules + Rule 0 (governed surfaces exist)');
+console.log('  npm run deploy    audit, build, publish, verify — one command');
+console.log('  npm run log "…"   append what you did to DECISION_LOG.md\n');

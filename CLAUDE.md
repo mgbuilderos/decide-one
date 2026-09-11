@@ -8,6 +8,28 @@ came from that, not from the code.
 
 ---
 
+## Every session, in four commands
+
+```bash
+npm run brief     # what is true right now. ALWAYS FIRST.
+npm run tree      # is another agent editing? (brief shows this too)
+npm run test:qc   # 23 rules + Rule 0. Before every commit.
+npm run log "…"   # what you did, appended to DECISION_LOG.md. Before you stop.
+```
+
+`npm run brief` exists because reading this repository costs about 140,000
+tokens and answers none of the questions a session actually opens with. It
+computes them instead, in a few hundred: who is editing, where git is, whether
+`decideone.app` is this build, the last five commits, the last session-log
+entries, and which nine documents are current out of forty-three.
+
+**Read documentation only when `brief` tells you to.** The layers are:
+`VISION.md` is *why*, `DECISIONS.md` is *what is true now*, `DECISION_LOG.md`
+is *how we got here*. Everything else in the root is working history from the
+build-out and should not be read speculatively.
+
+---
+
 ## The five rules
 
 **1. Read before writing.**
@@ -16,7 +38,8 @@ left. Both are current. Re-deriving what they already say wastes a session and
 usually reaches a worse answer, because the reasoning behind a decision is not
 recoverable from the code.
 
-**2. Commit your own work before you stop.**
+**2. Commit your own work before you stop, and say what it was.**
+`npm run log "…"` appends it to `DECISION_LOG.md`; commit that with your files.
 Leaving changes uncommitted is how work gets lost. Two agents have been editing
 without committing, and a third then swept those edits into unrelated commits.
 If you changed it, commit it, with a message saying why.

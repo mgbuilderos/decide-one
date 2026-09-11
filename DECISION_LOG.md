@@ -759,3 +759,9 @@ Founder proposed a sequence of candidates in one lineage. Recorded together beca
 **The model-designation idea is worth keeping.** *"Give the instrument a model designation"* is the **Leica M6 / Braun / Teenage Engineering OP-1** move — the most instrument-coded, most aspirational structure proposed. But it requires a **distinctive parent**: Leica M6 works because *Leica* is ownable and *M6* is the model. A generic parent plus a number reads as a release version, not a product. The structure would work with a distinctive word in front — *Shears 01*, *Krama M1* — and is recorded here for use once the masterbrand is settled.
 
 **Standing position: Decisive leads, Shears is the fallback.** Decisive wins on the axes the founder has consistently prioritised (aspirational, elevated, no explanation required); Shears wins on concreteness and on verification, having survived two independent agency searches where Decisive has had one. **A second independent check on Decisive remains outstanding** — this round demonstrated twice (Plumb, Whittle) that a single search produces false positives.
+
+---
+
+### 2026-09-11 14:21 — claude
+
+Deploy became one command (npm run deploy: audit, build, publish, verify). decideone.app moved off the Sites project onto the Cloudflare Worker in the founder's own account; the apex CNAME it replaced is recorded in DEPLOY.md as the rollback. Rule 0 added to the audit so deleting a governed surface fails instead of silently skipping its checks. npm run tree and npm run brief added because three agents share this tree and reading the docs costs ~140k tokens.
