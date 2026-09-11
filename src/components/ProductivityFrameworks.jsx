@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Check, Lock } from 'lucide-react';
-import confetti from 'canvas-confetti';
 import { playSound } from '../utils/audio';
 import InlineTimeControl from './InlineTimeControl';
 import { STATES, completeSession, getSession } from '../utils/executionModel';
@@ -55,12 +54,12 @@ export default function ProductivityFrameworks({
   // Trigger celebration
   const triggerCelebration = () => {
     try {
-      confetti({
+      import('canvas-confetti').then(({ default: confetti }) => confetti({
         particleCount: 65,
         spread: 65,
         origin: { y: 0.6 },
         colors: ['#16A34A', '#D97706', '#000000', '#FFFFFF']
-      });
+      }));
     } catch (e) {
       console.error(e);
     }

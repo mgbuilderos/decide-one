@@ -891,3 +891,9 @@ Removed the material explorer from the landing page - Explore The Object, Every 
 ### 2026-09-11 00:21 — claude
 
 B-39: one site. decideone.app serves both the landing page and the instrument from a single origin, and no second host will be added. The consequence recorded in TELEMETRY_SPEC §0a: the A/B split is a rule about surfaces rather than origins, so no third-party script may ever be allowed in the CSP - allowing an origin allows it on the page where people write their priorities. Cloudflare RUM was turned off on that reasoning despite giving accurate Core Web Vitals for free. Site analytics are first-party and route-scoped from here: heatmaps stay possible for marketing surfaces but only as code this repository owns, mounted on landing routes and never on an instrument view. LCP, INP, CLS and TTFB become ours to build through PerformanceObserver.
+
+---
+
+### 2026-09-11 00:25 — claude
+
+Halved the critical-path JavaScript. The entry bundle was 739KB raw / 230KB gzipped because App.jsx statically imported the weekly briefing module, which statically imported jsPDF, which pulls html2canvas - roughly 98KB gzipped of PDF machinery downloading on every first paint for a feature nobody had asked for. canvas-confetti was eager in two components for the same reason. jsPDF now loads inside the one function that builds a PDF; confetti loads on a promise chain so the handler stays synchronous and never blocks an interaction. Entry bundle is now 355KB raw / 105KB gzipped. Verified on a restarted dev server with a cleared vite cache, because the first check showed stale HMR 500s from the intermediate broken state rather than the real result.

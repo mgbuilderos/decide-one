@@ -1,6 +1,5 @@
 import React, { useRef } from 'react';
 import { Check } from 'lucide-react';
-import confetti from 'canvas-confetti';
 import { CATEGORIES, detectCategoryFromText } from '../types/journal';
 import { playSound } from '../utils/audio';
 import { telemetry } from '../utils/telemetry';
@@ -57,12 +56,12 @@ export default function Top3HardTasks({
     const allDone = updated.every(t => t.text && t.text.trim() !== '' && t.completed);
     if (allDone && nextCompleted) {
       try {
-        confetti({
+        import('canvas-confetti').then(({ default: confetti }) => confetti({
           particleCount: 60,
           spread: 60,
           origin: { y: 0.6 },
           colors: ['#16A34A', '#D97706', '#000000', '#FFFFFF']
-        });
+        }));
       } catch (e) {
         console.error(e);
       }

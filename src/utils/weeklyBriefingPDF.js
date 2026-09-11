@@ -3,7 +3,10 @@
  * Publication-grade client-side 2-page A4 PDF rendering with 24px grid & 15mm binder margins
  * 100% Offline • Zero Server • Vector Typography (Helvetica)
  */
-import { jsPDF } from 'jspdf';
+// jsPDF and the html2canvas it pulls are ~98KB gzipped and were loading on
+// every first paint, for a feature nobody has asked for yet. Loaded on demand
+// inside the one function that needs it - VISION §13.3 asks the instrument to
+// be fast before it is anything else.
 import { CATEGORIES } from '../types/journal';
 
 // Formatting & Calendar Helpers
@@ -82,6 +85,7 @@ export async function generateExecutiveWeeklyBriefingPDF({
   const MB = 28.35;
   const CONTENT_W = PAGE_W - ML - MR;
 
+  const { jsPDF } = await import('jspdf');
   const doc = new jsPDF({
     orientation: 'portrait',
     unit: 'pt',
