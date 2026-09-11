@@ -38,8 +38,16 @@ left. Both are current. Re-deriving what they already say wastes a session and
 usually reaches a worse answer, because the reasoning behind a decision is not
 recoverable from the code.
 
-**2. Commit your own work before you stop, and say what it was.**
-`npm run log "…"` appends it to `DECISION_LOG.md`; commit that with your files.
+**2. Commit at every working state — you may not choose when you stop.**
+Agents here run out of credit mid-task. On 11 September one was cut off
+part-way through a rewrite, leaving a deleted component, a broken build and an
+hour of silence. Nothing was lost, but only because the file came back.
+
+So do not save committing for the end. Whenever the tree builds and the audit
+passes, commit — even mid-feature. `npm run log "…"` appends what you did to
+`DECISION_LOG.md`; commit that with your files. A half-finished feature in
+history is recoverable. A half-finished feature in a shared working tree is
+one cleared directory away from gone.
 Leaving changes uncommitted is how work gets lost. Two agents have been editing
 without committing, and a third then swept those edits into unrelated commits.
 If you changed it, commit it, with a message saying why.
@@ -118,6 +126,35 @@ Context is the scarce resource, and long sessions are expensive for everyone.
   not pay to rediscover the last one.
 - **Trust the audit over re-reading.** `npm run test:qc` answers "did this break
   a decision" in a second.
+
+---
+
+## When an agent was cut off mid-task
+
+The usual cause of a broken tree here is not a mistake — it is an agent hitting
+its usage limit part-way through. It leaves no note, because it did not know it
+was stopping.
+
+```bash
+npm run brief
+```
+
+That says what state the tree is in. Then:
+
+**If the gates pass and there is uncommitted work** — it reached a working
+state. Read it, commit it with an honest message saying it is not your work,
+and `npm run log` what happened.
+
+**If the gates fail** — it was cut mid-change. Do not diagnose it as a deletion
+or a bad decision; on 11 September a delete-and-rewrite was twice read as a
+component being removed, and both readings were wrong. Either:
+
+- wait, if the agent may resume — the file may simply come back, as it did; or
+- `git checkout -- <file>` to restore what was deleted and get the tree
+  building again, losing only work that was never committed.
+
+**Never deploy a tree you did not check first.** `npm run deploy` will refuse a
+broken build anyway, which is the point of it being one command.
 
 ---
 
