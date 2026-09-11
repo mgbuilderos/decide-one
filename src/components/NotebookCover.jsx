@@ -60,7 +60,7 @@ export function NotebookCoverFrontFace({
                 title={`Volume ${vol.volumeNumber}: ${vol.name} — ${vol.subtitle}`}
                 className={`w-6 h-9 rounded-r-lg border-y border-r flex items-center justify-center transition-all cursor-pointer shadow-xs hover:translate-x-1 ${
                   isSel
-                    ? 'bg-neutral-900 border-neutral-950 text-amber-400 dark:bg-white dark:border-white dark:text-neutral-950 translate-x-0.5 font-bold'
+                    ? 'bg-neutral-900 border-neutral-950 text-white dark:bg-white dark:border-white dark:text-neutral-950 translate-x-0.5 font-bold'
                     : 'bg-[#EAE5DC] dark:bg-[#222226] border-black/10 dark:border-white/15 text-neutral-500 hover:text-neutral-900 dark:hover:text-white'
                 }`}
               >
@@ -116,9 +116,9 @@ export function NotebookCoverFrontFace({
               className={`inline-flex items-center justify-center w-8 h-8 rounded-full border border-black/10 dark:border-white/15 cursor-pointer transition-all hover:scale-105 shadow-2xs ${
                 monogramStyle === 'blind' 
                   ? 'bg-black/[0.03] dark:bg-white/[0.04]' 
-                  : 'bg-amber-500/[0.06] border-amber-600/25'
+                  : 'bg-black/[0.06] dark:bg-white/[0.08]'
               }`}
-              title="Click to toggle 24K Gold Foil / Blind Deboss Stamping"
+              title="Toggle the deboss depth"
             >
               <span className={`text-[11px] font-bold ${monogramStyle === 'blind' ? 'monogram-blind-deboss' : 'monogram-gold-foil'}`}>
                 {(ownerName || 'M').split(' ').filter(Boolean).map(w => w[0].toUpperCase()).slice(0, 2).join('.')}
@@ -163,7 +163,7 @@ export function NotebookCoverFrontFace({
 
           {/* Gift Ribbon Greeting if opened via a gifted link */}
           {giftFrom && (
-            <div className="inline-flex items-center gap-1.5 bg-amber-400/15 border border-amber-500/30 text-amber-900 dark:text-amber-200 rounded-full px-3.5 py-1 text-[11px] font-serif italic mb-2 animate-in fade-in">
+            <div className="inline-flex items-center gap-1.5 bg-black/[0.04] dark:bg-white/[0.06] border border-black/10 dark:border-white/15 text-neutral-700 dark:text-neutral-300 rounded-full px-3.5 py-1 text-[11px] font-serif italic mb-2 animate-in fade-in">
               <span>✨ A quiet day gifted by {giftFrom}</span>
             </div>
           )}

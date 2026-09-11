@@ -107,7 +107,16 @@
   font-size: 11px;
   font-weight: 550;
   letter-spacing: 2.5px;
+  line-height: 1.9;
   margin: 0 0 25px
+}
+/* The second line of the hero eyebrow. Free is the position, so it carries
+   the emphasis - full contrast against the muted line above it, weight rather
+   than colour, because colour in this brand carries meaning and not accent. */
+.pm-eyebrow-free {
+  color: var(--pm-text);
+  font-weight: 700;
+  letter-spacing: 3px;
 }
 .pm-hero {
   position: relative;

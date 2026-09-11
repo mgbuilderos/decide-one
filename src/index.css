@@ -1440,10 +1440,14 @@ body {
 
 /* 3. Gold Foil Stamped Monogram & Blind Leather Deboss */
 .monogram-gold-foil {
-  background: linear-gradient(135deg, #FFFBEB 0%, #FCD34D 25%, #D97706 50%, #F59E0B 75%, #78350F 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 2px rgba(245, 158, 11, 0.4));
+  /* Was a 24K gold foil gradient. Gold is Leica register and the brand model
+     is a Casio F-91W - dignity from honesty about what a thing costs to make,
+     not from performing luxury (VISION §12.1). Kept as a second deboss depth
+     so the toggle still does something, in ink rather than metal. */
+  color: rgba(0, 0, 0, 0.72);
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.35),
+    0 -1px 1px rgba(0, 0, 0, 0.25);
   font-weight: 800;
   letter-spacing: 0.18em;
 }

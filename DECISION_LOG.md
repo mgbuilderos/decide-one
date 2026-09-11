@@ -837,3 +837,9 @@ Content-derived numbers are now bucketed before they are sent. dictation_complet
 ### 2026-09-11 23:07 — claude
 
 Landing page rewritten for the free positioning in the motivating and positive register. VISION §11.1 changed first per rule 5: the primary line is now 'You already know what matters. This helps you choose it.', which begins by trusting the reader rather than instructing them, and states free as a consequence of the purpose rather than a promotion - if the goal is one clear day for as many people as possible, charging works against it. The retired line is kept as an approved alternate with its dates. Twenty copy replacements across the page, plus the share metadata in index.html and the hero text drawn into the 3D journal object, which two greps found still carrying the old line.
+
+---
+
+### 2026-09-11 23:19 — claude
+
+Brand cleanup on the cover and hero. The hero eyebrow is two lines with Free Forever carrying the emphasis - weight and contrast, not colour, since colour in this brand carries meaning rather than accent. Removed every gold treatment from the notebook cover: the monogram's 24K gold foil gradient is now an ink deboss, the selected volume tab is white rather than amber, the monogram circle and the gift ribbon are monochrome. Gold is Leica register and VISION §12.1 chose the Casio F-91W, where dignity comes from honesty about what a thing costs to make rather than from performing luxury. Note for later: the four tabs on the cover are volumes (Work, Personal, Projects, Private), not the Daily/Weekly/Monthly/Yearly views.
