@@ -95,3 +95,55 @@ Context is the scarce resource, and long sessions are expensive for everyone.
   not pay to rediscover the last one.
 - **Trust the audit over re-reading.** `npm run test:qc` answers "did this break
   a decision" in a second.
+
+---
+
+## When two agents must work at once
+
+Everything above assumes one agent editing at a time. That is the cheap case,
+and it is usually true. When it is not, the shared tree bites in a specific
+way: a second agent reading `git status` mid-write sees a half-applied state —
+a file briefly deleted, an import pointing at nothing — and reports work as
+broken or abandoned when it is neither. That happened twice on 11 September.
+
+**Before concluding that anything is broken, check whether it is still being
+written:**
+
+```bash
+ls -lTt src/components/*.jsx | head -5   # newest first
+date "+%H:%M:%S"
+```
+
+Edits inside the last few minutes mean an agent is mid-task — wait and read
+again. Agents write in batches, so several files sharing one timestamp is one
+action, not several. A quiet gap of five minutes or more is the signal that it
+has actually stopped.
+
+### Giving an agent its own tree
+
+If two agents genuinely need to work simultaneously, give one its own worktree
+rather than trying to interleave in this one:
+
+```bash
+git worktree add ../decide-one-codex -b agent/codex
+cd ../decide-one-codex && npm install
+cp "../Journal App/licence-signing-key.json" .    # gitignored, not carried over
+```
+
+Point that agent at the new directory. It gets an isolated tree on its own
+branch, and its work reaches `main` through a merge you can read first.
+
+**The cost is real and worth knowing before you start:** `node_modules` is
+1.2 GB, and each worktree needs its own copy. The signing key has to be copied
+in, which multiplies the number of places a secret lives. And merging becomes
+your job rather than something that happened by accident.
+
+So this is the answer when two agents must overlap — not the default. One agent
+at a time, committing before it stops, remains cheaper and simpler.
+
+When a worktree is finished with:
+
+```bash
+git worktree remove ../decide-one-codex
+git branch -d agent/codex        # after merging
+```
