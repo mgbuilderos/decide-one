@@ -65,9 +65,12 @@ export function LeftPage({
           onUpdateHardTasks={onUpdateHardTasks}
           frameworkData={frameworkData || {}}
           onUpdateFrameworkData={onUpdateFrameworkData}
+          dailyLog={dailyLog}
+          onUpdateExecution={onUpdateExecution}
           isMuted={settings?.isMuted}
           isPastDay={isPastDay}
           isFullPage={false}
+          isInteractive={isInteractive}
         />
 
         {/* Timeboxes — P11: durations attach per line, on the recto, beside the

@@ -47,7 +47,6 @@ export default function AnalogueClock({
   const hourDeg = (shown / 43200) * 360;
 
   const isResting = activeState === STATES.IDLE || activeState === STATES.BREATHING;
-  const detailed = size >= 64;
   const r = 50;
 
   const hand = (length, width, deg, className) => (
@@ -77,45 +76,40 @@ export default function AnalogueClock({
             : `${formatClock(shown)} ${overtime ? 'over the planned time' : 'remaining'}`
         }
       >
-        <circle cx="50" cy="50" r={r - 2} fill="none" strokeWidth="0.8"
-          className="stroke-black/15 dark:stroke-white/20" />
+        <circle cx="50" cy="50" r={r - 2} fill="none" strokeWidth="0.55"
+          className="stroke-black/25 dark:stroke-white/25" />
+        <circle cx="50" cy="50" r={r - 5} fill="none" strokeWidth="0.25"
+          className="stroke-black/10 dark:stroke-white/10" />
 
         {Array.from({ length: 12 }).map((_, i) => (
-          <line key={`h${i}`} x1="50" y1="6" x2="50" y2="10.5"
-            strokeWidth="1" strokeLinecap="round"
-            className="stroke-black/45 dark:stroke-white/50"
+          <line key={`h${i}`} x1="50" y1={i % 3 === 0 ? '6' : '7.5'} x2="50" y2={i % 3 === 0 ? '12' : '11.5'}
+            strokeWidth={i % 3 === 0 ? '1.1' : '0.65'} strokeLinecap="round"
+            className="stroke-black/50 dark:stroke-white/55"
             transform={`rotate(${i * 30} 50 50)`} />
         ))}
 
-        {detailed && Array.from({ length: 60 }).map((_, i) => (
-          i % 5 === 0 ? null : (
-            <circle key={`m${i}`} cx="50" cy="8" r="0.45"
-              className="fill-black/25 dark:fill-white/30"
-              transform={`rotate(${i * 6} 50 50)`} />
-          )
-        ))}
-
-        {hand(22, 2.2, hourDeg, isResting
+        {hand(21, 1.5, hourDeg, isResting
           ? 'stroke-black/35 dark:stroke-white/35'
           : 'stroke-neutral-900 dark:stroke-neutral-100')}
-        {hand(34, 1.5, minuteDeg, isResting
+        {hand(32, 0.95, minuteDeg, isResting
           ? 'stroke-black/30 dark:stroke-white/30'
           : 'stroke-neutral-900/80 dark:stroke-neutral-100/80')}
         {activeState === STATES.RUNNING &&
-          hand(38, 0.6, secondDeg, 'stroke-neutral-500 dark:stroke-neutral-400')}
+          hand(37, 0.45, secondDeg, 'stroke-neutral-500 dark:stroke-neutral-400')}
 
-        <circle cx="50" cy="50" r="1.8" strokeWidth="0.6"
+        <circle cx="50" cy="50" r="1.35" strokeWidth="0.45"
           className="fill-white dark:fill-[#141416] stroke-neutral-900 dark:stroke-neutral-100" />
+        <circle cx="50" cy="50" r="0.38" className="fill-neutral-900 dark:fill-neutral-100" />
       </svg>
 
       {showReadout && planned > 0 && (
         <div className="text-center leading-tight select-none">
-          <div className="tabular-nums tracking-widest font-semibold text-neutral-800 dark:text-neutral-200"
-            style={{ fontSize: Math.max(13, size * 0.16) }}>
+          <div className="tabular-nums tracking-[0.08em] font-medium text-neutral-800 dark:text-neutral-200"
+            style={{ fontSize: Math.max(12, size * 0.1) }}>
             {formatClock(shown)}
           </div>
-          <div className="text-[10px] uppercase tracking-wider text-neutral-400">
-            {overtime ? 'over' : 'left'}
+          <div className="mt-0.5 text-[9px] tracking-[0.08em] text-neutral-400">
+            {overtime ? 'over' : 'remaining'}
           </div>
         </div>
       )}

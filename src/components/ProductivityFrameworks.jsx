@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Check, Flame, Lock } from 'lucide-react';
+import { Check, Lock } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { playSound } from '../utils/audio';
+import InlineTimeControl from './InlineTimeControl';
+import { STATES, completeSession, getSession } from '../utils/executionModel';
 
 export const FRAMEWORKS = [
   // Cluster 1: Focus & Prioritization
@@ -43,9 +45,12 @@ export default function ProductivityFrameworks({
   onUpdateHardTasks,
   frameworkData = {},
   onUpdateFrameworkData,
+  dailyLog,
+  onUpdateExecution,
   isMuted = false,
   isPastDay = false,
-  isFullPage = false
+  isFullPage = false,
+  isInteractive = true
 }) {
   // Trigger celebration
   const triggerCelebration = () => {
@@ -71,6 +76,19 @@ export default function ProductivityFrameworks({
     });
   };
 
+  const syncCompletion = (itemId, completed) => {
+    if (!itemId || !onUpdateExecution) return;
+    const session = getSession(dailyLog, itemId);
+    if (completed) {
+      onUpdateExecution(itemId, completeSession(session));
+    } else if (session.state === STATES.DONE) {
+      onUpdateExecution(itemId, {
+        ...session,
+        state: session.actualFocusSec > 0 ? STATES.PAUSED : STATES.IDLE
+      });
+    }
+  };
+
   // --- 1. RULE OF 3 HANDLERS ---
   const slotLabels = [
     { num: '01', title: 'First', placeholder: 'What deserves your day first?' },
@@ -87,6 +105,7 @@ export default function ProductivityFrameworks({
 
     playSound(nextCompleted ? 'check' : 'click', isMuted);
     onUpdateHardTasks(updated);
+    syncCompletion(task.id || `r3_${index}`, nextCompleted);
 
     const allDone = updated.every(t => t.text && t.text.trim() !== '' && t.completed);
     if (allDone && nextCompleted) triggerCelebration();
@@ -120,6 +139,7 @@ export default function ProductivityFrameworks({
     playSound(list[idx].completed ? 'check' : 'click', isMuted);
     const updated = { ...eData, [qKey]: list };
     updateActiveData({ quadrants: updated });
+    syncCompletion(list[idx].id || `${qKey}_${idx}`, list[idx].completed);
 
     const allTasks = Object.values(updated).flat().filter(t => t.text.trim() !== '');
     if (list[idx].completed && allTasks.length > 0 && allTasks.every(t => t.completed)) {
@@ -194,6 +214,7 @@ export default function ProductivityFrameworks({
     list[idx] = { ...list[idx], completed: !list[idx].completed };
     playSound(list[idx].completed ? 'check' : 'click', isMuted);
     updateActiveData({ tasks: list });
+    syncCompletion(list[idx].id || `il_${idx}`, list[idx].completed);
 
     const activeList = list.filter(t => t.text.trim() !== '');
     if (list[idx].completed && activeList.length > 0 && activeList.every(t => t.completed)) {
@@ -242,6 +263,7 @@ export default function ProductivityFrameworks({
 
         {/* Quiet progress only; method selection lives in the icon group above. */}
         <div className="flex items-center gap-2 select-none no-print">
+          <span className="hidden sm:inline text-[9px] font-semibold uppercase tracking-[0.12em] text-neutral-400">Time</span>
           <div className="text-[10px] font-semibold">
             <span className={`font-bold ${
               doneCount === 0 
@@ -312,6 +334,14 @@ export default function ProductivityFrameworks({
                     }`}
                   />
                 </div>
+
+                <InlineTimeControl
+                  item={{ ...task, id: task.id || `r3_${idx}` }}
+                  dailyLog={dailyLog}
+                  onUpdateExecution={onUpdateExecution}
+                  isMuted={isMuted}
+                  isInteractive={isInteractive}
+                />
 
               </div>
             );
@@ -440,6 +470,13 @@ export default function ProductivityFrameworks({
                             isDone ? 'line-through text-neutral-400 dark:text-neutral-500' : 'text-neutral-800 dark:text-neutral-200'
                           }`}
                         />
+                        <InlineTimeControl
+                          item={{ ...item, id: item.id || `${quad.key}_${idx}` }}
+                          dailyLog={dailyLog}
+                          onUpdateExecution={onUpdateExecution}
+                          isMuted={isMuted}
+                          isInteractive={isInteractive}
+                        />
                       </div>
                     );
                   })}
@@ -490,6 +527,14 @@ export default function ProductivityFrameworks({
                   className={`flex-1 min-w-0 bg-transparent text-[14px] sm:text-[15px] focus:outline-none placeholder-neutral-400/60 ${
                     isDone ? 'line-through text-neutral-400 dark:text-neutral-500' : 'text-neutral-900 dark:text-neutral-100'
                   }`}
+                />
+                <InlineTimeControl
+                  item={{ ...task, id: task.id || `il_${idx}` }}
+                  dailyLog={dailyLog}
+                  onUpdateExecution={onUpdateExecution}
+                  isMuted={isMuted}
+                  isInteractive={isInteractive}
+                  locked={isLocked}
                 />
               </div>
             );
