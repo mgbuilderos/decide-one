@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Plus } from 'lucide-react';
 import BulletItem from './BulletItem';
 import { CATEGORIES } from '../types/journal';
 import { playSound } from '../utils/audio';
@@ -12,7 +11,8 @@ export default function RapidLogSection({
   viewMode = 'stream',
   setViewMode,
   isMuted = false,
-  isPastDay = false
+  isPastDay = false,
+  isInteractive = true
 }) {
   const [newlyAddedId, setNewlyAddedId] = useState(null);
 
@@ -93,7 +93,10 @@ export default function RapidLogSection({
     : rapidLog.filter(item => item.category === activeFilter);
 
   return (
-    <section className="flex-1 min-h-0 flex flex-col justify-between overflow-hidden" aria-label="Today Rapid Log">
+    <section
+      className={`shrink-0 flex flex-col ${!isInteractive ? 'pointer-events-none select-none' : ''}`}
+      aria-label="Today"
+    >
       
       {/* Section Partition (Exact 24px Line Grid Cadence) */}
       <div className="h-[24px] leading-[24px] flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] shrink-0 mb-1.5">
@@ -105,26 +108,14 @@ export default function RapidLogSection({
             ({rapidLog.length})
           </span>
         </div>
-
-        {/* Quiet Controls: Add Line */}
-        <div className="flex items-center gap-1.5 no-print">
-          <button
-            type="button"
-            onClick={() => handleAddNewItem('personal')}
-            className="text-xs font-medium text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white px-2.5 py-0.5 rounded-full bg-black/[0.04] dark:bg-white/[0.06] hover:bg-black/[0.08] dark:hover:bg-white/[0.1] transition-colors flex items-center gap-1 cursor-pointer"
-          >
-            <Plus className="w-3 h-3" />
-            <span>Line</span>
-          </button>
-        </div>
       </div>
 
       {/* Internal Stream Container (24px Line Grid Cadence, Hardcoded Zero-Scroll) */}
-      <div className="flex-1 min-h-0 overflow-hidden pr-1">
+      <div className="pr-1">
         <div className="space-y-0">
           {filteredLog.length === 0 ? (
-            <div className="py-8 text-center text-xs text-neutral-400 dark:text-neutral-500">
-              Nothing logged yet. Click "+ Line" or press Enter on any line.
+            <div className="h-[24px] leading-[24px] text-xs text-neutral-400 dark:text-neutral-500 px-1">
+              Nothing here yet.
             </div>
           ) : (
             filteredLog.map((item) => {

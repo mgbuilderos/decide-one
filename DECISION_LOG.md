@@ -975,3 +975,9 @@ Rule 25 had the same existence-vs-reachability hole Rule 0 did: walkSrc scanned 
 ### 2026-09-11 01:39 — unattributed
 
 C3 restored. DayConditionPrompt is wired back into App.jsx with its original once-a-day effect, recovered from 4e68de4^ rather than rewritten. Verified in-browser: the prompt renders on today before a method exists, 'Everything looks urgent' routes silently to the Urgent/Important Matrix, localStorage holds dayCondition all_urgent and activeFramework eisenhower, it does not reappear on reload, and the console is clean. Static import rather than lazy: it is the first thing shown on a new day and a Suspense flash there is the wrong first impression. Also deleted SpineAmbientGlow entirely - it had four name mismatches and was drawn on the bi-fold spine P11 removed, and the whole useAmbientReminders hook turned out to be dead because notificationsEnabled can only be set by requestPermission, which nothing calls.
+
+---
+
+### 2026-09-11 01:43 — unattributed
+
+The Today stream is on the page again. RapidLogSection renders inside LeftPage on the recto, beneath the timeboxes, with the props App had been threading into LeftPage all along and LeftPage had been dropping. Resized to content (it was written flex-1 to fill the verso of a bi-fold that no longer exists), one add affordance instead of two, aria-label corrected from 'Today Rapid Log' to 'Today'. Correction to my own earlier report: notes were never invisible - OmniSearch indexes rapidLog and has a Notes and Ideas filter, and the export and weekly PDF both carry it. The defect was narrower: no on-page display. Verified in-browser: TODAY (1) renders with the seeded item, Add line creates and focuses a new row, typing persists to localStorage, console clean. B-23 is still open and this does not settle it; it only ensures the answer is not 'nowhere'. Dead code is now 8 files rather than 13.

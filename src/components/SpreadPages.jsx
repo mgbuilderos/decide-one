@@ -3,13 +3,19 @@ import { DateDisplay, DateNavControls } from './DateHeader';
 import ProductivityFrameworks from './ProductivityFrameworks';
 import ExecutionLayer from './ExecutionLayer';
 import DayReport from './DayReport';
+import RapidLogSection from './RapidLogSection';
 import { getSession, pauseSession, completeSession, extendSession } from '../utils/executionModel';
 import { playSound } from '../utils/audio';
 import { formatDateKey } from '../hooks/useJournalStorage';
 
 /**
- * LeftPage: Productivity Frameworks, Rapid Log, Date Header, and Stamped Legend.
- * Spans exact 50% width on bi-fold desktop spread.
+ * LeftPage: the selection layer — the date, the method, the time each decided
+ * line will take, and below them the day's other lines.
+ *
+ * That last part is not decoration. Some mornings hold eleven things; the Ivy
+ * Lee lock only works if the other eight have somewhere to sit, and a thought
+ * with nowhere to go is held in the head, which is the problem the instrument
+ * exists to remove.
  */
 export function LeftPage({
   date,
@@ -81,6 +87,22 @@ export function LeftPage({
             dailyLog={dailyLog}
             onUpdateExecution={onUpdateExecution}
             isMuted={settings?.isMuted}
+            isInteractive={isInteractive}
+          />
+        </div>
+
+        {/* The day's other lines. Everything that is not one of today's three
+            still has to be written down somewhere it can be seen — B-23 has
+            yet to settle what this stream is for, and until it does, the
+            answer cannot be "nowhere". */}
+        <div className="shrink-0 flex flex-col border-t border-black/[0.08] dark:border-white/[0.08] mt-3 pt-1">
+          <RapidLogSection
+            rapidLog={rapidLog}
+            onUpdateRapidLog={onUpdateRapidLog}
+            activeFilter={activeFilter}
+            setActiveFilter={setActiveFilter}
+            isMuted={settings?.isMuted}
+            isPastDay={isPastDay}
             isInteractive={isInteractive}
           />
         </div>
