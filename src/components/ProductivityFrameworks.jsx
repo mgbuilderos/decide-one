@@ -292,7 +292,7 @@ export default function ProductivityFrameworks({
             return (
               <div
                 key={idx}
-                className={`group flex items-center gap-3 transition-all min-h-[44px] px-1 -mx-1 ${
+                className={`group flex items-center gap-3 transition-all min-h-[48px] px-1 -mx-1 ${
                   task.completed ? 'opacity-40' : 'hover:bg-black/[0.02] dark:hover:bg-white/[0.03]'
                 }`}
               >
@@ -327,7 +327,7 @@ export default function ProductivityFrameworks({
                     value={task.text || ''}
                     onChange={(e) => handleHardTaskTextChange(idx, e.target.value)}
                     placeholder={meta.placeholder || `Priority ${idx + 1}...`}
-                    className={`w-full bg-transparent font-normal focus:outline-none transition-all placeholder-neutral-400/60 text-[14px] sm:text-[15px] h-[44px] leading-[44px] ${
+                    className={`w-full bg-transparent font-normal focus:outline-none transition-all placeholder-neutral-400/60 text-[14px] sm:text-[15px] h-[48px] leading-[48px] ${
                       task.completed 
                         ? 'line-through text-neutral-400 dark:text-neutral-500' 
                         : isMissed 
@@ -498,7 +498,7 @@ export default function ProductivityFrameworks({
             return (
               <div
                 key={task.id || idx}
-                className={`flex items-center gap-3 h-[44px] px-1 -mx-1 border-b border-black/[0.04] dark:border-white/[0.04] last:border-b-0 transition-all rounded-xs ${
+                className={`flex items-center gap-3 h-[48px] px-1 -mx-1 border-b border-black/[0.04] dark:border-white/[0.04] last:border-b-0 transition-all rounded-xs ${
                   isDone ? 'opacity-40' : isLocked ? 'opacity-55' : 'hover:bg-black/[0.02] dark:hover:bg-white/[0.03]'
                 }`}
               >

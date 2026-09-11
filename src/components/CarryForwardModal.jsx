@@ -70,7 +70,7 @@ export default function CarryForwardModal({
             return (
               <label
                 key={task.id}
-                className="flex items-center gap-3 h-[44px] px-2 -mx-2 rounded-lg cursor-pointer hover:bg-black/[0.03] dark:hover:bg-white/[0.04] transition-colors"
+                className="flex items-center gap-3 h-[48px] px-2 -mx-2 rounded-lg cursor-pointer hover:bg-black/[0.03] dark:hover:bg-white/[0.04] transition-colors"
               >
                 <input
                   type="checkbox"
