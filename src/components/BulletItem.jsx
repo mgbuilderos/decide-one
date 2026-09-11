@@ -88,7 +88,10 @@ export default function BulletItem({
   const currentBullet = getPocketSymbol(item.type);
   const currentCategory = Object.values(CATEGORIES).find(c => c.id === item.category) || CATEGORIES.PERSONAL;
   const isCompleted = item.type === 'done' || item.type === 'completed';
-  const isMissed = item.type === 'missed' || (isPastDay && (item.type === 'todo' || item.type === 'task') && !isCompleted && item.text?.trim());
+  // Honours the ✕ the person assigned, and nothing else. The second half of
+  // this condition used to infer failure from the date alone, which marked a
+  // whole week red for anyone returning after a gap.
+  const isMissed = item.type === 'missed';
   const hasCustomCategory = item.category && item.category !== 'personal';
 
   return (

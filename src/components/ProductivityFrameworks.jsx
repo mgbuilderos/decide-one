@@ -285,7 +285,9 @@ export default function ProductivityFrameworks({
           {[0, 1, 2].map((idx) => {
             const task = hardTasks[idx] || { text: '', completed: false };
             const meta = slotLabels[idx];
-            const isMissed = !task.completed && isPastDay && task.text && task.text.trim() !== '';
+            // A date is not a verdict — see Top3HardTasks. Red only where the
+            // person marked it, never because the calendar moved on.
+            const isMissed = task.status === 'missed';
 
             return (
               <div

@@ -114,6 +114,42 @@ steps — one of them needs the Cloudflare dashboard and no agent can do it.
 
 ---
 
+## Writing a good brief
+
+Written for the founder, kept here because it is also what agents should read a
+brief *as*. Most wasted spend in this project has been an agent solving the
+wrong problem confidently.
+
+**Say the goal, not the mechanism.** "Heatmap tracking" is a mechanism; the goal
+underneath was "where do people lose interest?" Naming the mechanism can
+accidentally rule out the right answer — and in that case it pointed at
+something that would have broken a privacy promise, while the goal itself was
+perfectly safe to build.
+
+**Say what you are afraid of.** "We want to stay private" was the most useful
+sentence in a long message. It is what made an agent check the app bundle for
+third-party scripts. Fears are as valuable as goals and are more often left out.
+
+**Being non-technical is not a handicap here.** "I want to know which part of
+the app people give up on" is a *better* brief than a technically-worded guess,
+because it describes the outcome and leaves the method open.
+
+**One thing per ask.** A message containing seven projects produces a
+specification at best. A scoped change can be verified; a broad sweep produces
+work nobody can check and that usually gets redone.
+
+**Point at the file when you know it.** "Fix the hero in
+`MarketingLandingPage.jsx`" costs a fraction of "the landing page feels off".
+Most token spend is agents hunting for things. When you do not know the file,
+say what you want and let the agent find it — that is cheaper than a wrong guess.
+
+**When an agent pushes back, that is the system working.** A flagged conflict
+that resolves in one exchange has just saved a week. Agents here are expected to
+say when a request collides with a decision in `DECISIONS.md` or a promise in
+`VISION.md`, and then to build what was asked once the founder confirms.
+
+---
+
 ## Keeping sessions cheap
 
 Context is the scarce resource, and long sessions are expensive for everyone.

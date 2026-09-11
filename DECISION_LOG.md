@@ -807,3 +807,9 @@ Direction confirmed by the founder: Decide One ships free, with an optional paid
 ### 2026-09-11 22:33 — claude
 
 TELEMETRY_SPEC.md written: the brief for measuring the free product. Its governing rule is that the site and the instrument are two systems with different rules - heatmaps, geography and session replay belong to decideone.app where the only thing on screen is marketing copy the founder wrote, and none of them may ever touch the app, where the thing on screen is what a person wrote about their own day. Seven red lines are stated before any requirement, each load-bearing for a claim already published. Also records what already exists (14 app events, 12 server analytics methods, automatic click/error/visibility capture) so nobody rebuilds it, and the three known defects that make current output untrustworthy.
+
+---
+
+### 2026-09-11 22:42 — claude
+
+A date is no longer treated as a verdict. Top3HardTasks, ProductivityFrameworks and BulletItem all computed a missed state as 'not completed and the day has passed' and rendered it red, so anyone returning after a week away met a week marked red by the software. Red now follows only a mark the person made. Recorded as a fourth rule in VISION §11.3 - the product never infers failure from a date - with the founder's standard attached: what matters is the day that is there when they come, and if one person has one productive day that is a win. Also added a briefing section to AGENTS.md and CLAUDE.md on writing a good brief: say the goal not the mechanism, say what you are afraid of, one thing per ask.

@@ -133,7 +133,10 @@ export default function Top3HardTasks({
           const task = hardTasks[idx] || { text: '', completed: false, category: 'personal' };
           const meta = slotLabels[idx];
           const currentCat = Object.values(CATEGORIES).find(c => c.id === task.category) || CATEGORIES.PERSONAL;
-          const isMissed = !task.completed && isPastDay && task.text && task.text.trim() !== '';
+          // A date is not a verdict. An unfinished task on a past day is unfinished;
+          // it is not failed, and the product does not decide otherwise on the
+          // person's behalf. Red is reserved for a mark the person made themselves.
+          const isMissed = task.status === 'missed';
 
           return (
             <div

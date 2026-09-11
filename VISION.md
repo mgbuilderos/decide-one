@@ -203,6 +203,34 @@ These are not stylistic preferences. Each one closes a specific exposure.
 | **No judgment** | *whether you were honest* · *you failed* · streaks lost, scores falling | *shows you where the time actually went* | The product observes; it does not scold. Breaking this breaks the non-punitive rule the entire timer design rests on. |
 | **No unearned science** | *scientifically proven* · *clinically validated* (of the selection methods) | *time-tested* · *methods that have worked for a century* | §10.5. The single permitted scientific claim is Gollwitzer & Sheeran (2006), d = 0.65, and it applies to if-then planning **only**. |
 
+**A fourth rule, which is about behaviour rather than words: the product never
+infers failure from a date.**
+
+An unfinished task on a past day is unfinished. It is not failed, and Decide One
+does not decide otherwise on the person's behalf. Red, the ✕, and any other mark
+of a thing not done belong to the person who marks it — never to the calendar
+moving on.
+
+This was written on 11 September 2026 after the opposite was found shipping.
+`Top3HardTasks.jsx`, `ProductivityFrameworks.jsx` and `BulletItem.jsx` all
+computed a missed state as *not completed, and the day has passed*, and rendered
+it in red. Anyone returning after a week away met a week marked in red by the
+software. Nobody decided that; it arrived as an obvious-looking line of code, and
+it contradicted the §11.3 rule directly above without ever being written down as
+a decision.
+
+**The founder's statement of it, which is the standard to hold:** *"We do not
+want someone to feel bad if they did not log in the tool. What matters is the day
+that is there when they come. If we can make one day productive for one person,
+that is a win."*
+
+That is the reason the product ships frameworks rather than a blank page — and it
+is also the reason a person who has been away for a month must be able to open it
+and find a clean day, not an account of their absence. **The test for anything
+shown on return: could this make someone feel bad on a day they had a bad day?**
+If yes, it does not ship.
+
+
 ---
 
 ## 12. The brand model — September 9, 2026
