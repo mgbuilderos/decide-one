@@ -795,3 +795,9 @@ B-37: Decide One is now free. No paid tier; the ask moves to the end of a day ac
 ### 2026-09-11 22:25 — claude
 
 Instrumentation for the usage bet (B-37): archive_gate_hit fires once per review surface per session with surface and history_depth_days; an install_date is recorded in localStorage separately from the anonymous id so a cleared-storage reset is distinguishable from churn; getRetention rewritten to weekly cohorts, offsets 1/2/7/14/30/60/90, and active redefined as day_closed rather than any event. Immature cohorts report null rather than 0 - every day-30 cell against the current seeded data is null, which is the honest answer and the old query would have printed zero.
+
+---
+
+### 2026-09-11 22:29 — claude
+
+Direction confirmed by the founder: Decide One ships free, with an optional paid way to support it, and the site copy now says so. The ambition is unchanged and should not be read down - this is meant to be a world-class instrument that genuinely makes people more productive, and the free model is how it reaches enough people to become that, not a lowering of the bar. The intended feeling is that the tool becomes something a person relies on daily and chooses to support because it earned it. Note for whoever writes copy next: pursue that, but never in the register of habit-engineering. VISION §11.3 and QC Rule 22 cut streaks, scores and verdicts deliberately, and words like hooked belong to the vocabulary that was removed. The product earns support by being good, not by being sticky. Landing copy changed accordingly: the belief strip now says Free, No Account; the nav and access section say Start Free and Free To Use rather than Launch Preview; the cost FAQ answers plainly; and the line telling visitors checkout was disconnected is replaced by what is actually true - free, stays free, asked once at the end of a day you closed, declining is a complete answer.
