@@ -27,10 +27,15 @@ console.log('🔍 Running Decide One Quality Control (QC) Audit...\n');
 //
 // Existing is not the same as being reached. On 12 September
 // MonthlyBreakerPage.jsx was still on disk, still governed by Rule 18, and had
-// no importer at all: a `git add -A` in 4e68de4 swept away another agent's
-// in-progress App.jsx and carried the import out with it. The file existed, so
-// Rule 0 passed, and a governed surface sat unreachable while the audit
-// printed green. So the second clause walks the real import graph out from
+// no importer at all. What git records is narrow and is worth stating exactly,
+// because this comment is the durable account: 4e68de4 rewrote App.jsx across
+// 30 files for a month picker and a motion vocabulary, and in doing so removed
+// the import AND the render site of both MonthlyBreakerPage and
+// DayConditionPrompt, naming neither in its message. `git log -S` on either
+// name returns only that commit and the initial one. Git does not record how a
+// change was staged, so how the two were swept in is inference, not evidence.
+// The file existed, so Rule 0 passed, and a governed surface sat unreachable
+// while the audit printed green. So the second clause walks the import graph from
 // src/main.jsx — static imports, `React.lazy(() => import(...))` and CSS
 // `@import` alike — and fails any surface the running application never
 // arrives at.
@@ -151,6 +156,34 @@ for (const [rel, why] of governedSurfaces) {
   }
 }
 
+// Rules below name their subjects inline rather than on governedSurfaces, and
+// an inline subject has the same failure mode Rule 0 was written for: when the
+// named file is absent or unreachable, the rule stops applying and says nothing.
+// Rule 9 is how that looks in practice - two of its three subjects, HabitTracker
+// and EveningReflection, were deliberately cut by P2 and P3, so the rule has
+// been printing green while guarding nothing at all.
+//
+// Declaring subjects through this makes the abstention audible.
+function requireLiveSubjects(rule, subjects, why) {
+  for (const rel of subjects) {
+    const full = path.join(SRC_DIR, rel);
+    if (!fs.existsSync(full)) {
+      errors.push(
+        `[${rule} Violation] Subject src/${rel} does not exist, so ${rule} is ` +
+        `guarding nothing - ${why}. Point the rule at what carries this now, or ` +
+        'retire it in DECISIONS.md.'
+      );
+    } else if (entryExists && !reachedFiles.has(full)) {
+      errors.push(
+        `[${rule} Violation] Subject src/${rel} exists but nothing reaches it ` +
+        `from src/main.jsx, so ${rule} is grading a dead file - ${why}. Point the ` +
+        'rule at what carries this now, or retire it in DECISIONS.md.'
+      );
+    }
+  }
+  return subjects.filter(rel => fs.existsSync(path.join(SRC_DIR, rel)));
+}
+
 // Rule 1: Zero font-mono classes (Strict Helvetica Rule)
 scanFiles(SRC_DIR, (filePath, content) => {
   if (content.includes('font-mono')) {
@@ -158,9 +191,21 @@ scanFiles(SRC_DIR, (filePath, content) => {
   }
 });
 
-// Rule 2: No unmanaged overlapping dropdown popovers in item rows
+// Rule 2: No unmanaged overlapping dropdown popovers in item rows.
+//
+// It named BulletItem.jsx and Top3HardTasks.jsx. Top3HardTasks has not been
+// reachable since 4e68de4, and neither forbidden pattern appears anywhere in
+// src at all, so the rule could not fail for two independent reasons. It is a
+// tripwire against a regression, not a statement that anything is currently
+// wrong - but a tripwire across a doorway nobody uses is not a tripwire.
+// Repointed at the components that actually draw a row today.
+const rowSurfaces = requireLiveSubjects(
+  'Rule 2',
+  ['components/BulletItem.jsx', 'components/ProductivityFrameworks.jsx', 'components/InlineTimeControl.jsx'],
+  'these are the item rows a person clicks, and a floating menu opened from one of them is the thing this forbids'
+);
 scanFiles(SRC_DIR, (filePath, content) => {
-  if (filePath.includes('BulletItem.jsx') || filePath.includes('Top3HardTasks.jsx')) {
+  if (rowSurfaces.some(rel => filePath.endsWith(path.join('src', rel)))) {
     if (content.includes('showCategoryMenu') || content.includes('activeCategoryPicker')) {
       errors.push(`[Rule 2 Violation] Unmanaged floating popover state found in row component: ${path.relative(process.cwd(), filePath)}`);
     }
@@ -244,9 +289,26 @@ if (fs.existsSync(headerPath)) {
 }
 
 // Rule 9: Grid Cadence Spacing Gate (No non-multiple-of-24 gaps in task/habit/reflection components)
+//
+// HabitTracker.jsx and EveningReflection.jsx were named here and are absent -
+// P2 and P3 cut them, B-1 records it - and Top3HardTasks.jsx is unreachable.
+// All three subjects were gone, so the rule was entirely vacuous. The 24px
+// cadence still matters; it is these components that carry it now.
 const nonCadencePatterns = ['space-y-[16px]', 'space-y-[12px]', 'gap-[16px]', 'gap-[12px]'];
+const cadenceSurfaces = requireLiveSubjects(
+  'Rule 9',
+  [
+    'components/ProductivityFrameworks.jsx',
+    'components/ExecutionLayer.jsx',
+    'components/InlineTimeControl.jsx',
+    'components/RapidLogSection.jsx',
+    'components/BulletItem.jsx',
+    'components/DayReport.jsx'
+  ],
+  'the 24px line cadence is what makes the page read as ruled paper rather than a form'
+);
 scanFiles(SRC_DIR, (filePath, content) => {
-  if (filePath.includes('Top3HardTasks.jsx') || filePath.includes('HabitTracker.jsx') || filePath.includes('EveningReflection.jsx')) {
+  if (cadenceSurfaces.some(rel => filePath.endsWith(path.join('src', rel)))) {
     for (const pattern of nonCadencePatterns) {
       if (content.includes(pattern)) {
         errors.push(`[Rule 9 Violation] Non-cadence spacing "${pattern}" found in: ${path.relative(process.cwd(), filePath)}`);
@@ -273,6 +335,11 @@ scanFiles(SRC_DIR, (filePath, content) => {
 });
 
 // Rule 11: Framework Roster Gate (P5/P6 — exactly three methods ship; the cut three must not return)
+requireLiveSubjects(
+  'Rule 11',
+  ['components/ProductivityFrameworks.jsx'],
+  'Rules 11 and 12 both read it, and nothing on governedSurfaces covers it'
+);
 scanFiles(SRC_DIR, (filePath, content) => {
   if (filePath.includes('ProductivityFrameworks.jsx')) {
     const shipped = (content.match(/^\s*id: '(rule_of_3|ivy_lee|eisenhower)',/gm) || []).length;
@@ -764,15 +831,15 @@ if (!fs.existsSync(visionPath)) {
 if (errors.length === 0) {
   console.log('✅ ALL STRUCTURAL QC CHECKS PASSED (not security or legal certification):');
   console.log('  - Rule 1: Zero font-mono violations (Universal Helvetica)');
-  console.log('  - Rule 2: Zero unmanaged overlapping dropdown popovers in item rows');
+  console.log('  - Rule 2: Zero unmanaged overlapping dropdown popovers in the item rows that ship');
   console.log('  - Rule 3: 3-Color Progress Gate (Red, Yellow, Green progress tracking only; zero random decorative colors)');
   console.log('  - Rule 4: Zero-scroll viewport lock & slim notepad proportions (max-w-[412px])');
   console.log('  - Rule 5: Consumer-friendly language gate (zero technical jargon in UI labels)');
-  console.log('  - Rule 0: Governed surfaces exist (a deleted file fails rather than skipping its rules)');
+  console.log('  - Rule 0: Governed surfaces exist AND are reached from main.jsx (a deleted or orphaned file fails rather than skipping its rules)');
   console.log('  - Rule 6: Strict 24px universal grid cadence alignment (paper-grid & canvas padding)');
   console.log('  - Rule 7: Single-column full-width monthly spread (no 2-column desktop squishing)');
   console.log('  - Rule 8: 2-Tier header masthead (brand at top, utilities below, zero speaker button)');
-  console.log('  - Rule 9: 24px grid cadence margins & zero non-cadence spacing');
+  console.log('  - Rule 9: 24px grid cadence in the components that ship it, each asserted reachable');
   console.log('  - Rule 10: Clean Unified Stationery Gate (zero 3-dots, zero black tie cord, authentic sewn label)');
   console.log('  - Rule 11: Framework Roster Gate (exactly 3 methods ship; MoSCoW, 1-3-5 and Pareto stay cut)');
   console.log('  - Rule 12: Framework Grid Alignment & Wrapping Safety Gate (fixed header heights & whitespace-nowrap)');
