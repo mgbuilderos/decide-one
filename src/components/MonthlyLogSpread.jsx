@@ -21,13 +21,29 @@ function formatSelectedDate(year, monthIndex, day) {
 }
 
 export default function MonthlyLogSpread({
-  year,
-  month,
+  currentDate,
+  setCurrentDate,
   monthlyLog,
-  onUpdate,
-  onNavigate,
-  isMuted,
+  onUpdateMonthlyLog,
+  isMuted = false,
 }) {
+  // App.jsx owns the visible month as one Date, the way the weekly and yearly
+  // spreads also receive it. This view thinks in year and month numbers, so
+  // the two are reconciled here rather than at App.jsx's two call sites.
+  //
+  // The guard is not defensive habit: an invalid date reaches Intl.format as
+  // NaN and throws RangeError, which took the whole app to a blank page rather
+  // than degrading to a broken month.
+  const viewDate =
+    currentDate instanceof Date && !Number.isNaN(currentDate.getTime())
+      ? currentDate
+      : new Date();
+  const year = viewDate.getFullYear();
+  const month = viewDate.getMonth() + 1;
+  const onUpdate = onUpdateMonthlyLog;
+  const onNavigate = (delta) =>
+    setCurrentDate?.(new Date(year, viewDate.getMonth() + delta, 1));
+
   const monthIndex = month - 1;
   const today = new Date();
   const isCurrentMonth = today.getFullYear() === year && today.getMonth() === monthIndex;
