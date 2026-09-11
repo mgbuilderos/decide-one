@@ -189,18 +189,24 @@ export default function App() {
   const [isScratchpadOpen, setIsScratchpadOpen] = useState(false);
 
   // Executive Thought Dictation Hook (Cmd+Shift+V)
+  // Every name here must match what useExecutiveDictation actually returns.
+  // It did not: the hook calls onCommitEntry and this passed
+  // onTranscriptionCommit, so `onCommitEntry?.()` optional-chained into
+  // nothing and every dictated sentence was transcribed and then dropped.
+  // targetSection/setTargetSection do not exist either - the hook exposes
+  // targetDestination - so the HUD's target buttons were calling undefined().
   const {
     isListening,
     interimTranscript,
-    finalTranscript,
     audioLevel,
-    targetSection: dictationTarget,
-    setTargetSection: setDictationTarget,
+    targetDestination: dictationTarget,
+    setTargetDestination: setDictationTarget,
     stopDictation,
     toggleDictation
   } = useExecutiveDictation({
     isMuted: settings?.isMuted,
-    onTranscriptionCommit: ({ text, target }) => {
+    onStart: () => telemetry.track('dictation_started', {}),
+    onCommitEntry: ({ text, target }) => {
       if (!text || !text.trim()) return;
       telemetry.track('dictation_completed', { target_section: target, words: wordBucket(text.trim().split(/\s+/).length) });
       const key = formatDateKey(currentDate);
@@ -671,7 +677,22 @@ export default function App() {
   };
 
   const handleUpdateRapidLog = (updatedRapidLog) => {
-    telemetry.track('rapid_log_created', { count: updatedRapidLog.length });
+    // One handler serves creation, completion and deletion, and it used to
+    // report all three as rapid_log_created - so "created" counted every
+    // keystroke-level save, and rapid_log_status_toggled was never emitted at
+    // all, which is why the completion ratio sat at 0% with tasks on screen.
+    const previous = dailyLog?.rapidLog || [];
+    if (updatedRapidLog.length > previous.length) {
+      telemetry.track('rapid_log_created', { count: updatedRapidLog.length });
+    } else if (updatedRapidLog.length === previous.length) {
+      const before = new Map(previous.map(item => [item.id, item]));
+      const toggled = updatedRapidLog.find(
+        item => before.has(item.id) && before.get(item.id).completed !== item.completed
+      );
+      if (toggled) {
+        telemetry.track('rapid_log_status_toggled', { to_status: toggled.completed ? 'done' : 'open' });
+      }
+    }
     saveDailyLog(dateKey, { rapidLog: updatedRapidLog });
   };
 
@@ -1149,7 +1170,6 @@ export default function App() {
       {isListening && <Suspense fallback={null}><ExecutiveVoiceHUD
         isListening={isListening}
         interimTranscript={interimTranscript}
-        finalTranscript={finalTranscript}
         audioLevel={audioLevel}
         targetSection={dictationTarget}
         onSelectTarget={setDictationTarget}

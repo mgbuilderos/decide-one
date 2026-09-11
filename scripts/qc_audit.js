@@ -572,6 +572,62 @@ if (!fs.existsSync(visionPath)) {
   }
 }
 
+// Rule 25: Telemetry Contract Gate.
+//
+// Six dashboard metrics were a permanent zero because the server analysed
+// events that src/ never emitted, and nobody could tell the difference between
+// "nothing happened" and "nothing was ever wired". A number that cannot move is
+// worse than a missing one: it reads as a measurement and reports a fact.
+//
+// This binds the two halves together. Every event the analytics layer counts
+// must be emitted somewhere in src/, or be named below as deliberately dormant.
+{
+  const analyticsFile = path.join(process.cwd(), 'server/src/analyticsService.js');
+  const telemetryFile = path.join(process.cwd(), 'server/src/telemetryService.js');
+
+  // Dormant on purpose. Each needs a reason, so removing one is a decision.
+  const DORMANT = {
+    experiment_impression: 'No assignment layer yet - TELEMETRY_SPEC §3.4 lists it as work, not a defect.'
+  };
+
+  if (fs.existsSync(analyticsFile) && fs.existsSync(telemetryFile)) {
+    const serverSrc = fs.readFileSync(analyticsFile, 'utf8') + fs.readFileSync(telemetryFile, 'utf8');
+
+    // Event names the server branches on or filters by.
+    const expected = new Set();
+    for (const m of serverSrc.matchAll(/event\s*(?:===?|=)\s*'([a-z0-9_]+)'/g)) expected.add(m[1]);
+    for (const m of serverSrc.matchAll(/event\s+IN\s*\(([^)]*)\)/gi)) {
+      for (const n of m[1].matchAll(/'([a-z0-9_]+)'/g)) expected.add(n[1]);
+    }
+
+    // Event names the app actually emits.
+    const emitted = new Set();
+    const walkSrc = (dir) => {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) walkSrc(full);
+        else if (/\.(jsx?|tsx?)$/.test(entry.name)) {
+          const body = fs.readFileSync(full, 'utf8');
+          for (const m of body.matchAll(/track\(\s*'([a-zA-Z0-9_]+)'/g)) emitted.add(m[1]);
+        }
+      }
+    };
+    walkSrc(path.join(process.cwd(), 'src'));
+
+    for (const name of [...expected].sort()) {
+      if (emitted.has(name) || DORMANT[name]) continue;
+      errors.push(
+        "[Rule 25 Violation] server/src analyses the event '" + name +
+        "' but nothing in src/ emits it, so every metric built on it is a " +
+        "permanent zero presented as a measurement. Emit it, stop analysing it, " +
+        "or add it to DORMANT in this rule with the reason."
+      );
+    }
+  } else {
+    errors.push("[Rule 25 Violation] server/src/analyticsService.js or telemetryService.js is missing — the telemetry contract cannot be checked.");
+  }
+}
+
 // Summary Report
 if (errors.length === 0) {
   console.log('✅ ALL STRUCTURAL QC CHECKS PASSED (not security or legal certification):');
@@ -599,7 +655,8 @@ if (errors.length === 0) {
   console.log('  - Rule 21: Restricted Naming Token Check (not trademark or copyright clearance)');
   console.log('  - Rule 22: Execution Layer Enforcement Gate (Ivy Lee order lock, breathing state, non-punitive overrun, timing provenance)');
   console.log('  - Rule 23: Licence Integrity Gate (signed per-buyer keys; no shared secret, no private key in source)');
-  console.log('  - Rule 24: Price Consistency Gate (VISION §11.1 is the price - including when that price is free)\n');
+  console.log('  - Rule 24: Price Consistency Gate (VISION §11.1 is the price - including when that price is free)');
+  console.log('  - Rule 25: Telemetry Contract Gate (every analysed event is emitted, or declared dormant with a reason)\n');
   process.exit(0);
 } else {
   console.error(`❌ QC AUDIT FAILED with ${errors.length} error(s):\n`);

@@ -219,20 +219,22 @@ export const AnalyticsService = {
       buildStep('5. Day Closure Ritual', count5, count4, count1)
     ];
 
-    // Monetization Funnel
-    const paywallViews = db.prepare(`SELECT COUNT(DISTINCT anonymous_id) as count FROM events WHERE event = 'patron_modal_viewed'`).get()?.count || 0;
-    const checkoutClicks = db.prepare(`SELECT COUNT(DISTINCT anonymous_id) as count FROM events WHERE event = 'checkout_initiated'`).get()?.count || 0;
-    const activations = db.prepare(`SELECT COUNT(DISTINCT anonymous_id) as count FROM events WHERE event = 'license_activated'`).get()?.count || 0;
-
+    // The monetization funnel was removed rather than wired up. It counted
+    // patron_modal_viewed, checkout_initiated and license_activated, none of
+    // which src/ has ever emitted, so all five of its numbers were a
+    // permanent zero presented as a measurement.
+    //
+    // Wiring it was the wrong fix. Its middle step cannot exist: checkout is
+    // in WORK_REMAINING under Deliberately Excluded, and a funnel whose middle
+    // step is structurally zero reports total failure at converting people
+    // through a door that was never built. TELEMETRY_SPEC §3.3 is explicit
+    // about what replaces it - "the only conversion that matters now is site →
+    // first day closed. Not signup, not download - there is neither."
+    //
+    // If a paid flow ships, measure it then, against a spec section that asks
+    // for it.
     return {
-      daily_ritual_funnel: dailyRitualFunnel,
-      monetization_funnel: {
-        paywall_impressions: paywallViews,
-        checkout_initiated: checkoutClicks,
-        license_activated: activations,
-        checkout_conversion_pct: paywallViews > 0 ? parseFloat(((checkoutClicks / paywallViews) * 100).toFixed(1)) : 0,
-        paid_conversion_pct: paywallViews > 0 ? parseFloat(((activations / paywallViews) * 100).toFixed(1)) : 0
-      }
+      daily_ritual_funnel: dailyRitualFunnel
     };
   },
 
@@ -614,6 +616,19 @@ export const AnalyticsService = {
         conversion_rate_pct: rate
       };
     }
-    return { experiments: grouped };
+
+    // An empty object here reads as "the tests ran and found nothing". Nothing
+    // ran: src/ emits no experiment_impression because there is no assignment
+    // layer, which TELEMETRY_SPEC §3.4 lists as the work rather than a defect.
+    // Say which of the two it is, so a reader is never left to guess.
+    if (Object.keys(grouped).length === 0) {
+      return {
+        experiments: {},
+        status: 'no_assignment_layer',
+        note: 'No experiment has been assigned or run. TELEMETRY_SPEC §3.4 holds the requirements: deterministic bucketing, one primary metric declared up front, no peeking, one week minimum.'
+      };
+    }
+
+    return { experiments: grouped, status: 'active' };
   }
 };

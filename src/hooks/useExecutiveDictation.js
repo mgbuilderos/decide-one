@@ -8,6 +8,7 @@ import {
 
 export function useExecutiveDictation({
   onCommitEntry,
+  onStart,
   isMuted = false,
   activeTarget = 'today'
 }) {
@@ -139,6 +140,10 @@ export function useExecutiveDictation({
         setIsListening(true);
         playSound('click', isMuted);
         startAudioAnalysis();
+        // Here rather than in toggleDictation: a permission denial or an
+        // unsupported browser never reaches this handler, so a start that
+        // failed is never counted as one.
+        onStart?.();
       };
 
       recognition.onresult = (event) => {
