@@ -789,3 +789,9 @@ Rule 24 added to the audit: the price in VISION.md §11.1 is canonical and the a
 ### 2026-09-11 22:24 — claude
 
 B-37: Decide One is now free. No paid tier; the ask moves to the end of a day actually closed, once and without blocking, through Dodo. VISION §11.1 changed first per rule 5 and now declares 'Canonical price: free'. Rule 24 taught that free is a canonical state, and asserts no price may appear anywhere in src/ while VISION declares it - proven by putting one back and watching it fail. Reverses M2, BR5 and B-36, all marked superseded. Reason: the price moved six times in one day and none could be evaluated, because nobody had been asked to pay and the telemetry holds 54 seeded users with an eight-day maximum tenure.
+
+---
+
+### 2026-09-11 22:25 — claude
+
+Instrumentation for the usage bet (B-37): archive_gate_hit fires once per review surface per session with surface and history_depth_days; an install_date is recorded in localStorage separately from the anonymous id so a cleared-storage reset is distinguishable from churn; getRetention rewritten to weekly cohorts, offsets 1/2/7/14/30/60/90, and active redefined as day_closed rather than any event. Immature cohorts report null rather than 0 - every day-30 cell against the current seeded data is null, which is the honest answer and the old query would have printed zero.

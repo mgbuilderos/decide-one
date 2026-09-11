@@ -21,6 +21,40 @@
  */
 
 export const CONSENT_KEY = 'decideone_telemetry_consent';
+export const INSTALL_DATE_KEY = 'decideone_install_date';
+
+/**
+ * The day this device first opened Decide One, recorded separately from the
+ * anonymous id on purpose.
+ *
+ * Identity here is a localStorage key, so clearing site data reads as churn
+ * when it is really a reset. Keeping the install date apart means a fresh id
+ * arriving on a device that already has one is visible as a reset rather than
+ * being silently counted as a new user who never came back.
+ *
+ * It is a date, not a timestamp: it answers "how long has this person had the
+ * product", which is a question about days.
+ */
+export function getOrCreateInstallDate() {
+  try {
+    const existing = localStorage.getItem(INSTALL_DATE_KEY);
+    if (existing) return existing;
+    const today = new Date().toISOString().slice(0, 10);
+    localStorage.setItem(INSTALL_DATE_KEY, today);
+    return today;
+  } catch {
+    // Private browsing, or storage disabled. Not knowing is fine; guessing is not.
+    return null;
+  }
+}
+
+/** Whole days since this device first opened the product, or null if unknown. */
+export function getHistoryDepthDays() {
+  const installed = getOrCreateInstallDate();
+  if (!installed) return null;
+  const ms = Date.now() - new Date(installed + 'T00:00:00').getTime();
+  return Math.max(0, Math.floor(ms / 86400000));
+}
 
 /** Consent is explicit or it does not exist. Unset means no. */
 export function hasTelemetryConsent() {
@@ -79,6 +113,7 @@ class TelemetrySDK {
     if (!this.isBrowser) return;
 
     this.anonymousId = getOrCreateId(localStorage, 'decideone_anon_id', 'usr', 'pocketbook_anon_id');
+    this.installDate = getOrCreateInstallDate();
     this.sessionId = getOrCreateId(sessionStorage, 'decideone_sess_id', 'sess', 'pocketbook_sess_id');
 
     this.queue = [];

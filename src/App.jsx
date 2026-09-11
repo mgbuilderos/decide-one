@@ -20,7 +20,7 @@ import VolumeSwitcherBar from './components/VolumeSwitcherBar';
 import SpineAmbientGlow from './components/SpineAmbientGlow';
 import { useExecutiveDictation } from './hooks/useExecutiveDictation';
 import { useAmbientReminders } from './hooks/useAmbientReminders';
-import { telemetry } from './utils/telemetry';
+import { telemetry, getHistoryDepthDays } from './utils/telemetry';
 
 const MonthlyLogSpread = lazy(() => import('./components/MonthlyLogSpread'));
 const YearlyViewSpread = lazy(() => import('./components/YearlyViewSpread'));
@@ -68,6 +68,25 @@ export default function App() {
 
   // A stored signed licence is re-verified against the public key after mount,
   // so a forged or corrupted record cannot grant Patron past the first render.
+  // archive_gate_hit — the moment someone reaches back through their own days.
+  //
+  // This is the conversion trigger under any pricing model, and the single
+  // biggest hole in the taxonomy: nothing currently records when a person
+  // wants their past and how much of it they have. Fired once per surface per
+  // session, because the question is "did they reach for it", not "how often
+  // did they click".
+  const archiveGatesSeen = useRef(new Set());
+  useEffect(() => {
+    const REVIEW_SURFACES = ['weekly', 'monthly', 'yearly'];
+    if (!REVIEW_SURFACES.includes(activeView)) return;
+    if (archiveGatesSeen.current.has(activeView)) return;
+    archiveGatesSeen.current.add(activeView);
+    telemetry.track('archive_gate_hit', {
+      surface: activeView,
+      history_depth_days: getHistoryDepthDays()
+    });
+  }, [activeView]);
+
   useEffect(() => {
     revalidateStoredLicense().then(setLicense);
   }, []);

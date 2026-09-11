@@ -289,39 +289,82 @@ export const AnalyticsService = {
   /**
    * Cohort Retention
    */
+  /**
+   * Retention, defined as coming back and actually closing a day.
+   *
+   * Three things were wrong with the previous version and each one flattered
+   * the number in the same direction:
+   *
+   *   1. It stopped at day 7, so it could not answer the only question a
+   *      pricing or product decision ever asks - do they still use this a
+   *      month later.
+   *   2. "Retained" counted any event at all, including a bare session_start.
+   *      For a daily instrument, opening the app is not using it. Closing a
+   *      day is, so day_closed is the definition here.
+   *   3. Cohorts were daily, which at this scale is noise rather than signal.
+   *
+   * A fourth problem is not fixable in SQL and is reported rather than hidden:
+   * a cohort younger than the offset has not had time to come back, so its
+   * cell is null, not zero. Zero would read as total churn.
+   */
   getRetention() {
+    const OFFSETS = [1, 2, 7, 14, 30, 60, 90];
+
+    // Monday of the week a person first appeared. Weekly cohorts, because
+    // daily ones at this volume measure which day of the week it was.
+    const weekStart = "date(first_seen_date, '-' || ((strftime('%w', first_seen_date) + 6) % 7) || ' days')";
+
     const cohorts = db.prepare(`
-      SELECT first_seen_date, COUNT(*) as cohort_size
+      SELECT ${weekStart} AS cohort_week, COUNT(*) AS cohort_size
       FROM user_cohorts
-      GROUP BY first_seen_date
-      ORDER BY first_seen_date DESC
-      LIMIT 14
+      GROUP BY cohort_week
+      ORDER BY cohort_week DESC
+      LIMIT 26
     `).all();
 
-    const retentionMatrix = cohorts.map(c => {
-      const { first_seen_date, cohort_size } = c;
+    const today = new Date();
 
-      // Check retention at Day 1, 3, 7
-      const checkDays = [1, 3, 7];
-      const retentionData = { first_seen_date, cohort_size, days: {} };
+    const retainedStmt = db.prepare(`
+      SELECT COUNT(DISTINCT e.anonymous_id) AS count
+      FROM events e
+      WHERE e.event = 'day_closed'
+        AND e.anonymous_id IN (
+          SELECT anonymous_id FROM user_cohorts
+          WHERE ${weekStart} = ?
+        )
+        AND date(e.timestamp) = ?
+    `);
 
-      for (const d of checkDays) {
-        const targetDate = new Date(new Date(first_seen_date).getTime() + d * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
-        const retainedCount = db.prepare(`
-          SELECT COUNT(DISTINCT anonymous_id) as count 
-          FROM events 
-          WHERE anonymous_id IN (SELECT anonymous_id FROM user_cohorts WHERE first_seen_date = ?)
-          AND timestamp LIKE ?
-        `).get(first_seen_date, `${targetDate}%`)?.count || 0;
+    const matrix = cohorts.map(({ cohort_week, cohort_size }) => {
+      const row = { cohort_week, cohort_size, days: {} };
+      const startMs = new Date(cohort_week + 'T00:00:00Z').getTime();
 
-        retentionData.days[`day_${d}`] = cohort_size > 0 
-          ? parseFloat(((retainedCount / cohort_size) * 100).toFixed(1)) 
+      for (const d of OFFSETS) {
+        const target = new Date(startMs + d * 86400000);
+        // Not yet knowable. Reporting 0 here is how a young cohort gets
+        // mistaken for a dead one.
+        if (target > today) {
+          row.days[`day_${d}`] = null;
+          continue;
+        }
+        const targetDate = target.toISOString().slice(0, 10);
+        const retained = retainedStmt.get(cohort_week, targetDate)?.count || 0;
+        row.days[`day_${d}`] = cohort_size > 0
+          ? parseFloat(((retained / cohort_size) * 100).toFixed(1))
           : 0;
       }
-      return retentionData;
+      return row;
     });
 
-    return { cohorts: retentionMatrix };
+    return {
+      cohorts: matrix,
+      definition: {
+        active: 'day_closed',
+        note: 'A day the person actually signed off, not merely a session. null means the cohort is younger than that offset.',
+        granularity: 'weekly',
+        offsets: OFFSETS
+      }
+    };
   },
 
   /**
