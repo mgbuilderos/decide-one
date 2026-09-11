@@ -843,3 +843,9 @@ Landing page rewritten for the free positioning in the motivating and positive r
 ### 2026-09-11 23:19 — claude
 
 Brand cleanup on the cover and hero. The hero eyebrow is two lines with Free Forever carrying the emphasis - weight and contrast, not colour, since colour in this brand carries meaning rather than accent. Removed every gold treatment from the notebook cover: the monogram's 24K gold foil gradient is now an ink deboss, the selected volume tab is white rather than amber, the monogram circle and the gift ribbon are monochrome. Gold is Leica register and VISION §12.1 chose the Casio F-91W, where dignity comes from honesty about what a thing costs to make rather than from performing luxury. Note for later: the four tabs on the cover are volumes (Work, Personal, Projects, Private), not the Daily/Weekly/Monthly/Yearly views.
+
+---
+
+### 2026-09-11 23:26 — claude
+
+Volumes removed entirely (B-38). Four volumes each held a separate journal with its own Top 3 - twelve open priorities and four decisions before the decision, which is the condition the product exists to treat sold back as a feature. The separation already lives in a better place: each of the three daily priorities carries a category, so the split is inside the three rather than beside them. Removed the concept rather than reducing to one, since a container with a single item is overhead in the code and in the head. Done now specifically because volume data lives under suffixed localStorage keys and nobody has data yet - the same change after launch is a migration of real journals. Old keys left in place, so it is reversible.

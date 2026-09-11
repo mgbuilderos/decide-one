@@ -16,7 +16,6 @@ import { usePrivacyShutter } from './hooks/usePrivacyShutter';
 import { useLicenseAutoActivation } from './hooks/useLicenseAutoActivation';
 import { generateExecutiveWeeklyBriefingPDF } from './utils/weeklyBriefingPDF';
 import { getFrameworkItems } from './utils/executionModel';
-import VolumeSwitcherBar from './components/VolumeSwitcherBar';
 import SpineAmbientGlow from './components/SpineAmbientGlow';
 import { useExecutiveDictation } from './hooks/useExecutiveDictation';
 import { useAmbientReminders } from './hooks/useAmbientReminders';
@@ -181,10 +180,6 @@ export default function App() {
     settings,
     updateSettings,
     exportJSON,
-    activeVolumeId,
-    activeVolume,
-    volumes,
-    switchVolume
   } = useJournalStorage();
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -464,13 +459,6 @@ export default function App() {
         e.preventDefault();
         playSound('click', settings.isMuted);
         setIsClosureModalOpen(prev => !prev);
-      } else if ((e.metaKey || e.ctrlKey) && ['1', '2', '3', '4'].includes(e.key)) {
-        e.preventDefault();
-        const volIdx = parseInt(e.key, 10) - 1;
-        if (volumes[volIdx]) {
-          playSound('page', settings.isMuted);
-          switchVolume(volumes[volIdx].id);
-        }
       } else if (e.key === '/') {
         e.preventDefault();
         playSound('click', settings.isMuted);
@@ -482,7 +470,7 @@ export default function App() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeView, currentDate, flipState, showCover, settings.isMuted, volumes, switchVolume, toggleDictation]);
+  }, [activeView, currentDate, flipState, showCover, settings.isMuted, toggleDictation]);
 
   // Teleportation to specific page from Omnisearch
   const handleTeleportToPage = (dateObj) => {
@@ -808,9 +796,6 @@ export default function App() {
             onUpdateOwnerName={(name) => updateSettings({ ownerName: name })}
             currentDate={currentDate}
             onOpenJournal={handleOpenJournal}
-            activeVolume={activeVolume}
-            volumes={volumes}
-            onSelectVolume={switchVolume}
           />
         </div>
       ) : (
@@ -1047,16 +1032,6 @@ export default function App() {
         onPrintWeeklyBriefing={handlePrintWeeklyBriefing}
         onExportEncryptedVault={handleExportEncryptedVault}
         onImportEncryptedVault={handleImportEncryptedVault}
-        activeVolumeId={activeVolumeId}
-        volumes={volumes}
-        onSwitchVolume={(volId) => {
-          if (!license.isPatron && volId !== 'vol_strategy') {
-            setIsMenuOpen(false);
-            setIsUpgradeModalOpen(true);
-          } else {
-            switchVolume(volId);
-          }
-        }}
       /></Suspense>}
 
       {/* Sub-Millisecond Omnisearch & Command Palette Modal (Cmd+K) */}
@@ -1080,8 +1055,6 @@ export default function App() {
         onResumeFromSoftFrost={resumeActive}
         onUnlockVault={unlockVaultManually}
         isMuted={settings.isMuted}
-        activeVolume={activeVolume}
-        volumes={volumes}
         currentDate={currentDate}
         settings={settings}
         updateSettings={updateSettings}

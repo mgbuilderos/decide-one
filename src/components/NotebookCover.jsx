@@ -25,9 +25,6 @@ export function NotebookCoverFrontFace({
   monogramStyle = 'gold',
   onToggleMonogram,
   giftFrom = null,
-  activeVolume = null,
-  volumes = [],
-  onSelectVolume = null
 }) {
   const dateObj = currentDate || new Date();
   const monthIndex = dateObj.getMonth();
@@ -44,34 +41,6 @@ export function NotebookCoverFrontFace({
         DECIDE ONE
       </div>
 
-      {/* Silk Volume Ribbon Tabs on Right Edge */}
-      {isInteractive && volumes && volumes.length > 0 && (
-        <div className="absolute -right-3 top-28 bottom-28 flex flex-col justify-center gap-2 z-20 pointer-events-auto">
-          {volumes.map((vol) => {
-            const isSel = vol.id === activeVolume?.id;
-            return (
-              <button
-                key={vol.id}
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onSelectVolume?.(vol.id);
-                }}
-                title={`Volume ${vol.volumeNumber}: ${vol.name} — ${vol.subtitle}`}
-                className={`w-6 h-9 rounded-r-lg border-y border-r flex items-center justify-center transition-all cursor-pointer shadow-xs hover:translate-x-1 ${
-                  isSel
-                    ? 'bg-neutral-900 border-neutral-950 text-white dark:bg-white dark:border-white dark:text-neutral-950 translate-x-0.5 font-bold'
-                    : 'bg-[#EAE5DC] dark:bg-[#222226] border-black/10 dark:border-white/15 text-neutral-500 hover:text-neutral-900 dark:hover:text-white'
-                }`}
-              >
-                <span className="text-[9px] font-serif font-bold rotate-90 whitespace-nowrap">
-                  {vol.volumeNumber}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      )}
 
       {/* Subtle Hairline Perimeter Inner Frame */}
       <div className="w-full h-full border border-black/[0.06] dark:border-white/[0.06] rounded-[20px] p-5 sm:p-6 flex flex-col justify-between items-center text-center relative">
@@ -269,9 +238,6 @@ export function InteractiveNotebookCover({
   onUpdateOwnerName,
   currentDate,
   onOpenJournal,
-  activeVolume,
-  volumes,
-  onSelectVolume
 }) {
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameInput, setNameInput] = useState(ownerName);
@@ -330,9 +296,6 @@ export function InteractiveNotebookCover({
       monogramStyle={monogramStyle}
       onToggleMonogram={toggleMonogram}
       giftFrom={giftFrom}
-      activeVolume={activeVolume}
-      volumes={volumes}
-      onSelectVolume={onSelectVolume}
     />
   );
 }
@@ -347,9 +310,6 @@ export default function NotebookCover({
   currentDate,
   onOpenJournal,
   isMuted = false,
-  activeVolume,
-  volumes,
-  onSelectVolume
 }) {
   return (
     <div className="w-full max-w-[412px] md:max-w-[420px] mx-auto flex-1 min-h-0 flex flex-col justify-center items-center relative pt-5 sm:pt-6 pb-12 sm:pb-0 animate-in fade-in zoom-in-98 duration-200">
@@ -358,9 +318,6 @@ export default function NotebookCover({
         onUpdateOwnerName={onUpdateOwnerName}
         currentDate={currentDate}
         onOpenJournal={onOpenJournal}
-        activeVolume={activeVolume}
-        volumes={volumes}
-        onSelectVolume={onSelectVolume}
       />
     </div>
   );

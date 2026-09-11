@@ -42,9 +42,6 @@ export default function UnifiedMenuModal({
   onPrintWeeklyBriefing,
   onExportEncryptedVault,
   onImportEncryptedVault,
-  activeVolumeId = 'vol_strategy',
-  volumes = [],
-  onSwitchVolume
 }) {
   // Close on Escape key
   useEffect(() => {
@@ -145,70 +142,6 @@ export default function UnifiedMenuModal({
         <div className="flex-1 min-h-0 overflow-y-auto pocket-scroll p-4 sm:p-5 space-y-4">
 
           {/* Workspace library */}
-          <div className="p-3.5 sm:p-4 rounded-2xl border border-black/[0.08] dark:border-white/[0.08] bg-black/[0.015] dark:bg-white/[0.02] space-y-2.5">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <BookOpen className="w-3.5 h-3.5 text-neutral-800 dark:text-neutral-200" />
-                <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
-                  Workspace Library
-                </span>
-              </div>
-              <div className="text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 whitespace-nowrap">
-                {isPatron ? '4 Volumes Unlocked' : 'Volume I Active'}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {volumes.map((vol) => {
-                const isSelected = activeVolumeId === vol.id;
-                const isFree = vol.id === 'vol_strategy';
-                return (
-                  <button
-                    key={vol.id}
-                    type="button"
-                    onClick={() => {
-                      playSound('click', settings.isMuted);
-                      if (!isFree && !isPatron) {
-                        onClose();
-                        onOpenUpgrade?.();
-                        return;
-                      }
-                      onSwitchVolume?.(vol.id);
-                    }}
-                    className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
-                      isSelected
-                        ? 'border-neutral-900 bg-neutral-900 text-white dark:border-white dark:bg-white dark:text-neutral-900 shadow-xs'
-                        : 'border-black/[0.08] dark:border-white/[0.08] hover:bg-black/[0.04] dark:hover:bg-white/[0.06] text-neutral-800 dark:text-neutral-200'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between gap-1 mb-1">
-                      <div className="flex items-center gap-1.5 min-w-0">
-                        <span className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-sm ${
-                          isSelected 
-                            ? 'bg-white/20 text-white dark:bg-neutral-900/20 dark:text-neutral-900' 
-                            : 'bg-black/5 dark:bg-white/10 text-neutral-600 dark:text-neutral-400'
-                        }`}>
-                          {vol.volumeNumber}
-                        </span>
-                        <span className="text-xs font-bold truncate">{vol.name}</span>
-                      </div>
-                      {isSelected ? (
-                        <Check className="w-3.5 h-3.5 shrink-0" />
-                      ) : !isFree && !isPatron ? (
-                        <Lock className="w-3 h-3 opacity-60 shrink-0" />
-                      ) : null}
-                    </div>
-                    <div className={`text-[10px] truncate ${
-                      isSelected ? 'text-white/80 dark:text-neutral-700' : 'text-neutral-400 dark:text-neutral-500'
-                    }`}>
-                      {vol.subtitle}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-          
           {/* Direct method selection */}
           <div className="p-3.5 sm:p-4 rounded-2xl border border-black/[0.08] dark:border-white/[0.08] bg-black/[0.015] dark:bg-white/[0.02] space-y-2.5">
             <div className="flex items-center justify-between">

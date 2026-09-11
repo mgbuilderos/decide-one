@@ -140,7 +140,7 @@ export default function PatronUpgradeModal({
                 {
                   icon: Search,
                   title: 'Search Your Work',
-                  desc: 'Use Cmd+K to find saved work across your dates and volumes.'
+                  desc: 'Use Cmd+K to find anything you have written, across every date.'
                 },
                 {
                   icon: Lock,

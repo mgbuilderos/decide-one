@@ -54,17 +54,19 @@ export function formatDateKey(date) {
   return `${y}-${m}-${d}`;
 }
 
-function getVolumeStorageKey(volumeId) {
-  if (!volumeId || volumeId === 'vol_strategy') {
-    return STORAGE_KEY;
-  }
-  return `${STORAGE_KEY}_${volumeId}`;
+// There is one journal. Volumes were removed on 11 September 2026 because four
+// parallel Top 3s meant twelve open decisions, which is the condition this
+// product exists to treat. Work and life separation lives on each priority's
+// category instead, inside the three rather than beside them.
+//
+// Data written under the old suffixed keys is left where it is rather than
+// deleted, so the decision stays reversible.
+function getVolumeStorageKey() {
+  return STORAGE_KEY;
 }
 
-function getLegacyVolumeStorageKeys(volumeId) {
-  return LEGACY_STORAGE_KEYS.map((key) => (
-    !volumeId || volumeId === 'vol_strategy' ? key : `${key}_${volumeId}`
-  ));
+function getLegacyVolumeStorageKeys() {
+  return LEGACY_STORAGE_KEYS;
 }
 
 export function getStoredActiveVolume() {
@@ -551,36 +553,15 @@ function loadVolumeDataFromStorage(volumeId) {
 }
 
 export function useJournalStorage() {
-  const [activeVolumeId, setActiveVolumeId] = useState(() => getStoredActiveVolume());
-  const [data, setData] = useState(() => loadVolumeDataFromStorage(activeVolumeId));
+  const [data, setData] = useState(() => loadVolumeDataFromStorage());
 
-  // Save current active volume whenever data changes
   useEffect(() => {
     try {
-      const key = getVolumeStorageKey(activeVolumeId);
-      localStorage.setItem(key, JSON.stringify(data));
+      localStorage.setItem(getVolumeStorageKey(), JSON.stringify(data));
     } catch (e) {
       console.error('Failed to persist to localStorage', e);
     }
-  }, [data, activeVolumeId]);
-
-  // Switch volume handler
-  const switchVolume = useCallback((targetVolumeId) => {
-    if (targetVolumeId === activeVolumeId) return;
-
-    // Persist current data first
-    try {
-      const currentKey = getVolumeStorageKey(activeVolumeId);
-      localStorage.setItem(currentKey, JSON.stringify(data));
-      localStorage.setItem(ACTIVE_VOLUME_KEY, targetVolumeId);
-    } catch (e) {
-      console.error('Failed to persist before switching volume', e);
-    }
-
-    setActiveVolumeId(targetVolumeId);
-    const targetData = loadVolumeDataFromStorage(targetVolumeId);
-    setData(targetData);
-  }, [activeVolumeId, data]);
+  }, [data]);
 
   // Ensure log exists for a date
   const getDailyLog = useCallback((dateKey) => {
@@ -732,11 +713,11 @@ export function useJournalStorage() {
     const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data, null, 2));
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute('href', dataStr);
-    downloadAnchor.setAttribute('download', `decideone_${activeVolumeId}_${formatDateKey(new Date())}.json`);
+    downloadAnchor.setAttribute('download', `decideone_${formatDateKey(new Date())}.json`);
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
-  }, [data, activeVolumeId]);
+  }, [data]);
 
   // Import JSON backup
   const importJSON = useCallback((jsonString) => {
@@ -826,10 +807,10 @@ export function useJournalStorage() {
   const exportEncryptedVault = useCallback(async (passphrase) => {
     telemetry.track('vault_exported', { export_type: 'encrypted_vault' });
     const envelope = await encryptVaultData(data, passphrase);
-    const volName = EXECUTIVE_VOLUMES.find(v => v.id === activeVolumeId)?.name || 'Work';
+    const volName = 'Journal';
     downloadEncryptedVaultFile(envelope, volName);
     return envelope;
-  }, [data, activeVolumeId]);
+  }, [data]);
 
   // Encrypted Vault Importer (.vault)
   const importEncryptedVault = useCallback(async (envelope, passphrase) => {
@@ -868,10 +849,5 @@ export function useJournalStorage() {
     updateSettings,
     exportJSON,
     importJSON,
-    // Executive Multi-Volume Domain Controls
-    activeVolumeId,
-    activeVolume: EXECUTIVE_VOLUMES.find(v => v.id === activeVolumeId) || EXECUTIVE_VOLUMES[0],
-    volumes: EXECUTIVE_VOLUMES,
-    switchVolume
   };
 }

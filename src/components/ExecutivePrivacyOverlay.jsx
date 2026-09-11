@@ -10,8 +10,6 @@ export default function ExecutivePrivacyOverlay({
   onResumeFromSoftFrost,
   onUnlockVault,
   isMuted = false,
-  activeVolume = null,
-  volumes = [],
   currentDate = null,
   settings = {},
   updateSettings = null
