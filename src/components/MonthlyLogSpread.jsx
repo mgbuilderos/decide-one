@@ -118,11 +118,11 @@ export default function MonthlyLogSpread({
           </h1>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex w-full flex-wrap items-center justify-between gap-2 sm:w-auto sm:flex-nowrap sm:justify-end">
           <div className="flex rounded-full border border-black/10 bg-black/[0.025] p-1 dark:border-white/10 dark:bg-white/[0.04]" role="group" aria-label="Monthly View">
             <button
               type="button"
-              className={`flex min-h-9 items-center gap-1.5 rounded-full px-3 text-[11px] font-semibold transition-colors ${view === 'calendar' ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
+              className={`flex min-h-9 items-center gap-1.5 rounded-full px-2.5 sm:px-3 text-[11px] font-semibold transition-colors ${view === 'calendar' ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
               aria-pressed={view === 'calendar'}
               onClick={() => setView('calendar')}
             >
@@ -130,7 +130,7 @@ export default function MonthlyLogSpread({
             </button>
             <button
               type="button"
-              className={`flex min-h-9 items-center gap-1.5 rounded-full px-3 text-[11px] font-semibold transition-colors ${view === 'priorities' ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
+              className={`flex min-h-9 items-center gap-1.5 rounded-full px-2.5 sm:px-3 text-[11px] font-semibold transition-colors ${view === 'priorities' ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
               aria-pressed={view === 'priorities'}
               onClick={() => setView('priorities')}
             >
@@ -138,7 +138,7 @@ export default function MonthlyLogSpread({
             </button>
           </div>
 
-          <div className="flex items-center rounded-full border border-black/10 bg-white dark:border-white/10 dark:bg-neutral-900">
+          <div className="flex shrink-0 items-center rounded-full border border-black/10 bg-white dark:border-white/10 dark:bg-neutral-900">
             <button
               type="button"
               className="grid h-9 w-9 place-items-center rounded-full text-neutral-500 hover:bg-black/[0.04] hover:text-neutral-900 dark:hover:bg-white/[0.06] dark:hover:text-white"
