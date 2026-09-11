@@ -106,18 +106,21 @@ way: a second agent reading `git status` mid-write sees a half-applied state —
 a file briefly deleted, an import pointing at nothing — and reports work as
 broken or abandoned when it is neither. That happened twice on 11 September.
 
-**Before concluding that anything is broken, check whether it is still being
-written:**
+**Before concluding that anything is broken — and before deploying — ask
+whether the tree is still being written:**
 
 ```bash
-ls -lTt src/components/*.jsx | head -5   # newest first
-date "+%H:%M:%S"
+npm run tree
 ```
 
-Edits inside the last few minutes mean an agent is mid-task — wait and read
-again. Agents write in batches, so several files sharing one timestamp is one
-action, not several. A quiet gap of five minutes or more is the signal that it
-has actually stopped.
+It answers in one line: `SOMEONE IS WORKING` with how long ago, or `Quiet for
+Nm — safe to read, build and deploy`, followed by the five most recently
+written files and anything uncommitted.
+
+Edits inside the last five minutes mean an agent is mid-task — wait and run it
+again. Several files sharing one timestamp is one batch write, not several
+separate changes; that signature is what made a delete-and-rewrite look like a
+deletion on 11 September.
 
 ### Giving an agent its own tree
 

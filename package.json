@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "test:qc": "node scripts/qc_audit.js",
+    "tree": "node scripts/tree_status.js",
     "test:launch": "node scripts/launch_check.js",
     "server": "node server/src/server.js",
     "server:seed": "node server/src/seed_analytics.js",
