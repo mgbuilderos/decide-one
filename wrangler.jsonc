@@ -13,19 +13,16 @@
   // custom-domain attach failed halfway.
   "workers_dev": true,
 
-  // The live domain, ready to enable. Attaching it fails while decideone.app
-  // still has its existing DNS records:
+  // The live domain. Attached 11 September 2026, once the apex CNAME to
+  // decide-one.pages.dev was deleted in the dashboard — Cloudflare refuses a
+  // custom domain while the hostname has externally managed records [100117],
+  // and the token here has no DNS scope to clear them itself.
   //
-  //   Hostname 'decideone.app' already has externally managed DNS records
-  //   (A, CNAME, etc). Delete them first.  [code 100117]
-  //
-  // Those records point at the Sites project and cannot be removed from here —
-  // the OAuth token has no DNS write scope. Delete them in the Cloudflare
-  // dashboard, then uncomment this and run `npx wrangler deploy`.
-  //
-  // "routes": [
-  //   { "pattern": "decideone.app", "custom_domain": true }
-  // ],
+  // That CNAME was the zone's only record; it is written down in DEPLOY.md,
+  // which is the rollback to the Sites host.
+  "routes": [
+    { "pattern": "decideone.app", "custom_domain": true }
+  ],
   "assets": {
     "directory": "./dist",
     // Every route is the same document; the app reads ?view= from the URL.
