@@ -20,14 +20,15 @@ them is how a privacy-first product ships surveillance by accident.**
 | Who | Visitors on `decideone.app` who have not started | People using the app |
 | What is on screen | Marketing copy the founder wrote | **What the person wrote about their own day** |
 | Governing promise | None. Normal web analytics apply | `VISION.md` §11.1 — *nothing leaves your device* |
-| Heatmaps | Yes — first-party and route-scoped only (§0a) | **Never** |
-| Session replay | Yes, on marketing pages only | **Never** |
+| Heatmaps | **Never** (§0b) | **Never** |
+| Session replay | **Never** (§0b) | **Never** |
 | Geography, referrer, campaign | Yes | Country only, and only with consent |
 | Default | On | **Off. Opt-in. Absence of an answer is not consent** |
 
 A heatmap records where a cursor went. On a landing page that is a design
 signal. On the daily page that is a recording of someone's priorities being
-typed. The technology is identical; the meaning is not.
+typed. The technology is identical; the meaning is not — and since one origin
+serves both (§0a), the only safe answer is neither. See §0b.
 
 **Every requirement below is assigned to A or B. If a requirement cannot be
 placed, it does not get built until it can.**
@@ -48,11 +49,10 @@ the page where a person writes their priorities. So:
    reading the journal` (§1, rule 3). This is why Cloudflare's Real User
    Monitoring was turned off rather than permitted: it was giving accurate Core
    Web Vitals for free, and it still could not be allowed.
-2. **Site measurement must be first-party and route-scoped.** Heatmaps, scroll
-   maps and session replay remain available for the marketing surfaces, but only
-   as code this repository owns, and only mounted on landing routes — never on
-   `?view=daily` or any instrument view. A heatmap that follows a person into
-   the app is the failure this whole document exists to prevent.
+2. **Site measurement must be first-party and route-scoped.** Whatever measures
+   the landing page must be code this repository owns, mounted on landing routes
+   and never on `?view=daily` or any instrument view. Heatmaps and session
+   replay were the obvious candidates and have been cut outright — see §0b.
 3. **Performance metrics are now ours to build.** §3.2's LCP, INP, CLS and TTFB
    no longer arrive free from the edge. They come from `PerformanceObserver` in
    first-party code, reported through the existing telemetry pipeline, on
@@ -63,6 +63,37 @@ again: `app.decideone.app` would have let the marketing host run full
 third-party analytics while the instrument origin stayed clean. It was
 considered and declined on 12 September in favour of one site. Reopening it is a
 founder decision, not an implementation detail.
+
+### 0b. Heatmaps and session replay are cut — 12 September 2026
+
+**Not deprioritised. Removed.** Neither is to be built, on either surface, and a
+proposal to add one is a change to this section rather than a ticket.
+
+**Three reasons, in the order that decided it:**
+
+1. **They cost page weight on the thing the founder is already unhappy with.**
+   The entry bundle was 739KB raw and 230KB gzipped on 12 September; halving it
+   was the day's most valuable performance work. `VISION.md` §13.3 asks the
+   instrument to be fast before it is anything else. Adding tracking script to a
+   page whose load time is the live complaint is the wrong trade, and no
+   measurement is worth making the product slower to obtain.
+2. **The exit-section metric answers the same question for free.** §3.2 already
+   records which section was last visible before a visitor left. That is *where
+   we lose people* in one number, computed from an IntersectionObserver the page
+   needs anyway. A heatmap would render the same answer as a picture and charge
+   for it in kilobytes.
+3. **One origin makes them permanently risky.** Under §0a the landing page and
+   the instrument share `decideone.app`. A replay or heatmap script that is
+   ever mis-scoped — by a refactor, a route change, or an agent who does not
+   read this file — records a person writing their priorities. The failure is
+   silent, total, and exactly what this document exists to prevent. The safest
+   version of that script is the one that does not exist.
+
+**What replaces them**, and is enough: section dwell, scroll-depth milestones,
+exit section, CTA clicks by id, and rage/dead clicks. All first-party, all a few
+lines, all in §3.2.
+
+---
 
 ---
 
@@ -163,7 +194,7 @@ come from, and what makes them start?*
 - **Interaction**: CTA clicks by id, FAQ items opened, 3D scene interactions,
   video/animation play or pause, nav use.
 - **Rage clicks and dead clicks**: something looks interactive and is not.
-- **Heatmaps**: click and scroll maps. Site only. Self-hosted only.
+- ~~Heatmaps~~ — **cut, see §0b.** Exit section below answers the same question without the script.
 - **Performance**: LCP, INP, CLS, TTFB per page and per country. A slow site in
   India is a reach problem disguised as a conversion problem.
 
