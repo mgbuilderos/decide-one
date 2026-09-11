@@ -9,7 +9,7 @@
 
 **Decide One** is a stationery-grade daily priority instrument built with **React**, **Vite**, and **Tailwind CSS**. It combines the focused calm of paper with three public-domain decision methods and on-device storage.
 
-* **One payment, not a subscription**: $39 USD / ₹999 INR one-time. Sixty-day refund, no questions.
+* **One payment, not a subscription**: $39 USD one-time, the same price everywhere. Sixty-day refund, no questions.
 * **Your work stays on your device**: entries are saved in your browser's local storage and are never uploaded. There is no account, no cloud sync, and no server copy of anything you write.
 * **Anonymous usage analytics are off by default and opt-in.** A telemetry module exists in `src/utils/telemetry.js`. It sends nothing unless *both* a build flag and your explicit consent are set, strips private entry text before sending, and can be turned off again from the menu. **This is why the project does not claim "zero telemetry"** — the honest claim is that nothing is collected without consent.
 * **Strict 24px Universal Swiss Grid**: Mathematical architectural cadence across all line heights, margins, and paper textures.

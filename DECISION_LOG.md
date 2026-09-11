@@ -771,3 +771,9 @@ Deploy became one command (npm run deploy: audit, build, publish, verify). decid
 ### 2026-09-11 15:26 — claude
 
 MonthlyLogSpread.jsx rewritten by another agent, 397 lines to 282, into a weekday-grid calendar with month navigation. Found uncommitted and unrecorded after a delete-and-rewrite that briefly broke the build and tripped Rule 0. Committed here rather than left loose, because uncommitted work is how this repository has lost changes before. Both gates green at the time of committing. The author did not record a decision for it: if the monthly view's shape is now settled, it wants a row in DECISIONS.md.
+
+---
+
+### 2026-09-11 17:28 — claude
+
+Regional pricing removed: $39 is now the price everywhere, India included (was ₹999, now ~₹3,861, an increase of about 3.9x). Founder decision 11 Sep 2026, taken after being shown the consequences. VISION.md needed no edit - it names no rupee price and the $39 USD figure does not move, so §11.1 and BR5 stand. Recorded as B-36 with what was given up in MONETIZATION_PLAN §5.3a. Three pod members advised holding $39/₹999 when asked about LOWERING the price; none was asked about raising the rupee price and none endorsed it, which B-36 states explicitly so it is not later mistaken for agreement.

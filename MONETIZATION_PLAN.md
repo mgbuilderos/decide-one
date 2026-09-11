@@ -13,7 +13,7 @@
 
 The daily instrument is free forever and complete — write, plan, reflect, search your whole history, export everything, no account, no limit, no timer. The **one-time Patron pass** adds the perspective layer: the weekly review, the monthly and yearly views, multiple volumes, the decision log, the archival exports.
 
-**Price: $39 / ₹999, one-time.** Decided by the founder, September 9, 2026 — see §5.3.
+**Price: $39, one-time, one price worldwide.** Decided by the founder, September 9, 2026; regional pricing removed by the founder, September 11, 2026 — see §5.3.
 
 No trial. No expiry. No feature that ever stops working. Nothing about your own past is ever withheld from you.
 
@@ -108,11 +108,22 @@ The risk accepted with this choice: fewer impulse purchases in the first weeks, 
 | | Price | Note |
 | :--- | :--- | :--- |
 | **Patron — global** | **$39 one-time** | Sits squarely in the premium one-time band (Things 3 $49.99, Agenda ~$25, Sublime $99) and anchors Primacy as an instrument rather than a utility. Against Day One at $49.99 **per year**, the one-time $39 pays for itself before month ten and never again after. |
-| **Patron — India** | **₹999 one-time** | A PPP factor near 3.5x means ₹1,999 would *feel* like $70–80 locally — a considered purchase. ₹999 feels like $35–40: premium, attainable, and it is the home market where word of mouth starts. |
+| **Patron — India** | **$39 one-time** (~₹3,861) | **Regional pricing removed, 11 September 2026.** ₹999 was set on a ~3.5x PPP factor so the price would *feel* like $35–40 locally. One worldwide price raises India roughly 3.9x. The founder was shown that consequence and chose it. What is given up is recorded in §5.3a rather than left implied. |
 | **Refund** | **60 days, no questions** | Refund rates at this price run 1–3%. A visible, generous policy removes nearly all hesitation. |
 | **Major versions** | v2 in 2–3 years, owner's discount | The anti-SaaS-compatible way to be paid twice; validated in §5A finding 4. State it in the terms now. |
 
-**One operational consequence of $39 / ₹999**: the regional spread is now ~3.4x rather than ~2.1x, which makes arbitrage worth someone's trouble. Not a reason to change either number — Spotify and Netflix run wider spreads — but `growth-revenue-ops` must key regional pricing to billing country as verified by Dodo rather than to anything the browser reports, and should expect a small volume of mismatched purchases. Treat them as a cost of reaching the home market, not as fraud to be fought.
+**One consequence of a single worldwide price**: the regional arbitrage problem disappears entirely. There is no spread to exploit, so `growth-revenue-ops` no longer needs to key pricing to a Dodo-verified billing country, and mismatched purchases stop being a category. That is the one unambiguous gain here, and it is an operational one.
+
+### 5.3a What removing regional pricing gives up
+
+Recorded because the decision was made against the advice of three pod members, and the reasoning should not have to be reconstructed later.
+
+- **India was the home market where word of mouth starts.** §5.3 set ₹999 on that basis. At ~₹3,861 the price is no longer attainable on the same terms, and the lead comparison — *a ₹1,500 paper notebook lasts a year; this is once, forever* — inverts: the software now costs more than twice the notebook it replaces.
+- **Regional pricing was named the highest-leverage reach lever after the free tier** (§6A), and it was configuration-only for Brazil, Indonesia, Nigeria, the Philippines, Vietnam, Egypt and Mexico. A single worldwide price forecloses all of it, not just India.
+- **The direction is upward, which is the one direction `VISION.md` §12.3 prohibits** — though that clause governs the $39 USD figure, which does not move. This is a rupee increase, not a drift in the Casio number. The distinction is real but thin.
+- **What is NOT given up:** the $39 USD price, `VISION.md` §11.1, BR5, the Day One comparison, the refund policy, and the whole licence architecture. Nothing structural changes.
+
+**Reversibility:** high. Reinstating a rupee price is one row in this table and one string in `PatronUpgradeModal.jsx`. No architecture, no migration. If Indian conversion collapses after launch, this is cheap to undo.
 
 ### 5.4 Existing key holders
 
@@ -207,8 +218,8 @@ This also disposes of the "cheap looks substandard" worry, and in a way worth st
 **Conclusion: hold $39. Spend the reach effort where it actually works.** In order of leverage:
 
 1. **The free tier itself.** Already the plan, and strengthened by moving search into it (§4A). Every improvement here is a reach improvement. Guard it against future erosion — see the standing limit in `growth-strategy.md` about never moving a shipped free feature behind the pass.
-2. **Regional pricing well beyond India.** Currently only ₹999 is set. The same PPP logic applies to Brazil, Indonesia, Nigeria, the Philippines, Vietnam, Egypt, Mexico and more — markets where $39 is a week's wages and where a local-first tool that needs no subscription is *more* useful than it is in San Francisco, not less. This is the **highest-leverage reach lever after the free tier**, it costs nothing but configuration, and it is exactly what "maximum number of people" means in practice. `growth-revenue-ops` to confirm which currencies Dodo supports and propose a table.
-3. **A quiet hardship line.** One sentence near the price: *"If $39 is a barrier for you, write to me."* No form, no proof, no means test. It costs almost nothing, a small number of people will use it, and it is the exact expression of the founder's stated ethic. Do not advertise it as generosity; state it plainly and move on.
+2. ~~**Regional pricing well beyond India.**~~ **Closed by B-36, 11 September 2026** — one price worldwide, so there is no regional table to extend. The reasoning below is kept because it was the strongest reach argument in this plan and because B-36 is reversible in one table row; if reach proves to be the binding constraint after launch, this is the first thing to reopen. What follows describes what was given up.  ~~Currently only ₹999 is set.~~ The same PPP logic applies to Brazil, Indonesia, Nigeria, the Philippines, Vietnam, Egypt, Mexico and more — markets where $39 is a week's wages and where a local-first tool that needs no subscription is *more* useful than it is in San Francisco, not less. This is the **highest-leverage reach lever after the free tier**, it costs nothing but configuration, and it is exactly what "maximum number of people" means in practice. `growth-revenue-ops` to confirm which currencies Dodo supports and propose a table.
+3. **A quiet hardship line — now load-bearing, not optional.** With regional pricing closed (B-36), this is the only remaining accommodation for anyone outside a high-income market, and $39 is now the price in India too. One sentence near the price: *"If $39 is a barrier for you, write to me."* No form, no proof, no means test. It costs almost nothing, a small number of people will use it, and it is the exact expression of the founder's stated ethic. Do not advertise it as generosity; state it plainly and move on.
 4. **A team pack, later.** The target user is a founder or executive who has a leadership team. Someone who has used Primacy for three months and wants five colleagues on it is the highest-intent buyer this product will ever have, and serving them costs zero marginal anything. Price it at a genuine discount to five singles, not a premium for the word "team".
 
 **What reach does *not* mean here:** free-with-a-tip-jar (§2), ad support, data sale, or any growth loop that requires the user to expose their journal. A private tool cannot buy reach with its users' privacy, and this one will not.

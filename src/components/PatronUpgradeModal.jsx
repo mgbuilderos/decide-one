@@ -115,7 +115,7 @@ export default function PatronUpgradeModal({
               </div>
               <div className="flex items-baseline gap-1.5 mt-0.5">
                 <span className="text-2xl font-bold text-neutral-900 dark:text-white">$39</span>
-                <span className="text-xs text-neutral-500 dark:text-neutral-400">USD • ₹999 INR one-time</span>
+                <span className="text-xs text-neutral-500 dark:text-neutral-400">USD • one-time, worldwide</span>
               </div>
             </div>
             <div className="flex items-center gap-1 text-[11px] font-semibold text-neutral-600 dark:text-neutral-400">
