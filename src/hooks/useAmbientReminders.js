@@ -7,14 +7,12 @@ const LEGACY_REMINDERS_KEYS = ['PRIMACY_REMINDERS_CONFIG_V1', 'POCKETBOOK_REMIND
 const DEFAULT_CONFIG = {
   notificationsEnabled: false,
   eveningReviewTime: '20:30', // 8:30 PM
-  top3NudgeTime: '18:00',      // 6:00 PM
   quietHoursStart: '22:00',   // 10:00 PM
   quietHoursEnd: '07:00',     // 7:00 AM
   lastEveningAlertDate: null
 };
 
 export function useAmbientReminders({
-  isTop3Untouched = false,
   onOpenClosureRitual,
   isMuted = false
 }) {
@@ -37,7 +35,6 @@ export function useAmbientReminders({
     return 'unsupported';
   });
 
-  const [isSpineNudgeActive, setIsSpineNudgeActive] = useState(false);
   const checkIntervalRef = useRef(null);
 
   useEffect(() => {
@@ -95,17 +92,9 @@ export function useAmbientReminders({
       const currentM = now.getMinutes();
       const currentMinutes = (currentH * 60) + currentM;
 
-      // 1. Ambient In-App Spine Glow Check (Past 6:00 PM and Top 3 untouched)
-      const [nudgeH, nudgeM] = (config.top3NudgeTime || '18:00').split(':').map(Number);
-      const nudgeMinutes = (nudgeH * 60) + nudgeM;
+      // The evening closure notification (8:30 PM). The 6 PM spine glow that
+      // used to sit above it is gone with the bi-fold it was drawn on (B-39).
 
-      if (currentMinutes >= nudgeMinutes && isTop3Untouched) {
-        setIsSpineNudgeActive(true);
-      } else {
-        setIsSpineNudgeActive(false);
-      }
-
-      // 2. Evening Closure Notification (8:30 PM)
       const [revH, revM] = (config.eveningReviewTime || '20:30').split(':').map(Number);
       const revMinutes = (revH * 60) + revM;
 
@@ -140,11 +129,9 @@ export function useAmbientReminders({
     checkIntervalRef.current = setInterval(checkSchedule, 30000);
     return () => clearInterval(checkIntervalRef.current);
   }, [
-    config.top3NudgeTime,
     config.eveningReviewTime,
     config.notificationsEnabled,
     config.lastEveningAlertDate,
-    isTop3Untouched,
     permissionState,
     isWithinQuietHours,
     onOpenClosureRitual
@@ -154,7 +141,6 @@ export function useAmbientReminders({
     config,
     setConfig,
     permissionState,
-    requestPermission,
-    isSpineNudgeActive
+    requestPermission
   };
 }

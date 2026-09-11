@@ -1501,43 +1501,6 @@ body {
 }
 
 /* =========================================================================
-   AMBIENT GOLD LEAF SPINE LUMINESCENCE (EVENING HORIZON SIGNAL)
-   ========================================================================= */
-@keyframes spineGoldBreathe {
-  0%, 100% {
-    opacity: 0.25;
-    box-shadow: 0 0 8px rgba(245, 158, 11, 0.2), 0 0 16px rgba(217, 119, 6, 0.1);
-  }
-  50% {
-    opacity: 0.85;
-    box-shadow: 0 0 14px rgba(245, 158, 11, 0.5), 0 0 24px rgba(217, 119, 6, 0.25);
-  }
-}
-
-.ambient-gold-spine-glow {
-  position: absolute;
-  top: 16px;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 2px;
-  background: linear-gradient(
-    180deg,
-    rgba(217, 119, 6, 0.1) 0%,
-    rgba(245, 158, 11, 0.9) 25%,
-    rgba(251, 191, 36, 1.0) 50%,
-    rgba(245, 158, 11, 0.9) 75%,
-    rgba(217, 119, 6, 0.1) 100%
-  );
-  border-radius: 9999px;
-  z-index: 28;
-  pointer-events: auto;
-  cursor: pointer;
-  animation: spineGoldBreathe 4.5s ease-in-out infinite;
-  transition: opacity 0.4s ease;
-}
-
-/* =========================================================================
    400MS CAPILLARY INK DRYING ANIMATION
    ========================================================================= */
 @keyframes inkVellumAbsorption {
@@ -1748,8 +1711,4 @@ select:focus-visible {
     animation: none !important;
   }
 
-  /* The spine glow breathes on a 25s loop. Quiet, but still movement. */
-  .spine-ambient-glow {
-    animation: none !important;
-  }
 }

@@ -16,7 +16,6 @@ import { usePrivacyShutter } from './hooks/usePrivacyShutter';
 import { useLicenseAutoActivation } from './hooks/useLicenseAutoActivation';
 import { generateExecutiveWeeklyBriefingPDF } from './utils/weeklyBriefingPDF';
 import { getFrameworkItems } from './utils/executionModel';
-import SpineAmbientGlow from './components/SpineAmbientGlow';
 import { useExecutiveDictation } from './hooks/useExecutiveDictation';
 import { useAmbientReminders } from './hooks/useAmbientReminders';
 import { telemetry, getHistoryDepthDays, lengthBucket, wordBucket } from './utils/telemetry';
@@ -638,14 +637,14 @@ export default function App() {
     monthKey
   );
 
-  // Discreet Ambient Cognitive Nudges & Local Reminders
-  const {
-    needsClosureGlow
-  } = useAmbientReminders({
-    currentDate,
-    dailyLog,
-    settings,
-    onTriggerClosureModal: () => setIsClosureModalOpen(true)
+  // Local evening reminder. Kept for its notification, which is dormant until
+  // something in the UI calls requestPermission — see B-39. The prop names here
+  // were all four wrong (currentDate/dailyLog/settings/onTriggerClosureModal
+  // against isTop3Untouched/onOpenClosureRitual/isMuted), so even the parts that
+  // could run were handed nothing; they now match the hook's signature.
+  useAmbientReminders({
+    onOpenClosureRitual: () => setIsClosureModalOpen(true),
+    isMuted: settings.isMuted
   });
 
   // Handlers for Daily Log
@@ -883,12 +882,6 @@ export default function App() {
               >
                 DECIDE ONE
               </button>
-
-              {/* Discreet Ambient Gold Spine Glow (Lights up past 6 PM if Top 3 uncompleted) */}
-              <SpineAmbientGlow
-                show={needsClosureGlow}
-                onClick={() => setIsClosureModalOpen(true)}
-              />
 
             <div className="relative z-10 flex-1 min-h-0 flex flex-col overflow-hidden">
               {activeView === 'daily' ? (
