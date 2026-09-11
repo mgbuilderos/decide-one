@@ -765,3 +765,9 @@ Founder proposed a sequence of candidates in one lineage. Recorded together beca
 ### 2026-09-11 14:21 — claude
 
 Deploy became one command (npm run deploy: audit, build, publish, verify). decideone.app moved off the Sites project onto the Cloudflare Worker in the founder's own account; the apex CNAME it replaced is recorded in DEPLOY.md as the rollback. Rule 0 added to the audit so deleting a governed surface fails instead of silently skipping its checks. npm run tree and npm run brief added because three agents share this tree and reading the docs costs ~140k tokens.
+
+---
+
+### 2026-09-11 15:26 — claude
+
+MonthlyLogSpread.jsx rewritten by another agent, 397 lines to 282, into a weekday-grid calendar with month navigation. Found uncommitted and unrecorded after a delete-and-rewrite that briefly broke the build and tripped Rule 0. Committed here rather than left loose, because uncommitted work is how this repository has lost changes before. Both gates green at the time of committing. The author did not record a decision for it: if the monthly view's shape is now settled, it wants a row in DECISIONS.md.
