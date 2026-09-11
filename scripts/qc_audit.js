@@ -697,15 +697,24 @@ if (!fs.existsSync(visionPath)) {
       for (const n of m[1].matchAll(/'([a-z0-9_]+)'/g)) expected.add(n[1]);
     }
 
-    // Event names the app actually emits.
+    // Event names the app actually emits — and, separately, the ones it can
+    // actually reach. This rule was written against emitters that did not
+    // exist; an emitter sitting in a file nothing imports is the same defect
+    // wearing a disguise, and the first version of this walk could not see the
+    // difference. `emittedLive` is the honest set: a track() call the
+    // application never executes emits nothing, whatever the grep says.
     const emitted = new Set();
+    const emittedLive = new Set();
     const walkSrc = (dir) => {
       for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
         const full = path.join(dir, entry.name);
         if (entry.isDirectory()) walkSrc(full);
         else if (/\.(jsx?|tsx?)$/.test(entry.name)) {
           const body = fs.readFileSync(full, 'utf8');
-          for (const m of body.matchAll(/track\(\s*'([a-zA-Z0-9_]+)'/g)) emitted.add(m[1]);
+          for (const m of body.matchAll(/track\(\s*'([a-zA-Z0-9_]+)'/g)) {
+            emitted.add(m[1]);
+            if (reachedFiles.has(full)) emittedLive.add(m[1]);
+          }
         }
       }
     };
@@ -713,12 +722,17 @@ if (!fs.existsSync(visionPath)) {
 
     // Direction 1: analysed but never emitted - a metric that cannot move.
     for (const name of [...expected].sort()) {
-      if (emitted.has(name) || DORMANT[name]) continue;
+      if (emittedLive.has(name) || DORMANT[name]) continue;
+      const orphanEmitter = emitted.has(name);
       errors.push(
         "[Rule 25 Violation] server/src analyses the event '" + name +
-        "' but nothing in src/ emits it, so every metric built on it is a " +
-        "permanent zero presented as a measurement. Emit it, stop analysing it, " +
-        "or add it to DORMANT in this rule with the reason."
+        (orphanEmitter
+          ? "', and src/ contains a track() call for it, but only in a file the "
+            + "application never reaches — so it emits nothing and the metric is a "
+            + "permanent zero presented as a measurement. Wire the emitter back in, "
+          : "' but nothing in src/ emits it, so every metric built on it is a "
+            + "permanent zero presented as a measurement. Emit it, ") +
+        "stop analysing it, or add it to DORMANT in this rule with the reason."
       );
     }
 

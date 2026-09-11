@@ -963,3 +963,9 @@ Production telemetry now exists. The Worker ran no code at all, so every event t
 ### 2026-09-11 01:31 — unattributed
 
 Rule 0 now checks reachability, not existence. It walks the import graph from src/main.jsx (static, React.lazy, CSS @import), transitively, and fails a governed surface nothing arrives at. Negative-tested three ways; the first version passed its own test by accident because a commented-out import still reads as an import, so whole-line comments are now stripped first. Found MonthlyBreakerPage orphaned since 4e68de4 with the audit green throughout; de-governed it and removed Rule 18's bare existsSync, since that clause was asserting a guarantee about something the product does not contain. Corrected my own failure-message wording: an unreached module is tree-shaken and never bundled, so the harm is a false green, not weight. Recorded B-36 (done), B-37 and B-38 (open: the month breaker, and 13 unreachable files including C3's DayConditionPrompt and the write-only rapid log).
+
+---
+
+### 2026-09-11 01:34 — unattributed
+
+Rule 25 had the same existence-vs-reachability hole Rule 0 did: walkSrc scanned every file in src/, so a track() call in a file nothing imports counted as an emitter. Direction 1 now tests emittedLive - emitters the application actually reaches - and names the orphan-emitter case separately. Latent rather than live: day_condition_selected and day_condition_skipped are emitted only from the unreachable DayConditionPrompt, but the server does not analyse them today, so no metric is currently a permanent zero. Negative-tested by making the server analyse day_condition_selected and confirming the new branch fires. Also found a fourth name mismatch in the dead spine glow: index.css defines .ambient-gold-spine-glow but the prefers-reduced-motion override targets .spine-ambient-glow, so the animation would not have stopped for reduced motion even if the feature had ever rendered.
