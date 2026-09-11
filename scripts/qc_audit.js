@@ -480,6 +480,81 @@ scanFiles(SRC_DIR, (filePath, content) => {
   }
 });
 
+// Rule 24: Price Consistency Gate.
+//
+// B-28 is the record of why this exists: the landing page went live selling
+// $24 / ₹1,999 while the decided price was $39 / ₹999, and nothing caught it.
+// The price lives in four files and no rule checked that they agreed.
+//
+// VISION.md §11.1 is the single source of truth, because CLAUDE.md rule 5
+// says §11 wins any conflict. Everything else must agree with it — the app
+// especially, since that is what a buyer actually sees.
+const visionPath = path.resolve("VISION.md");
+if (!fs.existsSync(visionPath)) {
+  errors.push("[Rule 24 Violation] VISION.md is missing — it is the canonical source of the price.");
+} else {
+  const vision = fs.readFileSync(visionPath, "utf8");
+  const priceRe = new RegExp("\\$(\\d[\\d,]*) once", "g");
+  const canonical = [...vision.matchAll(priceRe)].map((m) => m[1]);
+  const unique = [...new Set(canonical)];
+
+  if (unique.length === 0) {
+    errors.push("[Rule 24 Violation] VISION.md states no canonical price. Nothing else has anything to agree with.");
+  } else if (unique.length > 1) {
+    errors.push("[Rule 24 Violation] VISION.md disagrees with itself on the price: " + unique.join(" vs ") + ".");
+  } else {
+    const price = unique[0];
+
+    // The app must never show a price VISION did not decide. This is B-28.
+    const anyDollar = new RegExp("\\$(\\d[\\d,]*)", "g");
+    scanFiles(SRC_DIR, (filePath, content) => {
+      for (const hit of content.matchAll(anyDollar)) {
+        if (hit[1] !== price) {
+          errors.push(
+            "[Rule 24 Violation] " + path.relative(process.cwd(), filePath) +
+            " shows $" + hit[1] + " but VISION.md decided $" + price +
+            ". This is B-28: the page selling a price the founder had not agreed."
+          );
+        }
+      }
+    });
+
+    // Regional prices are decided in VISION or they do not ship. Under B-36
+    // there is one worldwide price, so VISION names no rupee figure and none
+    // may appear in the app. Reinstating one means changing VISION first.
+    const anyRupee = new RegExp("₹(\\d[\\d,]*)", "g");
+    const visionRupees = new Set([...vision.matchAll(anyRupee)].map((m) => m[1]));
+    scanFiles(SRC_DIR, (filePath, content) => {
+      for (const hit of content.matchAll(anyRupee)) {
+        if (!visionRupees.has(hit[1])) {
+          errors.push(
+            "[Rule 24 Violation] " + path.relative(process.cwd(), filePath) +
+            " shows ₹" + hit[1] + ", which VISION.md does not decide. " +
+            "Regional pricing was removed by B-36; reinstating it changes VISION first."
+          );
+        }
+      }
+    });
+
+    // The documents a buyer or an agent reads must not contradict the app.
+    const mustState = [
+      ["README.md", "the first thing anyone reads"],
+      ["MONETIZATION_PLAN.md", "the plan the price is decided in"]
+    ];
+    for (const [file, why] of mustState) {
+      const full = path.resolve(file);
+      if (!fs.existsSync(full)) {
+        errors.push("[Rule 24 Violation] " + file + " is missing — " + why + ".");
+      } else if (!fs.readFileSync(full, "utf8").includes("$" + price)) {
+        errors.push(
+          "[Rule 24 Violation] " + file + " does not state the canonical price $" +
+          price + " — " + why + "."
+        );
+      }
+    }
+  }
+}
+
 // Summary Report
 if (errors.length === 0) {
   console.log('✅ ALL STRUCTURAL QC CHECKS PASSED (not security or legal certification):');
@@ -506,7 +581,8 @@ if (errors.length === 0) {
   console.log('  - Rule 20: Executive Universal Keyboard Navigation Gate (Instant 1/2/3/T/C thought-speed routing)');
   console.log('  - Rule 21: Restricted Naming Token Check (not trademark or copyright clearance)');
   console.log('  - Rule 22: Execution Layer Enforcement Gate (Ivy Lee order lock, breathing state, non-punitive overrun, timing provenance)');
-  console.log('  - Rule 23: Licence Integrity Gate (signed per-buyer keys; no shared secret, no private key in source)\n');
+  console.log('  - Rule 23: Licence Integrity Gate (signed per-buyer keys; no shared secret, no private key in source)');
+  console.log('  - Rule 24: Price Consistency Gate (VISION §11.1 is the price; the app and the docs must agree)\n');
   process.exit(0);
 } else {
   console.error(`❌ QC AUDIT FAILED with ${errors.length} error(s):\n`);

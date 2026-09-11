@@ -777,3 +777,9 @@ MonthlyLogSpread.jsx rewritten by another agent, 397 lines to 282, into a weekda
 ### 2026-09-11 17:28 — claude
 
 Regional pricing removed: $39 is now the price everywhere, India included (was ₹999, now ~₹3,861, an increase of about 3.9x). Founder decision 11 Sep 2026, taken after being shown the consequences. VISION.md needed no edit - it names no rupee price and the $39 USD figure does not move, so §11.1 and BR5 stand. Recorded as B-36 with what was given up in MONETIZATION_PLAN §5.3a. Three pod members advised holding $39/₹999 when asked about LOWERING the price; none was asked about raising the rupee price and none endorsed it, which B-36 states explicitly so it is not later mistaken for agreement.
+
+---
+
+### 2026-09-11 17:31 — claude
+
+Rule 24 added to the audit: the price in VISION.md §11.1 is canonical and the app, README and MONETIZATION_PLAN must agree with it. Proven against all three failure modes by temporarily breaking each one - an app price VISION never decided (this is B-28 replayed), a rupee price after B-36 removed regional pricing, and a README that stops stating the price. Repricing is now one line in VISION plus a passing audit, instead of a nine-file manual sweep nobody checks.
