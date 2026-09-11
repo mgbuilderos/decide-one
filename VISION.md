@@ -161,13 +161,19 @@ Everything above is *why* and *what*. This is how it is said. **Where any copy a
 
 ### 11.1 The statement
 
-> ### Choose what deserves your attention.
+> ### You already know what matters. This helps you choose it.
 >
-> Bring the work competing for your day into view. Use Top 3, Ivy Lee, or the Urgent/Important Matrix to give it order. Set a realistic time for what comes first. Decide One provides the structure. You make the decision and do the work.
+> Some mornings hold eleven things and no obvious first one. Bring them into view, pick the method that fits the day — Top 3, Ivy Lee, or the Urgent/Important Matrix — and give the first one a real amount of time. You make the decision. The instrument holds it steady while you work.
 >
-> Three methods, all older than the software industry. One page. Nothing leaves your device. **Free, and no account. Pay only if it earns it.**
+> Three methods older than the software industry. One page. Nothing leaves your device. **Free, for everyone, with nothing held back** — because a tool that helps you choose your day should not be something you have to afford.
 
-**"Choose what deserves your attention."** is the primary line. It gives the user the benefit and the action in one sentence, while preserving the neutral role of the product: Decide One structures the decision but never makes it for them.
+**"You already know what matters. This helps you choose it."** is the primary line, replacing *"Choose what deserves your attention"* on 11 September 2026.
+
+It does three things the previous line did not. It **begins by trusting the reader** — they are not disorganised or lacking discipline, they are carrying too many open questions at once. It keeps the product's neutral role intact: the choosing is theirs and the instrument never makes it for them. And it sets up the free position as a consequence of the purpose rather than as a promotion — if the goal is one clear day for as many people as possible, charging for it works against the goal.
+
+*"Choose what deserves your attention"* is retained as an approved alternate. It was canonical from 9 September and remains true; it is simply colder than the direction set on 11 September, which is that the voice should be **motivating and positive throughout** (`BRAND_BOOK.md` §2).
+
+**The second sentence is doing the emotional work, and it is deliberate.** *"Eleven things and no obvious first one"* is a specific, recognisable morning rather than a description of a feeling. Copy discipline here is that emotion is carried by precision, never by adjectives: the reader should meet themselves in the sentence, not be told how they feel.
 
 **Canonical price: free.** There is no paid tier, no licence to buy, and no feature held back. At the end of a day the person has actually closed, the product may ask — once, quietly, and never blocking — whether it has been worth something. Declining is a complete answer and the ask gets quieter each time it is declined.
 
@@ -179,6 +185,7 @@ Everything above is *why* and *what*. This is how it is said. **Where any copy a
 
 | Line | Leads with |
 | :--- | :--- |
+| *Choose what deserves your attention.* | The benefit. Primary 9–11 Sep 2026. |
 | *Open it confused. Close it decided.* | The transformation. |
 | *Decide what deserves your day.* | The instruction. |
 | *You don't need another list. You need to know which three.* | The enemy. |

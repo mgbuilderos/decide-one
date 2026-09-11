@@ -831,3 +831,9 @@ Brand documents written: BRAND_HOUSE (purpose, pillars, what this brand is not),
 ### 2026-09-11 22:52 — claude
 
 Content-derived numbers are now bucketed before they are sent. dictation_completed sent an exact word count and reflection_saved an exact character count; both now send a band (1-5, 6-25, 26-100, 100+ for words; empty, 1-20, 21-100, 101-400, 400+ for characters). Knowing whether someone wrote a line or a paragraph improves the tool; knowing they wrote exactly 247 characters helps nobody and was sharper than the question needed. Brings the code into line with TELEMETRY_SPEC §1, which the code was violating. Also annotated the day_closed score as measured-but-never-displayed, with the reason: B-11 removed the Focus Quotient because a score with verdicts is the register Rule 22 cuts, so showing this one would be a DECISIONS reversal rather than a design choice.
+
+---
+
+### 2026-09-11 23:07 — claude
+
+Landing page rewritten for the free positioning in the motivating and positive register. VISION §11.1 changed first per rule 5: the primary line is now 'You already know what matters. This helps you choose it.', which begins by trusting the reader rather than instructing them, and states free as a consequence of the purpose rather than a promotion - if the goal is one clear day for as many people as possible, charging works against it. The retired line is kept as an approved alternate with its dates. Twenty copy replacements across the page, plus the share metadata in index.html and the hero text drawn into the 3D journal object, which two greps found still carrying the old line.

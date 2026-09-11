@@ -117,8 +117,8 @@ function pageTexture(side, tone = 'white', ink = 'carbon', grid = 'dots', perspe
       });
     }
   } else if (side === 'left') {
-    text('Choose what deserves', 88, 237, 52, 500);
-    text('your attention.', 88, 303, 58, 500);
+    text('You already know', 88, 237, 52, 500);
+    text('what matters.', 88, 303, 58, 500);
     text('SEPTEMBER 07, 2026', 88, 360, 18, 500, '#666666');
     text('THE THREE THAT MATTER', 88, 454, 20, 700);
     line(482);
