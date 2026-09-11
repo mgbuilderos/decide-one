@@ -230,7 +230,7 @@ export default function ProductivityFrameworks({
     <section className={`flex flex-col ${isFullPage ? 'flex-1 min-h-0' : 'shrink-0 border-b border-black/[0.08] dark:border-white/[0.08]'}`}>
       
       {/* Universal 24px Grid Cadence Header Bar */}
-      <div className="h-[24px] leading-[24px] flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] shrink-0">
+      <div className="h-[36px] leading-[36px] flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] shrink-0">
         <div className="flex items-baseline gap-2">
           <h2 className="text-sm sm:text-base font-semibold tracking-wide text-neutral-900 dark:text-neutral-100">
             {currentMeta.name}
@@ -268,7 +268,7 @@ export default function ProductivityFrameworks({
             return (
               <div
                 key={idx}
-                className={`group flex items-center gap-2.5 transition-all h-[24px] leading-[24px] px-1 -mx-1 ${
+                className={`group flex items-center gap-3 transition-all min-h-[44px] px-1 -mx-1 ${
                   task.completed ? 'opacity-40' : 'hover:bg-black/[0.02] dark:hover:bg-white/[0.03]'
                 }`}
               >
@@ -282,7 +282,7 @@ export default function ProductivityFrameworks({
                   type="button"
                   onClick={() => handleToggleHardTask(idx)}
                   aria-label={`${task.completed ? 'Mark incomplete' : 'Complete'} priority ${idx + 1}`}
-                  className={`w-3.5 h-3.5 rounded-full border relative before:absolute before:-inset-[5px] before:content-[''] transition-all flex items-center justify-center shrink-0 cursor-pointer ${
+                  className={`w-6 h-6 rounded-full border transition-all flex items-center justify-center shrink-0 cursor-pointer ${
                     task.completed
                       ? 'progress-bg-green progress-border-green text-white'
                       : isMissed
@@ -291,7 +291,7 @@ export default function ProductivityFrameworks({
                   }`}
                 >
                   {task.completed ? (
-                    <Check className="w-2 h-2 stroke-[3]" />
+                    <Check className="w-3 h-3 stroke-[3]" />
                   ) : isMissed ? (
                     <span className="text-[9px] font-black leading-none">✕</span>
                   ) : null}
@@ -303,7 +303,7 @@ export default function ProductivityFrameworks({
                     value={task.text || ''}
                     onChange={(e) => handleHardTaskTextChange(idx, e.target.value)}
                     placeholder={meta.placeholder || `Priority ${idx + 1}...`}
-                    className={`w-full bg-transparent font-normal focus:outline-none transition-all placeholder-neutral-400/40 text-xs sm:text-[13px] h-[24px] leading-[24px] ${
+                    className={`w-full bg-transparent font-normal focus:outline-none transition-all placeholder-neutral-400/60 text-[14px] sm:text-[15px] h-[44px] leading-[44px] ${
                       task.completed 
                         ? 'line-through text-neutral-400 dark:text-neutral-500' 
                         : isMissed 
@@ -459,7 +459,7 @@ export default function ProductivityFrameworks({
             return (
               <div
                 key={task.id || idx}
-                className={`flex items-center gap-3 h-[36px] sm:h-[40px] px-1 -mx-1 border-b border-black/[0.04] dark:border-white/[0.04] last:border-b-0 transition-all rounded-xs ${
+                className={`flex items-center gap-3 h-[44px] px-1 -mx-1 border-b border-black/[0.04] dark:border-white/[0.04] last:border-b-0 transition-all rounded-xs ${
                   isDone ? 'opacity-40' : isLocked ? 'opacity-55' : 'hover:bg-black/[0.02] dark:hover:bg-white/[0.03]'
                 }`}
               >
@@ -472,7 +472,7 @@ export default function ProductivityFrameworks({
                   disabled={isLocked}
                   onClick={() => handleToggleIvy(idx)}
                   aria-label={isLocked ? `Priority ${idx + 1} is locked until priority ${idx} is complete` : `${isDone ? 'Mark incomplete' : 'Complete'} priority ${idx + 1}`}
-                  className={`w-4 h-4 rounded-full border transition-all flex items-center justify-center shrink-0 cursor-pointer ${
+                  className={`w-6 h-6 rounded-full border transition-all flex items-center justify-center shrink-0 cursor-pointer ${
                     isDone
                       ? 'progress-bg-green progress-border-green text-white'
                       : 'border-neutral-400 dark:border-neutral-500 hover:border-neutral-700 bg-transparent'
@@ -483,10 +483,11 @@ export default function ProductivityFrameworks({
 
                 <input
                   type="text"
+                  disabled={isLocked}
                   value={task.text || ''}
                   onChange={(e) => handleTextIvy(idx, e.target.value)}
-                  placeholder={`Sequential Priority 0${idx + 1}...`}
-                  className={`flex-1 min-w-0 bg-transparent text-xs sm:text-[13px] focus:outline-none placeholder-neutral-400/40 ${
+                  placeholder={isLocked ? `Finish priority 0${idx} to unlock` : `Sequential priority 0${idx + 1}...`}
+                  className={`flex-1 min-w-0 bg-transparent text-[14px] sm:text-[15px] focus:outline-none placeholder-neutral-400/60 ${
                     isDone ? 'line-through text-neutral-400 dark:text-neutral-500' : 'text-neutral-900 dark:text-neutral-100'
                   }`}
                 />

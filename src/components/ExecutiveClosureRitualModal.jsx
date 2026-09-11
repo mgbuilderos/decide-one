@@ -101,7 +101,7 @@ export default function ExecutiveClosureRitualModal({
             </div>
             <div>
               <div className="text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
-                Executive Evening Closure
+                Close The Day
               </div>
               <div className="text-[10px] text-neutral-400">
                 Cognitive Detachment Ritual • Zero Cognitive Residue

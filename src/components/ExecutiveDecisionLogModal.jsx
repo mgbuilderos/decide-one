@@ -118,7 +118,7 @@ export default function ExecutiveDecisionLogModal({
             </div>
             <div>
               <div className="text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-white flex items-center gap-2">
-                <span>Executive Decision Ledger</span>
+                <span>Decision Log</span>
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-neutral-500 dark:text-neutral-400 font-semibold">
                   {decisions.length} Logged
                 </span>
@@ -462,7 +462,7 @@ export default function ExecutiveDecisionLogModal({
                         {dec.retrospective ? (
                           <div className="p-3 rounded-xl bg-emerald-500/[0.05] border border-emerald-500/20 text-xs space-y-1">
                             <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
-                              Executive Retrospective & Lesson
+                              Review &amp; Lesson
                             </div>
                             <p className="text-emerald-950 dark:text-emerald-200 leading-relaxed font-serif italic">
                               "{dec.retrospective}"

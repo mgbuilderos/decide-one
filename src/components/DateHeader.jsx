@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
+import MonthPicker from './MonthPicker';
 import { formatDateKey } from '../hooks/useJournalStorage';
 import { playSound } from '../utils/audio';
 
@@ -39,8 +40,10 @@ export function DateNavControls({
   currentDate,
   setCurrentDate,
   onStepDay,
+  hasEntry,
   isMuted = false
 }) {
+  const [pickerOpen, setPickerOpen] = useState(false);
   const handleStepDay = (delta) => {
     if (onStepDay) {
       onStepDay(delta);
@@ -110,17 +113,30 @@ export function DateNavControls({
         <ChevronRight className="w-3.5 h-3.5" />
       </button>
 
-      {/* Native Calendar Picker Overlay */}
+      {/* The month picker. A native date input handed this panel to the
+          browser's own chrome, which is a different shape on every platform
+          and never the one this product is drawn in. */}
       <div className="relative pl-1 border-l border-black/[0.08] dark:border-white/[0.08]">
-        <label className="cursor-pointer p-1 text-neutral-400 hover:text-neutral-800 dark:hover:text-white block rounded-full transition-colors" title="Select Date">
-          <CalendarIcon className="w-3 h-3" />
-          <input
-            type="date"
-            value={dateInputVal}
-            onChange={handleDateSelect}
-            className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+        <button
+          type="button"
+          onClick={() => setPickerOpen(o => !o)}
+          aria-haspopup="dialog"
+          aria-expanded={pickerOpen}
+          aria-label="Choose a day"
+          title="Choose a day"
+          className="min-w-[24px] min-h-[24px] flex items-center justify-center cursor-pointer text-neutral-400 hover:text-neutral-800 dark:hover:text-white rounded-full transition-colors"
+        >
+          <CalendarIcon className="w-3.5 h-3.5" />
+        </button>
+        {pickerOpen && (
+          <MonthPicker
+            currentDate={currentDate}
+            hasEntry={hasEntry}
+            isMuted={isMuted}
+            onClose={() => setPickerOpen(false)}
+            onSelect={(d) => setCurrentDate(new Date(d.getFullYear(), d.getMonth(), d.getDate()))}
           />
-        </label>
+        )}
       </div>
     </div>
   );

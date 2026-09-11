@@ -1,3 +1,23 @@
+/* ---------------------------------------------------------------------------
+   Motion vocabulary.
+
+   There were eight easing curves here, five of which differed by hundredths of
+   a control point — the same gesture written five ways. Nobody can see the
+   difference between them; what is visible is the inconsistency, which is what
+   makes motion read as assembled rather than designed.
+
+   Three curves now, each for a distinct gesture. Durations stay as tuned: the
+   book choreography was timed deliberately and is not a system to normalise.
+   --------------------------------------------------------------------------- */
+:root {
+  /* Everything that enters, opens, or settles. */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  /* A harder stop, for the page reveal. */
+  --ease-out-strong: cubic-bezier(0.16, 1, 0.3, 1);
+  /* The only symmetric curve, for motion that returns where it came from. */
+  --ease-in-out: cubic-bezier(0.28, 0, 0.2, 1);
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -242,7 +262,7 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.30);
     cursor: pointer;
     user-select: none;
-    transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.18s ease;
+    transition: transform 0.18s var(--ease-out), box-shadow 0.18s ease;
     z-index: 5;
   }
 
@@ -383,7 +403,7 @@
     left: 50%;
     right: 24px;
     transform-origin: 0% 50%;
-    animation: seamlessPageFlipNext 0.72s cubic-bezier(0.25, 0.9, 0.35, 1) forwards;
+    animation: seamlessPageFlipNext 0.72s var(--ease-out) forwards;
   }
 
   /* Turning Backward (Previous Day): Anchored at Center Spine (50%), spans to left content edge (24px) */
@@ -391,7 +411,7 @@
     left: 24px;
     right: 50%;
     transform-origin: 100% 50%;
-    animation: seamlessPageFlipPrev 0.72s cubic-bezier(0.25, 0.9, 0.35, 1) forwards;
+    animation: seamlessPageFlipPrev 0.72s var(--ease-out) forwards;
   }
 
   /* Front and Back Faces of the Turning Sheet */
@@ -466,7 +486,7 @@
     pointer-events: none;
     border-radius: inherit;
     background: linear-gradient(to right, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.02) 30%, transparent 70%);
-    animation: frontFaceShading 0.72s cubic-bezier(0.28, 0, 0.2, 1) forwards;
+    animation: frontFaceShading 0.72s var(--ease-in-out) forwards;
   }
   .dark .leaf-face-front::after {
     background: linear-gradient(to right, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.06) 30%, transparent 70%);
@@ -486,7 +506,7 @@
     pointer-events: none;
     border-radius: inherit;
     background: linear-gradient(to left, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.02) 30%, transparent 70%);
-    animation: backFaceShading 0.72s cubic-bezier(0.28, 0, 0.2, 1) forwards;
+    animation: backFaceShading 0.72s var(--ease-in-out) forwards;
   }
   .dark .leaf-face-back::after {
     background: linear-gradient(to left, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.06) 30%, transparent 70%);
@@ -501,7 +521,7 @@
 
   /* Mobile 3D Fold Transition */
   .mobile-fold-turn {
-    animation: mobileFoldFlip 0.56s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+    animation: mobileFoldFlip 0.56s var(--ease-out) forwards;
     transform-origin: center center;
   }
 
@@ -519,7 +539,7 @@
     background: rgba(0, 0, 0, 0.03);
     border: 1px solid rgba(0, 0, 0, 0.05);
     color: #9CA3AF;
-    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: all 0.2s var(--ease-out);
     cursor: pointer;
     user-select: none;
     z-index: 35;
@@ -677,12 +697,12 @@
 
   /* Opening Transition: Master container slides from -210px to 0px */
   .stage-book-opening {
-    animation: stageAutoCenterOpen 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: stageAutoCenterOpen 0.52s var(--ease-out) forwards;
   }
 
   /* Closing Transition: Master container slides from 0px to -210px */
   .stage-book-closing {
-    animation: stageAutoCenterClose 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: stageAutoCenterClose 0.52s var(--ease-out) forwards;
   }
 
   /* Open Spread: Stationary centered two-page spread */
@@ -712,13 +732,13 @@
 /* Fluid 3D Book Cover Opening & Closing Transitions (Smooth 560ms Centered Physical Dynamics) */
 .cover-opening-transition {
   transform-origin: center center;
-  animation: coverSwingOpen 0.56s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+  animation: coverSwingOpen 0.56s var(--ease-out) forwards;
   will-change: transform, opacity;
 }
 
 .cover-closing-transition {
   transform-origin: center center;
-  animation: coverSwingClose 0.56s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+  animation: coverSwingClose 0.56s var(--ease-out) forwards;
   will-change: transform, opacity;
 }
 
@@ -777,11 +797,11 @@
   }
 
   .cover-leaf-open {
-    animation: bookCoverTurnOpenDesktop 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: bookCoverTurnOpenDesktop 0.52s var(--ease-out) forwards;
   }
 
   .cover-leaf-close {
-    animation: bookCoverTurnCloseDesktop 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: bookCoverTurnCloseDesktop 0.52s var(--ease-out) forwards;
   }
 }
 
@@ -794,11 +814,11 @@
   }
 
   .cover-leaf-open {
-    animation: bookCoverOpenMobile 0.44s cubic-bezier(0.25, 1, 0.4, 1) forwards;
+    animation: bookCoverOpenMobile 0.44s var(--ease-out) forwards;
   }
 
   .cover-leaf-close {
-    animation: bookCoverCloseMobile 0.44s cubic-bezier(0.25, 1, 0.4, 1) forwards;
+    animation: bookCoverCloseMobile 0.44s var(--ease-out) forwards;
   }
 }
 
@@ -832,7 +852,7 @@
   border-radius: inherit;
   pointer-events: none;
   background: linear-gradient(to right, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.05) 35%, transparent 75%);
-  animation: coverFrontLightingOpen 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: coverFrontLightingOpen 0.52s var(--ease-out) forwards;
 }
 
 .cover-leaf-open .cover-face-back::after {
@@ -842,7 +862,7 @@
   border-radius: inherit;
   pointer-events: none;
   background: linear-gradient(to left, rgba(0, 0, 0, 0.16) 0%, rgba(0, 0, 0, 0.04) 35%, transparent 75%);
-  animation: coverBackLightingOpen 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: coverBackLightingOpen 0.52s var(--ease-out) forwards;
 }
 
 .cover-leaf-close .cover-face-front::after {
@@ -852,7 +872,7 @@
   border-radius: inherit;
   pointer-events: none;
   background: linear-gradient(to right, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.05) 35%, transparent 75%);
-  animation: coverFrontLightingClose 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: coverFrontLightingClose 0.52s var(--ease-out) forwards;
 }
 
 .cover-leaf-close .cover-face-back::after {
@@ -862,7 +882,7 @@
   border-radius: inherit;
   pointer-events: none;
   background: linear-gradient(to left, rgba(0, 0, 0, 0.16) 0%, rgba(0, 0, 0, 0.04) 35%, transparent 75%);
-  animation: coverBackLightingClose 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: coverBackLightingClose 0.52s var(--ease-out) forwards;
 }
 
 /* Ambient Occlusion Cast Shadow Underneath Lifting Cover */
@@ -872,7 +892,7 @@
   border-radius: 26px;
   pointer-events: none;
   background: radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.05) 50%, transparent 80%);
-  animation: bookCastShadowFade 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: bookCastShadowFade 0.52s var(--ease-out) forwards;
   z-index: 20;
 }
 
@@ -881,7 +901,7 @@
 }
 
 .book-spread-reveal {
-  animation: bookSpreadReveal 0.56s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+  animation: bookSpreadReveal 0.56s var(--ease-out) forwards;
 }
 
 @keyframes bookSpreadReveal {
@@ -897,11 +917,11 @@
 
 /* Left Page Reveal / Veil Animations */
 .left-page-unveil {
-  animation: leftPageUnveil 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: leftPageUnveil 0.52s var(--ease-out) forwards;
 }
 
 .left-page-veil {
-  animation: leftPageVeil 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: leftPageVeil 0.52s var(--ease-out) forwards;
 }
 
 @keyframes leftPageUnveil {
@@ -1270,7 +1290,7 @@ body {
     0 1px 2px rgba(0, 0, 0, 0.04),
     0 8px 24px -4px rgba(0, 0, 0, 0.06),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+  transition: transform 0.25s var(--ease-out-strong), box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .dark .executive-glass-card,
@@ -1309,7 +1329,7 @@ body {
 
 .diary-spread-stage {
   transform: rotateX(2deg);
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
+  transition: transform 0.4s var(--ease-out), box-shadow 0.4s ease;
   position: relative;
 }
 
@@ -1402,7 +1422,7 @@ body {
 }
 
 .macro-lens-container img {
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
+  transition: transform 0.6s var(--ease-out-strong), filter 0.6s ease;
 }
 
 .macro-lens-container:hover img {
@@ -1450,7 +1470,7 @@ body {
 }
 
 .exploded-layer-card {
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+  transition: transform 0.4s var(--ease-out), box-shadow 0.4s ease, border-color 0.4s ease;
   transform-style: preserve-3d;
 }
 
@@ -1535,7 +1555,7 @@ body {
 }
 
 .ink-drying-active {
-  animation: inkVellumAbsorption 400ms cubic-bezier(0.2, 0.8, 0.25, 1) forwards;
+  animation: inkVellumAbsorption 400ms var(--ease-out) forwards;
   will-change: filter, transform;
 }
 
@@ -1555,7 +1575,7 @@ body {
   background-image: linear-gradient(currentColor, currentColor);
   background-position: 0 50%;
   background-repeat: no-repeat;
-  animation: strikethroughDraw 180ms cubic-bezier(0.2, 0.8, 0.25, 1) forwards;
+  animation: strikethroughDraw 180ms var(--ease-out) forwards;
 }
 
 /* =========================================================================
@@ -1630,6 +1650,19 @@ body {
   .instrument-popover { width: min(320px,calc(100vw - 24px)); }
 }
 
+@media(max-width:639px) {
+  .page-turn-edge-btn { display: none !important; }
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid currentColor !important;
+  outline-offset: 3px !important;
+}
+
 /* The notation legend scrolls on narrow screens rather than clipping its last items. */
 .legend-scroll { scrollbar-width: none; -ms-overflow-style: none; }
 .legend-scroll::-webkit-scrollbar { display: none; }
@@ -1637,3 +1670,42 @@ body {
 /* The recto scrolls; reserve the scrollbar's width so it never sits on top of
    content. Without this the quadrant counts were overlaid at narrow widths. */
 .pocket-scroll { scrollbar-gutter: stable; }
+
+
+/* ---------------------------------------------------------------------------
+   Reduced motion.
+
+   The landing page has honoured this preference for a while; the app itself
+   did not, despite carrying twenty-five keyframe animations including a 560ms
+   3D page turn and a cover that swings open. Those are exactly the movements
+   that trigger symptoms for people with vestibular disorders, and the OS
+   preference is how they ask us not to.
+
+   Motion is removed, not the behaviour: pages still turn, covers still open,
+   state still changes. They simply arrive instead of travelling.
+   --------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* The page turn and the cover are 3D transforms, so neutralising duration is
+     not enough — the element must not be left mid-rotation. */
+  .mobile-fold-turn,
+  .page-turn-leaf,
+  .notebook-cover,
+  .book-cover-stage {
+    transform: none !important;
+    animation: none !important;
+  }
+
+  /* The spine glow breathes on a 25s loop. Quiet, but still movement. */
+  .spine-ambient-glow {
+    animation: none !important;
+  }
+}

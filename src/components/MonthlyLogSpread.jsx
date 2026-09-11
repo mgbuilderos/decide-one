@@ -146,7 +146,7 @@ export default function MonthlyLogSpread({
                 : 'text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200'
             }`}
           >
-            Goals ({masterTasks.length})
+            Priorities ({masterTasks.length})
           </button>
         </div>
       </div>
@@ -165,7 +165,7 @@ export default function MonthlyLogSpread({
           <div className="h-[48px] flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] shrink-0">
             <div>
               <span className="text-[10px] uppercase tracking-widest text-neutral-400 dark:text-neutral-500 font-semibold block leading-tight">
-                Monthly Log
+                Monthly View
               </span>
               <h1 className="text-base sm:text-lg font-bold tracking-tight text-neutral-900 dark:text-neutral-50 flex items-baseline gap-1.5 leading-none">
                 <span>{monthName}</span>
@@ -219,13 +219,13 @@ export default function MonthlyLogSpread({
           <div className="h-[48px] flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] shrink-0">
             <div>
               <span className="text-[10px] uppercase tracking-widest text-neutral-400 dark:text-neutral-500 font-semibold block leading-tight">
-                {rightPageView === 'calendar' ? 'Calendar Index' : 'Monthly Focus'}
+                {rightPageView === 'calendar' ? 'Month At A Glance' : 'Monthly Priorities'}
               </span>
               <h2 className="text-base sm:text-lg font-bold tracking-tight text-neutral-900 dark:text-neutral-50 flex items-baseline gap-1.5 leading-none">
                 {rightPageView === 'calendar' ? (
                   <span>Days {splitDay + 1}–{daysInMonth}</span>
                 ) : (
-                  <span>Master Goals</span>
+                  <span>Priorities</span>
                 )}
               </h2>
             </div>
@@ -259,7 +259,7 @@ export default function MonthlyLogSpread({
                 }`}
               >
                 <Target className="w-3 h-3" />
-                <span>Goals ({masterTasks.length})</span>
+                <span>Priorities ({masterTasks.length})</span>
               </button>
             </div>
           </div>
@@ -372,7 +372,7 @@ export default function MonthlyLogSpread({
             <span>
               {rightPageView === 'calendar' && mobileTab !== 'goals'
                 ? `Part II • Days ${splitDay + 1}–${daysInMonth}`
-                : `${completedGoalsCount}/${masterTasks.length} Milestones Conquered`
+                : `${completedGoalsCount}/${masterTasks.length} Priorities Complete`
               }
             </span>
 
@@ -384,7 +384,7 @@ export default function MonthlyLogSpread({
               }}
               className="hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer font-semibold"
             >
-              {rightPageView === 'calendar' && mobileTab !== 'goals' ? `Goals (${masterTasks.length}) →` : '← Back to Days'}
+              {rightPageView === 'calendar' && mobileTab !== 'goals' ? `Priorities (${masterTasks.length}) →` : '← Back To Days'}
             </button>
           </footer>
 

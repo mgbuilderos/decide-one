@@ -39,7 +39,7 @@ export function NotebookCoverFrontFace({
       {/* Authentic Sewn Woven Fabric Label at Top Center */}
       <div 
         className="woven-fabric-tag cursor-default"
-        title="Decide One Executive Instrument"
+        title="Decide One Priority Instrument"
       >
         DECIDE ONE
       </div>
@@ -79,7 +79,7 @@ export function NotebookCoverFrontFace({
         {/* Top Header Monogram */}
         <div className="flex flex-col items-center pt-1 sm:pt-2 gap-1.5">
           <span className="text-[10px] uppercase font-bold tracking-[0.28em] text-neutral-400 dark:text-neutral-500">
-            The Executive Priority Instrument
+            The Priority Instrument
           </span>
         </div>
 
@@ -244,7 +244,7 @@ export function NotebookCoverEndpaperFace({
           </div>
           <div className="w-12 h-px bg-neutral-200 dark:bg-neutral-800 my-2.5" />
           <div className="text-[9px] uppercase font-semibold tracking-wider text-neutral-400 dark:text-neutral-500">
-            Executive Priority Daybook • {year}
+            Daily Priority Instrument • {year}
           </div>
         </div>
 

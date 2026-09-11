@@ -156,7 +156,7 @@ export default function UnifiedMenuModal({
               <div className="flex items-center gap-1.5">
                 <BookOpen className="w-3.5 h-3.5 text-neutral-800 dark:text-neutral-200" />
                 <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
-                  Executive Domain Library
+                  Workspace Library
                 </span>
               </div>
               <div className="text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 whitespace-nowrap">
@@ -533,7 +533,7 @@ export default function UnifiedMenuModal({
                 </div>
                 <p className="mt-1 text-[11px] leading-[16px] text-neutral-500 dark:text-neutral-400">
                   {analyticsOn
-                    ? 'Sharing which features get used. No journal text is ever sent — only that something happened, never what you wrote.'
+                    ? 'Sharing which features get used. No task text is ever sent — only that something happened, never what you wrote.'
                     : 'Off. Nothing about how you use this leaves the device.'}
                 </p>
               </div>
@@ -619,7 +619,7 @@ export default function UnifiedMenuModal({
                   {!isPatron && <Lock className="w-2.5 h-2.5 text-neutral-400" />}
                 </div>
                 <span className="text-[11px] font-bold whitespace-nowrap">Weekly Briefing</span>
-                <span className="text-[9px] text-neutral-400 whitespace-nowrap">Executive PDF</span>
+                <span className="text-[9px] text-neutral-400 whitespace-nowrap">Weekly PDF</span>
               </button>
 
               {/* Patron Markdown Export */}

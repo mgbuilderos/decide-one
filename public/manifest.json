@@ -2,7 +2,7 @@
   "name": "Decide One \u2014 Priority Instrument",
   "short_name": "Decide One",
   "id": "/",
-  "description": "List your tasks, choose a framework, and decide what comes first.",
+  "description": "List the work competing for your day, choose a prioritization method, and decide what deserves your attention first.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -33,7 +33,7 @@
     {
       "name": "Today's Priorities",
       "short_name": "Today",
-      "description": "Open today's focus priorities and daily log",
+      "description": "Open today's priorities and choose what comes first",
       "url": "/?view=daily",
       "icons": [
         {
@@ -45,7 +45,7 @@
     {
       "name": "Monthly Overview",
       "short_name": "Monthly",
-      "description": "View calendar milestones and monthly tasks",
+      "description": "Review the month and keep important work in view",
       "url": "/?view=monthly",
       "icons": [
         {
@@ -57,7 +57,7 @@
     {
       "name": "Search Your Work",
       "short_name": "Search",
-      "description": "Find saved priorities and notes",
+      "description": "Find saved priorities and decisions",
       "url": "/?view=daily&action=search",
       "icons": [
         {

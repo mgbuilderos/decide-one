@@ -16,11 +16,12 @@ import { ArrowLeft } from 'lucide-react';
  * attorney should review all three before the first sale.
  */
 
-const ENTITY = '[LEGAL ENTITY NAME]';
-const ADDRESS = '[REGISTERED ADDRESS]';
-const CONTACT = '[SUPPORT EMAIL]';
-const JURISDICTION = '[JURISDICTION]';
-const EFFECTIVE = '[EFFECTIVE DATE]';
+const ENTITY = import.meta.env.VITE_LEGAL_ENTITY || 'Legal Entity To Be Confirmed';
+const ADDRESS = import.meta.env.VITE_REGISTERED_ADDRESS || 'Registered Address To Be Confirmed';
+const CONTACT = import.meta.env.VITE_SUPPORT_EMAIL || 'Support Email To Be Confirmed';
+const JURISDICTION = import.meta.env.VITE_LEGAL_JURISDICTION || 'Jurisdiction To Be Confirmed';
+const EFFECTIVE = import.meta.env.VITE_LEGAL_EFFECTIVE_DATE || 'Effective Date To Be Confirmed';
+const IS_LEGAL_DRAFT = !import.meta.env.VITE_LEGAL_ENTITY || !import.meta.env.VITE_REGISTERED_ADDRESS || !import.meta.env.VITE_SUPPORT_EMAIL || !import.meta.env.VITE_LEGAL_JURISDICTION || !import.meta.env.VITE_LEGAL_EFFECTIVE_DATE;
 
 const TABS = [
   { id: 'terms', label: 'Terms' },
@@ -56,6 +57,10 @@ export default function LegalPages({ onBack }) {
         <p className="mt-1.5 text-[12px] text-neutral-500 dark:text-neutral-400">
           Effective {EFFECTIVE}. Written to describe what the software actually does.
         </p>
+
+        {IS_LEGAL_DRAFT && <p role="status" className="mt-4 rounded-lg border border-black/10 bg-neutral-50 px-4 py-3 text-[12px] leading-5 text-neutral-600 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300">
+          Draft for product review. Legal entity, address, support email, jurisdiction, and effective date must be supplied before publication.
+        </p>}
 
         <div className="mt-6 flex items-center gap-1 border-b border-black/[0.08] dark:border-white/[0.1]">
           {TABS.map(t => (

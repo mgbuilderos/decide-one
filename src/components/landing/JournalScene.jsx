@@ -52,7 +52,7 @@ function pageTexture(side, tone = 'white', ink = 'carbon', grid = 'dots', perspe
     c.lineTo(936, y);
     c.stroke();
   };
-  text('P R I M A C Y', 88, 100, 22, 700);
+  text('D E C I D E  O N E', 88, 100, 22, 700);
   text(`${perspective.charAt(0).toUpperCase() + perspective.slice(1)} / ${side === 'left' ? '01' : '02'}`, 762, 100, 18, 500);
   line(132);
   if (perspective === 'monthly') {
@@ -117,12 +117,12 @@ function pageTexture(side, tone = 'white', ink = 'carbon', grid = 'dots', perspe
       });
     }
   } else if (side === 'left') {
-    text('Monday,', 88, 237, 58, 500);
-    text('a fresh perspective.', 88, 303, 54, 500);
+    text('Choose what deserves', 88, 237, 52, 500);
+    text('your attention.', 88, 303, 58, 500);
     text('SEPTEMBER 07, 2026', 88, 360, 18, 500, '#666666');
     text('THE THREE THAT MATTER', 88, 454, 20, 700);
     line(482);
-    ['Create something meaningful.', 'Make space for deep work.', 'Be present for the people I love.'].forEach((s, i) => {
+    ['Finish the client proposal.', 'Review the product direction.', 'Prepare tomorrow’s brief.'].forEach((s, i) => {
       const y = 553 + i * 95;
       c.strokeStyle = i === 0 ? '#161616' : '#555555';
       c.lineWidth = 2;
@@ -131,31 +131,31 @@ function pageTexture(side, tone = 'white', ink = 'carbon', grid = 'dots', perspe
       text(s, 139, y, 32, 500, i === 0 ? '#666666' : color);
       line(y + 36);
     });
-    text('ROOM FOR EVERYTHING ELSE', 88, 882, 20, 700);
-    ['•  An idea worth coming back to', '—  Less urgency. More intention.', '•  Walk without my phone'].forEach((s, i) => text(s, 92, 953 + i * 64, 23));
+    text('THE METHOD', 88, 882, 20, 700);
+    ['Top 3', 'Three priorities in a clear order.', 'The first move stays visible.'].forEach((s, i) => text(s, 92, 953 + i * 64, 23));
   } else {
-    text('Small rituals.', 88, 237, 58, 500);
-    text('Lasting change.', 88, 303, 58, 500);
-    text('A LITTLE BETTER, EVERY DAY.', 88, 360, 18, 500, '#666666');
-    text('THE THINGS I RETURN TO', 88, 454, 20, 700);
+    text('Give the first thing', 88, 237, 54, 500);
+    text('time to happen.', 88, 303, 58, 500);
+    text('A REALISTIC DAY STARTS HERE.', 88, 360, 18, 500, '#666666');
+    text('TIME FOR WHAT COMES FIRST', 88, 454, 20, 700);
     line(482);
-    ['M', 'T', 'W', 'T', 'F'].forEach((s, i) => text(s, 617 + i * 65, 530, 16, 500));
-    ['Read a few pages', 'Move my body', 'One quiet moment'].forEach((s, row) => {
+    ['15m', '45m', '90m'].forEach((s, i) => text(s, 656 + i * 94, 530, 16, 500));
+    ['Finish the client proposal', 'Review the product direction', 'Prepare tomorrow’s brief'].forEach((s, row) => {
       const y = 597 + row * 77;
-      text(s, 88, y, 30);
-      for (let i = 0; i < 5; i++) {
+      text(s, 88, y, 27);
+      for (let i = 0; i < 3; i++) {
         c.beginPath();
-        c.arc(626 + i * 65, y - 8, 11, 0, Math.PI * 2);
-        c.fillStyle = i <= 3 - row ? '#171717' : '#dddddd';
+        c.arc(676 + i * 94, y - 8, 11, 0, Math.PI * 2);
+        c.fillStyle = i === 2 - row ? '#171717' : '#dddddd';
         c.fill();
       }
       line(y + 29);
     });
-    text('A MOMENT TO REFLECT', 88, 882, 20, 700);
-    text('What made today worthwhile?', 88, 946, 27, 500);
-    text('An unhurried conversation. A clear mind.', 88, 1003, 23);
+    text('THE CAPACITY CHECK', 88, 882, 20, 700);
+    text('3h 15m planned', 88, 946, 31, 500);
+    text('A clear choice that fits the time available.', 88, 1003, 23);
     line(1040);
-    text('Enough space to notice the good.', 88, 1080, 23);
+    text('Decide One gives the structure. You do the work.', 88, 1080, 23);
     line(1114);
   }
   line(1185);
@@ -275,7 +275,7 @@ function buildBook(textures, grain, finish) {
   c.fillStyle = '#ffffff';
   c.font = '600 48px Helvetica';
   c.textAlign = 'center';
-  c.fillText('P R I M A C Y', 256, 84);
+  c.fillText('D E C I D E  O N E', 256, 84);
   // Fine cross-weave and perimeter stitches read under grazing light.
   c.strokeStyle = '#ffffff16';
   for (let x = 0; x < 512; x += 3) { c.beginPath(); c.moveTo(x, 0); c.lineTo(x + 22, 128); c.stroke(); }
@@ -317,7 +317,7 @@ function deviceTexture(kind, textures) {
   c.fillStyle = '#ffffff'; c.fillRect(0, 0, w, h);
   c.fillStyle = '#101010'; c.textAlign = 'center';
   c.font = `600 ${phone ? 42 : 48}px Helvetica, Arial, sans-serif`;
-  c.fillText('P R I M A C Y', w / 2, phone ? 136 : 116);
+  c.fillText('D E C I D E  O N E', w / 2, phone ? 136 : 116);
   c.font = `400 ${phone ? 25 : 30}px Helvetica, Arial, sans-serif`;
   const labels = ['Daily', 'Weekly', 'Monthly', 'Yearly'];
   labels.forEach((label, i) => c.fillText(label, w / 2 + (i - 1.5) * (phone ? 188 : 190), phone ? 209 : 184));

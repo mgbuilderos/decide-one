@@ -3,7 +3,7 @@
  * 100% On-Device • Zero Server Reliance • Instant Cache-First Delivery
  */
 
-const CACHE_NAME = 'decideone-priority-v1.0.3';
+const CACHE_NAME = 'decideone-priority-v1.0.4';
 const STATIC_ASSETS = [
   '/',
   '/index.html',

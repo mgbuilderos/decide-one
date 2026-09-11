@@ -35,7 +35,7 @@ export default function QuickLegendModal({ isOpen, onClose }) {
             { id: 'frameworks', label: `${FRAMEWORKS.length} Productivity Models`, icon: Compass },
             { id: 'symbols', label: 'Notation & Inks', icon: Check },
             { id: 'categories', label: '10 Context Tags', icon: Layers },
-            { id: 'shortcuts', label: 'Executive Shortcuts', icon: Command }
+            { id: 'shortcuts', label: 'Keyboard Shortcuts', icon: Command }
           ].map(tab => {
             const Icon = tab.icon;
             const isSel = activeTab === tab.id;

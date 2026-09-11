@@ -1,8 +1,6 @@
 import React from 'react';
-import { Check, X, ArrowRight, Star, Minus } from 'lucide-react';
 import { DateDisplay, DateNavControls } from './DateHeader';
 import ProductivityFrameworks from './ProductivityFrameworks';
-import RapidLogSection from './RapidLogSection';
 import ExecutionLayer from './ExecutionLayer';
 import DayReport from './DayReport';
 import { getSession, pauseSession, completeSession, extendSession } from '../utils/executionModel';
@@ -25,6 +23,7 @@ export function LeftPage({
   rapidLog,
   onUpdateRapidLog,
   onUpdateExecution,
+  hasEntry,
   activeFilter,
   setActiveFilter,
   settings,
@@ -50,6 +49,7 @@ export function LeftPage({
             currentDate={date}
             setCurrentDate={setCurrentDate}
             onStepDay={onStepDay}
+            hasEntry={hasEntry}
             isMuted={settings?.isMuted}
           />
         </div>
@@ -82,59 +82,11 @@ export function LeftPage({
           />
         </div>
 
-        {/* 1-Line Blank Space between Top 3 and Today (Exact 24px Cadence Spacer) */}
-        {activeFramework === 'rule_of_3' && (
-          <div className="h-[24px] shrink-0" aria-hidden="true" />
-        )}
-
-        {/* Today Stream (Rendered exclusively for Top 3 / Rule of 3) */}
-        {activeFramework === 'rule_of_3' && (
-          <RapidLogSection
-            rapidLog={rapidLog}
-            onUpdateRapidLog={onUpdateRapidLog}
-            activeFilter={activeFilter}
-            setActiveFilter={setActiveFilter}
-            viewMode={settings?.viewMode || 'stream'}
-            setViewMode={(m) => updateSettings?.({ viewMode: m })}
-            isMuted={settings?.isMuted}
-            isPastDay={isPastDay}
-          />
-        )}
+        <div className="min-h-[36px] flex-1" aria-hidden="true" />
       </div>
 
-      {/* Bottom Footer: Decide One Journaling System Notation Legend (Exact 24px Baseline, Unified Swiss Typography) */}
-      <footer className="shrink-0 h-[24px] border-t border-black/[0.08] dark:border-white/[0.08] flex items-center overflow-x-auto legend-scroll text-[10px] text-neutral-500 dark:text-neutral-400 select-none whitespace-nowrap overflow-hidden px-1">
-        <div className="flex items-center gap-2 font-semibold uppercase tracking-[0.14em] shrink-0">
-          <span className="flex items-center gap-1 hover:text-neutral-900 dark:hover:text-neutral-200 transition-colors whitespace-nowrap" title="Task To Do">
-            <span className="w-2 h-2 rounded-full border border-neutral-400 dark:border-neutral-500 inline-block shrink-0" />
-            <span>To Do</span>
-          </span>
-          <span className="opacity-30">•</span>
-          <span className="flex items-center gap-1 progress-ink-green hover:opacity-80 transition-opacity whitespace-nowrap" title="Completed Task">
-            <Check className="w-2.5 h-2.5 stroke-[2.5]" />
-            <span>Done</span>
-          </span>
-          <span className="opacity-30">•</span>
-          <span className="flex items-center gap-1 progress-ink-red hover:opacity-80 transition-opacity whitespace-nowrap" title="Missed Task">
-            <X className="w-2.5 h-2.5 stroke-[2.5]" />
-            <span>Missed</span>
-          </span>
-          <span className="opacity-30">•</span>
-          <span className="flex items-center gap-1 hover:text-neutral-900 dark:hover:text-neutral-200 transition-colors whitespace-nowrap" title="Carried Over / Moved">
-            <ArrowRight className="w-2.5 h-2.5 stroke-[2.5]" />
-            <span>Moved</span>
-          </span>
-          <span className="opacity-30">•</span>
-          <span className="flex items-center gap-1 hover:text-neutral-900 dark:hover:text-neutral-200 transition-colors whitespace-nowrap" title="Important Highlight">
-            <Star className="w-2.5 h-2.5 fill-current stroke-[1.5]" />
-            <span>Star</span>
-          </span>
-          <span className="opacity-30">•</span>
-          <span className="flex items-center gap-1 hover:text-neutral-900 dark:hover:text-neutral-200 transition-colors whitespace-nowrap" title="Note or Thought">
-            <Minus className="w-2.5 h-2.5 stroke-[2.5]" />
-            <span>Note</span>
-          </span>
-        </div>
+      <footer className="shrink-0 h-[28px] border-t border-black/[0.08] dark:border-white/[0.08] flex items-center text-[10px] text-neutral-500 dark:text-neutral-400 select-none px-1">
+        <span className="font-semibold tracking-[0.08em]">Three choices. One clear order.</span>
       </footer>
 
     </div>

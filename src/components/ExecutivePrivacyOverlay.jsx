@@ -115,7 +115,7 @@ export default function ExecutivePrivacyOverlay({
             <Lock className="w-5 h-5" />
           </div>
           <p className="text-[10px] tracking-[0.25em] text-neutral-500 dark:text-white/50 uppercase font-bold">
-            Executive Privacy Shutter
+            Privacy Shutter
           </p>
           <p className="text-sm text-neutral-900 dark:text-white/90 mt-2 font-medium">
             Your screen is protected. Click anywhere to resume.
@@ -152,7 +152,7 @@ export default function ExecutivePrivacyOverlay({
           {/* Authentic Folded Woven Twill Brand Tag (Tucked under paper edge) */}
           <div 
             className="woven-fabric-tag cursor-default"
-            title="Decide One Executive Instrument"
+            title="Decide One Priority Instrument"
           >
             DECIDE ONE
           </div>

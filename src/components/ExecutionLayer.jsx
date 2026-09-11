@@ -3,12 +3,14 @@ import { Play, Pause, Check, Lock, Plus } from 'lucide-react';
 import AnalogueClock from './AnalogueClock';
 import { playSound } from '../utils/audio';
 import {
-  STATES, BREATHING_SECONDS, DURATION_CHOICES,
+  STATES, BREATHING_SECONDS,
   getSession, emptySession, formatDuration, computeCapacity,
   isItemLocked, startSession, beginRunning, pauseSession, syncSession,
   extendSession, completeSession, reconcileOnReturn, getFrameworkItems,
   elapsedSeconds
 } from '../utils/executionModel';
+
+const QUICK_DURATIONS = [15, 30, 60, 90];
 
 /**
  * The right page — the execution layer (R2).
@@ -222,16 +224,17 @@ export default function ExecutionLayer({
                   </p>
 
                   {/* R4 — a duration per line. Setting it is the capacity check. */}
-                  {planned === 0 && !locked && (
+                  {planned === 0 && !locked && !isDone && (
                     <div className="mt-1.5 flex flex-wrap items-center gap-1">
                       <span className="text-[10px] text-neutral-400 mr-1">How long?</span>
-                      {DURATION_CHOICES.map(mins => (
+                      {QUICK_DURATIONS.map(mins => (
                         <button
                           key={mins}
                           type="button"
                           disabled={!isInteractive}
                           onClick={() => setDuration(item, mins * 60)}
-                          className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-black/[0.05] dark:bg-white/[0.08] text-neutral-600 dark:text-neutral-300 hover:bg-black/10 dark:hover:bg-white/15 transition-colors cursor-pointer"
+                          aria-label={`Give ${item.text} ${mins} minutes`}
+                          className="text-[11px] font-semibold min-w-9 min-h-8 px-2 py-1 rounded-md bg-black/[0.05] dark:bg-white/[0.08] text-neutral-600 dark:text-neutral-300 hover:bg-black/10 dark:hover:bg-white/15 transition-colors cursor-pointer"
                         >
                           {mins}m
                         </button>
@@ -274,20 +277,20 @@ export default function ExecutionLayer({
                       isBreathing ? (
                         <span className="text-[10px] text-neutral-400 w-12">Ready…</span>
                       ) : isRunning ? (
-                        <button type="button" onClick={() => handlePause(item)} title="Pause"
-                          className="p-1.5 rounded-full bg-black/[0.05] dark:bg-white/[0.08] hover:bg-black/10 cursor-pointer">
+                        <button type="button" onClick={() => handlePause(item)} title="Pause" aria-label={`Pause ${item.text}`}
+                          className="w-8 h-8 inline-flex items-center justify-center rounded-full bg-black/[0.05] dark:bg-white/[0.08] hover:bg-black/10 cursor-pointer">
                           <Pause className="w-3.5 h-3.5" />
                         </button>
                       ) : (
-                        <button type="button" onClick={() => handleStart(item)} title="Start"
-                          className="p-1.5 rounded-full bg-black/[0.05] dark:bg-white/[0.08] hover:bg-black/10 cursor-pointer">
+                        <button type="button" onClick={() => handleStart(item)} title="Start" aria-label={`Start ${item.text}`}
+                          className="w-8 h-8 inline-flex items-center justify-center rounded-full bg-black/[0.05] dark:bg-white/[0.08] hover:bg-black/10 cursor-pointer">
                           <Play className="w-3.5 h-3.5" />
                         </button>
                       )
                     )}
                     {!isDone && !locked && elapsed > 0 && (
-                      <button type="button" onClick={() => handleComplete(item)} title="Done"
-                        className="p-1.5 rounded-full bg-black/[0.05] dark:bg-white/[0.08] hover:bg-black/10 cursor-pointer">
+                      <button type="button" onClick={() => handleComplete(item)} title="Done" aria-label={`Complete ${item.text}`}
+                        className="w-8 h-8 inline-flex items-center justify-center rounded-full bg-black/[0.05] dark:bg-white/[0.08] hover:bg-black/10 cursor-pointer">
                         <Check className="w-3.5 h-3.5" />
                       </button>
                     )}

@@ -1,6 +1,5 @@
 import React from 'react';
-import { Calendar, ChevronRight, Sparkles } from 'lucide-react';
-import { MONTH_ILLUSTRATIONS } from '../data/monthIllustrations';
+import { ChevronRight } from 'lucide-react';
 import { playSound } from '../utils/audio';
 
 const MONTH_NAMES = [
@@ -43,7 +42,6 @@ export default function YearlyViewSpread({
     const isThisMonth = isCurrentYear && monthIdx === currentMonthIdx;
     const daysInMonth = new Date(currentYear, monthIdx + 1, 0).getDate();
     const firstDayWeekday = (new Date(currentYear, monthIdx, 1).getDay() + 6) % 7; // Monday = 0
-    const illus = MONTH_ILLUSTRATIONS[monthIdx];
 
     return (
       <div
@@ -55,7 +53,7 @@ export default function YearlyViewSpread({
             : 'border-black/[0.08] dark:border-white/[0.08] hover:border-black/25 dark:hover:border-white/25 hover:bg-black/[0.015] dark:hover:bg-white/[0.02]'
         }`}
       >
-        {/* Card Header: Month Name & Thumbnail Illustration */}
+        {/* Card Header */}
         <div className="flex items-center justify-between">
           <div className="min-w-0 pr-1">
             <div className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-white truncate">
@@ -64,9 +62,6 @@ export default function YearlyViewSpread({
             <div className="text-[9px] text-neutral-400 dark:text-neutral-500 truncate">
               {daysInMonth} days
             </div>
-          </div>
-          <div className="w-6 h-6 shrink-0 opacity-75 group-hover:opacity-100 transition-opacity">
-            {illus?.render('w-6 h-6 text-neutral-800 dark:text-neutral-200')}
           </div>
         </div>
 
@@ -97,7 +92,7 @@ export default function YearlyViewSpread({
         {/* Card Bottom: Quick Jump Action */}
         <div className="flex items-center justify-between pt-1 border-t border-black/[0.04] dark:border-white/[0.06] text-[9px] sm:text-[10px]">
           <span className="text-neutral-400 group-hover:text-neutral-700 dark:group-hover:text-neutral-200 transition-colors flex items-center gap-0.5 font-medium">
-            <span>Chapter</span>
+            <span>View Month</span>
             <ChevronRight className="w-2.5 h-2.5" />
           </span>
 
@@ -157,13 +152,10 @@ export default function YearlyViewSpread({
               H2 • July — December
             </div>
             <div className="text-[10px] text-neutral-400 dark:text-neutral-500">
-              Select any month to view its Chapter Breaker
+              Select a month to review its priorities
             </div>
           </div>
-          <div className="flex items-center gap-1 text-[10px] text-neutral-400">
-            <Sparkles className="w-3 h-3" />
-            <span className="hidden sm:inline">12 Chapters</span>
-          </div>
+          <span className="text-[10px] text-neutral-400">12 Months</span>
         </div>
 
         {/* Right 6-Month Grid (Hardcoded Zero-Scroll) */}

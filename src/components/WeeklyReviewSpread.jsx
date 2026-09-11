@@ -270,10 +270,10 @@ export default function WeeklyReviewSpread({
           <button
             onClick={handleExportPDF}
             className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 text-xs font-semibold hover:opacity-90 transition-opacity cursor-pointer shadow-xs"
-            title="Export 2-Page Executive Weekly Briefing PDF"
+            title="Export 2-Page Weekly Review PDF"
           >
             <Printer className="w-3 h-3" />
-            <span className="hidden sm:inline">Briefing PDF</span>
+            <span className="hidden sm:inline">Review PDF</span>
           </button>
 
           <button
@@ -309,7 +309,7 @@ export default function WeeklyReviewSpread({
                 : 'text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200'
             }`}
           >
-            Strategic Retrospective
+            Weekly Review
           </button>
         </div>
       </div>
@@ -326,7 +326,7 @@ export default function WeeklyReviewSpread({
           <div className="grid grid-cols-3 gap-2 p-2.5 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] mb-3 shrink-0">
             <div>
               <div className="text-[9px] uppercase tracking-wider font-bold text-neutral-400 dark:text-neutral-500">
-                Throughput
+                Completed
               </div>
               <div className="text-sm font-bold text-neutral-900 dark:text-white mt-0.5">
                 {completedPriorities} / {totalPriorities}
@@ -404,7 +404,7 @@ export default function WeeklyReviewSpread({
           <div className="flex-1 min-h-0 flex flex-col">
             <div className="flex items-center justify-between mb-1.5 px-0.5 shrink-0">
               <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400">
-                Carryover Triage ({pendingTasks.length})
+                Carry Forward ({pendingTasks.length})
               </span>
               <span className="text-[10px] text-neutral-400">
                 Uncompleted from Mon–Sun
@@ -500,7 +500,7 @@ export default function WeeklyReviewSpread({
             <div className="flex items-center gap-1.5 mb-2 px-0.5">
               <Trophy className="w-3.5 h-3.5 text-neutral-500" />
               <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400">
-                3 Strategic Victories
+                What Moved
               </span>
             </div>
 
@@ -515,9 +515,9 @@ export default function WeeklyReviewSpread({
                     value={(reviewData.victories && reviewData.victories[idx]) || ''}
                     onChange={(e) => handleUpdateVictory(idx, e.target.value)}
                     placeholder={
-                      idx === 0 ? 'Major commercial or product release completed...' :
-                      idx === 1 ? 'High-stakes architectural breakthrough achieved...' :
-                      'Personal health, focus, or relationship win...'
+                      idx === 0 ? 'What important work moved forward?' :
+                      idx === 1 ? 'What did you finish or clarify?' :
+                      'What else deserves to be remembered?'
                     }
                     className="flex-1 px-2.5 py-1.5 rounded-xl text-xs bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] focus:border-neutral-900 dark:focus:border-white focus:outline-hidden transition-colors"
                   />
@@ -531,7 +531,7 @@ export default function WeeklyReviewSpread({
             <div className="flex items-center gap-1.5 mb-2 px-0.5">
               <AlertCircle className="w-3.5 h-3.5 text-neutral-500" />
               <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400">
-                Core Bottleneck & Friction Point
+                What Got In The Way
               </span>
             </div>
 
@@ -539,7 +539,7 @@ export default function WeeklyReviewSpread({
               rows={2}
               value={reviewData.bottleneck || ''}
               onChange={(e) => handleUpdateBottleneck(e.target.value)}
-              placeholder="What created avoidable cognitive drain or delayed progress this week? What structural change solves this permanently?"
+              placeholder="What got in the way this week? What would make it easier next time?"
               className="w-full px-2.5 py-2 rounded-xl text-xs bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] focus:border-neutral-900 dark:focus:border-white focus:outline-hidden transition-colors resize-none leading-relaxed"
             />
           </div>
@@ -549,7 +549,7 @@ export default function WeeklyReviewSpread({
             <div className="flex items-center gap-1.5 mb-2 px-0.5 shrink-0">
               <Sparkles className="w-3.5 h-3.5 text-neutral-500" />
               <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400">
-                Next Week's 3 Non-Negotiables
+                What Comes First Next Week
               </span>
             </div>
 
@@ -564,9 +564,9 @@ export default function WeeklyReviewSpread({
                     value={(reviewData.nonNegotiables && reviewData.nonNegotiables[idx]) || ''}
                     onChange={(e) => handleUpdateNonNegotiable(idx, e.target.value)}
                     placeholder={
-                      idx === 0 ? 'Keystone priority for next week...' :
-                      idx === 1 ? 'High-leverage deliverable...' :
-                      'Critical health or family commitment...'
+                      idx === 0 ? 'First priority for next week...' :
+                      idx === 1 ? 'What comes next...' :
+                      'What can wait until these are done...'
                     }
                     className="flex-1 px-2.5 py-1.5 rounded-xl text-xs bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] focus:border-neutral-900 dark:focus:border-white focus:outline-hidden transition-colors"
                   />
@@ -577,8 +577,8 @@ export default function WeeklyReviewSpread({
 
           {/* Executive Seal Footer */}
           <div className="pt-2 border-t border-black/[0.06] dark:border-white/[0.06] flex items-center justify-between text-[10px] text-neutral-400 shrink-0">
-            <span>Executive Retrospective Seal</span>
-            <span>100% On-Device Audit</span>
+            <span>Weekly Review</span>
+            <span>Stored On This Device</span>
           </div>
 
         </div>

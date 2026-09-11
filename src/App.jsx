@@ -1,12 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { lazy, Suspense, useState, useEffect, useRef, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import HeaderToolbar from './components/HeaderToolbar';
 import DateHeader from './components/DateHeader';
 import { LeftPage, RightPage, PageTurnLeaf } from './components/SpreadPages';
-import MonthlyLogSpread from './components/MonthlyLogSpread';
-import YearlyViewSpread from './components/YearlyViewSpread';
-import MonthlyBreakerPage from './components/MonthlyBreakerPage';
-import PatronUpgradeModal from './components/PatronUpgradeModal';
 import ProductivityDrawer from './components/ProductivityDrawer';
 import QuickLegendModal from './components/QuickLegendModal';
 import UnifiedMenuModal from './components/UnifiedMenuModal';
@@ -26,12 +22,8 @@ import ExecutivePrivacyOverlay from './components/ExecutivePrivacyOverlay';
 import { usePrivacyShutter } from './hooks/usePrivacyShutter';
 import { useLicenseAutoActivation } from './hooks/useLicenseAutoActivation';
 import { generateExecutiveWeeklyBriefingPDF } from './utils/weeklyBriefingPDF';
-import WeeklyReviewSpread from './components/WeeklyReviewSpread';
 import ExecutiveDecisionLogModal from './components/ExecutiveDecisionLogModal';
 import ExecutiveClosureRitualModal from './components/ExecutiveClosureRitualModal';
-import DayConditionPrompt from './components/DayConditionPrompt';
-import LegalPages from './components/LegalPages';
-import MethodsPage from './components/MethodsPage';
 import { getFrameworkItems } from './utils/executionModel';
 import VolumeSwitcherBar from './components/VolumeSwitcherBar';
 import ExecutiveVoiceHUD from './components/ExecutiveVoiceHUD';
@@ -41,6 +33,15 @@ import { useExecutiveDictation } from './hooks/useExecutiveDictation';
 import { useAmbientReminders } from './hooks/useAmbientReminders';
 import { telemetry } from './utils/telemetry';
 
+const MonthlyLogSpread = lazy(() => import('./components/MonthlyLogSpread'));
+const YearlyViewSpread = lazy(() => import('./components/YearlyViewSpread'));
+const WeeklyReviewSpread = lazy(() => import('./components/WeeklyReviewSpread'));
+const LegalPages = lazy(() => import('./components/LegalPages'));
+const MethodsPage = lazy(() => import('./components/MethodsPage'));
+const PatronUpgradeModal = lazy(() => import('./components/PatronUpgradeModal'));
+
+const ViewLoading = () => <div className="w-full min-h-[320px] flex-1 grid place-items-center bg-white text-sm text-neutral-500">Opening Decide One…</div>;
+
 export default function App() {
   const [activeView, setActiveView] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -48,7 +49,7 @@ export default function App() {
       const v = params.get('view');
       // 'legal' is directly linkable on purpose: a merchant of record needs a
       // stable URL for terms, privacy and refunds (B4).
-      if (['daily', 'weekly', 'monthly', 'yearly', 'breaker', 'landing', 'legal', 'methods'].includes(v)) return v;
+      if (['daily', 'weekly', 'monthly', 'yearly', 'landing', 'legal', 'methods'].includes(v)) return v;
       if (window.location.hash && ['#overview', '#highlights', '#design', '#craft', '#devices', '#privacy', '#pricing', '#anatomy', '#audience'].includes(window.location.hash)) {
         return 'landing';
       }
@@ -63,7 +64,6 @@ export default function App() {
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
   const [isVictoryCardOpen, setIsVictoryCardOpen] = useState(false);
   const [isGiftModalOpen, setIsGiftModalOpen] = useState(false);
-  const [selectedBreakerMonth, setSelectedBreakerMonth] = useState(() => new Date().getMonth());
   const [license, setLicense] = useState(() => {
     // B2 — anyone who activated with a retired promo key keeps access as a
     // demo rather than being silently dropped to the free version.
@@ -160,8 +160,6 @@ export default function App() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isDecisionLogOpen, setIsDecisionLogOpen] = useState(false);
   const [isClosureModalOpen, setIsClosureModalOpen] = useState(false);
-  const [isDayConditionOpen, setIsDayConditionOpen] = useState(false);
-  const [dayConditionDismissedFor, setDayConditionDismissedFor] = useState(null);
   const [isScratchpadOpen, setIsScratchpadOpen] = useState(false);
 
   // Executive Thought Dictation Hook (Cmd+Shift+V)
@@ -518,6 +516,20 @@ export default function App() {
     reader.readAsText(file);
   };
 
+  /**
+   * Which days already have something written on them. Used only to put a mark
+   * under those days in the month picker — not a streak and not a score (R12),
+   * just where the work already is.
+   */
+  const hasEntry = useCallback((k) => {
+    const log = data?.dailyLogs?.[k];
+    if (!log) return false;
+    const written = (arr) => (arr || []).some(t => t && typeof t.text === 'string' && t.text.trim());
+    return written(log.hardTasks) || written(log.rapidLog) ||
+      Object.keys(log.execution || {}).length > 0 ||
+      Object.keys(log.frameworkData || {}).length > 0;
+  }, [data]);
+
   // Keys
   const dateKey = formatDateKey(currentDate);
   const todayKey = formatDateKey(new Date());
@@ -568,24 +580,6 @@ export default function App() {
     }
   };
 
-  // C3 — the morning entry surface. The user names the condition of the day;
-  // the instrument routes to the method silently. The method is never named here.
-  const handleChooseDayCondition = (condition) => {
-    saveDailyLog(dateKey, { dayCondition: condition.id });
-    handleSelectFramework(condition.framework);
-    setIsDayConditionOpen(false);
-  };
-
-  // Ask once per day, on today only, and only before a method is chosen.
-  // Skipping is remembered for the session so the question never nags.
-  useEffect(() => {
-    if (activeView !== 'daily') return;
-    if (dateKey !== todayKey) return;
-    if (dailyLog.dayCondition || dailyLog.activeFramework) return;
-    if (dayConditionDismissedFor === dateKey) return;
-    setIsDayConditionOpen(true);
-  }, [activeView, dateKey, todayKey, dailyLog.dayCondition, dailyLog.activeFramework, dayConditionDismissedFor]);
-
   // R7 — planned-versus-actual accounting, stored per decided item.
   const handleUpdateExecution = (itemId, session) => {
     saveDailyLog(dateKey, {
@@ -622,22 +616,12 @@ export default function App() {
     setLicense(getStoredLicense());
   };
 
-  const handleSelectBreakerMonth = (monthIdx) => {
-    setSelectedBreakerMonth(monthIdx);
-    setActiveView('breaker');
+  const handleSelectMonth = (monthIdx) => {
+    setCurrentDate(new Date(currentDate.getFullYear(), monthIdx, 1));
+    setActiveView('monthly');
   };
 
   const handleOpenTodayFromIndex = (monthIdx) => {
-    const today = new Date();
-    if (monthIdx !== undefined && (today.getFullYear() !== currentDate.getFullYear() || today.getMonth() !== monthIdx)) {
-      setCurrentDate(new Date(currentDate.getFullYear(), monthIdx, 1));
-    } else {
-      setCurrentDate(new Date());
-    }
-    setActiveView('daily');
-  };
-
-  const handleOpenTodayFromBreaker = (monthIdx) => {
     const today = new Date();
     if (monthIdx !== undefined && (today.getFullYear() !== currentDate.getFullYear() || today.getMonth() !== monthIdx)) {
       setCurrentDate(new Date(currentDate.getFullYear(), monthIdx, 1));
@@ -682,11 +666,11 @@ export default function App() {
 
   // Single-Page Marketing Website Route (Natural Window Scrolling)
   if (activeView === 'legal') {
-    return <LegalPages onBack={() => setActiveView('landing')} />;
+    return <Suspense fallback={<ViewLoading />}><LegalPages onBack={() => setActiveView('landing')} /></Suspense>;
   }
 
   if (activeView === 'methods') {
-    return <MethodsPage onBack={() => setActiveView('landing')} />;
+    return <Suspense fallback={<ViewLoading />}><MethodsPage onBack={() => setActiveView('landing')} /></Suspense>;
   }
 
   if (activeView === 'landing') {
@@ -708,13 +692,6 @@ export default function App() {
           settings={settings}
           updateSettings={updateSettings}
           isPatron={license.isPatron}
-        />
-        <PatronUpgradeModal
-          isOpen={isUpgradeModalOpen}
-          onClose={() => setIsUpgradeModalOpen(false)}
-          isMuted={settings.isMuted}
-          onLicenseUpdated={refreshLicense}
-          currentLicense={license}
         />
       </div>
     );
@@ -772,8 +749,8 @@ export default function App() {
           coverAnimation === 'opening' ? 'book-spread-reveal' : ''
         }`}>
             
-            {/* Floating Page-Turn Edge Trigger: Previous Day (Left Edge) */}
-            <button
+            {/* Floating day controls only belong to the daily instrument. */}
+            {activeView === 'daily' && <button
               type="button"
               onClick={() => handleStepDay(-1)}
               className="page-turn-edge-btn page-turn-edge-left no-print hidden sm:flex"
@@ -781,10 +758,10 @@ export default function App() {
               aria-label="Previous Day"
             >
               <ChevronLeft className="w-3.5 h-3.5 stroke-[2.5]" />
-            </button>
+            </button>}
 
             {/* Floating Page-Turn Edge Trigger: Next Day (Right Edge) */}
-            <button
+            {activeView === 'daily' && <button
               type="button"
               onClick={() => handleStepDay(1)}
               className="page-turn-edge-btn page-turn-edge-right no-print hidden sm:flex"
@@ -792,7 +769,7 @@ export default function App() {
               aria-label="Next Day"
             >
               <ChevronRight className="w-3.5 h-3.5 stroke-[2.5]" />
-            </button>
+            </button>}
 
             {/* Authentic Japanese Stationery Paper Block Canvas */}
             <div 
@@ -807,7 +784,7 @@ export default function App() {
                   setIsMenuOpen(true);
                 }}
                 className="woven-fabric-tag cursor-pointer"
-                title="Decide One Executive Instrument (Click to open menu)"
+                title="Decide One Priority Instrument (Click to open menu)"
               >
                 DECIDE ONE
               </button>
@@ -841,6 +818,7 @@ export default function App() {
                         rapidLog={flipState === 'flipping-prev' && targetDailyLog ? targetDailyLog.rapidLog : dailyLog.rapidLog}
                         onUpdateRapidLog={handleUpdateRapidLog}
                         onUpdateExecution={handleUpdateExecution}
+                        hasEntry={hasEntry}
                         activeFilter={activeFilter}
                         setActiveFilter={setActiveFilter}
                         settings={settings}
@@ -876,7 +854,7 @@ export default function App() {
                 </div>
               ) : activeView === 'weekly' ? (
                 /* Sunday Executive Review & Weekly Alignment Spread */
-                <WeeklyReviewSpread
+                <Suspense fallback={<ViewLoading />}><WeeklyReviewSpread
                   currentDate={currentDate}
                   setCurrentDate={setCurrentDate}
                   data={data}
@@ -887,44 +865,34 @@ export default function App() {
                   settings={settings}
                   isMuted={settings.isMuted}
                   onBackToDaily={() => setActiveView('daily')}
-                />
+                /></Suspense>
               ) : activeView === 'monthly' ? (
                 /* Monthly Log Spread */
-                <MonthlyLogSpread
+                <Suspense fallback={<ViewLoading />}><MonthlyLogSpread
                   currentDate={currentDate}
                   setCurrentDate={setCurrentDate}
                   monthlyLog={monthlyLog}
                   onUpdateMonthlyLog={handleUpdateMonthlyLog}
                   isMuted={settings.isMuted}
-                />
+                /></Suspense>
               ) : activeView === 'yearly' ? (
                 /* 12-Month Annual Index Spread */
-                <YearlyViewSpread
+                <Suspense fallback={<ViewLoading />}><YearlyViewSpread
                   currentDate={currentDate}
                   setCurrentDate={setCurrentDate}
-                  onSelectMonth={handleSelectBreakerMonth}
+                  onSelectMonth={handleSelectMonth}
                   onOpenToday={handleOpenTodayFromIndex}
                   isMuted={settings.isMuted}
-                />
-              ) : activeView === 'breaker' ? (
-                /* Bespoke Monthly Chapter Breaker Spread */
-                <MonthlyBreakerPage
-                  monthIndex={selectedBreakerMonth}
-                  year={currentDate.getFullYear()}
-                  onOpenToday={handleOpenTodayFromBreaker}
-                  onOpenMonthlyLog={() => setActiveView('monthly')}
-                  onBackToYearly={() => setActiveView('yearly')}
-                  isMuted={settings.isMuted}
-                />
+                /></Suspense>
               ) : (
                 /* Fallback Monthly Spread */
-                <MonthlyLogSpread
+                <Suspense fallback={<ViewLoading />}><MonthlyLogSpread
                   currentDate={currentDate}
                   setCurrentDate={setCurrentDate}
                   monthlyLog={monthlyLog}
                   onUpdateMonthlyLog={handleUpdateMonthlyLog}
                   isMuted={settings.isMuted}
-                />
+                /></Suspense>
               )}
             </div>
 
@@ -969,10 +937,10 @@ export default function App() {
 
       {/* Mobile Ergonomic Bottom Thumb-Zone Navigation Bar */}
       {activeView === 'daily' && !showCover && (
-        <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#141416]/95 backdrop-blur-xl border-t border-black/[0.08] dark:border-white/[0.1] px-4 py-2 flex items-center justify-around no-print">
+        <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#141416]/95 backdrop-blur-xl border-t border-black/[0.08] dark:border-white/[0.1] px-4 py-2 flex items-center justify-around no-print" aria-label="Daily Page Sides">
           {[
             { id: 'side1', label: 'Decide' },
-            { id: 'side2', label: 'Turn over' }
+            { id: 'side2', label: 'Turn Over' }
           ].map(tab => (
             <button
               key={tab.id}
@@ -1058,14 +1026,14 @@ export default function App() {
         updateSettings={updateSettings}
       />
 
-      {/* Lifetime Patron Upgrade & Activation Modal */}
-      <PatronUpgradeModal
+      {/* Payment UI loads only when requested; checkout remains intentionally separate. */}
+      {isUpgradeModalOpen && <Suspense fallback={null}><PatronUpgradeModal
         isOpen={isUpgradeModalOpen}
         onClose={() => setIsUpgradeModalOpen(false)}
         isMuted={settings.isMuted}
         onLicenseUpdated={refreshLicense}
         currentLicense={license}
-      />
+      /></Suspense>}
 
       {/* Analytics Drawer (Monochrome) */}
       <ProductivityDrawer
@@ -1110,18 +1078,6 @@ export default function App() {
         onAddDecision={addDecision}
         onUpdateDecision={updateDecision}
         onDeleteDecision={deleteDecision}
-        isMuted={settings.isMuted}
-      />
-
-      {/* Executive Evening Closure Ritual Modal */}
-      <DayConditionPrompt
-        isOpen={isDayConditionOpen}
-        onClose={() => {
-          setDayConditionDismissedFor(dateKey);
-          setIsDayConditionOpen(false);
-        }}
-        onChooseCondition={handleChooseDayCondition}
-        dateLabel={currentDate.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
         isMuted={settings.isMuted}
       />
 
