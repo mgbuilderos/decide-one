@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useEffect, useRef, useState } from 'react';
-import { ArrowRight, ArrowDown, ArrowUpRight, Pause, Play, ChevronLeft, ChevronRight, Plus, Minus, Laptop, Tablet, Smartphone, Check, Lock, Sun, Moon, Target } from 'lucide-react';
+import { ArrowRight, ArrowDown, ArrowUpRight, Pause, Play, ChevronLeft, ChevronRight, Plus, Minus, Check, Lock, Sun, Moon, Target, Laptop, Tablet, Smartphone } from 'lucide-react';
 import JournalDemo from './landing/JournalDemo';
 import './landing/landing.css';
 const JournalScene = lazy(() => import('./landing/JournalScene'));
@@ -33,11 +33,9 @@ export default function MarketingLandingPage({
   const [paused, setPaused] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   const [highlight, setHighlight] = useState(0);
   const [device, setDevice] = useState('desktop');
-  const [finish, setFinish] = useState('#161616');
   const [perspective, setPerspective] = useState('daily');
   const [viewpoint, setViewpoint] = useState('angled');
   const [deviceView, setDeviceView] = useState('angled');
-  const [exploded, setExploded] = useState(false);
   const [faq, setFaq] = useState(null);
   const [light, setLight] = useState(false);
   useEffect(() => {
@@ -103,9 +101,7 @@ export default function MarketingLandingPage({
         </div><p className="pm-research-note">Research informs the approach. Decide One itself has not been independently evaluated for productivity outcomes.</p>
       </section>
       <section className="pm-design-section" id="design"><div className="pm-section-heading pm-reveal"><div><p className="pm-eyebrow">Try It Right Now &mdash; Nothing To Sign Up For</p><h2>See the decision<br /><span>take shape.</span></h2></div><p>1. List the work competing for your day.<br />2. Choose the framework that fits.<br />3. Put one thing first and give it time.</p></div><JournalDemo onLaunchJournal={onLaunchJournal} /></section>
-      <section className="pm-section pm-craft-section" id="craft"><div className="pm-section-heading pm-reveal"><div><p className="pm-eyebrow">Made To Be Opened Every Morning</p><h2>Simple enough to trust.<br /><span>Careful enough to keep.</span></h2></div><p>Black ink. White pages. Room to decide.<br />A familiar surface with a single purpose.</p></div><div className="pm-studio-detail pm-reveal"><img src="/renders/decideone-studio-d1.png" alt="Detailed white Decide One priority pages with stacked paper edges, a black cover and woven label" width="1536" height="1024" loading="lazy"/><div><p className="pm-eyebrow">Made To Keep First In View</p><h3>Nothing between you<br />and the next important choice.</h3><p>A clear hierarchy. A familiar page.<br />Enough structure to begin.</p></div></div><div className="pm-material-explorer"><div className="pm-material-copy"><p className="pm-eyebrow">03 / Explore The Object</p><h3>Every layer.<br />One purpose.</h3><p>Turn it, move closer, and inspect the instrument from different angles.</p><div className="pm-finishes" role="group" aria-label="3D Cover Finish">{[['#161616', 'Black'], ['#555555', 'Graphite'], ['#aaaaaa', 'Silver']].map(([value, name]) => <button aria-pressed={finish === value} aria-label={name} key={name} style={{
-                '--finish': value
-              }} onClick={() => setFinish(value)}>{finish === value && <Check size={13} />}</button>)}<span>{finish === '#161616' ? 'Black' : finish === '#555555' ? 'Graphite' : 'Silver'}</span></div><button className="pm-outline-button" aria-pressed={exploded} onClick={() => setExploded(!exploded)}>{exploded ? <Minus size={15} /> : <Plus size={15} />} {exploded ? 'Bring It Together' : 'Explore The Layers'}</button><p className="pm-small-note">A tactile interface for focused work.</p></div><Scene finish={finish} paused={paused} exploded={exploded} /></div></section>
+      <section className="pm-section pm-craft-section" id="craft"><div className="pm-section-heading pm-reveal"><div><p className="pm-eyebrow">Made To Be Opened Every Morning</p><h2>Simple enough to trust.<br /><span>Careful enough to keep.</span></h2></div><p>Black ink. White pages. Room to decide.<br />A familiar surface with a single purpose.</p></div><div className="pm-studio-detail pm-reveal"><img src="/renders/decideone-studio-d1.png" alt="Detailed white Decide One priority pages with stacked paper edges, a black cover and woven label" width="1536" height="1024" loading="lazy"/><div><p className="pm-eyebrow">Made To Keep First In View</p><h3>Nothing between you<br />and the next important choice.</h3><p>A clear hierarchy. A familiar page.<br />Enough structure to begin.</p></div></div></section>
       <section className="pm-section pm-perspectives-section" id="perspectives">
         <div className="pm-section-heading"><div><p className="pm-eyebrow">A Closer Look</p><h2>Today&rsquo;s decision.<br /><span>Seen at every scale.</span></h2></div><p>Inspect the daily instrument and its weekly,<br />monthly, and yearly review surfaces.</p></div>
         <div className="pm-explorer-toolbar"><div className="pm-segmented" role="group" aria-label="Choose a perspective">{[['daily','Daily'],['monthly','Monthly'],['yearly','Yearly']].map(([id,label]) => <button key={id} aria-pressed={perspective === id} onClick={() => setPerspective(id)}>{label}</button>)}</div><div className="pm-segmented pm-view-controls" role="group" aria-label="Choose a camera view">{[['front','Front View'],['angled','Angled View'],['close','Close-Up']].map(([id,label]) => <button key={id} aria-pressed={viewpoint === id} onClick={() => setViewpoint(id)}>{label}</button>)}</div></div>

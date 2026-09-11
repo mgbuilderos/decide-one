@@ -879,3 +879,9 @@ First pass of the §13 instrument inspection. Swept all four views on the live s
 ### 2026-09-11 00:11 — claude
 
 The device screens in the 3D scene now draw the actual Decide One interface instead of pasting the book's paper-page textures onto a display. appScreenTexture renders the masthead, the segmented view control, the dated card, three priority rows with checkboxes and minute steppers, and the countdown dial showing 90 minutes on the first priority - everything matching something a person will really see, at the same proportions, driven by one scale factor so it holds at both texture sizes. Required by VISION §13.5: a render that misrepresents the product is not craft, it is an inaccuracy on an instrument. Two things NOT done and needing the founder's eyes: switching the hero from the book to a device needs camera framing work, since the desktop kind is not framed for the hero viewpoint; and I cannot visually verify any WebGL output in my browser tool - the live site running unmodified code captures as a black rectangle in exactly the same way, so the capture is the limitation rather than the scene.
+
+---
+
+### 2026-09-11 00:15 — claude
+
+Removed the material explorer from the landing page - Explore The Object, Every layer One purpose, the three finish swatches and its own 3D scene. It invited people to turn an object over and inspect its layers, which is craft as the subject rather than craft in service of the product, and VISION §13 says ornament is a defect. It was also the clearest piece of the BR8 Leica register. The devices section survives and still does the job of showing the product on real hardware. Also fixed the Cloudflare beacon diagnosis: it is injected at the edge for browser user-agents only, which is why curl never saw it and why it appears in neither our HTML nor wrangler.jsonc - the fix is the Web Analytics automatic setup toggle in the dashboard.
