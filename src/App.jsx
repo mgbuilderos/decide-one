@@ -21,6 +21,7 @@ import { useExecutiveDictation } from './hooks/useExecutiveDictation';
 import { useAmbientReminders } from './hooks/useAmbientReminders';
 import { telemetry, getHistoryDepthDays, lengthBucket, wordBucket } from './utils/telemetry';
 import { shouldOfferCarryForward, applyCarryForward, markOffered } from './utils/carryForward';
+import { observeWebVitals } from './utils/webVitals';
 
 const MonthlyLogSpread = lazy(() => import('./components/MonthlyLogSpread'));
 const CarryForwardModal = lazy(() => import('./components/CarryForwardModal'));
@@ -553,6 +554,20 @@ export default function App() {
   const todayKey = formatDateKey(new Date());
   const isPastDay = dateKey < todayKey;
   const monthKey = dateKey.slice(0, 7); // "YYYY-MM"
+
+  // Core Web Vitals, first-party, marketing surfaces only.
+  //
+  // TELEMETRY_SPEC §3.2 wants LCP, INP, CLS and TTFB; B-39 removed the
+  // Cloudflare beacon that used to supply them. §0a item 2 scopes site
+  // measurement to landing routes, so this reads the view the page actually
+  // opened on rather than the current one - LCP is decided during first paint,
+  // long before anyone navigates.
+  useEffect(() => {
+    const opened = new URLSearchParams(window.location.search).get('view');
+    const isMarketingEntry = !opened || ['landing', 'legal', 'methods'].includes(opened);
+    if (!isMarketingEntry) return undefined;
+    return observeWebVitals((metrics) => telemetry.track('web_vitals', metrics));
+  }, []);
 
   // Carrying yesterday's open priorities forward.
   //

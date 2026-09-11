@@ -903,3 +903,9 @@ Halved the critical-path JavaScript. The entry bundle was 739KB raw / 230KB gzip
 ### 2026-09-11 00:26 — claude
 
 Heatmaps and session replay cut from TELEMETRY_SPEC outright, recorded as §0b so a future proposal is a change to that section rather than a ticket. Three reasons in the order that decided it: they cost page weight on the page whose load time was the live complaint, and §13.3 asks the instrument to be fast before it is anything else; the exit-section metric already answers where we lose people in one number from an IntersectionObserver the page needs anyway, so a heatmap would render the same answer as a picture and charge for it in kilobytes; and under one origin a mis-scoped replay script records someone writing their priorities, silently and totally, so the safest version of that script is the one that does not exist. Section dwell, scroll depth, exit section, CTA clicks and rage clicks replace them and are enough.
+
+---
+
+### 2026-09-11 00:29 — claude
+
+Built the first-party PerformanceObserver replacing Cloudflare RUM (TELEMETRY_SPEC §3.2). Measures LCP, INP, CLS and TTFB with no dependency, no network fetch and nothing to allow in the CSP, reporting once through the existing telemetry pipeline as the page is hidden. Scoped to marketing entries by reading the view the page opened on rather than the current one, since LCP is decided during first paint. Records timing only - no coordinates, no element text, no content. Verified: thresholds classify correctly at every boundary, an unavailable metric reports null rather than a flattering zero, layout shifts the person caused are excluded, and the report fires exactly once across visibilitychange and pagehide. Not verifiable here: this browser pane emits zero LCP entries despite supporting the type, because the page never counts as a visible viewport - the same class of limit as WebGL capture.
