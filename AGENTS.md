@@ -62,25 +62,24 @@ Several older documents overstate it — trust that one where they disagree.
 
 ---
 
-## Hosting: pick one, write it down
-
-There are currently **two** hosts, which is one too many:
-
-- **The Sites project** in `.openai/hosting.json` — what `decideone.app`
-  currently points at. Publishing is a manual action in the tool that owns it.
-- **A Cloudflare Worker** in the founder's own account —
-  `decide-one.decide-one-stationery-instrument.workers.dev`, deployed with
-  `npx wrangler deploy`, currently serving the newer build.
-
-**One of these should be deleted.** Until then, `decideone.app` and the
-workers.dev address will disagree about what the product looks like. `DEPLOY.md`
-has the state and the remaining steps.
-
-After any deploy, always:
+## Deploying: one command
 
 ```bash
-npm run verify:live
+npm run deploy
 ```
+
+That is the whole deploy. npm runs `predeploy` and `postdeploy` around it, so
+the one command audits, builds, deploys, and verifies that the live site is
+actually this build — **stopping at the first failure**. Code that fails QC
+never reaches the site.
+
+**Never run `wrangler deploy` on its own.** It skips the audit and the
+verification, and that is the only way an unaudited build gets published.
+
+**One thing is still outstanding.** `decideone.app` points at the old Sites
+project, not at the Worker `npm run deploy` publishes to, so the verify step
+will correctly report DIFFERENT until the DNS moves. `DEPLOY.md` has the four
+steps — one of them needs the Cloudflare dashboard and no agent can do it.
 
 ---
 

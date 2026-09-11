@@ -1,121 +1,103 @@
 # Deploying Decide One
 
-> **`npm run build` first, always.** The site is `dist/`.
-
-## Correction, 11 September 2026
-
-An earlier version of this file said the host was **Cloudflare Pages, project
-`decide-one`**, on the strength of `decide-one.pages.dev` serving an identical
-bundle and etag to `decideone.app`. **That was a CDN fingerprint, not the
-publisher, and the conclusion was wrong.**
-
-Checked against the Cloudflare API with the founder's own credential:
-
-| | |
-| :--- | :--- |
-| `decideone.app` zone in this account | **yes** |
-| Pages projects in this account | **0** |
-| Workers in this account | **0** |
-
-So Cloudflare holds the DNS and proxies the domain, but **serves nothing**. The
-origin is external. `decide-one.pages.dev` is real and serves the same bytes,
-but it is not in this account — it belongs to the hosting provider's own
-infrastructure, which is why it is unreachable from here.
-
-`wrangler` cannot deploy this site. Not a permissions problem: the token
-carries `pages (write)`. There is simply no project in this account to deploy to.
-
-## What actually publishes it
-
-The only hosting configuration this repository has ever contained is
-`.openai/hosting.json`, committed at the initial commit:
-
-```json
-{
-  "project_id": "appgprj_6aa060ea93fc819198302b9398806888",
-  "static": { "directory": "dist" }
-}
-```
-
-`LANDING_PROTOTYPE.md` records the same: *the Sites project identifier is
-recorded in `.openai/hosting.json`; static output is `dist`.*
-
-**The site is published through that Sites integration** — the publish action
-in the tool that created the file — and not through any Cloudflare command.
-
-**Restored 11 September 2026.** It had been deleted from the working tree, and
-I then committed that deletion by sweeping it up in a `git add -A` — so it had
-to be recovered from the initial commit rather than simply checked out. It is
-back and committed. **Do not delete it again: publishing depends on it.**
-
-## To deploy
+## One command
 
 ```bash
-npm run build
+npm run deploy
 ```
 
-Then publish `dist/` through the Sites integration that owns
-`appgprj_6aa060ea93fc819198302b9398806888`. **This cannot be driven from this
-repository** — there is no CLI for it here.
+That is the whole deploy. npm runs `predeploy` and `postdeploy` around it
+automatically, so the single command does four things in order and **stops at
+the first failure**:
 
-## Second host, live and ready (11 September 2026)
+| Step | What runs | If it fails |
+| :--- | :--- | :--- |
+| 1. Audit | `npm run test:qc` — 23 decision rules against `src/` | Nothing is built |
+| 2. Build | `vite build` → `dist/` | Nothing is deployed |
+| 3. Deploy | `wrangler deploy` — uploads `dist/` to Cloudflare | Nothing is verified |
+| 4. Verify | `npm run verify:live` — live bundle hash vs `dist/` | You are told DIFFERENT |
 
-The app is now also deployed to the founder's own Cloudflare account, as a
-Worker serving static assets. Pages is part of Workers now and wrangler steers
-new projects there, so this is the current path rather than a legacy Pages
-project. Config is `wrangler.jsonc`; nothing runs server-side.
+`wrangler` is a pinned devDependency, so this needs no `npx` and no network
+fetch of the tool itself.
 
-```bash
-npm run build
-npx wrangler deploy
-```
+**Deploy with `npm run deploy`, never `wrangler deploy` directly.** Calling
+wrangler on its own skips the audit and the verification — that is the only way
+to get an unaudited build onto the live site.
 
-**Verified serving the current build**, bundle and CSS hashes matching `dist`,
-deep paths returning the app rather than a 404:
+After it prints MATCH, hard-refresh. `public/sw.js` is a service worker, and a
+tab left open can hold the previous worker until every `decideone.app` tab is
+closed.
 
-    https://decide-one.decide-one-stationery-instrument.workers.dev
+## One manual step is still outstanding
 
-**`decideone.app` still points at the Sites project, not at this.** Switching
-it means adding the custom domain:
+`decideone.app` still points at the **Sites** project, not at the Cloudflare
+Worker that `npm run deploy` publishes to. Until that changes:
 
-```jsonc
-// in wrangler.jsonc
-"routes": [{ "pattern": "decideone.app", "custom_domain": true }]
-```
+- `npm run deploy` publishes correctly to
+  `decide-one.decide-one-stationery-instrument.workers.dev`
+- step 4 will correctly report **DIFFERENT**, because `decideone.app` is
+  genuinely serving something else
 
-### The switch was attempted and is blocked on one thing
+That is not a bug in the command. It is two hosts, and it resolves when the
+domain moves.
 
-Cloudflare refused it:
+### To finish the switch
+
+1. Cloudflare dashboard → `decideone.app` → DNS. **Write down the existing apex
+   records before deleting them** — nothing in this repository can recover them.
+2. Delete them.
+3. Uncomment the `routes` block in `wrangler.jsonc`.
+4. `npm run deploy`
+
+Then delete the Sites project, so there is one host and one command.
+
+Cloudflare refuses step 3 until step 2 is done:
 
 > Hostname 'decideone.app' already has externally managed DNS records
 > (A, CNAME, etc). Delete them first or try a different hostname. `[code 100117]`
 
-Those records point at the Sites project. **They cannot be removed from here** —
-the OAuth token wrangler holds has no DNS write scope, and cannot even read DNS
-records. This step needs the Cloudflare dashboard.
+The OAuth token wrangler holds has **no DNS scope** — it cannot write DNS
+records, and cannot even read them. This step needs the dashboard; no agent can
+do it.
 
-**`decideone.app` was not touched and kept serving throughout.**
+## Where it is hosted
 
-One side effect worth knowing: declaring `routes` replaces the default trigger,
-so the half-applied change took the `workers.dev` address down until
-`workers_dev: true` was added back. That is now explicit in `wrangler.jsonc`.
+| Host | Address | Publishes via | Status |
+| :--- | :--- | :--- | :--- |
+| Cloudflare Worker (founder's own account) | `decide-one.decide-one-stationery-instrument.workers.dev` | `npm run deploy` | Current build |
+| Sites project `appgprj_6aa060ea93fc819198302b9398806888` | `decideone.app` | Manual publish in the tool that owns it | To be deleted |
 
-**To finish the switch:**
+The Worker serves `dist/` as static assets. Nothing runs server-side — the app
+is local-first and has no backend, which is the point. Config is
+`wrangler.jsonc`, and every claim in it is commented with the reason.
 
-1. Cloudflare dashboard → `decideone.app` → DNS. Note the existing apex records
-   — worth writing down before deleting, since nothing here can recover them.
-2. Delete them.
-3. Uncomment the `routes` block in `wrangler.jsonc`.
-4. `npx wrangler deploy && npm run verify:live`
+`.openai/hosting.json` is what the Sites project reads. **Do not delete it while
+that host is still live** — it was deleted once by a `git add -A` sweep and had
+to be recovered from the initial commit.
 
-## After any deploy
+---
 
-```bash
-npm run verify:live
-```
+## Record — what was got wrong, 11 September 2026
 
-Compares the live bundle hash against `dist/` and says MATCH or DIFFERENT. The
-live site sat a day behind on 10 September because nothing ran this check.
+Kept because each of these cost a session, and the reasoning is not recoverable
+from the code.
 
-Then hard-refresh: `public/sw.js` is a service worker, and a tab left open can
-hold the previous worker until every `decideone.app` tab is closed.
+**The host was misidentified as Cloudflare Pages.** `decide-one.pages.dev`
+served an identical bundle and etag to `decideone.app`, and that was read as
+proof. It was a CDN fingerprint, not the publisher. Checked against the
+Cloudflare API with the founder's own credential: the `decideone.app` zone is in
+the account, but there were **0 Pages projects and 0 Workers** — Cloudflare held
+the DNS and proxied the domain while serving nothing. The origin was external.
+`.openai/hosting.json`, committed at the initial commit, said so plainly the
+whole time.
+
+**A publish through Sites half-finished.** On 10 September the new JS and CSS
+uploaded but `index.html` never swapped, so browsers kept being handed a page
+asking for the previous build. The live site sat a day behind because nothing
+ran `verify:live`. That check is now step 4 of every deploy, which is the direct
+answer to it.
+
+**Declaring `routes` replaces the default trigger.** A half-applied custom-domain
+attach therefore took the `workers.dev` address down while also failing to
+attach the domain. `workers_dev: true` is now explicit in `wrangler.jsonc` so it
+cannot recur. `decideone.app` was never touched and kept serving throughout.
