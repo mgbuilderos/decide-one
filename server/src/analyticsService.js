@@ -183,11 +183,19 @@ export const AnalyticsService = {
       SELECT DISTINCT anonymous_id FROM events WHERE event = 'day_closed'
     `).all().map(r => r.anonymous_id);
 
-    const count1 = step1Users.length;
-    const count2 = step2Users.filter(id => step1Users.includes(id)).length;
-    const count3 = step3Users.filter(id => step2Users.includes(id)).length;
-    const count4 = step4Users.filter(id => step3Users.includes(id)).length;
-    const count5 = step5Users.filter(id => step4Users.includes(id)).length;
+    // Sets, not Array.includes - the previous version was O(n²) across every
+    // user who ever opened the app, on every dashboard load.
+    const set1 = new Set(step1Users);
+    const set2 = new Set(step2Users.filter(id => set1.has(id)));
+    const set3 = new Set(step3Users.filter(id => set2.has(id)));
+    const set4 = new Set(step4Users.filter(id => set3.has(id)));
+    const set5 = new Set(step5Users.filter(id => set4.has(id)));
+
+    const count1 = set1.size;
+    const count2 = set2.size;
+    const count3 = set3.size;
+    const count4 = set4.size;
+    const count5 = set5.size;
 
     const buildStep = (name, count, prevCount, baselineCount) => {
       const conversionFromPrev = prevCount > 0 ? parseFloat(((count / prevCount) * 100).toFixed(1)) : 0;
@@ -275,13 +283,22 @@ export const AnalyticsService = {
       LIMIT 5
     `).all();
 
+    // The three lists above are LIMIT 20 samples. Counting the sample and
+    // labelling it `total_` reported 20 as the ceiling of every friction
+    // number, so a day with 400 rage clicks and a day with 20 read identically.
+    const frictionTotals = Object.fromEntries(
+      db.prepare(`SELECT friction_type, COUNT(*) AS count FROM friction_logs GROUP BY friction_type`)
+        .all().map(r => [r.friction_type, r.count])
+    );
+
     return {
-      total_rage_clicks: rageClicks.length,
+      total_rage_clicks: frictionTotals.rage_click || 0,
       rage_clicks: rageClicks,
-      total_abandoned_modals: abandonedModals.length,
+      total_abandoned_modals: frictionTotals.abandoned_modal || 0,
       abandoned_modals: abandonedModals,
-      total_client_errors: clientErrors.length,
+      total_client_errors: frictionTotals.client_error || 0,
       client_errors: clientErrors,
+      sample_size: 20,
       top_exit_views: exitViews
     };
   },
@@ -534,10 +551,15 @@ export const AnalyticsService = {
     const alerts = [];
     if (dailyCounts.length >= 3) {
       const counts = dailyCounts.map(d => d.count);
-      const mean = counts.reduce((a, b) => a + b, 0) / counts.length;
-      const variance = counts.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / counts.length;
-      const stdDev = Math.sqrt(variance) || 1;
+      // The day under test must not be in its own baseline. Including it pulled
+      // the mean toward the outlier and shrank the very deviation being
+      // measured, so the larger the anomaly the more it hid itself - a real
+      // collapse scored about 0.9 where it should have scored 2.4.
       const latest = counts[0];
+      const baseline = counts.slice(1);
+      const mean = baseline.reduce((a, b) => a + b, 0) / baseline.length;
+      const variance = baseline.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / baseline.length;
+      const stdDev = Math.sqrt(variance) || 1;
       const zScore = parseFloat(((latest - mean) / stdDev).toFixed(2));
 
       if (Math.abs(zScore) >= 2.0) {

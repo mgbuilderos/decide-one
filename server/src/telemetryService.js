@@ -68,17 +68,37 @@ const convertExpStmt = db.prepare(`
 
 // Strict Zero-Knowledge Telemetry Sanitizer
 // Strips any potential raw text properties to guarantee zero private user content is stored
-const SENSITIVE_KEYS = new Set([
+// Matched as substrings, so `taskText`, `noteBody` and `decision_rationale` are
+// all caught. Exact-match missed every camelCase spelling and stored the value.
+// Over-redaction is the safe direction here: a wrongly redacted prop costs one
+// metric, a wrongly kept one stores what someone wrote.
+const SENSITIVE_SUBSTRINGS = [
   'text', 'title', 'note', 'reflection', 'content', 'rationale',
-  'task_text', 'decision_text', 'search_query', 'raw_transcript', 'password', 'key'
-]);
+  'query', 'transcript', 'password', 'secret'
+];
+// Short and ambiguous, so exact only: `key` as a substring would redact
+// `first_keypress_latency_ms` and take the hesitation metric with it.
+const SENSITIVE_EXACT = new Set(['key', 'token']);
+
+function isSensitiveKey(lowerKey) {
+  if (SENSITIVE_EXACT.has(lowerKey)) return true;
+  return SENSITIVE_SUBSTRINGS.some(s => lowerKey.includes(s));
+}
+
+const MAX_HEARTBEAT_SECONDS = 3600;
+
+function clampSeconds(value, fallback) {
+  const n = Number(value);
+  if (!Number.isFinite(n) || n < 0) return fallback;
+  return Math.min(Math.round(n), MAX_HEARTBEAT_SECONDS);
+}
 
 function sanitizeProperties(properties) {
   if (!properties || typeof properties !== 'object') return {};
   const clean = {};
   for (const [key, value] of Object.entries(properties)) {
     const lowerKey = key.toLowerCase();
-    if (SENSITIVE_KEYS.has(lowerKey)) {
+    if (isSensitiveKey(lowerKey)) {
       clean[`${key}_length`] = typeof value === 'string' ? value.length : 0;
       continue;
     }
@@ -152,11 +172,19 @@ export const TelemetryService = {
         } else if (event === 'surface_transition') {
           insertPathfinderStmt.run(session_id, anonymous_id, cleanProps.from_surface || 'unknown', cleanProps.to_surface || 'unknown', cleanProps.exit_type || 'normal', timestamp);
         } else if (event === 'exit_breadcrumbs') {
-          const trail = cleanProps.trail || [];
-          if (Array.isArray(trail)) {
-            for (let i = 0; i < trail.length - 1; i++) {
-              insertPathfinderStmt.run(session_id, anonymous_id, String(trail[i]), String(trail[i+1]), 'exit_trail', timestamp);
-            }
+          // Read the trail from the raw properties, not the sanitized copy.
+          // sanitizeProperties turns every array into `<key>_count` and drops
+          // the values, so `cleanProps.trail` was always undefined and this
+          // loop never ran once - exit paths recorded nothing. They are surface
+          // names, not written content, so they are bounded rather than
+          // redacted: 50 hops, 64 chars each.
+          const trail = Array.isArray(properties?.trail) ? properties.trail.slice(0, 50) : [];
+          for (let i = 0; i < trail.length - 1; i++) {
+            insertPathfinderStmt.run(
+              session_id, anonymous_id,
+              String(trail[i]).slice(0, 64), String(trail[i + 1]).slice(0, 64),
+              'exit_trail', timestamp
+            );
           }
         } else if (event === 'cognitive_hesitation') {
           insertHesitationStmt.run(session_id, anonymous_id, cleanProps.surface || 'input', cleanProps.first_keypress_latency_ms || 0, cleanProps.was_abandoned ? 1 : 0, timestamp);
@@ -182,7 +210,16 @@ export const TelemetryService = {
    * Record a session heartbeat (tracks active dwell time vs idle)
    */
   recordHeartbeat({ session_id, anonymous_id, active_seconds = 30, idle_seconds = 0, current_view = 'daily' }) {
-    if (!session_id) return { success: false, error: 'Missing session_id' };
+    if (typeof session_id !== 'string' || session_id.length === 0) {
+      return { success: false, error: 'Missing session_id' };
+    }
+    // These land in `active_seconds + ?`, so an unvalidated value is written
+    // straight into standard app time. A non-number used to throw on bind and
+    // surface as a 500; a large one silently inflated the average for good.
+    // ponytail: 3600 per beat is generous for a 30s heartbeat - a backgrounded
+    // tab catching up is the case it leaves room for.
+    active_seconds = clampSeconds(active_seconds, 30);
+    idle_seconds = clampSeconds(idle_seconds, 0);
     const now = new Date().toISOString();
 
     const existing = getSessionStmt.get(session_id);

@@ -162,4 +162,46 @@ if (OWNER_SECRET_KEY) {
   console.log('  ✅ OWNER_SECRET_KEY unset — owner endpoints correctly fail closed.');
 }
 
-console.log('\n🎉 ALL 11 TELEMETRY 2.0 AUTOMATED TESTS PASSED WITH 100% SUCCESS!\n');
+// Test 12: exit_breadcrumbs actually writes transitions.
+// This is the check that was missing when sanitizeProperties began replacing
+// arrays with `<key>_count`: the trail silently became undefined, the loop ran
+// zero times, and every other test still passed.
+console.log('Test 12: Verifying exit_breadcrumbs records the trail...');
+const trailSession = 'test_trail_' + Date.now();
+const before = db.prepare(
+  `SELECT COUNT(*) AS c FROM pathfinder_transitions WHERE session_id = ?`
+).get(trailSession).c;
+
+TelemetryService.ingestBatch([{
+  session_id: trailSession,
+  anonymous_id: testAnonId,
+  event: 'exit_breadcrumbs',
+  properties: { trail: ['daily_spread', 'weekly_review', 'settings'] }
+}]);
+
+const after = db.prepare(
+  `SELECT COUNT(*) AS c FROM pathfinder_transitions WHERE session_id = ? AND exit_type = 'exit_trail'`
+).get(trailSession).c;
+assert.strictEqual(after - before, 2, 'A 3-hop trail must record 2 transitions');
+
+// And the sanitizer still must not let written content through on the same event.
+const leak = db.prepare(
+  `SELECT properties FROM events WHERE session_id = ? AND event = 'exit_breadcrumbs'`
+).get(trailSession);
+assert(!/daily_spread/.test(JSON.stringify(JSON.parse(leak.properties).trail ?? null)),
+  'The stored event properties must still not carry the raw array');
+console.log('  ✅ Exit trail recorded 2 transitions from a 3-surface trail.');
+
+// Test 13: the heartbeat clamps what it is given.
+console.log('Test 13: Verifying heartbeat input validation...');
+const hbSession = 'test_hb_' + Date.now();
+TelemetryService.recordHeartbeat({ session_id: hbSession, anonymous_id: testAnonId, active_seconds: 30 });
+TelemetryService.recordHeartbeat({ session_id: hbSession, anonymous_id: testAnonId, active_seconds: 999999999 });
+TelemetryService.recordHeartbeat({ session_id: hbSession, anonymous_id: testAnonId, active_seconds: 'abc' });
+const hb = db.prepare(`SELECT active_seconds FROM sessions WHERE session_id = ?`).get(hbSession);
+assert(hb.active_seconds <= 30 + 3600 + 30, `Heartbeat must clamp, got ${hb.active_seconds}`);
+assert.strictEqual(TelemetryService.recordHeartbeat({ session_id: '' }).success, false,
+  'An empty session_id must be rejected');
+console.log('  ✅ Heartbeat clamped oversized and non-numeric input.');
+
+console.log('\n🎉 ALL 13 TELEMETRY 2.0 AUTOMATED TESTS PASSED WITH 100% SUCCESS!\n');

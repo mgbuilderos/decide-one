@@ -10,6 +10,7 @@ const __dirname = path.dirname(__filename);
 const PUBLIC_DIR = path.resolve(__dirname, '../public');
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 4000;
+const HOST = process.env.HOST || '127.0.0.1';
 // Owner credential comes from the environment only. There is deliberately no
 // default: an unset variable must deny owner access, never grant it. See
 // .env.example. Never reintroduce a literal fallback here — it would ship a
@@ -31,7 +32,10 @@ export function verifyOwnerKey(candidate) {
   return candidate === OWNER_SECRET_KEY;
 }
 
-function isAuthorizedOwner(req, parsedUrl) {
+// Header only. `?key=` and `?token=` were also accepted and nothing used them -
+// the dashboard sends x-admin-key - while a credential in a URL is written to
+// access logs, browser history and the Referer of anything the page loads.
+function isAuthorizedOwner(req) {
   if (!OWNER_SECRET_KEY) return false;
 
   if (verifyOwnerKey(req.headers['x-admin-key'])) return true;
@@ -40,9 +44,6 @@ function isAuthorizedOwner(req, parsedUrl) {
   if (authHeader && authHeader.startsWith('Bearer ')) {
     if (verifyOwnerKey(authHeader.slice(7).trim())) return true;
   }
-
-  const queryKey = parsedUrl.searchParams.get('key') || parsedUrl.searchParams.get('token');
-  if (verifyOwnerKey(queryKey)) return true;
 
   return false;
 }
@@ -133,7 +134,7 @@ const server = http.createServer(async (req, res) => {
 
     // Owner Access Control: Strictly protect all analytics & experiments endpoints
     if (pathname.startsWith('/api/v1/analytics/') || pathname === '/api/v1/experiments') {
-      if (!isAuthorizedOwner(req, parsedUrl)) {
+      if (!isAuthorizedOwner(req)) {
         return sendJson(res, 401, {
           error: 'Unauthorized',
           message: 'Owner authentication required. This backend panel is private to the application owner.'
@@ -211,12 +212,16 @@ const server = http.createServer(async (req, res) => {
 });
 
 if (process.argv[1] === __filename) {
-  server.listen(PORT, '0.0.0.0', () => {
+  // Loopback, not 0.0.0.0. This serves an owner-private dashboard and an
+  // unauthenticated ingestion endpoint; on 0.0.0.0 anyone sharing a network
+  // could POST telemetry into it and guess at /api/v1/auth/verify unthrottled.
+  // Set HOST explicitly to expose it on purpose.
+  server.listen(PORT, HOST, () => {
     console.log(`\n=============================================================`);
     console.log(`🚀 Decide One Telemetry & Analytics Microservice`);
-    console.log(`📡 Ingestion Endpoint: http://localhost:${PORT}/api/v1/telemetry/events`);
-    console.log(`📊 Executive Dashboard: http://localhost:${PORT}/analytics`);
-    console.log(`💚 Health Check:        http://localhost:${PORT}/api/v1/health`);
+    console.log(`📡 Ingestion Endpoint: http://${HOST}:${PORT}/api/v1/telemetry/events`);
+    console.log(`📊 Executive Dashboard: http://${HOST}:${PORT}/analytics`);
+    console.log(`💚 Health Check:        http://${HOST}:${PORT}/api/v1/health`);
     console.log(`=============================================================\n`);
   });
 }
