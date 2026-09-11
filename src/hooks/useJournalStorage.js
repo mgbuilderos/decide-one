@@ -790,6 +790,11 @@ export function useJournalStorage() {
 
   // Evening Closure Ritual (Executive Shutdown Complete)
   const closeDay = useCallback((dateKey, closureSummary) => {
+    // Measured, never displayed. B-11 removed the "Focus Quotient" because a
+    // score with verdicts is the gamified register Rule 22 cuts, and §11.3
+    // forbids the product grading anyone. This number exists so the analyst can
+    // ask whether closure quality predicts return; it must never reach a screen.
+    // If a surface ever wants to show it, that is a DECISIONS reversal first.
     telemetry.track('day_closed', { score: closureSummary?.score || 0 });
     setData(prev => {
       const dailyLogs = { ...prev.dailyLogs };

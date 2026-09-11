@@ -20,7 +20,7 @@ import VolumeSwitcherBar from './components/VolumeSwitcherBar';
 import SpineAmbientGlow from './components/SpineAmbientGlow';
 import { useExecutiveDictation } from './hooks/useExecutiveDictation';
 import { useAmbientReminders } from './hooks/useAmbientReminders';
-import { telemetry, getHistoryDepthDays } from './utils/telemetry';
+import { telemetry, getHistoryDepthDays, lengthBucket, wordBucket } from './utils/telemetry';
 import { shouldOfferCarryForward, applyCarryForward, markOffered } from './utils/carryForward';
 
 const MonthlyLogSpread = lazy(() => import('./components/MonthlyLogSpread'));
@@ -206,7 +206,7 @@ export default function App() {
     isMuted: settings?.isMuted,
     onTranscriptionCommit: ({ text, target }) => {
       if (!text || !text.trim()) return;
-      telemetry.track('dictation_completed', { target_section: target, word_count: text.trim().split(/\s+/).length });
+      telemetry.track('dictation_completed', { target_section: target, words: wordBucket(text.trim().split(/\s+/).length) });
       const key = formatDateKey(currentDate);
       const curLog = getDailyLog(key);
       if (target === 'top3') {
@@ -673,7 +673,7 @@ export default function App() {
   };
 
   const handleUpdateReflection = (newReflection) => {
-    telemetry.track('reflection_saved', { char_count: (newReflection?.text || '').length });
+    telemetry.track('reflection_saved', { length: lengthBucket((newReflection?.text || '').length) });
     saveDailyLog(dateKey, { reflection: newReflection });
   };
 

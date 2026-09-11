@@ -48,6 +48,36 @@ export function getOrCreateInstallDate() {
   }
 }
 
+/**
+ * Bucket a length before it is ever sent.
+ *
+ * Knowing whether someone wrote one word or a paragraph genuinely helps improve
+ * the tool. Knowing they wrote exactly 247 characters helps nobody and is a
+ * sharper number than the question needs — TELEMETRY_SPEC §1 forbids sending a
+ * content-derived figure at full precision for that reason.
+ *
+ * The content itself never leaves the device under any circumstance. This
+ * governs only the shape of what is counted.
+ */
+export function lengthBucket(n) {
+  const len = Number(n) || 0;
+  if (len === 0) return 'empty';
+  if (len <= 20) return '1-20';
+  if (len <= 100) return '21-100';
+  if (len <= 400) return '101-400';
+  return '400+';
+}
+
+/** Words, bucketed on the same principle. */
+export function wordBucket(n) {
+  const words = Number(n) || 0;
+  if (words === 0) return 'none';
+  if (words <= 5) return '1-5';
+  if (words <= 25) return '6-25';
+  if (words <= 100) return '26-100';
+  return '100+';
+}
+
 /** Whole days since this device first opened the product, or null if unknown. */
 export function getHistoryDepthDays() {
   const installed = getOrCreateInstallDate();

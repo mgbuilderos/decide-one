@@ -825,3 +825,9 @@ Carry-forward shipped: on a fresh day, priorities still open from the last day u
 ### 2026-09-11 22:51 — claude
 
 Brand documents written: BRAND_HOUSE (purpose, pillars, what this brand is not), BRAND_KEY (target, insight, discriminator, with assumptions marked as assumptions since there are no users yet), BRAND_BOOK (the voice, vocabulary, claims register and worked examples). All three are downstream of VISION §11 and say so. Founder direction recorded: always motivating and positive. The book resolves that against Rule 22 by separating encouragement from loss-aversion - streaks and scores are not positive, they are fear of loss, which is why a broken streak makes people delete an app rather than try again. Rule 22 removes the punishing mechanics and positivity fills the space. One surface stays neutral rather than upbeat: returning after a gap, where even Welcome back draws attention to the absence.
+
+---
+
+### 2026-09-11 22:52 — claude
+
+Content-derived numbers are now bucketed before they are sent. dictation_completed sent an exact word count and reflection_saved an exact character count; both now send a band (1-5, 6-25, 26-100, 100+ for words; empty, 1-20, 21-100, 101-400, 400+ for characters). Knowing whether someone wrote a line or a paragraph improves the tool; knowing they wrote exactly 247 characters helps nobody and was sharper than the question needed. Brings the code into line with TELEMETRY_SPEC §1, which the code was violating. Also annotated the day_closed score as measured-but-never-displayed, with the reason: B-11 removed the Focus Quotient because a score with verdicts is the register Rule 22 cuts, so showing this one would be a DECISIONS reversal rather than a design choice.
