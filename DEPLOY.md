@@ -41,6 +41,22 @@ Worker that `npm run deploy` publishes to. Until that changes:
 That is not a bug in the command. It is two hosts, and it resolves when the
 domain moves.
 
+### The record being replaced — the only copy of it
+
+Read from the Cloudflare dashboard on 11 September 2026. The zone holds
+**exactly one record** (`1 of 200 used`):
+
+| Name | Type | Content | Proxy status | TTL |
+| :--- | :--- | :--- | :--- | :--- |
+| `decideone.app` | CNAME | `decide-one.pages.dev` | Proxied | Auto |
+
+**To roll back to the Sites host, recreate exactly that row.** No MX, TXT, CAA
+or `www` record exists, so nothing else is at stake — but this row is not
+recoverable from anywhere else, which is why it is written here.
+
+Because it is the *only* record, deleting it takes `decideone.app` offline
+until the Worker route is attached. That window is the deploy, not longer.
+
 ### To finish the switch
 
 1. Cloudflare dashboard → `decideone.app` → DNS. **Write down the existing apex
@@ -82,9 +98,12 @@ to be recovered from the initial commit.
 Kept because each of these cost a session, and the reasoning is not recoverable
 from the code.
 
-**The host was misidentified as Cloudflare Pages.** `decide-one.pages.dev`
-served an identical bundle and etag to `decideone.app`, and that was read as
-proof. It was a CDN fingerprint, not the publisher. Checked against the
+**The host was misidentified as Cloudflare Pages *in this account*.**
+`decide-one.pages.dev` served an identical bundle and etag to `decideone.app`,
+and that was read as proof of a Pages project here. The DNS record, read on
+11 September, shows the relationship was real but one level removed: the apex
+CNAME points *at* `decide-one.pages.dev`, which is a Pages project in the Sites
+provider account, not in this one. Checked against the
 Cloudflare API with the founder's own credential: the `decideone.app` zone is in
 the account, but there were **0 Pages projects and 0 Workers** — Cloudflare held
 the DNS and proxied the domain while serving nothing. The origin was external.
