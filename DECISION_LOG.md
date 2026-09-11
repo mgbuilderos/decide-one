@@ -885,3 +885,9 @@ The device screens in the 3D scene now draw the actual Decide One interface inst
 ### 2026-09-11 00:15 — claude
 
 Removed the material explorer from the landing page - Explore The Object, Every layer One purpose, the three finish swatches and its own 3D scene. It invited people to turn an object over and inspect its layers, which is craft as the subject rather than craft in service of the product, and VISION §13 says ornament is a defect. It was also the clearest piece of the BR8 Leica register. The devices section survives and still does the job of showing the product on real hardware. Also fixed the Cloudflare beacon diagnosis: it is injected at the edge for browser user-agents only, which is why curl never saw it and why it appears in neither our HTML nor wrangler.jsonc - the fix is the Web Analytics automatic setup toggle in the dashboard.
+
+---
+
+### 2026-09-11 00:21 — claude
+
+B-39: one site. decideone.app serves both the landing page and the instrument from a single origin, and no second host will be added. The consequence recorded in TELEMETRY_SPEC §0a: the A/B split is a rule about surfaces rather than origins, so no third-party script may ever be allowed in the CSP - allowing an origin allows it on the page where people write their priorities. Cloudflare RUM was turned off on that reasoning despite giving accurate Core Web Vitals for free. Site analytics are first-party and route-scoped from here: heatmaps stay possible for marketing surfaces but only as code this repository owns, mounted on landing routes and never on an instrument view. LCP, INP, CLS and TTFB become ours to build through PerformanceObserver.

@@ -20,7 +20,7 @@ them is how a privacy-first product ships surveillance by accident.**
 | Who | Visitors on `decideone.app` who have not started | People using the app |
 | What is on screen | Marketing copy the founder wrote | **What the person wrote about their own day** |
 | Governing promise | None. Normal web analytics apply | `VISION.md` §11.1 — *nothing leaves your device* |
-| Heatmaps | Yes | **Never** |
+| Heatmaps | Yes — first-party and route-scoped only (§0a) | **Never** |
 | Session replay | Yes, on marketing pages only | **Never** |
 | Geography, referrer, campaign | Yes | Country only, and only with consent |
 | Default | On | **Off. Opt-in. Absence of an answer is not consent** |
@@ -31,6 +31,38 @@ typed. The technology is identical; the meaning is not.
 
 **Every requirement below is assigned to A or B. If a requirement cannot be
 placed, it does not get built until it can.**
+
+### 0a. One origin — decided 12 September 2026
+
+**`decideone.app` serves both. There is no separate host for the app, and there
+will not be one.** The founder chose a single site deliberately; this section
+records what that costs, so the price is paid knowingly rather than discovered.
+
+**The A/B split above is a rule about surfaces, not about origins.** Anything
+loaded on `decideone.app` is loaded everywhere on `decideone.app` — including
+the page where a person writes their priorities. So:
+
+1. **No third-party script may be allowed in the CSP. Ever.** Not for the
+   landing page, not "only for marketing". Allowing an origin allows it in the
+   instrument too, and `a third-party script in the app is a third party
+   reading the journal` (§1, rule 3). This is why Cloudflare's Real User
+   Monitoring was turned off rather than permitted: it was giving accurate Core
+   Web Vitals for free, and it still could not be allowed.
+2. **Site measurement must be first-party and route-scoped.** Heatmaps, scroll
+   maps and session replay remain available for the marketing surfaces, but only
+   as code this repository owns, and only mounted on landing routes — never on
+   `?view=daily` or any instrument view. A heatmap that follows a person into
+   the app is the failure this whole document exists to prevent.
+3. **Performance metrics are now ours to build.** §3.2's LCP, INP, CLS and TTFB
+   no longer arrive free from the edge. They come from `PerformanceObserver` in
+   first-party code, reported through the existing telemetry pipeline, on
+   landing routes.
+
+**What a second origin would have bought**, recorded because it will be proposed
+again: `app.decideone.app` would have let the marketing host run full
+third-party analytics while the instrument origin stayed clean. It was
+considered and declined on 12 September in favour of one site. Reopening it is a
+founder decision, not an implementation detail.
 
 ---
 
