@@ -30,6 +30,32 @@ build-out and should not be read speculatively.
 
 ---
 
+## The one belief, quoted
+
+Every agent should read `VISION.md` §12.1a in full before making a judgement
+call about what this product is. The short form:
+
+> *"Casio F-91 is not design inspiration, it is a brand aspiration — that even
+> if it is a low-cost watch it is still used by even millionaires... There are
+> Swiss watches that appear very aspirational, but Casio function beats
+> everything... They don't need to do 1000 things. They need to do 3 things
+> better and complete it, and that is real productivity."*
+> — the founder, 11 September 2026
+
+**Casio and Leica are belief systems here, not design languages.** "Premium" is
+not forbidden; fluff is. Precision, typography and durability are the position.
+Decoration that signals expense while adding nothing is not.
+
+**A layout that does not require the person to fill everything in** is the
+product, not a limitation of it. Every field, prompt or section added must earn
+its place against that.
+
+**The standing test, which outranks any appeal to making something look
+expensive:** *would someone who could afford anything still choose this, because
+it does the one job better than anything else does?*
+
+---
+
 ## The five rules
 
 **1. Read before writing.**

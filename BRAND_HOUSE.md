@@ -113,6 +113,19 @@ absence.
 
 ## The brand model — a Casio F-91W, not a Leica
 
+> **Read `VISION.md` §12.1a before using this section.** Casio and Leica here are
+> **belief systems, not design languages.** The point is not that the product
+> should look cheap — it is that a millionaire still wears an F-91W because it
+> tells the time perfectly, forever, and asks nothing of them. Function that good
+> outranks aspiration.
+>
+> **"Premium" is not forbidden. Fluff is.** Precision, typography and durability
+> are the Casio position. Decoration that signals expense while adding nothing is
+> not.
+>
+> **The standing test:** *would someone who could afford anything still choose
+> this, because it does the one job better than anything else does?*
+
 Chosen deliberately over the premium position, and it governs price, craft,
 feature policy and the name.
 
@@ -129,10 +142,14 @@ feature policy and the name.
 
 Every rival's changelog is their marketing. This one's stillness is.
 
-**Known unresolved conflict — BR8 / §12.4.** The Three.js scene, studio renders,
-spine curvature and woven tag are *Leica register* and off-brand under this
-model. Logged as open. Do not resolve it in copy; copy must not describe craft
-the brand model has not decided to keep.
+**BR8 / §12.4 — now answerable, though still formally open.** The Three.js
+scene, studio renders, spine curvature and woven tag were logged as *Leica
+register*. §12.1a supplies the test that was missing: craft that makes the
+product more precise, more durable or easier to understand is on-brand at any
+level; craft whose job is to signal expense is fluff. Judge each piece against
+that rather than against a style label. Until the founder rules on the specific
+pieces, copy still should not describe craft as proof of quality - the product
+doing its job is the proof.
 
 ---
 
@@ -165,5 +182,5 @@ Stated because each was considered and rejected, and each will be proposed again
 | A second brain | The opposite ambition. This is for one day, not a lifetime of capture |
 | A wellness or therapy product | §11.3 forbids clinical vocabulary outright — regulatory exposure, and it is not true |
 | A productivity system with a guru | The methods are credited to the people who made them, in 1918 and 1954 |
-| A luxury object performing restraint | That is Muji, Leica, a Hermès notebook. This is a $12 watch |
+| A luxury object performing restraint | That is Muji, Leica, a Hermès notebook. This earns respect by working, not by costing (§12.1a) |
 | Freemium with a wall | Nothing is held back. Free is the product, not a trial of it |

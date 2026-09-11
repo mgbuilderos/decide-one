@@ -250,6 +250,35 @@ The founder named the model directly: *"there are so many watches out there but 
 
 **It is a brand model, not a form factor.** The analogue clock (§1.40, R11) is a settled component and was never in question here.
 
+### 12.1a It is a belief system, not a design language — 11 September 2026
+
+**This correction is binding on every agent and on the founder. Quote it rather than paraphrase it.**
+
+> *"Casio F-91 is not design inspiration, it is a brand aspiration — that even if it is a low-cost watch it is still used by even millionaires. The idea is to build something classic and fluff-free that can last decades. There are Swiss watches that appear very aspirational, but Casio function beats everything, and that is how I want all the agents and everyone to think about this tool.*
+>
+> *We have just one vision and one goal: to be an instrument that drives productivity — and hence we are making it free for everyone, so anyone can be productive. We might not be like the biggest SaaS or tool providers, because our belief is simple: if they complete the task in the framework, they will succeed. They don't need to do 1000 things. They need to do 3 things better and complete it, and that is real productivity.*
+>
+> *A simple layout that does not require the user to fill everything, like other popular tools. We want to keep things very, very simple, because for us improving people's productivity is the goal — and we want to ask for money only when we add value to people's life and we truly demonstrate it to the users.*
+>
+> *So Casio and Leica are not design-language decisions. They are belief systems that our tool is built on."*
+> — the founder, 11 September 2026
+
+**What this corrects.** §12.1 had been read — including by an agent, on this date — as a *visual* instruction: plain, cheap-looking, monochrome, no craft. That is the wrong reading and it produced the wrong question. The argument was never about how the product looks. It is about **what earns respect**.
+
+A millionaire wears an F-91W because it tells the time perfectly, forever, and asks nothing of them. Not because it is cheap, and not despite it. **Function that good outranks aspiration.** The watch does not perform value; it delivers it, and the respect follows.
+
+**Three things this settles, so they stop being re-litigated:**
+
+1. **"Premium" is not forbidden. "Fluff" is.** Excellence in typography, spacing, precision and durability is the Casio position, not a departure from it. What is forbidden is decoration that signals expense while adding nothing — materials cosplay, ornament as proof of worth.
+2. **Simplicity is the product, not a constraint on it.** Three things done, not a thousand captured. **A layout that does not require the person to fill everything in**, which is where other popular tools go wrong. Every field added must earn its place against this.
+3. **Free follows from the goal, not from the price band.** The goal is that anyone can be productive; charging works against it. Money is asked for only once value has been delivered and demonstrated — which is why the ask sits at the close of a day the person actually finished, and nowhere else.
+
+**The standing test, replacing any appeal to "make it look expensive":**
+
+> Would someone who could afford anything still choose this, because it does the one job better than anything else does?
+
+If yes, it is on-brand at any level of craft. If the answer depends on how costly it looks, it is fluff and it goes.
+
 The F-91W is a stranger object than "simple and durable," and the specifics are the useful part:
 
 | Fact | What it means for us |

@@ -855,3 +855,9 @@ Volumes removed entirely (B-38). Four volumes each held a separate journal with 
 ### 2026-09-11 23:31 — claude
 
 Header typography and the view switcher. The wordmark went from 16px to 20px with more tracking - it is the only brand mark on the page and it sat smaller than felt right between two utility labels. Weight came down slightly as size went up, because confidence in a wordmark is size and air rather than boldness. The four view tabs are now one segmented control: a single rounded track in the page grey with the active view raised on it as a white pill, the way paper sits on a surface, with dark mode handled. Founder also asked for an overall premium feel 'like a 1000 dollar tool' - flagged rather than built, because that is BR8, the open conflict between the Casio F-91W brand model and the Leica-register craft already in the tree. Craft and precision are compatible with the Casio; luxury signalling is the thing BR8 has to settle.
+
+---
+
+### 2026-09-11 23:41 — claude
+
+VISION §12.1a added and quoted verbatim: Casio and Leica are belief systems, not design languages. An agent - me - had read §12.1 as a visual instruction and posed the wrong question, asking the founder to choose between a premium look and a cheap one. The argument was never about how the product looks. A millionaire wears an F-91W because it tells the time perfectly, forever, and asks nothing of them; function that good outranks aspiration. Premium is not forbidden, fluff is. Simplicity is the product rather than a constraint on it - a layout that does not require the person to fill everything in. Free follows from the goal, and money is asked for only after value is delivered and demonstrated. The standing test replacing any appeal to looking expensive: would someone who could afford anything still choose this, because it does the one job better than anything else does. Propagated to BRAND_HOUSE, BRAND_BOOK and both agent rule files.

@@ -176,10 +176,16 @@ the product needs. "You closed thirty days" — never "help us keep the lights o
 
 ## 8. Visual register — and one unresolved conflict
 
-The brand model is a **Casio F-91W**: cheap, unembarrassed, everywhere,
-unchanged since 1989. Typographic, monochrome, paper-adjacent. Colour carries
-meaning only — red, yellow, green for progress (Rule 3) — never decoration.
-Helvetica throughout; `font-mono` fails the build (Rule 1).
+The brand model is a **Casio F-91W** — and per `VISION.md` §12.1a that is a
+belief about what earns respect, **not an instruction to look cheap**. A
+millionaire wears one because it works perfectly, forever, and asks nothing of
+them. Craft that makes the product more precise, more durable or easier to read
+is on-brand at any level. Decoration that signals expense while adding nothing
+is not.
+
+In practice: typographic, monochrome, paper-adjacent. Colour carries meaning
+only — red, yellow, green for progress (Rule 3) — never decoration. Helvetica
+throughout; `font-mono` fails the build (Rule 1).
 
 **Open conflict, BR8 / `VISION.md` §12.4.** The Three.js scene, studio renders,
 spine curvature and woven twill tag are **Leica register — the opposite of an
@@ -189,7 +195,11 @@ F-91W** — and this is logged as unresolved, not settled.
 craft layer. Describing the renders as proof of quality bets the words on a
 decision that has not been made. Write about what the product *does*.
 
-## 9. The three tests before anything ships
+## 9. The tests before anything ships
+
+**0. Would someone who could afford anything still choose this, because it does
+the one job better than anything else does?** (`VISION.md` §12.1a.) If the
+answer depends on how costly it looks, it is fluff and it goes.
 
 1. **Would a competent, tired adult find this condescending?** If yes, rewrite.
 2. **Could this make someone feel bad on a day they had a bad day?** If yes, cut
