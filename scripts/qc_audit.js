@@ -614,6 +614,7 @@ if (!fs.existsSync(visionPath)) {
     };
     walkSrc(path.join(process.cwd(), 'src'));
 
+    // Direction 1: analysed but never emitted - a metric that cannot move.
     for (const name of [...expected].sort()) {
       if (emitted.has(name) || DORMANT[name]) continue;
       errors.push(
@@ -622,6 +623,26 @@ if (!fs.existsSync(visionPath)) {
         "permanent zero presented as a measurement. Emit it, stop analysing it, " +
         "or add it to DORMANT in this rule with the reason."
       );
+    }
+
+    // Direction 2: emitted but undocumented. Not every event needs a dedicated
+    // metric - they all feed getFeatures' top_events distribution - so the test
+    // is not "is it analysed" but "is it declared". TELEMETRY_SPEC.md §2 is the
+    // registry, and an event absent from it is one nobody agreed to collect.
+    const specFile = path.join(process.cwd(), 'TELEMETRY_SPEC.md');
+    if (!fs.existsSync(specFile)) {
+      errors.push("[Rule 25 Violation] TELEMETRY_SPEC.md is missing — it is the event registry.");
+    } else {
+      const spec = fs.readFileSync(specFile, 'utf8');
+      for (const name of [...emitted].sort()) {
+        if (new RegExp('`' + name + '`').test(spec)) continue;
+        errors.push(
+          "[Rule 25 Violation] src/ emits the event '" + name +
+          "' but TELEMETRY_SPEC.md §2 does not list it. Every event collected " +
+          "from someone must be written down before it is collected — add it to " +
+          "the registry in §2, or stop emitting it."
+        );
+      }
     }
   } else {
     errors.push("[Rule 25 Violation] server/src/analyticsService.js or telemetryService.js is missing — the telemetry contract cannot be checked.");
@@ -656,7 +677,7 @@ if (errors.length === 0) {
   console.log('  - Rule 22: Execution Layer Enforcement Gate (Ivy Lee order lock, breathing state, non-punitive overrun, timing provenance)');
   console.log('  - Rule 23: Licence Integrity Gate (signed per-buyer keys; no shared secret, no private key in source)');
   console.log('  - Rule 24: Price Consistency Gate (VISION §11.1 is the price - including when that price is free)');
-  console.log('  - Rule 25: Telemetry Contract Gate (every analysed event is emitted, or declared dormant with a reason)\n');
+  console.log('  - Rule 25: Telemetry Contract Gate (analysed events are emitted; emitted events are in the TELEMETRY_SPEC §2 registry)\n');
   process.exit(0);
 } else {
   console.error(`❌ QC AUDIT FAILED with ${errors.length} error(s):\n`);

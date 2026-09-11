@@ -597,6 +597,84 @@ export const AnalyticsService = {
   },
 
   /**
+   * Core Web Vitals — the readout for the first-party PerformanceObserver that
+   * replaced Cloudflare RUM under B-39. Until this existed the app measured
+   * LCP, INP, CLS and TTFB, posted them, and nothing ever read them back.
+   *
+   * Reported at the 75th percentile, which is what Chrome's own thresholds are
+   * defined against; a mean would be dragged around by one slow phone. A metric
+   * with no samples reports null rather than 0 — the emitter is careful to send
+   * null for a browser that cannot measure something, and a 0 here would turn
+   * "not measured" into a perfect score.
+   */
+  getWebVitals() {
+    const METRICS = {
+      lcp: { value: 'lcp_ms', rating: 'lcp', unit: 'ms' },
+      inp: { value: 'inp_ms', rating: 'inp', unit: 'ms' },
+      cls: { value: 'cls', rating: 'cls_rating', unit: 'score' },
+      ttfb: { value: 'ttfb_ms', rating: 'ttfb', unit: 'ms' }
+    };
+
+    const p75 = (values) => {
+      if (values.length === 0) return null;
+      const sorted = [...values].sort((a, b) => a - b);
+      const idx = Math.min(Math.max(Math.ceil(sorted.length * 0.75) - 1, 0), sorted.length - 1);
+      return sorted[idx];
+    };
+
+    const summarise = (samples) => {
+      const out = {};
+      for (const [name, spec] of Object.entries(METRICS)) {
+        const values = samples
+          .map(s => s[spec.value])
+          .filter(v => typeof v === 'number' && Number.isFinite(v));
+        const distribution = { good: 0, 'needs-improvement': 0, poor: 0 };
+        for (const s of samples) {
+          const r = s[spec.rating];
+          if (r in distribution) distribution[r]++;
+        }
+        const value = p75(values);
+        out[name] = {
+          p75: value === null ? null : (spec.unit === 'ms' ? Math.round(value) : Math.round(value * 1000) / 1000),
+          unit: spec.unit,
+          sample_count: values.length,
+          distribution
+        };
+      }
+      return out;
+    };
+
+    const samples = db.prepare(`SELECT properties FROM events WHERE event = 'web_vitals'`)
+      .all()
+      .map(r => { try { return JSON.parse(r.properties); } catch { return null; } })
+      .filter(Boolean);
+
+    const byView = {};
+    for (const s of samples) {
+      const view = s.entry_view || 'unknown';
+      (byView[view] ||= []).push(s);
+    }
+
+    return {
+      sample_count: samples.length,
+      percentile: 75,
+      metrics: summarise(samples),
+      by_entry_view: Object.fromEntries(
+        Object.entries(byView).map(([view, rows]) => [
+          view,
+          { sample_count: rows.length, metrics: summarise(rows) }
+        ])
+      ),
+      thresholds: {
+        lcp_ms: [2500, 4000],
+        inp_ms: [200, 500],
+        cls: [0.1, 0.25],
+        ttfb_ms: [800, 1800]
+      }
+    };
+  },
+
+  /**
    * Experimentation & A/B Conversion Engine
    */
   getExperimentResults() {

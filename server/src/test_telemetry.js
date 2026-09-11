@@ -204,4 +204,36 @@ assert.strictEqual(TelemetryService.recordHeartbeat({ session_id: '' }).success,
   'An empty session_id must be rejected');
 console.log('  ✅ Heartbeat clamped oversized and non-numeric input.');
 
-console.log('\n🎉 ALL 13 TELEMETRY 2.0 AUTOMATED TESTS PASSED WITH 100% SUCCESS!\n');
+// Test 14: Core Web Vitals readout.
+// The emitter deliberately sends null for a metric the browser cannot measure.
+// A 0 here would turn "not measured" into a perfect score, which is the exact
+// failure VISION §13.2 describes - an instrument believed while wrong.
+console.log('Test 14: Verifying Core Web Vitals percentile readout...');
+const vitalsSession = 'test_cwv_' + Date.now();
+TelemetryService.ingestBatch(
+  [1000, 2000, 3000, 4000].map((lcp, i) => ({
+    session_id: vitalsSession,
+    anonymous_id: testAnonId,
+    event: 'web_vitals',
+    properties: {
+      lcp_ms: lcp, lcp: lcp <= 2500 ? 'good' : 'poor',
+      inp_ms: null, inp: null,
+      cls: 0.05, cls_rating: 'good',
+      ttfb_ms: 100 + i, ttfb: 'good',
+      entry_view: 'landing'
+    }
+  }))
+);
+
+const vitals = AnalyticsService.getWebVitals();
+assert(vitals.sample_count >= 4, 'Ingested web_vitals must be counted');
+assert.strictEqual(vitals.percentile, 75);
+// p75 of [1000,2000,3000,4000] is the 3rd value: ceil(4*0.75)-1 = index 2.
+assert.strictEqual(vitals.metrics.lcp.p75, 3000, `Expected p75 3000, got ${vitals.metrics.lcp.p75}`);
+assert.strictEqual(vitals.metrics.inp.p75, null, 'An all-null metric must report null, never 0');
+assert.strictEqual(vitals.metrics.inp.sample_count, 0);
+assert(vitals.metrics.lcp.distribution.good >= 2, 'Ratings must be distributed, not dropped');
+assert(vitals.by_entry_view.landing, 'Samples must be grouped by the view the page opened on');
+console.log(`  ✅ Core Web Vitals: LCP p75=${vitals.metrics.lcp.p75}ms, INP unmeasured reports null.`);
+
+console.log('\n🎉 ALL 14 TELEMETRY 2.0 AUTOMATED TESTS PASSED WITH 100% SUCCESS!\n');

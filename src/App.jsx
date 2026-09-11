@@ -572,7 +572,11 @@ export default function App() {
     const opened = new URLSearchParams(window.location.search).get('view');
     const isMarketingEntry = !opened || ['landing', 'legal', 'methods'].includes(opened);
     if (!isMarketingEntry) return undefined;
-    return observeWebVitals((metrics) => telemetry.track('web_vitals', metrics));
+    // entry_view rides along because §3.2 asks for these per page, and the
+    // view the page opened on is the only page identity that is correct for
+    // LCP - it is decided during first paint, before any navigation.
+    const entryView = opened || 'landing';
+    return observeWebVitals((metrics) => telemetry.track('web_vitals', { ...metrics, entry_view: entryView }));
   }, []);
 
   // Carrying yesterday's open priorities forward.

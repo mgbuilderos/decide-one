@@ -133,15 +133,23 @@ on the live site or in the Terms.
 
 Do not rebuild these. Verified in the tree on 11 September 2026.
 
-**App events (14):** `archive_gate_hit`, `day_closed`, `day_condition_selected`,
-`day_condition_skipped`, `decision_logged`, `dictation_completed`,
-`framework_selected`, `framework_task_added`, `habit_created`, `habit_toggled`,
-`modal_abandoned`, `rapid_log_created`, `reflection_saved`, `vault_exported`.
+**This section is the event registry, and QC Rule 25 enforces it.** Every name
+below must be emitted by `src/`, and every event `src/` emits must be named
+below. An event that is measured but undocumented is how six dashboard metrics
+came to be permanent zeros nobody could distinguish from a real result.
 
-**SDK captures automatically:** click targets and rage-click detection,
-`window.onerror`, visibility changes, `pagehide` flush, an offline queue that
-drains on reconnect, surface transitions, cognitive hesitation (first-keypress
-latency), task triage.
+**App events (19):** `archive_gate_hit`, `day_closed`, `day_condition_selected`,
+`day_condition_skipped`, `decision_logged`, `dictation_started`,
+`dictation_completed`, `framework_selected`, `framework_task_added`,
+`habit_created`, `habit_toggled`, `modal_abandoned`,
+`priorities_carried_forward`, `rapid_log_created`, `rapid_log_status_toggled`,
+`reflection_saved`, `vault_exported`, `view_changed`, `web_vitals`.
+
+**SDK captures automatically (7):** `session_start`, `surface_transition`,
+`cognitive_hesitation` (first-keypress latency), `task_triage`,
+`rage_click_detected`, `client_error` (from `window.onerror`), and
+`exit_breadcrumbs`. The SDK also handles click targets, visibility changes, the
+`pagehide` flush, and an offline queue that drains on reconnect.
 
 **Server analytics (12 methods):** `getOverview`, `getFeatures`, `getFunnels`,
 `getDropoffsAndGaps`, `getRetention`, `getLiveEvents`, `getPathfinderJourneys`,

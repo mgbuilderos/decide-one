@@ -184,6 +184,10 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 200, AnalyticsService.getCognitiveHesitationMetrics());
     }
 
+    if (method === 'GET' && pathname === '/api/v1/analytics/web-vitals') {
+      return sendJson(res, 200, AnalyticsService.getWebVitals());
+    }
+
     if (method === 'GET' && pathname === '/api/v1/analytics/anomalies') {
       return sendJson(res, 200, AnalyticsService.getAnomalies());
     }
