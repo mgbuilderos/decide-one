@@ -783,3 +783,9 @@ Regional pricing removed: $39 is now the price everywhere, India included (was �
 ### 2026-09-11 17:31 — claude
 
 Rule 24 added to the audit: the price in VISION.md §11.1 is canonical and the app, README and MONETIZATION_PLAN must agree with it. Proven against all three failure modes by temporarily breaking each one - an app price VISION never decided (this is B-28 replayed), a rupee price after B-36 removed regional pricing, and a README that stops stating the price. Repricing is now one line in VISION plus a passing audit, instead of a nine-file manual sweep nobody checks.
+
+---
+
+### 2026-09-11 22:24 — claude
+
+B-37: Decide One is now free. No paid tier; the ask moves to the end of a day actually closed, once and without blocking, through Dodo. VISION §11.1 changed first per rule 5 and now declares 'Canonical price: free'. Rule 24 taught that free is a canonical state, and asserts no price may appear anywhere in src/ while VISION declares it - proven by putting one back and watching it fail. Reverses M2, BR5 and B-36, all marked superseded. Reason: the price moved six times in one day and none could be evaluated, because nobody had been asked to pay and the telemetry holds 54 seeded users with an eight-day maximum tenure.

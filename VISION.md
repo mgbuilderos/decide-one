@@ -165,9 +165,15 @@ Everything above is *why* and *what*. This is how it is said. **Where any copy a
 >
 > Bring the work competing for your day into view. Use Top 3, Ivy Lee, or the Urgent/Important Matrix to give it order. Set a realistic time for what comes first. Decide One provides the structure. You make the decision and do the work.
 >
-> Three methods, all older than the software industry. One page. Nothing leaves your device. **$39 once, never a subscription.**
+> Three methods, all older than the software industry. One page. Nothing leaves your device. **Free, and no account. Pay only if it earns it.**
 
 **"Choose what deserves your attention."** is the primary line. It gives the user the benefit and the action in one sentence, while preserving the neutral role of the product: Decide One structures the decision but never makes it for them.
+
+**Canonical price: free.** There is no paid tier, no licence to buy, and no feature held back. At the end of a day the person has actually closed, the product may ask — once, quietly, and never blocking — whether it has been worth something. Declining is a complete answer and the ask gets quieter each time it is declined.
+
+**Why this replaced the one-time $39.** The price moved six times in a single day — a one-time $39, then $10 monthly, then $10 one-time, then $39 worldwide, then $29, then $9 — because there was nothing to check any of them against. No one had been asked to pay, the telemetry held 54 seeded users whose longest tenure was eight days, and the retention query stopped at day seven. **A price cannot be chosen for a product with no usage data.** Usage comes first; the number, if there is one, comes from what usage shows. Marginal cost is zero, so this costs nothing to run, and free→paid later reads as growth where paid→free would read as failure.
+
+**What this does not change.** Nothing leaves the device. No account. No subscription. No advertising, and no selling of anything a person writes — that last is not a pricing decision and is not available as one.
 
 **Approved alternates**, same body:
 
@@ -227,7 +233,7 @@ Every competitor's changelog is their marketing, which makes this commitment str
 
 ### 12.3 It settles the price question
 
-`STRATEGY_AND_NAMING.md` §1.2 argues the Jobs position: $49–99, premium forever. The F-91W is a $12 watch. **The two point in opposite directions, and Casio has been chosen.** $39 once, forever, is the software F-91W. It must not drift upward.
+`STRATEGY_AND_NAMING.md` §1.2 argues the Jobs position: $49–99, premium forever. The F-91W is a $12 watch. **The two point in opposite directions, and Casio has been chosen.** That decision stands, and free is its furthest expression: the F-91W argument was always about being assumed rather than aspired to, and ubiquity is the moat. **Superseded 11 September 2026 — see §11.1.** The one-time $39 that stood here was the Casio point under a paid model; there is no longer a paid model, and any future price must be set from usage rather than from this analogy.
 
 ### 12.4 The conflict it creates — and §10.5 is on the wrong side of it
 

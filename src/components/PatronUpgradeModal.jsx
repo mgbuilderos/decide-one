@@ -103,7 +103,7 @@ export default function PatronUpgradeModal({
               Keep Decide One Forever.
             </h2>
             <p className="text-xs text-neutral-500 dark:text-neutral-400 max-w-sm mx-auto leading-relaxed">
-              One purchase will unlock the complete priority instrument. Checkout is intentionally disconnected in this launch build.
+              Everything here is free and stays free. If it earns it, you will be asked once at the end of a day you have closed — never before, and never in the way.
             </p>
           </div>
 
@@ -114,8 +114,8 @@ export default function PatronUpgradeModal({
                 Lifetime License
               </div>
               <div className="flex items-baseline gap-1.5 mt-0.5">
-                <span className="text-2xl font-bold text-neutral-900 dark:text-white">$39</span>
-                <span className="text-xs text-neutral-500 dark:text-neutral-400">USD • one-time, worldwide</span>
+                <span className="text-2xl font-bold text-neutral-900 dark:text-white">Free</span>
+                <span className="text-xs text-neutral-500 dark:text-neutral-400">No account, no subscription</span>
               </div>
             </div>
             <div className="flex items-center gap-1 text-[11px] font-semibold text-neutral-600 dark:text-neutral-400">

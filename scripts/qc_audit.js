@@ -498,8 +498,24 @@ if (!fs.existsSync(visionPath)) {
   const canonical = [...vision.matchAll(priceRe)].map((m) => m[1]);
   const unique = [...new Set(canonical)];
 
-  if (unique.length === 0) {
-    errors.push("[Rule 24 Violation] VISION.md states no canonical price. Nothing else has anything to agree with.");
+  // "Free" is a canonical price too, and the one in force since B-37. When
+  // VISION declares it, no price may appear in the app at all - a number on a
+  // screen is a promise, and this one would be a promise VISION did not make.
+  const declaresFree = /Canonical price: free/i.test(vision);
+
+  if (unique.length === 0 && declaresFree) {
+    const anyMoney = new RegExp("(\\$|₹)(\\d[\\d,]*)", "g");
+    scanFiles(SRC_DIR, (filePath, content) => {
+      for (const hit of content.matchAll(anyMoney)) {
+        errors.push(
+          "[Rule 24 Violation] " + path.relative(process.cwd(), filePath) +
+          " shows " + hit[1] + hit[2] + ", but VISION.md §11.1 declares the product free. " +
+          "There is no price to display; asking for one is done in the closure ritual, not on a price tag."
+        );
+      }
+    });
+  } else if (unique.length === 0) {
+    errors.push("[Rule 24 Violation] VISION.md states neither a canonical price nor that the product is free. Nothing else has anything to agree with.");
   } else if (unique.length > 1) {
     errors.push("[Rule 24 Violation] VISION.md disagrees with itself on the price: " + unique.join(" vs ") + ".");
   } else {
@@ -537,6 +553,7 @@ if (!fs.existsSync(visionPath)) {
     });
 
     // The documents a buyer or an agent reads must not contradict the app.
+    // Only meaningful when VISION names a number; under "free" there is none.
     const mustState = [
       ["README.md", "the first thing anyone reads"],
       ["MONETIZATION_PLAN.md", "the plan the price is decided in"]
@@ -582,7 +599,7 @@ if (errors.length === 0) {
   console.log('  - Rule 21: Restricted Naming Token Check (not trademark or copyright clearance)');
   console.log('  - Rule 22: Execution Layer Enforcement Gate (Ivy Lee order lock, breathing state, non-punitive overrun, timing provenance)');
   console.log('  - Rule 23: Licence Integrity Gate (signed per-buyer keys; no shared secret, no private key in source)');
-  console.log('  - Rule 24: Price Consistency Gate (VISION §11.1 is the price; the app and the docs must agree)\n');
+  console.log('  - Rule 24: Price Consistency Gate (VISION §11.1 is the price - including when that price is free)\n');
   process.exit(0);
 } else {
   console.error(`❌ QC AUDIT FAILED with ${errors.length} error(s):\n`);
