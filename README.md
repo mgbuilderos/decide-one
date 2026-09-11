@@ -26,7 +26,7 @@ npm install
 # 2. Start local development server (Port 3000)
 npm run dev
 
-# 3. Run the 21 automated Quality Control (QC) Gates
+# 3. Run the 23 automated Quality Control (QC) Gates
 npm run test:qc
 
 # 4. Build optimized production bundle
@@ -37,7 +37,8 @@ npm run build
 
 ## 🧭 Live URLs & Access
 
-* **Production Domain**: [https://decideone.app/](https://decideone.app/)
+* **Production Domain**: [https://decideone.app/](https://decideone.app/) — currently served by the Sites project recorded in `.openai/hosting.json`.
+* **Verified Cloudflare Worker**: [https://decide-one.decide-one-stationery-instrument.workers.dev](https://decide-one.decide-one-stationery-instrument.workers.dev)
 * **Daily Priority Instrument**: [http://localhost:3000/?view=daily](http://localhost:3000/?view=daily)
 * **Marketing Landing Page**: [http://localhost:3000/?view=landing](http://localhost:3000/?view=landing)
 * **Licence activation**: paste a signed per-buyer licence key in the app. Checkout is intentionally disconnected in this build.
@@ -65,6 +66,6 @@ Stated precisely, because the previous version of this section overclaimed.
 
 ---
 
-## ⚖️ Legal & IP Safety Certification
+## ⚖️ Legal & IP Notes
 
-The three public-domain productivity methods, naming conventions, typography choices, and layout standards used in Decide One must remain independently reviewed for commercial use. Historical license keys and storage identifiers are retained only as compatibility fallbacks.
+The three methods, naming conventions, typography choices, and layout standards used in Decide One still require independent professional review before commercial release. Historical licence keys and storage identifiers are retained only as compatibility fallbacks.

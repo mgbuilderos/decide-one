@@ -24,19 +24,19 @@ export default function HeaderToolbar({ activeView, setActiveView, settings, upd
     </div>
     <div className="instrument-navigation">
       <nav aria-label="Time Perspective">{[['daily','Daily'],['weekly','Weekly'],['monthly','Monthly'],['yearly','Yearly']].map(([id,label]) => <button key={id} aria-current={activeView === id && !showCover ? 'page' : undefined} onClick={() => { playSound('page',settings?.isMuted); act(() => setActiveView(id)); if(showCover) onToggleCover?.(); }}>{label}</button>)}</nav>
-      <div className="instrument-method-icons" role="group" aria-label="Choose A Prioritization Method">
-        {FRAMEWORKS.map(method => {
-          const MethodIcon = methodIcons[method.id];
-          return <button
-            key={method.id}
-            type="button"
-            aria-label={`${method.name}: ${method.subtitle}`}
-            aria-pressed={method.id === activeFramework}
-            title={`${method.name} — ${method.subtitle}`}
-            onClick={() => onSelectFramework?.(method.id)}
-          ><MethodIcon size={16}/></button>;
-        })}
-      </div>
+      {activeView === 'daily' && !showCover && <div className="instrument-method-icons" role="group" aria-label="Choose A Prioritization Method">
+          {FRAMEWORKS.map(method => {
+            const MethodIcon = methodIcons[method.id];
+            return <button
+              key={method.id}
+              type="button"
+              aria-label={`${method.name}: ${method.subtitle}`}
+              aria-pressed={method.id === activeFramework}
+              title={`${method.name} — ${method.subtitle}`}
+              onClick={() => onSelectFramework?.(method.id)}
+            ><MethodIcon size={16}/></button>;
+          })}
+        </div>}
     </div>
     {menu === 'tools' && <div className="instrument-popover instrument-tools" id="instrument-tools">
       <p>Your Workspace</p>

@@ -120,7 +120,7 @@ Each cut passes the §9 test: none of them moved a user from confusion toward cl
 
 Plus **day closure** — not reflection, just *the day is done*. This is kept deliberately: without an ending the product is morning-only and there is no reason to return in the evening, and day-30 retention is the metric the entire growth plan rests on.
 
-### 10.3 The mechanism — symptom, then method
+### 10.3 The mechanism — make the choice visible, then apply a method
 
 The three surviving frameworks are not variations. **Each was invented to treat a different failure mode**, and that is the organising logic the category never states:
 
@@ -133,9 +133,9 @@ The three surviving frameworks are not variations. **Each was invented to treat 
 Rule of 3 does **not** cure context-switching — a switcher will pick three things and still bounce between them. Nor does it cure urgency-confusion — they will simply pick three urgent trivial things. Different diseases, genuinely different medicines. This is why three survive and not one.
 
 **Presentation rules:**
-- No quiz, no gate. *"What does your day look like?"* is unanswerable by a confused person — not knowing is why they opened the app.
-- **Default to Rule of 3.** The other two sit behind a quiet switch available any morning.
-- **Symptom is the entry point; the method is named and credited once selected.** The user clicks *"I keep not finishing things"*; the page then shows *Ivy Lee Method · 1918*. Leading with plain language satisfies Gate 5 without concealing whose method it is. See `FRAMEWORKS.md` §7.1 — this supersedes the earlier "never by method name" rule.
+- No quiz, no gate. Open directly on the instrument with Top 3 selected.
+- **Show all three methods as direct, labelled controls.** Top 3, Ivy Lee, and the Urgent/Important Matrix are always one click away.
+- Explain the problem each method helps with in plain language, then name and credit the method wherever it is used. The instrument supplies the form; the person still chooses the work and does it.
 
 ### 10.4 The frameworks must be enforced, not drawn
 
@@ -155,32 +155,33 @@ The make-or-break implementation rule. If selecting a method only changes labels
 
 ---
 
-## 11. The canonical statement — September 9, 2026
+## 11. The canonical statement — September 11, 2026
 
 Everything above is *why* and *what*. This is how it is said. **Where any copy anywhere conflicts with this, this wins.**
 
 ### 11.1 The statement
 
-> ### Open it confused. Close it decided.
+> ### Choose what deserves your attention.
 >
-> Most tools hand you a blank page and wish you luck. This one asks what's going wrong first — *too much to do, nothing getting finished, everything feeling urgent* — and gives you the method built for that exact problem. Then it holds you to the time you set, and shows you afterwards where the time actually went.
+> Bring the work competing for your day into view. Use Top 3, Ivy Lee, or the Urgent/Important Matrix to give it order. Set a realistic time for what comes first. Decide One provides the structure. You make the decision and do the work.
 >
 > Three methods, all older than the software industry. One page. Nothing leaves your device. **$39 once, never a subscription.**
 
-**"Open it confused. Close it decided."** is the primary line. It states the whole transformation in four words, it restates §4 directly, and *decided* carries the etymology in §8 — *decidere*, to cut off.
+**"Choose what deserves your attention."** is the primary line. It gives the user the benefit and the action in one sentence, while preserving the neutral role of the product: Decide One structures the decision but never makes it for them.
 
 **Approved alternates**, same body:
 
 | Line | Leads with |
 | :--- | :--- |
-| *Decide what deserves your day.* | The instruction. Earlier headline, still strong. |
+| *Open it confused. Close it decided.* | The transformation. |
+| *Decide what deserves your day.* | The instruction. |
 | *You don't need another list. You need to know which three.* | The enemy. |
-| *It asks what's wrong before it tells you what to do.* | The differentiator — the most defensible claim available, because nobody else does it. |
+| *Three methods. One clear order.* | The mechanism. |
 
 ### 11.2 What the product does — the four movements
 
-1. **It asks what's going wrong.** Not *"what does your day look like"* — a confused person cannot answer that, and not knowing is why they opened it. Recognition, not analysis: *too much to do* · *I keep not finishing things* · *everything feels urgent.*
-2. **It gives the method built for that specific problem.** Overcommitment → Rule of 3. Context-switching → Ivy Lee, 1918. Urgency confusion → the urgent/important matrix. All older than the software industry; all credited to whoever found them.
+1. **It makes the competing work visible.** A bounded page turns a crowded mental list into a choice the person can see.
+2. **It gives the choice a method.** Overcommitment → Top 3. Context-switching → Ivy Lee, 1918. Urgency confusion → the Urgent/Important Matrix. All are time-tested; all are named and credited honestly.
 3. **The method is enforced, not drawn.** Three lines and no fourth. Ivy Lee's second line will not open until the first is closed. Urgent/important requires classification before writing. **A clock is what makes this real** — a page can be ignored, a running timer cannot. Each line takes a duration; optionally a when and where.
 4. **It closes, and it counts.** Done, partial, blocked. Over weeks, planned against actual — where the time went, whether the estimates hold. **It never scolds.** Overrun adds time and says nothing.
 
@@ -192,7 +193,7 @@ These are not stylistic preferences. Each one closes a specific exposure.
 
 | Rule | Never write | Write instead | Why |
 | :--- | :--- | :--- | :--- |
-| **No clinical vocabulary** | diagnose · prescribe · treat · therapy | *asks what's going wrong* · *the method built for that problem* | Medical **structure** is fine; medical **language** invites health-claim scrutiny from regulators and app stores. Same discipline as §10.5, pointed at different words. |
+| **No clinical vocabulary** | diagnose · prescribe · treat · therapy | *choose a method* · *use the structure that fits* | Medical **structure** is fine; medical **language** invites health-claim scrutiny from regulators and app stores. Same discipline as §10.5, pointed at different words. |
 | **No judgment** | *whether you were honest* · *you failed* · streaks lost, scores falling | *shows you where the time actually went* | The product observes; it does not scold. Breaking this breaks the non-punitive rule the entire timer design rests on. |
 | **No unearned science** | *scientifically proven* · *clinically validated* (of the selection methods) | *time-tested* · *methods that have worked for a century* | §10.5. The single permitted scientific claim is Gollwitzer & Sheeran (2006), d = 0.65, and it applies to if-then planning **only**. |
 

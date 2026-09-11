@@ -128,6 +128,20 @@ export default function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
+  // Keep direct links honest as people move between the landing page and the
+  // four review surfaces. This preserves any landing-page anchor while making
+  // a copied app URL reopen the view that is actually on screen.
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const visibleView = showCover ? 'cover' : activeView;
+    const viewChanged = url.searchParams.get('view') !== visibleView;
+    const shouldClearHash = visibleView !== 'landing' && url.hash;
+    if (!viewChanged && !shouldClearHash) return;
+    url.searchParams.set('view', visibleView);
+    if (shouldClearHash) url.hash = '';
+    window.history.replaceState(window.history.state, '', url);
+  }, [activeView, showCover]);
+
   const {
     data,
     getDailyLog,

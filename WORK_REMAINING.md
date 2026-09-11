@@ -6,8 +6,8 @@ Updated 11 September 2026 after the launch design and implementation pass.
 
 1. Provide the five production legal facts in `.env.production`: legal entity, registered address, support email, jurisdiction, and effective date. `npm run test:launch` blocks release while any are missing.
 2. Have the legal pages and method naming reviewed by qualified counsel. The repository contains a practical first-pass review and method attributions, not professional legal advice.
-3. Authenticate Wrangler with the Cloudflare account that owns the `decide-one` Pages project. The account currently active on this machine does not own it.
-4. Run `npm run deploy`, then confirm that `npm run verify:live` reports a matching asset hash.
+3. Choose the production path already documented in `DEPLOY.md`: publish `dist/` through the existing Sites project, or move `decideone.app` to the verified Cloudflare Worker after recording and removing the current apex DNS records.
+4. After publishing, run `npm run verify:live` and confirm that the production asset hash matches `dist/`.
 
 ## Deliberately Excluded
 
