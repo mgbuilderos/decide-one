@@ -49,7 +49,7 @@ business.
 
 ---
 
-## The four pillars
+## The five pillars
 
 Everything the brand says stands on one of these. Copy that stands on none of
 them is decoration.
@@ -96,6 +96,21 @@ on the person's behalf (`VISION.md` §11.3, fourth rule).
 
 Someone returning after a month away finds a clean day, not an account of their
 absence.
+
+### 5. It is an instrument, and it is held to that standard
+
+**The pilot flies. The compass does not.** The product's job is to tell someone
+where they are so they can act — not to act for them, and not to keep them
+company.
+
+An instrument is trusted because it is **right**, not because it is pleasant. A
+compass two degrees off is worse than no compass, because it is believed. So:
+exact alignment, correct numbers, an accurate clock, readable type, every state
+designed, zero console errors, and nothing on screen that is not information.
+
+`VISION.md` §13 holds the full standard and the checkable list. **Ornament is a
+defect** — on an instrument panel, anything that is not information is in the
+way of information.
 
 ---
 

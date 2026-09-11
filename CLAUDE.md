@@ -56,6 +56,19 @@ it does the one job better than anything else does?*
 
 ---
 
+**And the standard it is held to.** `VISION.md` §13: the pilot flies, the
+compass does not. An instrument is trusted because it is right, not because it
+is pleasant — a compass two degrees off is worse than no compass, because it is
+believed.
+
+Atomic grade is checkable, not a mood: exact alignment on the 24px cadence,
+**correct numbers and an accurate clock**, type readable at its real size, space
+sufficient rather than merely tight, every state designed including empty and
+returning-after-a-month, **zero console errors in any state**, and nothing on
+screen that is not information. **Ornament is a defect.**
+
+---
+
 ## The five rules
 
 **1. Read before writing.**

@@ -201,6 +201,17 @@ decision that has not been made. Write about what the product *does*.
 the one job better than anything else does?** (`VISION.md` §12.1a.) If the
 answer depends on how costly it looks, it is fluff and it goes.
 
+**0a. Would a person who depends on instruments trust this one, and keep it?**
+(`VISION.md` §13.) Trust is earned by being right every time in small things,
+where nobody is looking — exact alignment, correct numbers, an accurate clock,
+every state designed, no console errors. **Ornament is a defect**: on an
+instrument panel, anything that is not information is in the way of it.
+
+Copy is held to this too. Precise, unhurried, nothing oversold. The site is part
+of the instrument, not an advertisement for it. And **Armstrong, Jobs and Musk
+are an internal standard of seriousness, never public copy** — naming real
+people implies an endorsement the product has no right to claim.
+
 1. **Would a competent, tired adult find this condescending?** If yes, rewrite.
 2. **Could this make someone feel bad on a day they had a bad day?** If yes, cut
    it. This is the §11.3 fourth-rule test and it outranks persuasiveness.

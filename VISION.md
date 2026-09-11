@@ -334,3 +334,103 @@ This supersedes **Detent** as the standing direction. Detent satisfied the machi
 **Radar was considered and rejected.** Radar exists to ensure nothing escapes notice; this product exists so that almost everything can leave the user's attention. *Keep it on the radar* means adding something to the monitored set. Radar names the user's condition, not the cure.
 
 The standing test is now: **does the borrowed meaning add to what the user sees, or take away from it?** The name should perform the work in its meaning: edit, filter, reduce, refine, select or impose a limit. Full rationale and screening record: `NAMING_DIRECTION.md`.
+
+---
+
+## 13. The instrument standard — September 12, 2026
+
+§12 says what kind of company makes this. **This says what standard the thing
+itself is held to, and it is the highest bar in this document.**
+
+### 13.1 The founder's statement
+
+> *"It is not about costly, it needs to look perfect, precise, and the product
+> should be serious — as it is a priority instrument and not a game. All
+> alignment should be proper, the pixels should be perfectly aligned, there
+> should be no errors, the fonts should be readable, there should be proper
+> space to add everything, the clock should work properly, and every small
+> detail should be perfect. The website should look it and speak it.*
+>
+> *Imagine the person is like a pilot and we are the compass who guides them in
+> the sky, so they decide one thing and really accomplish something.*
+>
+> *We are an instrument, not a diary. Imagine if someone like Neil Armstrong or
+> Steve Jobs or Elon Musk wanted a priority instrument — this would be the tool.
+> We want to make everything atomic-grade and precise, so inspect each and every
+> element."*
+> — the founder, 12 September 2026
+
+### 13.2 The compass, and what it settles
+
+**The pilot flies. The compass does not.**
+
+This is the most exact statement of the product's role yet written, and it
+resolves things §11.2 only implied:
+
+- **The instrument is trusted because it is right, not because it is pleasant.**
+  A compass two degrees off is worse than no compass, because it is believed.
+- **It must be readable at a glance, under load.** Nobody studies an instrument.
+  They look, they know, they act.
+- **It never flies the plane.** The choosing stays the person's. A compass that
+  steered would be a different, worse instrument — and this is the same rule
+  §11.1 states as *you make the decision*, arrived at from the cockpit instead.
+- **Ornament is a defect.** On an instrument panel, anything that is not
+  information is something in the way of information.
+
+**Diary and instrument are different objects.** A diary records what happened; an
+instrument tells you where you are so you can act. Where a design decision could
+go either way, it goes to the instrument.
+
+### 13.3 Atomic grade — what it means in practice
+
+Not a mood. Each of these is checkable, and a reviewer should be able to fail a
+change against them:
+
+1. **Alignment is exact.** Everything sits on the 24px cadence. Optical centring
+   where mathematical centring reads as wrong.
+2. **Zero console errors, in any state.** An instrument that logs errors is an
+   instrument that is lying somewhere else too.
+3. **Numbers are correct and the clock is accurate.** Time shown, time planned,
+   time spent, dates and weekdays. **This is the most important item on the
+   list**, because it is the one an instrument cannot get wrong and remain one.
+4. **Type is readable at its real size**, on a real screen, at arm's length —
+   not at 200% zoom on a designer's monitor.
+5. **Space is sufficient, not merely tight.** Restraint is not cramping. If a
+   field cannot hold what a person will type, it is unfinished.
+6. **Every state is designed** — empty, one item, full, overrun, returning after
+   a month. An unhandled state is a broken instrument, not an edge case.
+7. **Nothing is decorative.** Every mark on screen carries information or earns
+   removal.
+
+### 13.4 The people it is imagined for
+
+Armstrong, Jobs, Musk are named as a **standard of seriousness**, not as an
+audience and never as an endorsement.
+
+**They must not appear in public copy** — real people's names imply a claim the
+product has no right to make, and that is a §11.3 problem as well as a legal one.
+Their use here is internal and singular: *would a person who chooses instruments
+for a living keep this one?*
+
+### 13.5 How the website is held to the same bar
+
+The site is part of the instrument, not an advertisement for it.
+
+- It must **look and speak** like the thing it describes: precise, unhurried,
+  nothing oversold.
+- **The 3D journal must depict the actual product.** Matching what is really
+  inside the app, and reading as a **digital instrument rather than a physical
+  book**, so nobody arrives believing a paper notebook is for sale. A render that
+  misrepresents the product is not craft; it is an inaccuracy on an instrument.
+- **Proof must be real.** The accomplishment and review surfaces show what people
+  actually did, at the thresholds in `TELEMETRY_SPEC.md` §6, or they show
+  nothing.
+
+### 13.6 The test
+
+> **Would a person who depends on instruments — and who could use anything —
+> trust this one, and keep it?**
+
+Trust is the operative word. It is earned by being right every time, in small
+things, where nobody is looking.
+
