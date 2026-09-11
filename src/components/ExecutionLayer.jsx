@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Check, Pause, Plus } from 'lucide-react';
 import AnalogueClock from './AnalogueClock';
 import { playSound } from '../utils/audio';
 import {
@@ -8,9 +7,6 @@ import {
   formatDuration,
   computeCapacity,
   syncSession,
-  pauseSession,
-  completeSession,
-  extendSession,
   reconcileOnReturn,
   getFrameworkItems,
   elapsedSeconds,
@@ -77,24 +73,6 @@ export default function ExecutionLayer({
     setAskingAbout(previous => previous.filter(id => id !== item.id));
   };
 
-  const handlePause = () => {
-    if (!activeItem) return;
-    playSound('click', isMuted);
-    onUpdateExecution?.(activeItem.id, pauseSession(getSession(dailyLog, activeItem.id)));
-  };
-
-  const handleComplete = () => {
-    if (!activeItem) return;
-    playSound('check', isMuted);
-    onUpdateExecution?.(activeItem.id, completeSession(getSession(dailyLog, activeItem.id)));
-  };
-
-  const handleExtend = () => {
-    if (!activeItem) return;
-    playSound('click', isMuted);
-    onUpdateExecution?.(activeItem.id, extendSession(getSession(dailyLog, activeItem.id), 15 * 60));
-  };
-
   if (items.length === 0) {
     return (
       <div className="w-full min-w-0 min-h-[168px] flex flex-col items-center justify-center px-6 py-5 text-center select-none">
@@ -152,15 +130,17 @@ export default function ExecutionLayer({
                 <div className="flex shrink-0 items-center gap-1.5">
                   <button
                     type="button"
+                    disabled={!isInteractive}
                     onClick={() => answerStillOn(item, true)}
-                    className="rounded px-2 py-1 text-[10px] font-semibold bg-black/[0.05] dark:bg-white/[0.08] hover:bg-black/10 dark:hover:bg-white/15 transition-colors"
+                    className="rounded px-2 py-1 text-[10px] font-semibold bg-black/[0.05] dark:bg-white/[0.08] hover:bg-black/10 dark:hover:bg-white/15 disabled:opacity-40 transition-colors"
                   >
                     Resume
                   </button>
                   <button
                     type="button"
+                    disabled={!isInteractive}
                     onClick={() => answerStillOn(item, false)}
-                    className="rounded px-2 py-1 text-[10px] font-semibold text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors"
+                    className="rounded px-2 py-1 text-[10px] font-semibold text-neutral-500 hover:text-neutral-900 dark:hover:text-white disabled:opacity-40 transition-colors"
                   >
                     Leave Paused
                   </button>
@@ -171,17 +151,17 @@ export default function ExecutionLayer({
         </div>
       )}
 
-      <div className="flex min-h-[148px] flex-1 flex-col items-center justify-center py-4 text-center">
+      <div className="flex min-h-[132px] flex-1 flex-col items-center justify-center py-2 text-center">
         <AnalogueClock
           session={activeSession}
           plannedSec={activeSession ? 0 : capacity.plannedSec}
-          size={activeSession ? 112 : 88}
+          size={activeSession ? 88 : 80}
           showReadout={Boolean(activeSession)}
         />
 
         {activeItem ? (
           <>
-            <p className="mt-2 max-w-[82%] truncate text-[12px] font-semibold text-neutral-800 dark:text-neutral-200">
+            <p className="mt-1.5 max-w-[82%] truncate text-[11px] font-semibold text-neutral-800 dark:text-neutral-200">
               {activeSession.state === STATES.BREATHING ? 'Ready for' : 'Working on'} “{activeItem.text}”
             </p>
             <p className="mt-0.5 text-[10px] text-neutral-400 tabular-nums">
@@ -189,34 +169,6 @@ export default function ExecutionLayer({
             </p>
             {isOvertime(activeSession) && (
               <p className="mt-1 text-[10px] text-neutral-500">The estimate changed. Add time if the task needs it.</p>
-            )}
-            {activeSession.state === STATES.RUNNING && isInteractive && (
-              <div className="mt-3 flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={handlePause}
-                  aria-label={`Pause ${activeItem.text}`}
-                  className="inline-flex h-8 items-center gap-1.5 rounded-full border border-black/[0.1] dark:border-white/[0.12] px-3 text-[10px] font-semibold text-neutral-700 dark:text-neutral-300 hover:border-black/30 dark:hover:border-white/35 transition-colors"
-                >
-                  <Pause className="h-3 w-3" /> Pause
-                </button>
-                <button
-                  type="button"
-                  onClick={handleComplete}
-                  aria-label={`Complete ${activeItem.text}`}
-                  className="inline-flex h-8 items-center gap-1.5 rounded-full border border-black/[0.1] dark:border-white/[0.12] px-3 text-[10px] font-semibold text-neutral-700 dark:text-neutral-300 hover:border-black/30 dark:hover:border-white/35 transition-colors"
-                >
-                  <Check className="h-3 w-3" /> Done
-                </button>
-                <button
-                  type="button"
-                  onClick={handleExtend}
-                  aria-label={`Add 15 minutes to ${activeItem.text}`}
-                  className="inline-flex h-8 items-center gap-1.5 rounded-full border border-black/[0.1] dark:border-white/[0.12] px-3 text-[10px] font-semibold text-neutral-700 dark:text-neutral-300 hover:border-black/30 dark:hover:border-white/35 transition-colors"
-                >
-                  <Plus className="h-3 w-3" /> 15 min
-                </button>
-              </div>
             )}
           </>
         ) : (
