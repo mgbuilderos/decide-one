@@ -849,3 +849,9 @@ Brand cleanup on the cover and hero. The hero eyebrow is two lines with Free For
 ### 2026-09-11 23:26 — claude
 
 Volumes removed entirely (B-38). Four volumes each held a separate journal with its own Top 3 - twelve open priorities and four decisions before the decision, which is the condition the product exists to treat sold back as a feature. The separation already lives in a better place: each of the three daily priorities carries a category, so the split is inside the three rather than beside them. Removed the concept rather than reducing to one, since a container with a single item is overhead in the code and in the head. Done now specifically because volume data lives under suffixed localStorage keys and nobody has data yet - the same change after launch is a migration of real journals. Old keys left in place, so it is reversible.
+
+---
+
+### 2026-09-11 23:31 — claude
+
+Header typography and the view switcher. The wordmark went from 16px to 20px with more tracking - it is the only brand mark on the page and it sat smaller than felt right between two utility labels. Weight came down slightly as size went up, because confidence in a wordmark is size and air rather than boldness. The four view tabs are now one segmented control: a single rounded track in the page grey with the active view raised on it as a white pill, the way paper sits on a surface, with dark mode handled. Founder also asked for an overall premium feel 'like a 1000 dollar tool' - flagged rather than built, because that is BR8, the open conflict between the Casio F-91W brand model and the Leica-register craft already in the tree. Craft and precision are compatible with the Casio; luxury signalling is the thing BR8 has to settle.
