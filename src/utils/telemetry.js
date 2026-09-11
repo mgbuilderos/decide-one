@@ -20,6 +20,8 @@
  * - Offline queueing via localStorage
  */
 
+import { sanitizeProperties } from '../../shared/telemetrySanitize.js';
+
 export const CONSENT_KEY = 'decideone_telemetry_consent';
 export const INSTALL_DATE_KEY = 'decideone_install_date';
 
@@ -109,12 +111,6 @@ const BATCH_INTERVAL_MS = 5000;
 const HEARTBEAT_INTERVAL_MS = 30000;
 const IDLE_THRESHOLD_MS = 30000;
 
-// Zero-Knowledge Sensitive Field Guard
-const SENSITIVE_PROPS = new Set([
-  'text', 'title', 'note', 'reflection', 'content', 'rationale',
-  'task_text', 'decision_text', 'search_query', 'raw_transcript', 'password', 'key'
-]);
-
 function getOrCreateId(storage, key, prefix, legacyKey) {
   try {
     let id = storage.getItem(key);
@@ -130,6 +126,53 @@ function getOrCreateId(storage, key, prefix, legacyKey) {
   } catch (e) {
     return `${prefix}_fallback_${Date.now()}`;
   }
+}
+
+/**
+ * What only the browser knows, gathered once per session.
+ *
+ * Geography is deliberately NOT here. Cloudflare resolves it at the edge from
+ * the connecting IP, so the address never enters our code - which is a stronger
+ * promise than TELEMETRY_SPEC §3.1's "IP discarded in the same request".
+ *
+ * The referrer is reduced to a bare hostname here rather than on the server.
+ * §3.1 says host only, never the full URL, because a referring path can itself
+ * be a private page - and the surest way to honour that is for the path never
+ * to leave this machine.
+ */
+function acquisitionContext() {
+  const ctx = {};
+
+  try {
+    // The hour as the person is living it. The server sees only UTC, which is
+    // why the circadian morning/evening split has been wrong for every user
+    // outside it.
+    ctx.local_hour = new Date().getHours();
+    ctx.timezone_offset_minutes = -new Date().getTimezoneOffset();
+  } catch { /* nothing usable; leave both absent */ }
+
+  try {
+    if (document.referrer) {
+      const host = new URL(document.referrer).hostname;
+      // A same-origin referrer is internal navigation, not acquisition.
+      ctx.referrer_host = host === window.location.hostname ? null : host;
+    }
+  } catch { /* malformed referrer; treat as direct */ }
+
+  try {
+    const params = new URLSearchParams(window.location.search);
+    for (const key of ['utm_source', 'utm_medium', 'utm_campaign']) {
+      const value = params.get(key);
+      if (value) ctx[key] = value.slice(0, 100);
+    }
+    ctx.entry_view = params.get('view') || 'landing';
+  } catch { /* no query string to read */ }
+
+  // A bucket, not a device fingerprint. Three values, from width alone.
+  const w = window.innerWidth;
+  ctx.device_class = w < 768 ? 'mobile' : w < 1280 ? 'tablet' : 'desktop';
+
+  return ctx;
 }
 
 class TelemetrySDK {
@@ -236,7 +279,7 @@ class TelemetrySDK {
       view_mode: this.currentView,
       screen_width: window.innerWidth,
       screen_height: window.innerHeight,
-      referrer: document.referrer ? 'external' : 'direct'
+      ...acquisitionContext()
     });
   }
 
@@ -295,20 +338,12 @@ class TelemetrySDK {
       if (this.breadcrumbs.length > 10) this.breadcrumbs.shift();
     }
 
-    // Sanitize properties: strip any sensitive journal content
-    const sanitizedProps = {};
-    for (const [key, val] of Object.entries(rawProperties)) {
-      const lowerKey = key.toLowerCase();
-      if (SENSITIVE_PROPS.has(lowerKey)) {
-        sanitizedProps[`${key}_length`] = typeof val === 'string' ? val.length : 0;
-      } else if (typeof val === 'string') {
-        sanitizedProps[key] = val.slice(0, 80);
-      } else if (typeof val === 'number' || typeof val === 'boolean') {
-        sanitizedProps[key] = val;
-      } else if (Array.isArray(val)) {
-        sanitizedProps[`${key}_count`] = val.length;
-      }
-    }
+    // Sanitize before anything leaves the device. This is the first of three
+    // applications of the same filter - here, in the Worker, and in the local
+    // server - and they share one implementation deliberately: this list
+    // existed in three places with three different spellings, and the copy
+    // that drifts is the one that stores what somebody wrote.
+    const sanitizedProps = sanitizeProperties(rawProperties);
 
     const payload = {
       event_id: `evt_${Math.random().toString(36).substring(2, 9)}_${Date.now()}`,

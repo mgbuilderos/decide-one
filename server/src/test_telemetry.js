@@ -184,12 +184,24 @@ const after = db.prepare(
 ).get(trailSession).c;
 assert.strictEqual(after - before, 2, 'A 3-hop trail must record 2 transitions');
 
-// And the sanitizer still must not let written content through on the same event.
-const leak = db.prepare(
+// The trail is kept because it is declared structural, but it must stay
+// bounded, and nothing that is actual content may ride along beside it.
+const stored = JSON.parse(db.prepare(
   `SELECT properties FROM events WHERE session_id = ? AND event = 'exit_breadcrumbs'`
+).get(trailSession).properties);
+assert(Array.isArray(stored.trail) && stored.trail.length === 3, 'The trail is kept, as surface names');
+assert(stored.trail.every(s => s.length <= 64), 'Each hop must be bounded to 64 chars');
+
+// A written field on the same event must still be reduced to a length.
+TelemetryService.ingestBatch([{
+  session_id: trailSession, anonymous_id: testAnonId, event: 'exit_breadcrumbs',
+  properties: { trail: ['a', 'b'], noteBody: 'a private sentence' }
+}]);
+const mixed = db.prepare(
+  `SELECT properties FROM events WHERE session_id = ? AND event = 'exit_breadcrumbs' ORDER BY id DESC`
 ).get(trailSession);
-assert(!/daily_spread/.test(JSON.stringify(JSON.parse(leak.properties).trail ?? null)),
-  'The stored event properties must still not carry the raw array');
+assert(!/private sentence/.test(mixed.properties), 'Written content must never be stored');
+assert(/noteBody_length/.test(mixed.properties), 'It must be reduced to a length instead');
 console.log('  ✅ Exit trail recorded 2 transitions from a 3-surface trail.');
 
 // Test 13: the heartbeat clamps what it is given.

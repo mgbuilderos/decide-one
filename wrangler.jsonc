@@ -23,8 +23,27 @@
   "routes": [
     { "pattern": "decideone.app", "custom_domain": true }
   ],
+  // The Worker now runs code. It handles exactly one thing - telemetry
+  // ingestion - and passes every other request to ASSETS unchanged, so the
+  // static-first behaviour above is untouched. Production had been posting
+  // telemetry to a relative path with no handler, and the SPA fallback was
+  // answering those POSTs with an HTML page the SDK read as success.
+  "main": "worker/index.js",
+
+  // Production telemetry. server/src/db.js stays the development database;
+  // the Worker has no filesystem, so SQLite cannot follow it here.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "decide-one-telemetry",
+      "database_id": "cac61b53-d316-469c-a6af-798b313a122b"
+    }
+  ],
+
   "assets": {
     "directory": "./dist",
+    // Bound so the Worker can serve assets itself once it handles fetch.
+    "binding": "ASSETS",
     // Every route is the same document; the app reads ?view= from the URL.
     // Without this a refresh on any path would 404 instead of loading.
     "not_found_handling": "single-page-application"

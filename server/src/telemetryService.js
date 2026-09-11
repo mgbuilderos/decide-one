@@ -1,5 +1,6 @@
 import { db } from './db.js';
 import crypto from 'node:crypto';
+import { sanitizeProperties } from '../../shared/telemetrySanitize.js';
 
 // Prepared statements for high-throughput execution
 const insertEventStmt = db.prepare(`
@@ -66,53 +67,12 @@ const convertExpStmt = db.prepare(`
   UPDATE experiment_impressions SET converted = 1 WHERE session_id = ?
 `);
 
-// Strict Zero-Knowledge Telemetry Sanitizer
-// Strips any potential raw text properties to guarantee zero private user content is stored
-// Matched as substrings, so `taskText`, `noteBody` and `decision_rationale` are
-// all caught. Exact-match missed every camelCase spelling and stored the value.
-// Over-redaction is the safe direction here: a wrongly redacted prop costs one
-// metric, a wrongly kept one stores what someone wrote.
-const SENSITIVE_SUBSTRINGS = [
-  'text', 'title', 'note', 'reflection', 'content', 'rationale',
-  'query', 'transcript', 'password', 'secret'
-];
-// Short and ambiguous, so exact only: `key` as a substring would redact
-// `first_keypress_latency_ms` and take the hesitation metric with it.
-const SENSITIVE_EXACT = new Set(['key', 'token']);
-
-function isSensitiveKey(lowerKey) {
-  if (SENSITIVE_EXACT.has(lowerKey)) return true;
-  return SENSITIVE_SUBSTRINGS.some(s => lowerKey.includes(s));
-}
-
 const MAX_HEARTBEAT_SECONDS = 3600;
 
 function clampSeconds(value, fallback) {
   const n = Number(value);
   if (!Number.isFinite(n) || n < 0) return fallback;
   return Math.min(Math.round(n), MAX_HEARTBEAT_SECONDS);
-}
-
-function sanitizeProperties(properties) {
-  if (!properties || typeof properties !== 'object') return {};
-  const clean = {};
-  for (const [key, value] of Object.entries(properties)) {
-    const lowerKey = key.toLowerCase();
-    if (isSensitiveKey(lowerKey)) {
-      clean[`${key}_length`] = typeof value === 'string' ? value.length : 0;
-      continue;
-    }
-    // Allow numbers, booleans, safe enums/strings (under 100 chars)
-    if (typeof value === 'boolean' || typeof value === 'number') {
-      clean[key] = value;
-    } else if (typeof value === 'string') {
-      // Truncate non-sensitive strings to avoid payload bloat
-      clean[key] = value.slice(0, 100);
-    } else if (Array.isArray(value)) {
-      clean[`${key}_count`] = value.length;
-    }
-  }
-  return clean;
 }
 
 export const TelemetryService = {
@@ -172,13 +132,12 @@ export const TelemetryService = {
         } else if (event === 'surface_transition') {
           insertPathfinderStmt.run(session_id, anonymous_id, cleanProps.from_surface || 'unknown', cleanProps.to_surface || 'unknown', cleanProps.exit_type || 'normal', timestamp);
         } else if (event === 'exit_breadcrumbs') {
-          // Read the trail from the raw properties, not the sanitized copy.
-          // sanitizeProperties turns every array into `<key>_count` and drops
-          // the values, so `cleanProps.trail` was always undefined and this
-          // loop never ran once - exit paths recorded nothing. They are surface
-          // names, not written content, so they are bounded rather than
-          // redacted: 50 hops, 64 chars each.
-          const trail = Array.isArray(properties?.trail) ? properties.trail.slice(0, 50) : [];
+          // `trail` survives sanitizing because it is declared structural in
+          // shared/telemetrySanitize.js - surface names, bounded to 50 hops of
+          // 64 chars, not written content. It used to be replaced by
+          // `trail_count` in the browser AND here, so this loop ran zero times
+          // and exit paths recorded nothing.
+          const trail = Array.isArray(cleanProps.trail) ? cleanProps.trail : [];
           for (let i = 0; i < trail.length - 1; i++) {
             insertPathfinderStmt.run(
               session_id, anonymous_id,
