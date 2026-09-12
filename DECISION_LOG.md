@@ -1248,3 +1248,9 @@ Backend part 3: the structural finding. Production writes telemetry to Cloudflar
 ### 2026-09-12 21:07 — Claude Opus 5
 
 Deployed the backend pass. verify:live MATCH first attempt; new bundle index-DQYYzr56. Re-checked the site after the bundle change: home, faq, a method page, a guide, sitemap.xml and llms.txt all 200, and the homepage still serves 194 crawlable words and 7 links without JavaScript.
+
+---
+
+### 2026-09-12 22:01 — Claude Opus 5
+
+Performance: public/renders went from 8.7 MB to 308 KB, a 96.5% cut. Five of the eight renders were referenced by nothing at all (5.2 MB uploaded on every deploy for no reason) and are deleted. The three that are used are now WebP at quality 82 -- 1500 KB became 53 KB and a side-by-side at full size is visually indistinguishable, checked before shipping rather than assumed. Each has a 768w variant and srcset so a phone fetches 17 KB instead of 53. The worst offender was the Suspense fallback in MarketingLandingPage: 1.5 MB loading immediately, above the fold, while the 3D scene downloaded. og:image keeps a real JPEG (74 KB, down from 1.5 MB) because WebP is still a risk with some social unfurlers. Also gave /methods/ and /guides/ the metadata they never had -- they were the only two URLs on the site with no Open Graph, no Twitter card and no structured data, and they are what a crawler reaches from the breadcrumb on every article. They now carry CollectionPage + ItemList + BreadcrumbList, real 143/145-char descriptions shown on the page as well as in the tag, and a CTA.

@@ -34,7 +34,7 @@ const ORIGIN = 'https://decideone.app';
 // and is not worth a rendering pipeline yet; what is NOT acceptable is
 // declaring twitter:card=summary_large_image with no image at all, which is
 // how every share of these pages rendered as a bare link until now.
-const SOCIAL_IMAGE = { url: ORIGIN + '/renders/decideone-studio-d1.png', w: 1536, h: 1024,
+const SOCIAL_IMAGE = { url: ORIGIN + '/renders/decideone-social.jpg', w: 1536, h: 1024,
   alt: 'Decide One priority instrument with crisp white pages and a black cover' };
 const ROOT = process.cwd();
 const OUT = path.join(ROOT, 'dist');
@@ -48,6 +48,15 @@ const SECTIONS = [
 ];
 
 const REQUIRED = ['title', 'description', 'slug', 'intent', 'published', 'sources'];
+
+// One sentence per section, 70–158 characters like every other description on
+// the site, and shown on the page as well as in the tag — a description that
+// promises something the page does not contain is the commonest kind of lie in
+// a <head>.
+const SECTION_INTRO = {
+  methods: 'The three prioritisation methods Decide One ships, each credited to where it came from: Top 3, Ivy Lee (1918), and the urgent/important matrix.',
+  guides: 'Honest answers about prioritising a working day, grounded in named results from scheduling and queueing theory rather than productivity folklore.'
+};
 
 const errors = [];
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
@@ -384,23 +393,75 @@ for (const section of SECTIONS) {
   const own = pages.filter(p => p.section.base === section.base);
   if (own.length === 0) continue;
   const canonical = `${ORIGIN}/${section.base}/`;
+
+  // These two pages were the only URLs on the site with no Open Graph, no
+  // Twitter card and no structured data — they had a canonical and an
+  // eighty-character description and nothing else. They are also the pages a
+  // crawler reaches first from the breadcrumb on every article.
+  const intro = SECTION_INTRO[section.base] || `${section.label} from Decide One.`;
+  const ld = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@graph': [{
+      '@type': 'CollectionPage',
+      name: `${section.label} — Decide One`,
+      description: intro,
+      url: canonical,
+      inLanguage: 'en',
+      isPartOf: { '@type': 'WebSite', name: 'Decide One', url: ORIGIN + '/' },
+      // ItemList is the honest type here: the page IS a list, and every entry
+      // below is on it. Nothing is asserted that the page does not show.
+      mainEntity: {
+        '@type': 'ItemList',
+        numberOfItems: own.length,
+        itemListElement: own.map((p, i) => ({
+          '@type': 'ListItem', position: i + 1, name: p.meta.title, url: ORIGIN + p.url
+        }))
+      }
+    }, {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Decide One', item: ORIGIN + '/' },
+        { '@type': 'ListItem', position: 2, name: section.label, item: canonical }
+      ]
+    }]
+  });
+
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${section.label} — Decide One</title>
-<meta name="description" content="${esc(section.label)} from Decide One — the methods the instrument ships, and how to use them.">
+<meta name="description" content="${esc(intro)}">
 <link rel="canonical" href="${canonical}">
 <link rel="icon" type="image/svg+xml" href="/icon.svg?v=2">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Decide One">
+<meta property="og:title" content="${esc(section.label)} — Decide One">
+<meta property="og:description" content="${esc(intro)}">
+<meta property="og:url" content="${canonical}">
+<meta property="og:image" content="${SOCIAL_IMAGE.url}">
+<meta property="og:image:width" content="${SOCIAL_IMAGE.w}">
+<meta property="og:image:height" content="${SOCIAL_IMAGE.h}">
+<meta property="og:image:alt" content="${esc(SOCIAL_IMAGE.alt)}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${esc(section.label)} — Decide One">
+<meta name="twitter:description" content="${esc(intro)}">
+<meta name="twitter:image" content="${SOCIAL_IMAGE.url}">
 <meta name="theme-color" content="#0B0B0D">
+<script type="application/ld+json">${ld}</script>
 <style>${STYLE}</style>
 </head>
 <body><main>
 <nav><a href="/">Decide One</a> › ${esc(section.label)}</nav>
 <h1>${esc(section.label)}</h1>
+<p>${esc(intro)}</p>
 <ul>${own.map(p => `<li><a href="${p.url}">${esc(p.meta.title)}</a> — ${esc(p.meta.description)}</li>`).join('')}</ul>
-<footer><a href="/">Back to Decide One</a></footer>
+<div class="cta">
+<p>Decide One is a priority instrument. Bring the day into view, choose a method, give the first thing real time.</p>
+<p><a href="/?view=daily">Open it — free, nothing to sign up for</a></p>
+</div>
+<footer><a href="/">Back to Decide One</a> · <a href="/faq/">Frequently asked questions</a></footer>
 </main></body></html>
 `;
   const dir = path.join(OUT, section.base);

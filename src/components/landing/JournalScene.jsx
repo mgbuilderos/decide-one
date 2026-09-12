@@ -818,7 +818,7 @@ export default function JournalScene({
     };
   }, [kind, finish, tone, ink, grid]);
   return <div className={`pm-scene ${className}`}>
-    {(!ready || failed) && <img className="pm-scene-fallback" src="/renders/decideone-studio-v2.png" alt="Decide One with white pages and a woven label" />}
+    {(!ready || failed) && <img className="pm-scene-fallback" src="/renders/decideone-studio-v2.webp" srcSet="/renders/decideone-studio-v2-768.webp 768w, /renders/decideone-studio-v2.webp 1536w" sizes="(max-width: 768px) 100vw, 1536px" width="1536" height="1024" alt="Decide One with white pages and a woven label" decoding="async" />}
     <div ref={host} className={`pm-canvas ${failed ? 'pm-canvas-failed' : ''}`} tabIndex={0} role="group" aria-label={`Interactive 3D ${kind === 'journal' ? perspective + ' instrument' : kind + ' preview'}, ${viewpoint} view. Drag with a mouse or use arrow keys to rotate. Scroll to continue. Home resets the angle.`} />
     {failed && <span className="pm-render-note">Product preview · 3D unavailable on this browser</span>}
   </div>;
