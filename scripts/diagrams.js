@@ -134,6 +134,38 @@ ${n>2?`<text x="340" y="${y+18}" ${F} font-size="11" ${MUTED}>waiting</text>`:''
 <text x="0" y="154" ${F} font-size="11" ${MUTED}>the shaded overhang is a capacity problem, not a prioritisation one.</text>
 <text x="0" y="172" ${F} font-size="11" font-weight="700" fill="currentColor">Putting the right things first still leaves the same number of hours.</text>`),
 
+  'priority-inversion': wrap('inversion', 'A small task can hold something a large one needs, so the important work is blocked by the trivial work', '0 0 680 216', `
+<text x="0" y="14" ${F} font-size="12" font-weight="700" fill="currentColor">WHAT YOU SEE</text>
+<rect x="0" y="26" width="420" height="30" rx="3" fill="currentColor" opacity=".9"/>
+<text x="12" y="46" ${F} font-size="12" fill="var(--paper,#fff)" font-weight="700">the quarter's work — high priority, not moving</text>
+<text x="0" y="76" ${F} font-size="11" ${MUTED}>ranked first, worked on by nobody, no obvious reason</text>
+<line x1="0" y1="94" x2="660" y2="94" stroke="currentColor" stroke-width="1" opacity=".3"/>
+<text x="0" y="122" ${F} font-size="12" font-weight="700" fill="currentColor">WHAT IS ACTUALLY HAPPENING</text>
+<rect x="0" y="134" width="420" height="30" rx="3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 3"/>
+<text x="12" y="154" ${F} font-size="12" fill="currentColor" font-weight="700">blocked</text>
+<rect x="436" y="134" width="150" height="30" rx="3" fill="currentColor" opacity=".9"/>
+<text x="446" y="154" ${F} font-size="11" fill="var(--paper,#fff)" font-weight="700">a two-line reply</text>
+<path d="M436 149 L424 149" stroke="currentColor" stroke-width="1.5"/>
+<path d="M430 145 L424 149 L430 153" fill="none" stroke="currentColor" stroke-width="1.5"/>
+<text x="0" y="186" ${F} font-size="11" ${MUTED}>Mars Pathfinder reset repeatedly in 1997 for exactly this reason: a low-priority</text>
+<text x="0" y="204" ${F} font-size="11" ${MUTED}>task held a lock the high-priority one needed. The blocker's size tells you nothing.</text>`),
+
+  'utilisation-vs-wait': wrap('util', 'Waiting time rises steeply as a system approaches full utilisation, which is why a fully booked day has nowhere to put an overrun', '0 0 680 256', `
+<line x1="56" y1="16" x2="56" y2="200" stroke="currentColor" stroke-width="1.25"/>
+<line x1="56" y1="200" x2="640" y2="200" stroke="currentColor" stroke-width="1.25"/>
+<path d="M56 196 C 240 190, 400 172, 500 140 S 596 60, 614 20" fill="none" stroke="currentColor" stroke-width="2"/>
+<line x1="500" y1="20" x2="500" y2="200" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity=".5"/>
+<line x1="336" y1="20" x2="336" y2="200" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity=".5"/>
+<text x="120" y="176" ${F} font-size="11" ${MUTED}>plenty of room</text>
+<text x="344" y="120" ${F} font-size="11" ${MUTED}>getting tight</text>
+<text x="508" y="60" ${F} font-size="11" font-weight="700" fill="currentColor">no room at all</text>
+<text x="56" y="222" ${F} font-size="11" font-weight="700" fill="currentColor">50%</text>
+<text x="320" y="222" ${F} font-size="11" font-weight="700" fill="currentColor">75%</text>
+<text x="482" y="222" ${F} font-size="11" font-weight="700" fill="currentColor">90%</text>
+<text x="596" y="222" ${F} font-size="11" font-weight="700" fill="currentColor">100%</text>
+<text x="280" y="244" ${F} font-size="11" font-weight="700" fill="currentColor">HOW FULL THE DAY IS →</text>
+<text x="18" y="200" ${F} font-size="11" font-weight="700" fill="currentColor" transform="rotate(-90 18 200)">DELAY WHEN SOMETHING SLIPS →</text>`),
+
   'three-and-no-fourth': wrap('top3', 'Three lines and no fourth: the limit is what turns a list into a decision', '0 0 680 182', `
 ${[1,2,3].map((n,i)=>`<text x="0" y="${26+i*40}" ${F} font-size="11" ${MUTED}>0${n}</text>
 <rect x="26" y="${8+i*40}" width="560" height="26" rx="3" fill="none" stroke="currentColor" stroke-width="1.25"/>`).join('')}

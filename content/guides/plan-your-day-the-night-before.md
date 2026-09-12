@@ -6,7 +6,7 @@ intent: should you plan your day the night before
 published: 2026-09-12
 updated: 2026-09-12
 sources: FRAMEWORKS.md, FOUNDATIONS.md, VISION.md
-links: ivy-lee-method, the-cost-of-switching-tasks, how-to-prioritise-tasks
+links: ivy-lee-method, the-cost-of-switching-tasks, how-to-prioritise-tasks, how-to-do-a-daily-review, why-priorities-change-by-lunchtime
 keywords: plan your day the night before, evening planning, plan tomorrow tonight, night before routine
 ---
 

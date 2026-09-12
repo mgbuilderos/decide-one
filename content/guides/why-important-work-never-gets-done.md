@@ -6,7 +6,7 @@ intent: why does important work never get done
 published: 2026-09-12
 updated: 2026-09-12
 sources: FOUNDATIONS.md, FRAMEWORKS.md, VISION.md
-links: urgent-important-matrix, everything-feels-urgent, how-to-prioritise-tasks, why-deadlines-work
+links: urgent-important-matrix, everything-feels-urgent, how-to-prioritise-tasks, why-deadlines-work, a-task-you-keep-postponing, when-your-work-depends-on-others
 keywords: important work never gets done, urgent crowds out important, never get to important tasks, important vs urgent
 ---
 

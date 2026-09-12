@@ -6,7 +6,7 @@ intent: is there a best prioritisation method
 published: 2026-09-12
 updated: 2026-09-12
 sources: FOUNDATIONS.md, FRAMEWORKS.md, VISION.md
-links: how-to-prioritise-tasks, top-3-method, ivy-lee-method, urgent-important-matrix, should-you-do-the-hardest-thing-first, do-productivity-systems-work
+links: how-to-prioritise-tasks, top-3-method, ivy-lee-method, urgent-important-matrix, should-you-do-the-hardest-thing-first, do-productivity-systems-work, choosing-between-two-important-things
 keywords: best prioritisation method, which prioritisation method is best, best way to prioritise tasks, prioritisation methods compared
 ---
 

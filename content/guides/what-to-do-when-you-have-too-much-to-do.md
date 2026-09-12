@@ -6,7 +6,7 @@ intent: what to do when you have too much to do
 published: 2026-09-12
 updated: 2026-09-12
 sources: FOUNDATIONS.md, FRAMEWORKS.md, VISION.md
-links: top-3-method, littles-law-for-a-working-day, how-to-prioritise-tasks
+links: top-3-method, littles-law-for-a-working-day, how-to-prioritise-tasks, how-to-say-no-to-more-work, conflicting-priorities-from-different-people
 keywords: too much to do, overwhelmed at work, too many tasks, what to do when overwhelmed
 ---
 

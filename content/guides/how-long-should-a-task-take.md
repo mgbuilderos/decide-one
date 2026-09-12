@@ -6,7 +6,7 @@ intent: how long should i estimate a task will take
 published: 2026-09-12
 updated: 2026-09-12
 sources: FOUNDATIONS.md, FRAMEWORKS.md, VISION.md
-links: top-3-method, what-to-do-when-you-have-too-much-to-do, how-to-prioritise-tasks
+links: top-3-method, what-to-do-when-you-have-too-much-to-do, how-to-prioritise-tasks, should-you-schedule-every-hour, how-to-plan-a-week
 keywords: how long should a task take, time estimates for tasks, timeboxing, planned versus actual time
 ---
 
