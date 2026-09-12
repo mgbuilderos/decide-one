@@ -1091,3 +1091,25 @@ This deploy also shipped four product commits from before this session that had 
 Also fixed brief.js: it showed the most recent handoff unconditionally, so the banner would have stayed on forever. It now shows one only while it is genuinely open - nothing logged after it. A banner that is always on is a banner people learn to skip.
 
 Open, in priority order: Wave 1 is 3 pages of roughly 12, and the comparison queries carry more volume than the three method pages. Then SEO_AUDIT.md §6 - O2 the service worker under a cold crawl, O3 the SPA views that still have no independent canonical, O5 FAQPage and HowTo schema. The six backend defects in the previous handoff remain unfixed and are deliberately last: telemetry is compiled out, so no production data exists and nobody is reading a wrong number. Fix them before VITE_ENABLE_TELEMETRY is ever set to true.
+
+---
+
+### 2026-09-12 16:18 — Claude Opus 5
+
+Wave 1 content: five guides, taking the site from 3 pages to 8.
+
+Topic selection was grounded rather than guessed. FRAMEWORKS.md already carries the founder's condition-to-method mapping in real user language - too much to do, I keep not finishing things, everything feels urgent - and those three conditions are the spine of the set. One web search on 'how to prioritize tasks when everything feels urgent' confirmed the phrasing is a live query and, more usefully, showed the competition: eight results, all generic listicles, none grounding any claim in anything.
+
+That is the opening. FOUNDATIONS.md is the asset nobody else in this category has - Little's Law, the no-universally-optimal-scheduler result, starvation, priority inversion, the convoy effect, thrashing - together with §5, which says exactly which claims those results do and do not license. Every page uses that material and every page states the limit plainly. 'How many tasks should a day hold?' cites Little's Law and then says outright that it is a theorem about queueing systems, names no number, and is not a finding about human cognition, which is the opposite of what the ranking pages do. That honesty is the GEO position: a model that finds one unsupportable claim on a domain discounts the domain.
+
+Pages: how-to-prioritise-tasks (the hub, head term), everything-feels-urgent, ivy-lee-vs-top-3, why-to-do-lists-stop-working, how-many-tasks-should-a-day-hold. Distinct declared intents, so the duplicate-intent gate is satisfied and they should not cannibalise.
+
+Link architecture is hub and spoke. The hub links to all seven other pages; each guide links back. The three method pages were an isolated triangle linking only to each other, which would have passed none of their strength to the guides - they now carry an inline contextual link to the hub as well as a front-matter one.
+
+The gates caught six violations before anything shipped: five descriptions between 164 and 189 characters, and 'diagnosis' in ivy-lee-vs-top-3, which is clinical vocabulary under VISION §11.3. Fixed the prose. That is now eleven violations the gates have caught in content written by the agent that wrote the gates, which is the argument for mechanical gating rather than review.
+
+Deliberately five rather than nine. SEO_CHARTER F11 names 'the pod optimises for output volume' as a failure mode, and there was no honest ninth page in this batch - 'what to do when you have too much to do' would have cannibalised both the hub and the task-count page. It is a Wave 2 candidate, not a Wave 1 filler.
+
+One decision left for the founder rather than taken silently: all copy is British spelling, matching existing site copy, while US search volume favours 'prioritize'. Changing that is a VISION §11 copy decision and not an agent's to make.
+
+Gates green: test:qc and build pass, 8 pages, 11 sitemap entries. Not deployed.

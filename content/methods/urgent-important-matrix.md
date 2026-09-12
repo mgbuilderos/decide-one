@@ -6,7 +6,7 @@ intent: how to use the urgent important matrix
 published: 2026-09-12
 updated: 2026-09-12
 sources: FRAMEWORKS.md, FOUNDATIONS.md, VISION.md
-links: top-3-method, ivy-lee-method
+links: top-3-method, ivy-lee-method, how-to-prioritise-tasks
 keywords: urgent important matrix, eisenhower matrix, urgent vs important, how to prioritise tasks
 ---
 
@@ -69,6 +69,8 @@ It fits one problem: urgency being mistaken for importance. If that is not what 
 | Everything feels urgent and I cannot tell what matters | The urgent/important matrix |
 | Too much to do | [The Top 3 method](/methods/top-3-method/) |
 | I keep starting things and not finishing them | [The Ivy Lee method](/methods/ivy-lee-method/) |
+
+If none of those describes your day, [start here](/guides/how-to-prioritise-tasks/).
 
 ## Using it in Decide One
 

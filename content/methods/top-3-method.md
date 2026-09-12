@@ -6,7 +6,7 @@ intent: how to choose your top 3 tasks for the day
 published: 2026-09-12
 updated: 2026-09-12
 sources: FRAMEWORKS.md, FOUNDATIONS.md, VISION.md
-links: ivy-lee-method, urgent-important-matrix
+links: ivy-lee-method, urgent-important-matrix, how-to-prioritise-tasks
 keywords: top 3 method, rule of three tasks, how many tasks per day, limit daily tasks
 ---
 
@@ -56,7 +56,7 @@ It fits one specific problem: taking on more than a day holds. If that is not yo
 | I keep starting things and not finishing them | [The Ivy Lee method](/methods/ivy-lee-method/) |
 | Everything feels urgent and I cannot tell what matters | [The urgent/important matrix](/methods/urgent-important-matrix/) |
 
-This is not a preference. There is a known result in scheduling theory that **no single scheduling discipline is best across all objectives** — shortest-job-first minimises average waiting time, earliest-deadline-first is optimal for meeting deadlines (Liu and Layland, 1973), and neither beats the other in general. The right method depends on what today is actually asking for. Choosing before you know the problem is how people end up blaming themselves for a mismatch.
+This is not a preference. There is a known result in scheduling theory that **no single scheduling discipline is best across all objectives** — shortest-job-first minimises average waiting time, earliest-deadline-first is optimal for meeting deadlines (Liu and Layland, 1973), and neither beats the other in general. The right method depends on what today is actually asking for. Choosing before you know the problem is how people end up blaming themselves for a mismatch. [How to prioritise your tasks](/guides/how-to-prioritise-tasks/) walks through telling them apart.
 
 ## Where it came from
 

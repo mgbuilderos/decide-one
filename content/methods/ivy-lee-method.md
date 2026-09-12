@@ -6,7 +6,7 @@ intent: how to use the ivy lee method
 published: 2026-09-12
 updated: 2026-09-12
 sources: FRAMEWORKS.md, FOUNDATIONS.md, VISION.md
-links: top-3-method, urgent-important-matrix
+links: top-3-method, urgent-important-matrix, how-to-prioritise-tasks
 keywords: ivy lee method, ivy lee 6 tasks, work on one thing at a time, stop task switching
 ---
 
@@ -56,7 +56,7 @@ It fits one problem: starting things and not finishing them. If that is not what
 | Too much to do | [The Top 3 method](/methods/top-3-method/) |
 | Everything feels urgent and I cannot tell what matters | [The urgent/important matrix](/methods/urgent-important-matrix/) |
 
-There is no universally best scheduler — that is a known result, not an opinion — and the same is true here. A method that fits the wrong problem feels like a personal failure when it is a mismatch.
+There is no universally best scheduler — that is a known result, not an opinion — and the same is true here. A method aimed at the wrong problem feels like a personal failure when it is a mismatch — [how to tell which you have](/guides/how-to-prioritise-tasks/).
 
 ## Using it in Decide One
 
