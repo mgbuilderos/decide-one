@@ -165,6 +165,35 @@ One post per real question a person asks when they have eleven things and no obv
 ### Wave 3 — Scale, on evidence only
 Expands the patterns Wave 2 proved. Opens toward 1000 **only** where genuine material exists. Every batch still passes every gate. **No batch ships to hit a number.**
 
+### Wave status — 12 September 2026
+
+| Wave | Built | Exit gate | Met? |
+| :--- | :--- | :--- | :--- |
+| **0** | yes | a real path serves its own title, own canonical, valid structured data; `test:qc` passes | **met** — verified live |
+| **1** | yes, 12 pages | indexed, **and** at least one page ranking for a non-branded query | **not met** |
+| **2** | no | — | blocked by Wave 1 |
+
+**Wave 1 is built and deployed. Its gate is not met, and cannot be assessed
+today.** Nothing published has been indexed long enough to rank, and more
+immediately: **`decideone.app` is not verified in Google Search Console**, so
+there is no instrument that could tell us. Indexation, impressions, queries and
+the ranking half of the gate are all unmeasurable until that exists.
+
+*Checked, not assumed* — all four verification methods are absent: no
+`google-site-verification` meta tag in the source or in the live HTML, no DNS
+TXT record on the apex at all, no verification file in `public/`, and no Google
+tag of any kind on the page (which is correct and deliberate, and also closes
+the Analytics and Tag Manager verification routes).
+
+This is a founder action — it needs access to the domain's DNS or the live
+site, and it is the single thing standing between this project and evidence.
+Until it is done, writing Wave 2 would be producing sixty more pages with no
+way to know whether the first twelve worked, which is **F11** stated exactly.
+
+**What an agent may correctly do while the gate is unmet:** technical work with
+a defined answer (the open items in `SEO_AUDIT.md` §6), and nothing that adds
+page count.
+
 ---
 
 ## 6. The gates

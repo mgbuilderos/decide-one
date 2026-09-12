@@ -1131,3 +1131,9 @@ Wave 1 complete at 12 pages. Four new guides drawn from FOUNDATIONS.md -- Little
 ### 2026-09-12 17:26 — Claude Opus 5
 
 Deployed Wave 1 complete. All 15 sitemap URLs verified live: 200, self-referencing canonical, 975-1261 server-rendered words on every content page. verify:live MATCH first attempt. Wave 1 is now closed at 12 pages; the entry gate to Wave 2 is evidence, and no evidence exists yet because the property is not verified in Google Search Console. That is a founder action, not an agent one -- until it happens there is no measurement, and SEO_CHARTER F11 (optimising for output volume) is exactly what writing more pages without it would be.
+
+---
+
+### 2026-09-12 17:27 — Claude Opus 5
+
+Recorded wave status in SEO_CHARTER §5. Wave 0 met, Wave 1 built but gate not met, Wave 2 blocked. Confirmed by four checks that decideone.app is not verified in Search Console: no meta tag in source or live HTML, no DNS TXT on the apex, no verification file in public/, no Google tag of any kind. Until a founder verifies the property there is no instrument, so Wave 2 would be F11 -- volume without evidence. What an agent may correctly do meanwhile is bounded to SEO_AUDIT §6 technical items that have defined answers and add no pages.
