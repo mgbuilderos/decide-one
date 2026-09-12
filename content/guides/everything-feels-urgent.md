@@ -6,7 +6,7 @@ intent: how to prioritise when everything feels urgent
 published: 2026-09-12
 updated: 2026-09-12
 sources: FRAMEWORKS.md, FOUNDATIONS.md, VISION.md
-links: urgent-important-matrix, how-to-prioritise-tasks
+links: urgent-important-matrix, how-to-prioritise-tasks, why-important-work-never-gets-done
 keywords: everything feels urgent, urgent vs important, how to prioritise under pressure, everything is a priority
 ---
 

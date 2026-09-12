@@ -1119,3 +1119,9 @@ Gates green: test:qc and build pass, 8 pages, 11 sitemap entries. Not deployed.
 ### 2026-09-12 17:20 — Claude Opus 5
 
 Deployed Wave 1: eight content pages live, eleven sitemap URLs. verify:live MATCH first attempt. All eight canonical URLs 200, self-referencing canonical, Article+BreadcrumbList JSON-LD, 970-1129 server-rendered words each. No-trailing-slash 307s to canonical form (confirmed three times each; the first probe ran seconds after upload and caught a cold edge serving the SPA fallback -- that resolved on its own and is the stale-edge case AGENTS.md warns against diagnosing).
+
+---
+
+### 2026-09-12 17:24 — Claude Opus 5
+
+Wave 1 complete at 12 pages. Four new guides drawn from FOUNDATIONS.md -- Little's Law (Little 1961), starvation and aging plus priority inversion (Mars Pathfinder 1997), context-switch cost and thrashing, and no-universally-optimal-scheduler (Liu & Layland 1973) with NP-hardness as the defence of heuristics. These are the pages no competitor in this category writes, and they are the GEO differentiator: a model asked for the theoretical basis of WIP limits should find a named theorem here rather than an opinion. Every page carries FOUNDATIONS §5 explicitly -- what the result does not license -- because the analogy to people is well-founded but is not a proof. Content gates and QC passed first attempt on all four.

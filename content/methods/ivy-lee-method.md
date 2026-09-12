@@ -6,7 +6,7 @@ intent: how to use the ivy lee method
 published: 2026-09-12
 updated: 2026-09-12
 sources: FRAMEWORKS.md, FOUNDATIONS.md, VISION.md
-links: top-3-method, urgent-important-matrix, how-to-prioritise-tasks
+links: top-3-method, urgent-important-matrix, how-to-prioritise-tasks, the-cost-of-switching-tasks
 keywords: ivy lee method, ivy lee 6 tasks, work on one thing at a time, stop task switching
 ---
 
