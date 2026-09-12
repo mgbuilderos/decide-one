@@ -1155,3 +1155,9 @@ Wave 2 first batch: ten guides, 13 pages to 23. Each answers a distinct question
 ### 2026-09-12 18:11 — Claude Opus 5
 
 Homepage was invisible to non-JS crawlers. <div id="root"></div> was empty, so the body contained no text and no links -- Google renders JS and reached the landing page eventually, but GPTBot, ClaudeBot and PerplexityBot largely do not, which meant the one URL defining what this product IS was blank to exactly the systems the GEO work targets. It also passed no link equity to any content page, having no links at all. Put the VISION §11.1 canonical statement plus seven internal links inside #root; React's createRoot clears them on first render, so this is shell content served to everyone rather than hidden text. 194 crawlable words and 7 links where there were zero of both. Verified in a browser: app mounts over it, both views render, zero console errors. Also corrected index.html's meta description, which carried the same 'nothing held back' claim as the content pages.
+
+---
+
+### 2026-09-12 18:13 — Claude Opus 5
+
+Recorded in SEO_CHARTER that Wave 2 was started by founder instruction rather than on its evidence gate, and what that does and does not change. The risk is not a false claim (everything is gated the same) but writing the wrong ten posts and not finding out, which stays open until Search Console exists.

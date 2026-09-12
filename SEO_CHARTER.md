@@ -170,8 +170,8 @@ Expands the patterns Wave 2 proved. Opens toward 1000 **only** where genuine mat
 | Wave | Built | Exit gate | Met? |
 | :--- | :--- | :--- | :--- |
 | **0** | yes | a real path serves its own title, own canonical, valid structured data; `test:qc` passes | **met** — verified live |
-| **1** | yes, 12 pages | indexed, **and** at least one page ranking for a non-branded query | **not met** |
-| **2** | no | — | blocked by Wave 1 |
+| **1** | yes, 13 pages | indexed, **and** at least one page ranking for a non-branded query | **not met** |
+| **2** | started, 10 of ~60–100 | measured: which posts rank, which bring sessions, which bring a closed day | not assessable yet |
 
 **Wave 1 is built and deployed. Its gate is not met, and cannot be assessed
 today.** Nothing published has been indexed long enough to rank, and more
@@ -190,9 +190,19 @@ site, and it is the single thing standing between this project and evidence.
 Until it is done, writing Wave 2 would be producing sixty more pages with no
 way to know whether the first twelve worked, which is **F11** stated exactly.
 
-**What an agent may correctly do while the gate is unmet:** technical work with
-a defined answer (the open items in `SEO_AUDIT.md` §6), and nothing that adds
-page count.
+**Wave 2 was started anyway, on 12 September, by founder instruction** — the
+gate was put to them explicitly and they directed the content be written. That
+is a decision they are entitled to make and it is recorded here rather than
+quietly absorbed, because the charter's whole purpose is that a later reader can
+tell an exception from a drift.
+
+**What this changes:** the first ten Wave 2 posts exist without the evidence
+Wave 2 was supposed to be built on. They are gated for truthfulness the same as
+everything else, so the risk is not a bad claim — it is writing the *wrong ten*,
+and not finding out. That risk stays open until O9 is closed.
+
+**What it does not change:** F11 still holds. Nothing ships to hit a number, and
+Wave 3's scale-toward-1000 remains gated on evidence that does not yet exist.
 
 ---
 
