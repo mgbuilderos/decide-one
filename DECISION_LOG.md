@@ -1161,3 +1161,9 @@ Homepage was invisible to non-JS crawlers. <div id="root"></div> was empty, so t
 ### 2026-09-12 18:13 — Claude Opus 5
 
 Recorded in SEO_CHARTER that Wave 2 was started by founder instruction rather than on its evidence gate, and what that does and does not change. The risk is not a false claim (everything is gated the same) but writing the wrong ten posts and not finding out, which stays open until Search Console exists.
+
+---
+
+### 2026-09-12 18:54 — Claude Opus 5
+
+O8 resolved by removing the locks. All six gated things are free: two paper tones, three ink colours, weekly PDF, Markdown export, annual print. 31 lines deleted from UnifiedMenuModal.jsx. Rule 18 did NOT need amending -- my earlier claim that it would was wrong; it asserts files and exported functions exist, not that anything is gated, so it passed untouched. Verified in a browser: no padlocks, and clicking Washi applies it (read the selected state from the DOM rather than trusting a screenshot), zero console errors. Replaced the blunt 'nothing held back' word ban with a cross-check that fails only when a page claims completeness AND src/ still gates on !isPatron -- the comparison whose absence let Rule 18 and Rule 24 both pass while contradicting each other. Proved it fires in both directions. Left open: PatronUpgradeModal still exists and the menu still offers Become a Patron, which now grants nothing; not a lock and not a false claim, but VISION §11.1 puts the support ask at the end of a closed day rather than in a menu.

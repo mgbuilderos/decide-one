@@ -69,15 +69,35 @@ const BLACKLIST = [
 const PRICE = [
   'upgrade to pro', 'paid plan', 'paid tier', 'premium version', 'premium tier',
   'free trial', 'pro version', 'when you upgrade', 'paywall', 'subscribe for',
-  // "nothing held back" is VISION §11.1's own wording and it was published on
-  // twelve pages before anyone checked it against the app. It is not true as
-  // shipped: UnifiedMenuModal.jsx locks two paper tones, three ink colours,
-  // the weekly PDF, Markdown export and the annual print behind isPatron, and
-  // PatronUpgradeModal.jsx offers no way to obtain a licence. Until either the
-  // locks go or §11.1 is amended, the phrase may not be published. Saying the
-  // product is free is fine and true; claiming completeness is not.
-  'nothing held back'
 ];
+
+/**
+ * The completeness claim, checked against the app rather than banned outright.
+ *
+ * "Nothing held back" is VISION §11.1's own wording, and on 12 September it was
+ * live on twelve pages while UnifiedMenuModal.jsx locked two paper tones, three
+ * ink colours, the weekly PDF, Markdown export and the annual print behind
+ * isPatron — with no way to obtain a licence, so they were dead ends rather than
+ * a paid tier. The audit passed throughout: Rule 18 asserts the Patron machinery
+ * exists, Rule 24 asserts the price matches VISION, and nothing compared the two.
+ * This is the rule that compares them.
+ *
+ * The locks were removed, so the claim is true again and is allowed again. If
+ * feature gating ever returns, this fails the build the moment any page still
+ * claims completeness — which is the whole point of writing it as a cross-check
+ * instead of a word ban.
+ */
+const COMPLETENESS = 'nothing held back';
+const gatingPattern = /!\s*isPatron/;
+function appStillGatesFeatures() {
+  const walk = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap(d => {
+    const full = path.join(dir, d.name);
+    return d.isDirectory() ? walk(full) : (/\.(jsx?|tsx?)$/.test(d.name) ? [full] : []);
+  });
+  if (!fs.existsSync('src')) return false;
+  return walk('src').some(f => gatingPattern.test(fs.readFileSync(f, 'utf8')));
+}
+const APP_GATES = appStillGatesFeatures();
 
 // TELEMETRY_SPEC.md and src/utils/telemetry.js. The honest claim is that
 // nothing is sent unless the person turns it on, and that journal text never
@@ -128,9 +148,11 @@ for (const dir of DIRS) {
     check(file, text, BLACKLIST, 'blacklisted name (FRAMEWORKS §6.3)',
       'Trademark exposure. This name may not appear anywhere.');
     check(file, text, PRICE, 'price claim (VISION §11.1)',
-      'Say it is free to use, with no account. Do not claim completeness: the '
-      + 'app still locks paper tones, ink colours, the weekly PDF, Markdown '
-      + 'export and the annual print behind isPatron.');
+      'The price is free. Say it is free to use, with no account.');
+    if (APP_GATES && text.includes(COMPLETENESS)) {
+      errors.push(`${file}: claims "${COMPLETENESS}", but src/ still gates features on !isPatron. `
+        + 'Either the gating goes or the claim does — they may not both ship.');
+    }
     check(file, text, TELEMETRY, 'telemetry claim (TELEMETRY_SPEC)',
       'The honest claim is that nothing is sent unless the person turns it on.');
 

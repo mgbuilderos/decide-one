@@ -12,7 +12,6 @@ import {
   FileText, 
   Feather, 
   Printer, 
-  Lock,
   Target,
   Flame,
   ListOrdered,
@@ -282,9 +281,9 @@ export default function UnifiedMenuModal({
               <span className="text-xs text-neutral-500 dark:text-neutral-400 whitespace-nowrap">Paper Tone</span>
               <div className="flex items-center gap-1 bg-black/[0.04] dark:bg-white/[0.06] p-0.5 rounded-xl border border-black/[0.04] dark:border-white/[0.06]">
                 {[
-                  { id: 'white', label: 'White', isFree: true },
-                  { id: 'cream', label: 'Vellum', isFree: false },
-                  { id: 'washi', label: 'Washi', isFree: false }
+                  { id: 'white', label: 'White' },
+                  { id: 'cream', label: 'Vellum' },
+                  { id: 'washi', label: 'Washi' }
                 ].map((tone) => {
                   const isCurrent = (settings.paperTone || 'white') === tone.id;
                   return (
@@ -293,11 +292,6 @@ export default function UnifiedMenuModal({
                       type="button"
                       onClick={() => {
                         playSound('click', settings.isMuted);
-                        if (!tone.isFree && !isPatron) {
-                          onClose();
-                          onOpenUpgrade?.();
-                          return;
-                        }
                         updateSettings({ paperTone: tone.id });
                       }}
                       className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-all cursor-pointer flex items-center gap-1 whitespace-nowrap ${
@@ -307,7 +301,6 @@ export default function UnifiedMenuModal({
                       }`}
                     >
                       <span>{tone.label}</span>
-                      {!tone.isFree && !isPatron && <Lock className="w-2.5 h-2.5 opacity-60" />}
                     </button>
                   );
                 })}
@@ -319,10 +312,10 @@ export default function UnifiedMenuModal({
               <span className="text-xs text-neutral-500 dark:text-neutral-400 whitespace-nowrap">Archival Ink</span>
               <div className="grid grid-cols-4 gap-1 bg-black/[0.04] dark:bg-white/[0.06] p-0.5 rounded-xl border border-black/[0.04] dark:border-white/[0.06]">
                 {[
-                  { id: 'carbon', label: 'Carbon', color: '#18181B', isFree: true },
-                  { id: 'oxblood', label: 'Oxblood', color: '#5C1414', isFree: false },
-                  { id: 'konpeki', label: 'Kon-peki', color: '#0369A1', isFree: false },
-                  { id: 'sepia', label: 'Sepia', color: '#78350F', isFree: false }
+                  { id: 'carbon', label: 'Carbon', color: '#18181B' },
+                  { id: 'oxblood', label: 'Oxblood', color: '#5C1414' },
+                  { id: 'konpeki', label: 'Kon-peki', color: '#0369A1' },
+                  { id: 'sepia', label: 'Sepia', color: '#78350F' }
                 ].map((ink) => {
                   const isCurrent = (settings.inkColor || 'carbon') === ink.id;
                   return (
@@ -331,11 +324,6 @@ export default function UnifiedMenuModal({
                       type="button"
                       onClick={() => {
                         playSound('click', settings.isMuted);
-                        if (!ink.isFree && !isPatron) {
-                          onClose();
-                          onOpenUpgrade?.();
-                          return;
-                        }
                         updateSettings({ inkColor: ink.id });
                       }}
                       className={`px-2 py-1 rounded-lg text-[10px] font-semibold transition-all cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap ${
@@ -350,7 +338,6 @@ export default function UnifiedMenuModal({
                         style={{ backgroundColor: ink.color }} 
                       />
                       <span className="truncate whitespace-nowrap">{ink.label}</span>
-                      {!ink.isFree && !isPatron && <Lock className="w-2 h-2 opacity-50 shrink-0" />}
                     </button>
                   );
                 })}
@@ -454,7 +441,7 @@ export default function UnifiedMenuModal({
               >
                 <Download className="w-3.5 h-3.5 text-neutral-500" />
                 <span className="text-[11px] font-bold whitespace-nowrap">JSON Backup</span>
-                <span className="text-[9px] text-neutral-400 whitespace-nowrap">Free Vault</span>
+                <span className="text-[9px] text-neutral-400 whitespace-nowrap">Full JSON</span>
               </button>
 
               {/* Weekly Briefing PDF */}
@@ -462,18 +449,12 @@ export default function UnifiedMenuModal({
                 type="button"
                 onClick={() => {
                   playSound('click', settings.isMuted);
-                  if (!isPatron) {
-                    onClose();
-                    onOpenUpgrade?.();
-                    return;
-                  }
                   onPrintWeeklyBriefing?.();
                 }}
                 className="py-2 px-1.5 rounded-xl border border-black/[0.08] dark:border-white/[0.1] hover:bg-black/[0.03] dark:hover:bg-white/[0.05] text-xs font-medium flex flex-col items-center justify-center gap-1 transition-colors cursor-pointer text-center whitespace-nowrap"
               >
                 <div className="flex items-center gap-1">
                   <Printer className="w-3.5 h-3.5 text-neutral-700 dark:text-neutral-300" />
-                  {!isPatron && <Lock className="w-2.5 h-2.5 text-neutral-400" />}
                 </div>
                 <span className="text-[11px] font-bold whitespace-nowrap">Weekly Review</span>
                 <span className="text-[9px] text-neutral-400 whitespace-nowrap">Weekly PDF</span>
@@ -484,18 +465,12 @@ export default function UnifiedMenuModal({
                 type="button"
                 onClick={() => {
                   playSound('click', settings.isMuted);
-                  if (!isPatron) {
-                    onClose();
-                    onOpenUpgrade?.();
-                    return;
-                  }
                   onExportMarkdown?.();
                 }}
                 className="py-2 px-1.5 rounded-xl border border-black/[0.08] dark:border-white/[0.1] hover:bg-black/[0.03] dark:hover:bg-white/[0.05] text-xs font-medium flex flex-col items-center justify-center gap-1 transition-colors cursor-pointer text-center whitespace-nowrap"
               >
                 <div className="flex items-center gap-1">
                   <FileText className="w-3.5 h-3.5 text-neutral-700 dark:text-neutral-300" />
-                  {!isPatron && <Lock className="w-2.5 h-2.5 text-neutral-400" />}
                 </div>
                 <span className="text-[11px] font-bold whitespace-nowrap">Markdown Vault</span>
                 <span className="text-[9px] text-neutral-400 whitespace-nowrap">Obsidian / Notion</span>
@@ -506,18 +481,12 @@ export default function UnifiedMenuModal({
                 type="button"
                 onClick={() => {
                   playSound('click', settings.isMuted);
-                  if (!isPatron) {
-                    onClose();
-                    onOpenUpgrade?.();
-                    return;
-                  }
                   onPrintAnnual?.();
                 }}
                 className="py-2 px-1.5 rounded-xl border border-black/[0.08] dark:border-white/[0.1] hover:bg-black/[0.03] dark:hover:bg-white/[0.05] text-xs font-medium flex flex-col items-center justify-center gap-1 transition-colors cursor-pointer text-center whitespace-nowrap"
               >
                 <div className="flex items-center gap-1">
                   <BookOpen className="w-3.5 h-3.5 text-neutral-700 dark:text-neutral-300" />
-                  {!isPatron && <Lock className="w-2.5 h-2.5 text-neutral-400" />}
                 </div>
                 <span className="text-[11px] font-bold whitespace-nowrap">Annual Archive</span>
                 <span className="text-[9px] text-neutral-400 whitespace-nowrap">Full Year PDF</span>

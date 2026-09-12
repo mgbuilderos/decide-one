@@ -94,7 +94,7 @@ between "was never a problem" and "was fixed".*
 
 | # | Item | Owner | Severity | State |
 | :--- | :--- | :--- | :--- | :--- |
-| **O8** | **The site claims "nothing held back" while the app holds things back.** See below — this is now the largest open item on the list | founder | **Blocking** | **open** |
+| ~~O8~~ | the site claimed "nothing held back" while the app held six things back | founder | — | **closed — locks removed 12 Sep** |
 | O3 | `?view=` app views have no independent canonical | `seo-technical` | Low | **closed — not a defect** |
 | O6 | No field performance data | `seo-technical` | Low | open, blocked on traffic |
 | O7 | `npm audit` reports 3 high advisories in `miniflare`, `sharp`, `wrangler` — build-time devDependencies, pre-existing. Fixing means bumping `wrangler`, which touches the deploy path | founder | Low | open, should be a decision rather than an oversight |
@@ -104,7 +104,7 @@ between "was never a problem" and "was fixed".*
 | ~~O4~~ | Wave 1 was 3 pages of ~12 | — | — | closed — 13 pages live |
 | ~~O5~~ | no `FAQPage` or `HowTo` schema | — | — | closed, and the item was partly obsolete when written: Google deprecated FAQ rich results in May 2026 and dropped `HowTo` support. `FAQPage` ships for the answer engines that are not Google Search; `HowTo` is deliberately absent |
 
-### O8 — the claim and the code disagree
+### O8 — the claim and the code disagreed (resolved)
 
 **What the site says.** `index.html` meta description: *"Free, with nothing held
 back."* `MarketingLandingPage.jsx` pricing section, as a headline: *"Everything,
@@ -152,6 +152,43 @@ Doing neither leaves a claim on the homepage that the product contradicts two
 clicks later, and `VISION.md` §13 is explicit about what that costs: *an
 instrument is trusted because it is right, and a compass two degrees off is
 worse than no compass, because it is believed.*
+
+### Resolution — option 1, 12 September 2026
+
+**The founder chose the recommendation, and the locks were removed.** All six
+things are now available to everyone: paper tones Vellum and Washi, ink colours
+Oxblood, Kon-peki and Sepia, the Weekly Review PDF, the Markdown export and the
+annual print. 31 lines deleted from `UnifiedMenuModal.jsx`; every padlock, every
+`!isPatron` guard, and the now-unused `isFree` fields went with them.
+
+**Rule 18 did not have to be amended.** The earlier claim here that it would —
+made in this document — was wrong. Rule 18 asserts that `licenseManager.js`,
+`archivalExport.js`, `PatronUpgradeModal.jsx` and `YearlyViewSpread.jsx` exist
+and export certain functions. It says nothing about whether anything is *gated*,
+so removing the gating left it passing untouched. The full audit passes.
+
+**Verified in a browser, not by inspection:** the menu opens with no padlock on
+any control, and clicking a previously-locked paper tone (Washi) applies it
+rather than opening the upgrade modal — confirmed by reading the button's
+selected state from the DOM, not by looking at a screenshot. Zero console errors.
+
+**The copy was left as it is.** "Free to use, with no account" is true and is
+better writing than the original; there was no reason to churn 23 pages back.
+
+**What replaced the word ban.** The phrase `nothing held back` was briefly
+blacklisted outright. That was the wrong instrument — it blocks a sentence that
+is now true. It is replaced by a **cross-check**: `check_content.js` fails the
+build only if a page claims completeness *and* `src/` still gates on
+`!isPatron`. That is precisely the comparison whose absence caused this — Rule 18
+and Rule 24 each passed while contradicting each other, because nothing compared
+them. Proven to fire in both directions before it was committed.
+
+**One thing left open.** `PatronUpgradeModal.jsx` still exists and the menu still
+offers "Become a Patron", which now leads to a licence-key field that grants
+nothing. It is no longer a *lock* and no longer contradicts any claim, so it is
+not urgent — but VISION §11.1 describes the support ask as happening *"at the end
+of a day the person has actually closed"*, not as a menu item, and the two should
+be reconciled.
 
 ---
 
