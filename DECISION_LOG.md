@@ -1031,3 +1031,45 @@ Wave 1 is decision G6, now partly delivered: the three shipped methods each have
 Two sets of gates, both proven rather than asserted. build_content.js fails the build on a broken internal link, a duplicate intent, a missing front-matter field or an orphan page — verified by pointing a link at a slug that does not exist and watching the build stop. check_content.js runs inside test:qc and gates the prose against VISION §11.3, FRAMEWORKS §6.3 and FOUNDATIONS §5. On its first run it failed four violations in content I had just written: 'treats' three times, which is clinical vocabulary, and one 'a day you failed'. I fixed the prose, not the gate. That is the whole argument for gating mechanically.
 
 Still open: Wave 1 is three pages of roughly twelve — the comparison pages people actually search for are not written. Wave 2 has not started. And brief still reports decideone.app is NOT this build, so none of this is live yet.
+
+---
+
+### 2026-09-12 15:54 — Claude Opus 5 — HANDOFF
+
+**In flight:** Organic Growth Pod is established and Wave 0 is complete; Wave 1 is 3 pages of roughly 12 and Wave 2 has not started.
+
+DO FIRST: npm run brief still reports decideone.app is NOT this build. Every SEO fix in the last four commits is inert until a deploy lands. Content shipped before that is invisible work. This is O1 in SEO_AUDIT.md and it blocks Wave 1's exit gate.
+
+NEXT: SEO_AUDIT.md §6 is the open list, each item with an owner. The highest-value remaining content work is the comparison pages (O4) - 'ivy lee vs top 3', 'how to prioritise when everything is urgent' - because those are the queries with real volume that the three method pages do not answer.
+
+ALSO UNFINISHED, and unrelated: a backend forensic audit was in progress when the session pivoted to SEO. Nothing was written - the edit was rejected and the tree stayed clean - but six defects were confirmed by probe and are all still live in server/ and src/utils/telemetry.js. Recorded here because the evidence cost something to produce and would otherwise be lost:
+
+(1) getCircadianMetrics buckets by getUTCHours, which worker/schema.sql's own comment names as a known defect; the D1 schema gained a local_hour column to fix it and the reader was never changed. The dual-visit rate reads 0% on seeded data that contains a deliberate morning/evening pair for 45% of user-days. Test 6 prints that 0% and passes, because it only asserts typeof === 'number'.
+(2) The seeder compounds it: baseDayTimestamp is now minus whole days, not midnight, so morning (+8h) and evening (+20h) land on different calendar dates and can never pair.
+(3) The client never sends local_hour on the heartbeat, though worker/index.js reads body.local_hour - so sessions.local_hour in D1 is structurally always NULL.
+(4) GET /api/v1/analytics/live?limit=abc throws 'datatype mismatch' and the server echoes err.message; ?limit=-1 returns the entire events table unbounded.
+(5) Node ingest side effects are not idempotent: a replayed batch dedups events but double-writes user_cohorts, pathfinder_transitions and the rest. Verified 0 to 2 on an exact replay.
+(6) sessions.total_events is wrong - the increment runs before the session row exists for session_start.
+
+Also: nothing in the repository applies worker/schema.sql to D1, and DEPLOY.md does not mention it. If telemetry is ever switched on in production, every ingest 500s.
+
+Gates are green as of this note: npm run test:qc and npm run build both pass, tree is clean apart from an untracked screenshot that is not mine.
+
+**Tree:** `main` @ `b5a519e` — 1 file(s) uncommitted
+
+```
+?? screenshot_v3_overview.png
+```
+
+**Written in the last 30 minutes** (a shared batch write, not separate changes, if the timestamps match):
+
+- `scripts/handoff.js`
+- `scripts/brief.js`
+- `scripts/check_content.js`
+- `scripts/build_content.js`
+- `scripts/log_session.js`
+- `content/methods/urgent-important-matrix.md`
+- `content/methods/ivy-lee-method.md`
+- `content/methods/top-3-method.md`
+
+**Gates:** run `npm run build && npm run test:qc` before trusting any of the above.
