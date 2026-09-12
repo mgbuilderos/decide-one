@@ -89,7 +89,12 @@ if (fs.existsSync('DECISION_LOG.md')) {
 // were wrong.
 if (fs.existsSync('DECISION_LOG.md')) {
   const lines = fs.readFileSync('DECISION_LOG.md', 'utf8').split('\n');
-  const at = lines.map((l, i) => (/^#{2,3} .*— HANDOFF$/.test(l) ? i : -1)).filter(i => i >= 0).pop();
+  // Only an OPEN handoff — one nobody has picked up yet. Once work is logged
+  // after it, showing it again is noise, and a banner that is always on is a
+  // banner people learn to skip.
+  const heads = lines.map((l, i) => (/^#{2,3} \d{4}-\d{2}-\d{2} /.test(l) ? i : -1)).filter(i => i >= 0);
+  const last = heads[heads.length - 1];
+  const at = (last !== undefined && /— HANDOFF\s*$/.test(lines[last])) ? last : undefined;
   if (at !== undefined) {
     const body = [];
     for (let i = at + 1; i < lines.length && !/^---\s*$/.test(lines[i]); i++) {

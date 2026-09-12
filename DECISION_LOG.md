@@ -1073,3 +1073,21 @@ Gates are green as of this note: npm run test:qc and npm run build both pass, tr
 - `content/methods/top-3-method.md`
 
 **Gates:** run `npm run build && npm run test:qc` before trusting any of the above.
+
+---
+
+### 2026-09-12 16:10 — Claude Opus 5
+
+Deployed. decideone.app is this build for the first time since the SEO work started, and the canonical defect is gone in production.
+
+npm run deploy ran the whole chain: test:qc and the content gates, build, wrangler deploy, then verify:live. verify reported MATCH on assets/index-D8O6lRno.js, first attempt, no stale-edge retry needed.
+
+Before deploying I checked something the local preview could not answer. I had verified the generated pages against vite preview, which is not what serves them — Cloudflare's ASSETS binding with not_found_handling: single-page-application is, and that setting has silently swallowed requests in this repository before. Ran wrangler dev --local and confirmed the Worker serves dist/methods/<slug>/index.html for the real path rather than falling through to the SPA, that /methods/ resolves to its section index, and that an unknown path still falls back to the app as it should. A path without the trailing slash 307s to the canonical form.
+
+Verified live, not inferred: every page now carries its own self-referencing canonical, which was the finding this whole effort started from. Previously every URL on the site served index.html and its hardcoded homepage canonical, so the site was instructing Google to ignore every page that was not the homepage. sitemap.xml serves 5 URLs where it had 1. robots.txt declares it. Homepage JSON-LD is live with SoftwareApplication, Organization and WebSite - there was no structured data anywhere before today. Each method page serves roughly 1,000 words of prose server-side with no JavaScript, all 200.
+
+This deploy also shipped four product commits from before this session that had never been served - the orphan deletion, the QC rule fixes that were abstaining, the Today stream restoration and the C3 day-condition restoration. The founder was told they were in the payload and authorised the deploy. They passed QC and build; they are not my work and I did not review them.
+
+Also fixed brief.js: it showed the most recent handoff unconditionally, so the banner would have stayed on forever. It now shows one only while it is genuinely open - nothing logged after it. A banner that is always on is a banner people learn to skip.
+
+Open, in priority order: Wave 1 is 3 pages of roughly 12, and the comparison queries carry more volume than the three method pages. Then SEO_AUDIT.md §6 - O2 the service worker under a cold crawl, O3 the SPA views that still have no independent canonical, O5 FAQPage and HowTo schema. The six backend defects in the previous handoff remain unfixed and are deliberately last: telemetry is compiled out, so no production data exists and nobody is reading a wrong number. Fix them before VITE_ENABLE_TELEMETRY is ever set to true.
