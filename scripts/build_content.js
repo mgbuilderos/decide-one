@@ -494,6 +494,41 @@ ${urls.map(u => `  <url>
 </urlset>
 `);
 
+// A real 404, served with a real 404 status.
+//
+// wrangler.jsonc used not_found_handling: "single-page-application", so every
+// unmatched path returned index.html with HTTP 200 — a soft 404. Google names
+// that specifically and treats the URL as a real page, which means a typo, a
+// stale inbound link or a deleted asset all reported themselves as working.
+// The comment justifying it said a refresh on any path would otherwise 404,
+// and that was simply not true: this app has no path router. It lives at / and
+// reads ?view= from the query string, so no path ever needed rescuing.
+fs.writeFileSync(path.join(OUT, '404.html'), `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Page not found — Decide One</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="/icon.svg?v=2">
+<meta name="theme-color" content="#0B0B0D">
+<style>${STYLE}</style>
+</head>
+<body><main>
+<nav><a href="/">Decide One</a></nav>
+<h1>That page is not here</h1>
+<p>The address may be mistyped, or the page may have been renamed. Nothing is broken; this one just does not exist.</p>
+<h2>Where you were probably going</h2>
+<ul>
+<li><a href="/">Decide One</a> — the instrument itself</li>
+<li><a href="/methods/">Methods</a> — the three the product ships, and how to use each</li>
+<li><a href="/guides/">Guides</a> — ${pages.filter(p => p.section.base === 'guides').length} answers about prioritising a working day</li>
+<li><a href="/faq/">Frequently asked questions</a> — what it costs, and where your writing is kept</li>
+</ul>
+<footer><a href="/">Back to Decide One</a></footer>
+</main></body></html>
+`);
+
 fs.writeFileSync(path.join(OUT, 'llms.txt'),
 `# Decide One
 

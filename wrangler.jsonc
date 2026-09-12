@@ -44,8 +44,19 @@
     "directory": "./dist",
     // Bound so the Worker can serve assets itself once it handles fetch.
     "binding": "ASSETS",
-    // Every route is the same document; the app reads ?view= from the URL.
-    // Without this a refresh on any path would 404 instead of loading.
-    "not_found_handling": "single-page-application"
+    // Serve dist/404.html, with a real 404 status, for anything that is not a
+    // file we published.
+    //
+    // This was "single-page-application" until 12 September 2026, on the stated
+    // grounds that "without this a refresh on any path would 404 instead of
+    // loading". That was not true: the app has no path-based router. It lives
+    // at / and reads ?view= from the query string, so no path ever needed
+    // rescuing — and the setting meant every mistyped URL, every stale inbound
+    // link and every deleted asset answered HTTP 200 with the home page. Google
+    // calls that a soft 404 and counts the URL as a real page.
+    //
+    // The 23 content pages are real files at /guides/<slug>/index.html, so they
+    // are unaffected; only genuinely missing paths change behaviour.
+    "not_found_handling": "404-page"
   }
 }
