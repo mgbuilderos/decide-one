@@ -2295,6 +2295,8 @@
 .pm-light .pm-science-grid a { color: #636363; }
 
 /* The writing. Monochrome like everything else — the cells are hairlines, not cards. */
+.pm-reading-links { display: flex; gap: 28px; flex-shrink: 0; }
+@media(max-width:700px) { .pm-reading-links { flex-direction: column; gap: 10px; } }
 .pm-reading-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: #ffffff20; border: 1px solid #ffffff20; }
 .pm-reading-grid a { display: block; background: var(--pm-bg); padding: 30px 28px 34px; transition: background .18s ease; }
 .pm-reading-grid a:hover, .pm-reading-grid a:focus-visible { background: var(--pm-panel); }

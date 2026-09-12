@@ -33,8 +33,13 @@ function gitIdentity() {
 }
 
 const agent = process.env.AGENT || process.env.CLAUDE_AGENT || gitIdentity() || 'unattributed';
-const date = new Date().toISOString().slice(0, 10);
-const time = new Date().toTimeString().slice(0, 5);
+// Local date, to match the local time on the next line and the local dates git
+// shows. toISOString() is UTC: at 02:00 IST on the 13th it stamps the 12th, so
+// the date and time in one entry came from two different clocks and entries
+// near midnight landed on the wrong day. AGENTS.md asks for an accurate clock.
+const now = new Date();
+const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+const time = now.toTimeString().slice(0, 5);
 const file = 'DECISION_LOG.md';
 
 const entry = `\n---\n\n### ${date} ${time} — ${agent}\n\n${message}\n`;

@@ -55,7 +55,8 @@ for (const [f, why] of [
   ['AGENTS.md', 'the rules. Start here'],
   ['VISION.md', 'WHY. §11 governs all copy and wins any conflict'],
   ['DECISIONS.md', 'WHAT IS TRUE NOW. One page, current state'],
-  ['DECISION_LOG.md', 'HOW WE GOT HERE. Append-only; npm run log adds to it'],
+  ['DECISION_LOG.md', 'HOW WE GOT HERE. Append-only; search it with npm run why'],
+  ['ARCHITECTURE_AUDIT.md', 'why defects escape the gates, and which layers are missing'],
   ['WORK_REMAINING.md', 'what is left'],
   ['DEPLOY.md', 'one command: npm run deploy'],
   ['FRAMEWORKS.md', 'which methods ship, and their attribution'],
@@ -108,7 +109,11 @@ if (fs.existsSync('DECISION_LOG.md')) {
 
 console.log('\n\x1b[1mCommands\x1b[0m');
 console.log('  npm run tree      is anyone else editing right now');
-console.log('  npm run test:qc   23 rules + Rule 0 (governed surfaces exist)');
+console.log('  npm run why "…"   was this already decided? searches the whole record');
+console.log('  npm run test:qc   26 rules over src/ and content/ (never the artefact)');
+console.log('  npm run test:artifact  the published dist/ — references, orphans, reach');
 console.log('  npm run deploy    audit, build, publish, verify — one command');
 console.log('  npm run log "…"   append what you did to DECISION_LOG.md');
-console.log('  npm run handoff "…"  stopping mid-task? leave the next agent a note\n');
+console.log('  npm run handoff "…"  stopping mid-task? leave the next agent a note');
+console.log('\n\x1b[2m  Before re-deriving anything, run npm run why "<term>". The record is');
+console.log('  30,000+ words and this brief shows five entries; why searches all of it.\x1b[0m\n');

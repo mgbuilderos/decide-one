@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { marked } from 'marked';
+import crypto from 'crypto';
 
 /**
  * Content build — Markdown in, real HTML pages out.
@@ -561,6 +562,31 @@ ${pages.filter(p => p.section.flat).map(p => `- [${p.meta.title}](${ORIGIN}${p.u
   (2006) on if-then implementation intentions. Everything else is attributed to
   a named historical source or a named result in scheduling theory.
 `);
+
+// The service worker's cache name is derived, never remembered.
+//
+// It used to be a literal that an agent had to think to bump. Nobody did, for
+// months, while `activate` only ever evicts caches whose name DIFFERS from the
+// current one — so the cache could never be evicted and visitors were served
+// the first commit's gold icon for weeks. A name that changes whenever the
+// build changes closes that at the root: no discipline required, and one
+// online load repopulates the cache.
+const swPath = 'dist/sw.js';
+if (fs.existsSync(swPath)) {
+  const sw = fs.readFileSync(swPath, 'utf8');
+  const assetNames = fs.existsSync('dist/assets') ? fs.readdirSync('dist/assets').sort().join(',') : '';
+  const build = crypto.createHash('sha256')
+    .update(assetNames + sw.replace(/const CACHE_NAME = '[^']*';/, ''))
+    .digest('hex').slice(0, 12);
+  const stamped = sw.replace(/const CACHE_NAME = '[^']*';/,
+    `const CACHE_NAME = 'decideone-shell-${build}';`);
+  if (stamped === sw) {
+    console.error('\n\x1b[31m✗ sw.js\x1b[0m  no CACHE_NAME literal to stamp — the cache would freeze again');
+    process.exit(1);
+  }
+  fs.writeFileSync(swPath, stamped);
+  console.log(`\n\x1b[32m✓ sw\x1b[0m       cache name stamped decideone-shell-${build}`);
+}
 
 console.log(`\n\x1b[32m✓ content\x1b[0m  ${pages.length} page(s), ${urls.length} sitemap entries`);
 pages.forEach(p => console.log(`    ${p.url.padEnd(42)} ${p.meta.title}`));
