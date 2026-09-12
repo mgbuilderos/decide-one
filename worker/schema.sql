@@ -56,7 +56,13 @@ CREATE TABLE IF NOT EXISTS sessions (
   last_heartbeat TEXT NOT NULL,
   active_seconds INTEGER DEFAULT 0,
   idle_seconds   INTEGER DEFAULT 0,
-  total_events   INTEGER DEFAULT 0,
+  -- total_events is deliberately absent. It existed here, nothing in the
+  -- Worker ever wrote it, and it would have read 0 for every session forever —
+  -- the exact shape QC Rule 25 was written for. It is also derivable:
+  --   SELECT COUNT(*) FROM events WHERE session_id = ?
+  -- and idx_events_session makes that cheap. A stored counter adds a way for
+  -- the number to be WRONG (a replayed batch double-counts) in exchange for a
+  -- speed-up nothing needed. Derive it; do not store it.
   device_class   TEXT,
   initial_view   TEXT,
   final_view     TEXT,

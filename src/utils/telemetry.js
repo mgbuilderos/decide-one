@@ -431,7 +431,14 @@ class TelemetrySDK {
       anonymous_id: this.anonymousId,
       active_seconds: deltaActive,
       idle_seconds: deltaIdle,
-      current_view: this.currentView
+      current_view: this.currentView,
+      // The hour as the person is living it. The Worker reads body.local_hour
+      // when it upserts the session row; until this line existed it read
+      // undefined every time, so sessions.local_hour was structurally NULL for
+      // every session that would ever be recorded. Events carried it (through
+      // acquisitionContext) and sessions did not, which is the worst shape of
+      // the bug: the column looked populated in one table and empty in the other.
+      local_hour: new Date().getHours()
     };
 
     try {

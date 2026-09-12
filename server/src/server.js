@@ -164,7 +164,11 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (method === 'GET' && pathname === '/api/v1/analytics/live') {
-      const limit = parseInt(parsedUrl.searchParams.get('limit') || '50', 10);
+      // Clamped, not trusted. parseInt('abc') is NaN and SQLite answers a NaN
+      // bind with "datatype mismatch"; -1 is SQLite's idiom for NO limit, so
+      // ?limit=-1 returned the entire events table in a single response.
+      const raw = Number(parsedUrl.searchParams.get('limit') ?? 50);
+      const limit = Number.isFinite(raw) ? Math.min(Math.max(Math.trunc(raw), 1), 500) : 50;
       return sendJson(res, 200, AnalyticsService.getLiveEvents(limit));
     }
 
@@ -211,7 +215,12 @@ const server = http.createServer(async (req, res) => {
     sendJson(res, 404, { error: 'Not Found', path: pathname });
   } catch (err) {
     console.error('[Server] Internal Error:', err);
-    sendJson(res, 500, { error: 'Internal Server Error', message: err.message });
+    // The message is logged, never returned. A SQLite error carries column
+    // names and fragments of the offending value, and this endpoint sits in
+    // front of a database of behavioural data. worker/index.js already made
+    // this choice and wrote down why; this is the same rule on the same class
+    // of error.
+    sendJson(res, 500, { error: 'Internal Server Error' });
   }
 });
 

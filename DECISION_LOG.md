@@ -1224,3 +1224,9 @@ Search Console setup finished end to end: property verified, sitemap submitted a
 ### 2026-09-12 19:51 — Claude Opus 5
 
 Bing Webmaster Tools live, imported from Search Console with no second verification. Both measurement surfaces are now in place: Google Search Console for Google, Bing for the index ChatGPT search and Copilot draw on -- which is the one that matters for the GEO half of this work. Measurement setup is complete end to end; the SEO workstream is now waiting on evidence rather than on effort, and the next real reading is roughly a week away.
+
+---
+
+### 2026-09-12 21:00 — Claude Opus 5
+
+Backend pass, part 1. Re-verified every defect from the pre-pivot notes rather than trusting them, and TWO WERE WRONG: (a) 'nothing applies worker/schema.sql to D1, every ingest would 500' is false -- the tables exist in production and PRAGMA table_info matches schema.sql column for column; (b) 'ingest is not idempotent' is false for production -- the Worker uses INSERT OR IGNORE on a UNIQUE event_id. Those two applied to the Node dev service, not the Worker. Production D1 holds 0 events and 0 sessions, consistent with telemetry being compiled out, so nothing live is corrupted. Fixed: heartbeat now sends local_hour (sessions.local_hour was structurally NULL because acquisitionContext only reached event properties, never the heartbeat body); total_events removed from schema.sql and from live D1 (nothing wrote it, it would have read 0 forever, and it is derivable as COUNT(*) FROM events WHERE session_id = ? -- a stored counter only adds a way to be wrong on replay); server limit param clamped to 1..500 with a NaN fallback, proven against 2531 real rows where ?limit=-1 previously returned all of them; server no longer echoes err.message, matching the rule worker/index.js already wrote down. Mitigating fact found: every analytics endpoint is behind owner auth, so the limit defect was owner-only -- robustness, not a security hole.
