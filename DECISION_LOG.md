@@ -1206,3 +1206,9 @@ Diagrams on 22 of 23 pages. Eight original inline SVGs in scripts/diagrams.js, r
 ### 2026-09-12 19:45 — Claude Opus 5
 
 O9 closed: decideone.app verified in Google Search Console as a Domain property via Cloudflare's domain-name-provider integration. Owner maulik.payment@gmail.com, chosen deliberately by the founder. TXT google-site-verification=f3Cw_TF3C-LEZLF_9vCAMBloZn-wE1KEue1bjfwqvZQ confirmed against the authoritative nameserver -- a public resolver returned nothing for several minutes while the authoritative one already had it, which is the same stale-cache trap AGENTS.md documents for the apex HTML and is now written down for DNS too. Googlebot fetches sitemap.xml and robots.txt at 200. Measurement has started; there is no data yet and will not be for weeks. Wave 1's exit gate is now assessable in principle rather than blocked in principle.
+
+---
+
+### 2026-09-12 19:46 — Claude Opus 5
+
+Sitemap submitted and read the same day: status Success, 26 discovered pages -- every URL the generator emits, so discovery is complete and nothing is lost at the crawl stage. Recorded as the baseline in SEO_AUDIT O9. Indexed count is 0, which is correct for day zero and is not a finding. The next meaningful reading is Indexing > Pages in roughly a week (how many of the 26 are indexed, not discovered) and Performance in two to three weeks (which queries, which is what tells us whether the ten Wave 2 posts were the right ten).
