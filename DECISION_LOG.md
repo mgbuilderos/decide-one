@@ -1113,3 +1113,9 @@ Deliberately five rather than nine. SEO_CHARTER F11 names 'the pod optimises for
 One decision left for the founder rather than taken silently: all copy is British spelling, matching existing site copy, while US search volume favours 'prioritize'. Changing that is a VISION §11 copy decision and not an agent's to make.
 
 Gates green: test:qc and build pass, 8 pages, 11 sitemap entries. Not deployed.
+
+---
+
+### 2026-09-12 17:20 — Claude Opus 5
+
+Deployed Wave 1: eight content pages live, eleven sitemap URLs. verify:live MATCH first attempt. All eight canonical URLs 200, self-referencing canonical, Article+BreadcrumbList JSON-LD, 970-1129 server-rendered words each. No-trailing-slash 307s to canonical form (confirmed three times each; the first probe ran seconds after upload and caught a cold edge serving the SPA fallback -- that resolved on its own and is the stale-edge case AGENTS.md warns against diagnosing).
