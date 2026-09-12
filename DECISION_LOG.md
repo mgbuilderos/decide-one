@@ -1173,3 +1173,30 @@ O8 resolved by removing the locks. All six gated things are free: two paper tone
 ### 2026-09-12 19:01 — Claude Opus 5
 
 Diagrams on 22 of 23 pages. Eight original inline SVGs in scripts/diagrams.js, referenced from markdown as {{diagram:name}}; an unknown name fails the build rather than publishing a literal placeholder (proved). Inline SVG rather than image files: original rather than stock, no extra request and no layout shift, inherits page colour through currentColor so dark mode needs no second asset, and carries a real <title> plus role=img so a screen reader and a crawler get the same sentence a sighted reader gets. Placed after the short answer so the direct answer still leads the page. Verified by rasterising each SVG with sharp and looking at it -- which caught a genuine error: the urgent/important matrix axis read URGENT -> (increasing rightward) while the quadrants used the classic layout where urgency decreases rightward, so the labels contradicted the contents on the page that teaches the concept. Replaced arrows with explicit MORE/LESS labels. Also caught clipped rotated text and five viewBoxes whose last line sat within 6px of the floor. Mobile: figures scroll inside themselves with a 560px minimum so labels stay ~10px rather than shrinking to 6px; page itself never scrolls horizontally.
+
+---
+
+### 2026-09-12 19:04 — Claude Opus 5 — HANDOFF
+
+**In flight:** Session complete, nothing in flight. Live and verified: 23 pages / 26 URLs, all 200 with self-referencing canonicals, 22 carrying diagrams, FAQ at /faq/ with 19 derived Q&A pairs, llms.txt, homepage now serving 194 crawlable words and 7 links without JavaScript. Patron locks removed so VISION §11.1 is true as written. NEXT AGENT: the one blocking item is O9 -- decideone.app is not verified in Google Search Console, so nothing published can be measured and Wave 1's exit gate cannot be assessed. That needs the founder's Google account; the code side is a one-line meta tag. Second: the six backend defects in SEO_AUDIT/DECISION_LOG must be fixed before VITE_ENABLE_TELEMETRY is ever set true. Third, minor: PatronUpgradeModal still exists and the menu still offers Become a Patron, which now grants nothing -- not a lock and not a false claim, but VISION §11.1 puts the support ask at the end of a closed day rather than in a menu.
+
+**Tree:** `main` @ `816d36c` — 1 file(s) uncommitted
+
+```
+?? screenshot_v3_overview.png
+```
+
+**Written in the last 30 minutes** (a shared batch write, not separate changes, if the timestamps match):
+
+- `src/components/UnifiedMenuModal.jsx`
+- `scripts/check_content.js`
+- `scripts/build_content.js`
+- `scripts/diagrams.js`
+- `content/methods/urgent-important-matrix.md`
+- `content/methods/ivy-lee-method.md`
+- `content/methods/top-3-method.md`
+- `content/guides/what-to-do-when-you-cannot-start.md`
+- `content/guides/ivy-lee-vs-top-3.md`
+- `content/guides/why-to-do-lists-stop-working.md`
+
+**Gates:** run `npm run build && npm run test:qc` before trusting any of the above.
