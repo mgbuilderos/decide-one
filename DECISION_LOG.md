@@ -1266,3 +1266,9 @@ Wave 2 batch two: ten more guides, 23 pages to 33, 36 sitemap URLs. New intents:
 ### 2026-09-12 22:15 — Claude Opus 5
 
 Found and fixed a soft 404 affecting every wrong URL on the site. wrangler.jsonc used not_found_handling: single-page-application, so any unmatched path returned index.html with HTTP 200 -- a mistyped URL, a stale inbound link and the images deleted an hour earlier all answered 'this page exists'. Google names soft 404s specifically and counts such URLs as real pages. The comment justifying the setting said a refresh on any path would otherwise 404; that was not true, because the app has no path-based router at all -- it lives at / and reads ?view= from the query string, so no path ever needed rescuing. Switched to 404-page and generated a real dist/404.html that is useful rather than a dead end (links to the instrument, methods, guides and the FAQ) and carries noindex. Tested against wrangler dev --local before deploying, per AGENTS.md: / and /?view=daily still 200, all 33 content pages 200, sitemap.xml and llms.txt 200 with correct content types, webp assets 200 image/webp, and deleted or nonexistent paths now 404.
+
+---
+
+### 2026-09-12 22:19 — Claude Opus 5
+
+Final metadata sweep. index.html's meta description was 191 characters -- Google shows about 158 -- so a third of it was written for nobody on the site's most important URL. Shortened to 155 and, more importantly, ADDED index.html TO THE GATE: check_content.js only ever looked at content/, so the home page was ungated. Same gap that left content/pages/faq.md ungated earlier today. Proved the new gate fires. Also removed quote characters from one description: they survive as &quot; and inflate the rendered attribute by ten characters while buying nothing.

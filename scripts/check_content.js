@@ -188,6 +188,25 @@ for (const dir of DIRS) {
   }
 }
 
+// index.html is a published page too, and nothing was checking it. Its
+// description was 191 characters — Google shows about 158 — so a third of it
+// was written for nobody, on the single most important URL on the site. Same
+// gap that left content/pages/ ungated earlier: a checker that knows about one
+// directory and not about the page at the root of the site.
+if (fs.existsSync('index.html')) {
+  const html = fs.readFileSync('index.html', 'utf8');
+  const d = html.match(/<meta name="description" content="([^"]*)"/);
+  const t = html.match(/<title>([^<]*)<\/title>/);
+  if (!d) {
+    errors.push('index.html: no meta description.');
+  } else if (d[1].length > 158 || d[1].length < 70) {
+    errors.push(`index.html: description is ${d[1].length} chars; search results cut near 158, and under 70 wastes the space.`);
+  }
+  if (t && t[1].length > 60) {
+    errors.push(`index.html: title is ${t[1].length} chars; Google truncates near 60.`);
+  }
+}
+
 if (errors.length) {
   console.error(`\n\x1b[31m✖ CONTENT GATES FAILED\x1b[0m  (${errors.length} in ${checked} file(s))\n`);
   errors.forEach(e => console.error('  - ' + e));

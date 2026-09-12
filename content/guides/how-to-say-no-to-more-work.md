@@ -1,6 +1,6 @@
 ---
 title: How to say no to more work
-description: Saying no is admission control, and every system that stays responsive has some. What to say, and why "I'll try to fit it in" is the expensive answer.
+description: Saying no is admission control, and every system that stays responsive has some. What to say instead, and why promising to try is the expensive answer.
 slug: how-to-say-no-to-more-work
 intent: how to say no to more work
 published: 2026-09-12
