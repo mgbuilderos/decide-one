@@ -1212,3 +1212,9 @@ O9 closed: decideone.app verified in Google Search Console as a Domain property 
 ### 2026-09-12 19:46 — Claude Opus 5
 
 Sitemap submitted and read the same day: status Success, 26 discovered pages -- every URL the generator emits, so discovery is complete and nothing is lost at the crawl stage. Recorded as the baseline in SEO_AUDIT O9. Indexed count is 0, which is correct for day zero and is not a finding. The next meaningful reading is Indexing > Pages in roughly a week (how many of the 26 are indexed, not discovered) and Performance in two to three weeks (which queries, which is what tells us whether the ten Wave 2 posts were the right ten).
+
+---
+
+### 2026-09-12 19:49 — Claude Opus 5
+
+Search Console setup finished end to end: property verified, sitemap submitted and read (26 discovered), and indexing requested for the four priority URLs (home, the prioritisation hub, top-3-method, faq). Nothing further to do on measurement until data arrives -- roughly a week for Indexing > Pages, two to three weeks for Performance queries. The SEO workstream is now waiting on evidence rather than on work. Largest remaining risk in the project is elsewhere: the six backend defects, which must be fixed before VITE_ENABLE_TELEMETRY is ever set true, because every one of them corrupts a number a human would later read and believe.
