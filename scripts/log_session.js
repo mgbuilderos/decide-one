@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { execSync } from 'child_process';
 
 // DECISION_LOG.md is append-only by convention: every session adds what it did,
 // nothing is rewritten, and corrections arrive as new entries saying what they
@@ -15,7 +16,23 @@ if (!message) {
   process.exit(1);
 }
 
-const agent = process.env.AGENT || process.env.CLAUDE_AGENT || 'unattributed';
+// Attribution. The four most recent entries in DECISION_LOG.md all read
+// 'unattributed' because nothing was setting AGENT, and a log that cannot say
+// who did something answers half the question it exists to answer.
+//
+// The fallback chain never blocks the write: a refused log is a lost log, which
+// is worse than an unattributed one. Agents set AGENT explicitly (their
+// definitions in .claude/agents/ say so); a human session falls back to the git
+// identity, which is already configured and is a real answer.
+function gitIdentity() {
+  try {
+    return execSync('git config user.name', { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim() || null;
+  } catch {
+    return null;  // no git, or no identity configured
+  }
+}
+
+const agent = process.env.AGENT || process.env.CLAUDE_AGENT || gitIdentity() || 'unattributed';
 const date = new Date().toISOString().slice(0, 10);
 const time = new Date().toTimeString().slice(0, 5);
 const file = 'DECISION_LOG.md';

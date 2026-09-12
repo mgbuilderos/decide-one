@@ -993,3 +993,21 @@ Closed the same hole in two more rules, found by a peer session's sweep. Rule 9 
 ### 2026-09-11 01:50 — unattributed
 
 Deleted the eight remaining orphans, 1,165 lines, staged by name: CategoryFilterBar, DailyVictoryCardModal, GiftAccessModal, MonthlyBreakerPage, PageFlipNavigation, Top3HardTasks, quotes.js, TimeCapsuleEngine.js. Founder delegated the call after asking for a recommendation. Checked first that no current document promises any of them - every DECISIONS.md hit was my own B-38 row, and VISION.md names Top3HardTasks as the source of the red-week defect rather than as a feature. Two carried Conquered and Victory and confetti, vocabulary the audit bans on live surfaces, so they were an armed trap rather than inert clutter. All recoverable from git. Separately found confetti firing in LIVE code: ProductivityFrameworks.triggerCelebration is called at three sites including when all three priorities are done. Flagged, not changed - that is a visible behaviour change, not cleanup.
+
+---
+
+### 2026-09-12 15:44 — Claude Opus 5
+
+Established the Organic Growth Pod (SEO/AEO/GEO) and fixed the record-keeping it depends on.
+
+SEO_CHARTER.md is the governing document, standing to this pod as GROWTH_CHARTER.md does to the growth pod. It records the founder's intent of 12 September in operational terms, and — importantly — records the volume decision and its reasoning, because that is the constraint most likely to be quietly reversed by an agent optimising for output. The founder was shown three options and chose evidence-gated waves over publishing 1000 posts immediately: Google's scaled content abuse policy penalises at site level, there is not 1000 posts of honest material in a three-framework tool, and VISION §12.1a is binding on the point. The pipeline is built to any volume; volume is a dial, not an architecture.
+
+Four agents in .claude/agents/: seo-technical owns crawlability and the build pipeline, seo-content owns the words under VISION §11, seo-answer-engine owns structured data and citability, docs-archivist owns the record and may not edit code.
+
+The audit behind it, all four verified by reading the files: every URL serves identical HTML (SPA fallback plus ?view= routing); index.html carries a hardcoded canonical pointing at the homepage, served at every path, so the site instructs Google to ignore every page that is not the homepage; sitemap.xml has one URL; there is no JSON-LD anywhere. Content cannot rank until the canonical is fixed, so Wave 0 is technical work and ships no content.
+
+Record-keeping, which was the other half of the ask and mostly already existed. Rather than build a parallel logging system — a second source of truth is the one that goes stale — I fixed what was broken in the existing one. log_session.js fell back to 'unattributed' because nothing set AGENT, which is why the last four entries say so; it now falls back to the git identity and the agent definitions set AGENT explicitly. Added npm run handoff, which CLAUDE.md describes the need for at length but which nothing implemented: it appends a structured note capturing branch, HEAD, uncommitted files and anything written in the last 30 minutes, so an arriving agent acts instead of re-diagnosing. brief.js now surfaces the most recent open handoff.
+
+Gates green: npm run test:qc passes, npm run build passes. No product code touched.
+
+Still open: Wave 0 technical work (real paths, self-referencing canonicals, JSON-LD, generated sitemap, the Markdown-to-HTML pipeline, content QC rules). Also unresolved and not mine yet: brief reports decideone.app is NOT this build, so main has commits the live site has never served — content shipped before that is resolved is invisible work.

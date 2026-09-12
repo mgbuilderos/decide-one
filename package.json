@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "brief": "node scripts/brief.js",
     "log": "node scripts/log_session.js",
+    "handoff": "node scripts/handoff.js",
     "test:qc": "node scripts/qc_audit.js",
     "tree": "node scripts/tree_status.js",
     "test:launch": "node scripts/launch_check.js",

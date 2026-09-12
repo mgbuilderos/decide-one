@@ -83,8 +83,27 @@ if (fs.existsSync('DECISION_LOG.md')) {
   }
 }
 
+// The most recent handoff, if there is one. An agent that stopped mid-task
+// leaves this so the next one acts instead of re-diagnosing — twice on
+// 11 September a delete-and-rewrite was read as a deletion, and both readings
+// were wrong.
+if (fs.existsSync('DECISION_LOG.md')) {
+  const lines = fs.readFileSync('DECISION_LOG.md', 'utf8').split('\n');
+  const at = lines.map((l, i) => (/^#{2,3} .*— HANDOFF$/.test(l) ? i : -1)).filter(i => i >= 0).pop();
+  if (at !== undefined) {
+    const body = [];
+    for (let i = at + 1; i < lines.length && !/^---\s*$/.test(lines[i]); i++) {
+      if (lines[i].trim()) body.push(lines[i]);
+    }
+    console.log('\n\x1b[1m\x1b[33mOpen handoff\x1b[0m \x1b[2m(most recent — clear it by logging what you did)\x1b[0m');
+    console.log('  ' + lines[at].replace(/^#+ /, ''));
+    body.slice(0, 8).forEach(l => console.log('  ' + l));
+  }
+}
+
 console.log('\n\x1b[1mCommands\x1b[0m');
 console.log('  npm run tree      is anyone else editing right now');
 console.log('  npm run test:qc   23 rules + Rule 0 (governed surfaces exist)');
 console.log('  npm run deploy    audit, build, publish, verify — one command');
-console.log('  npm run log "…"   append what you did to DECISION_LOG.md\n');
+console.log('  npm run log "…"   append what you did to DECISION_LOG.md');
+console.log('  npm run handoff "…"  stopping mid-task? leave the next agent a note\n');
