@@ -179,11 +179,22 @@ immediately: **`decideone.app` is not verified in Google Search Console**, so
 there is no instrument that could tell us. Indexation, impressions, queries and
 the ranking half of the gate are all unmeasurable until that exists.
 
-*Checked, not assumed* — all four verification methods are absent: no
-`google-site-verification` meta tag in the source or in the live HTML, no DNS
-TXT record on the apex at all, no verification file in `public/`, and no Google
-tag of any kind on the page (which is correct and deliberate, and also closes
-the Analytics and Tag Manager verification routes).
+**Resolved 12 September 2026.** `decideone.app` is now verified as a **Domain**
+property — the whole domain, every subdomain, http and https — through
+Cloudflare's domain-name-provider integration. Owner is
+`maulik.payment@gmail.com`, chosen deliberately. The TXT record is confirmed on
+the authoritative nameserver, and Googlebot fetches both `sitemap.xml` and
+`robots.txt` with a 200.
+
+*A note for whoever checks this next:* a public resolver returned nothing for
+several minutes after verification while the authoritative nameserver already
+had the record. Query `@jermaine.ns.cloudflare.com` before concluding the record
+is missing — the same stale-cache trap as the apex HTML in `CLAUDE.md`.
+
+**Measurement has therefore started, but there is no data yet.** Indexation
+takes days, query data two to three weeks, and a non-branded ranking — Wave 1's
+actual exit gate — two to three months on a domain this new. Nothing here is
+assessable before then, and an absence of data in week one is not a finding.
 
 This is a founder action — it needs access to the domain's DNS or the live
 site, and it is the single thing standing between this project and evidence.

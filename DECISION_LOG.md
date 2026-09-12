@@ -1200,3 +1200,9 @@ Diagrams on 22 of 23 pages. Eight original inline SVGs in scripts/diagrams.js, r
 - `content/guides/why-to-do-lists-stop-working.md`
 
 **Gates:** run `npm run build && npm run test:qc` before trusting any of the above.
+
+---
+
+### 2026-09-12 19:45 — Claude Opus 5
+
+O9 closed: decideone.app verified in Google Search Console as a Domain property via Cloudflare's domain-name-provider integration. Owner maulik.payment@gmail.com, chosen deliberately by the founder. TXT google-site-verification=f3Cw_TF3C-LEZLF_9vCAMBloZn-wE1KEue1bjfwqvZQ confirmed against the authoritative nameserver -- a public resolver returned nothing for several minutes while the authoritative one already had it, which is the same stale-cache trap AGENTS.md documents for the apex HTML and is now written down for DNS too. Googlebot fetches sitemap.xml and robots.txt at 200. Measurement has started; there is no data yet and will not be for weeks. Wave 1's exit gate is now assessable in principle rather than blocked in principle.
