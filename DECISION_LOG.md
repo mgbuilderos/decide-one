@@ -1242,3 +1242,9 @@ Backend part 2: the circadian chain, end to end. The 0% dual-visit rate had TWO 
 ### 2026-09-12 21:06 — Claude Opus 5
 
 Backend part 3: the structural finding. Production writes telemetry to Cloudflare D1 and NOTHING read D1 -- analyticsService.js (712 lines) reads server/data/telemetry.sqlite, which production never touches. Switching telemetry on would have produced write-only data while the dashboard kept showing seeded development rows that look exactly like real ones. Added npm run metrics: reads D1 directly, deliberately small (counts and distributions, no derived metrics -- computing the circadian rate in two places would create two versions of one number and the one that drifts is always the one nobody watches). Supports --local so the populated branch could be exercised without writing to production; an unrun code path first runs the day telemetry is switched on, which is the worst moment to find a typo. Verified both branches: empty against real production (correct, with an explanation), populated against a local D1. Recorded in WORK_REMAINING the three things that must be settled before VITE_ENABLE_TELEMETRY is ever true -- what happens to the Node analytics service, the divergence between the two schemas, and total_events in the dev schema.
+
+---
+
+### 2026-09-12 21:07 — Claude Opus 5
+
+Deployed the backend pass. verify:live MATCH first attempt; new bundle index-DQYYzr56. Re-checked the site after the bundle change: home, faq, a method page, a guide, sitemap.xml and llms.txt all 200, and the homepage still serves 194 crawlable words and 7 links without JavaScript.
