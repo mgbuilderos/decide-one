@@ -28,3 +28,4 @@ artifacts/
 # 3D device-render studio — 231MB of Blender output, kept local
 design/device-studio/
 licence-signing-key.json
+tests/baselines/*.changed.png

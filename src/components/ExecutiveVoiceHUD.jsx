@@ -115,14 +115,14 @@ export default function ExecutiveVoiceHUD({
               "{interimTranscript}..."
             </p>
           ) : (
-            <p className="text-xs text-neutral-400 tracking-wide font-normal animate-pulse">
+            <p className="text-xs text-neutral-500 tracking-wide font-normal animate-pulse">
               Listening privately on-device... Speak naturally.
             </p>
           )}
         </div>
 
         {/* Footnote */}
-        <div className="w-full flex items-center justify-between text-[10px] text-neutral-400 pt-1">
+        <div className="w-full flex items-center justify-between text-[10px] text-neutral-500 pt-1">
           <span className="flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
             <span>100% On-Device • Zero Cloud</span>

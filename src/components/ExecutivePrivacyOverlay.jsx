@@ -160,7 +160,7 @@ export default function ExecutivePrivacyOverlay({
             
             {/* Top Monogram Header */}
             <div className="flex flex-col items-center pt-1 sm:pt-2 gap-1.5">
-              <span className="text-[10px] uppercase font-bold tracking-[0.28em] text-neutral-400 dark:text-neutral-500">
+              <span className="text-[10px] uppercase font-bold tracking-[0.28em] text-neutral-500 dark:text-neutral-500">
                 Confidential Sanctuary
               </span>
             </div>
@@ -183,7 +183,7 @@ export default function ExecutivePrivacyOverlay({
               </div>
 
               {/* Date Stamp */}
-              <div className="text-xs font-semibold tracking-widest text-neutral-400 dark:text-neutral-500 uppercase mb-2">
+              <div className="text-xs font-semibold tracking-widest text-neutral-500 dark:text-neutral-500 uppercase mb-2">
                 {formattedDateStr}
               </div>
 
@@ -270,7 +270,7 @@ export default function ExecutivePrivacyOverlay({
       </div>
 
       {/* Bottom Subtle Stationery Edition Mark */}
-      <div className="text-[10px] tracking-widest uppercase font-semibold text-neutral-400 dark:text-neutral-500 mt-auto pb-1 shrink-0">
+      <div className="text-[10px] tracking-widest uppercase font-semibold text-neutral-500 dark:text-neutral-500 mt-auto pb-1 shrink-0">
         Decide One Priority Edition
       </div>
 

@@ -107,7 +107,7 @@ export function LeftPage({
           />
         </div>
 
-        <div className="min-h-[36px] flex-1" aria-hidden="true" />
+        <div className="min-h-[36px] [@media(max-height:820px)]:min-h-0 flex-1" aria-hidden="true" />
       </div>
 
       <footer className="shrink-0 h-[28px] border-t border-black/[0.08] dark:border-white/[0.08] flex items-center text-[10px] text-neutral-500 dark:text-neutral-400 select-none px-1">

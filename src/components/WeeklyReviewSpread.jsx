@@ -325,7 +325,7 @@ export default function WeeklyReviewSpread({
           {/* Executive KPI Bar */}
           <div className="grid grid-cols-3 gap-2 p-2.5 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] mb-3 shrink-0">
             <div>
-              <div className="text-[9px] uppercase tracking-wider font-bold text-neutral-400 dark:text-neutral-500">
+              <div className="text-[9px] uppercase tracking-wider font-bold text-neutral-500 dark:text-neutral-500">
                 Completed
               </div>
               <div className="text-sm font-bold text-neutral-900 dark:text-white mt-0.5">
@@ -337,7 +337,7 @@ export default function WeeklyReviewSpread({
             </div>
 
             <div>
-              <div className="text-[9px] uppercase tracking-wider font-bold text-neutral-400 dark:text-neutral-500">
+              <div className="text-[9px] uppercase tracking-wider font-bold text-neutral-500 dark:text-neutral-500">
                 Time
               </div>
               <div className="text-sm font-bold text-neutral-900 dark:text-white mt-0.5">
@@ -349,7 +349,7 @@ export default function WeeklyReviewSpread({
             </div>
 
             <div>
-              <div className="text-[9px] uppercase tracking-wider font-bold text-neutral-400 dark:text-neutral-500">
+              <div className="text-[9px] uppercase tracking-wider font-bold text-neutral-500 dark:text-neutral-500">
                 Estimate accuracy
               </div>
               <div className="text-sm font-bold text-neutral-900 dark:text-white mt-0.5">
@@ -367,7 +367,7 @@ export default function WeeklyReviewSpread({
               <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400">
                 Planned vs Actual
               </span>
-              <span className="text-[10px] text-neutral-400">
+              <span className="text-[10px] text-neutral-500">
                 {daysWithPlans} of 7 days planned
               </span>
             </div>
@@ -387,12 +387,12 @@ export default function WeeklyReviewSpread({
                         <div className="absolute top-0 left-0 right-0 h-[3px] bg-neutral-400 dark:bg-neutral-500" title="Ran over" />
                       )}
                     </div>
-                    <span className="text-[9px] text-neutral-400">{day.dayLetter}</span>
+                    <span className="text-[9px] text-neutral-500">{day.dayLetter}</span>
                   </div>
                 );
               })}
             </div>
-            <p className="mt-1.5 text-[10px] text-neutral-400 leading-[16px]">
+            <p className="mt-1.5 text-[10px] text-neutral-500 leading-[16px]">
               {weekPlannedSec > 0
                 ? `${formatDuration(weekActualSec)} spent against ${formatDuration(weekPlannedSec)} planned.`
                 : 'No time was set this week, so there is nothing to compare.'}
@@ -406,13 +406,13 @@ export default function WeeklyReviewSpread({
               <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400">
                 Carry Forward ({pendingTasks.length})
               </span>
-              <span className="text-[10px] text-neutral-400">
+              <span className="text-[10px] text-neutral-500">
                 Uncompleted from Mon–Sun
               </span>
             </div>
 
             {pendingTasks.length === 0 ? (
-              <div className="p-3 text-center rounded-xl bg-black/[0.01] dark:bg-white/[0.02] border border-dashed border-black/10 dark:border-white/10 text-neutral-400 text-xs italic">
+              <div className="p-3 text-center rounded-xl bg-black/[0.01] dark:bg-white/[0.02] border border-dashed border-black/10 dark:border-white/10 text-neutral-500 text-xs italic">
                 Zero carryover tasks. Every strategic commitment of the week was completed.
               </div>
             ) : (
@@ -432,7 +432,7 @@ export default function WeeklyReviewSpread({
                         <span className={`leading-tight font-medium ${currentAction ? 'line-through text-neutral-400' : 'text-neutral-800 dark:text-neutral-200'}`}>
                           {task.text}
                         </span>
-                        <span className="text-[9px] font-bold uppercase text-neutral-400 shrink-0">
+                        <span className="text-[9px] font-bold uppercase text-neutral-500 shrink-0">
                           {task.sourceDayLabel}
                         </span>
                       </div>
@@ -507,7 +507,7 @@ export default function WeeklyReviewSpread({
             <div className="space-y-1.5">
               {[0, 1, 2].map(idx => (
                 <div key={idx} className="flex items-center gap-2">
-                  <span className="w-4 text-center text-xs font-bold text-neutral-400">
+                  <span className="w-4 text-center text-xs font-bold text-neutral-500">
                     {idx + 1}.
                   </span>
                   <input
@@ -556,7 +556,7 @@ export default function WeeklyReviewSpread({
             <div className="space-y-1.5 flex-1 min-h-0">
               {[0, 1, 2].map(idx => (
                 <div key={idx} className="flex items-center gap-2">
-                  <span className="w-4 text-center text-xs font-bold text-neutral-400">
+                  <span className="w-4 text-center text-xs font-bold text-neutral-500">
                     {idx + 1}.
                   </span>
                   <input
@@ -576,7 +576,7 @@ export default function WeeklyReviewSpread({
           </div>
 
           {/* Executive Seal Footer */}
-          <div className="pt-2 border-t border-black/[0.06] dark:border-white/[0.06] flex items-center justify-between text-[10px] text-neutral-400 shrink-0">
+          <div className="pt-2 border-t border-black/[0.06] dark:border-white/[0.06] flex items-center justify-between text-[10px] text-neutral-500 shrink-0">
             <span>Weekly Review</span>
             <span>Stored On This Device</span>
           </div>

@@ -103,7 +103,7 @@ export default function ExecutiveClosureRitualModal({
               <div className="text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
                 Close The Day
               </div>
-              <div className="text-[10px] text-neutral-400">
+              <div className="text-[10px] text-neutral-500">
                 Review what moved and carry forward what still matters
               </div>
             </div>
@@ -128,7 +128,7 @@ export default function ExecutiveClosureRitualModal({
               R8 and R12: no streak, no verdict, no protagonist. */}
           <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between">
             <div className="space-y-0.5">
-              <div className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">
+              <div className="text-[10px] font-bold uppercase tracking-widest text-neutral-500">
                 What today came to
               </div>
               <div className="text-xl font-black text-neutral-900 dark:text-white">
@@ -149,7 +149,7 @@ export default function ExecutiveClosureRitualModal({
                 <div className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                   Unfinished Priorities ({incompleteTasks.length})
                 </div>
-                <div className="text-[10px] text-neutral-400">
+                <div className="text-[10px] text-neutral-500">
                   Choose what happens next
                 </div>
               </div>
@@ -232,7 +232,7 @@ export default function ExecutiveClosureRitualModal({
               <label className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                 What Changed Today?
               </label>
-              <span className="text-[10px] text-neutral-400 font-serif italic">
+              <span className="text-[10px] text-neutral-500 font-serif italic">
                 Optional
               </span>
             </div>
@@ -260,7 +260,7 @@ export default function ExecutiveClosureRitualModal({
 
         {/* Modal Bottom Bar: closing the day */}
         <div className="p-4 sm:p-5 bg-black/[0.02] dark:bg-white/[0.02] border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between shrink-0">
-          <div className="text-[11px] text-neutral-400 font-medium">
+          <div className="text-[11px] text-neutral-500 font-medium">
             {ownerName} • Day Closure
           </div>
 

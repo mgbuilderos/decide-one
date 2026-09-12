@@ -221,7 +221,7 @@ export default function OmniSearchModal({
                   <div className="text-xs font-bold">
                     Jump to {naturalDateResult.label} ({naturalDateResult.dateKey})
                   </div>
-                  <div className={`text-[11px] ${selectedIndex === 0 ? 'opacity-80' : 'text-neutral-400'}`}>
+                  <div className={`text-[11px] ${selectedIndex === 0 ? 'opacity-80' : 'text-neutral-500'}`}>
                     Open two-page spread for this date
                   </div>
                 </div>
@@ -305,7 +305,7 @@ export default function OmniSearchModal({
               <div className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                 No matching entries found
               </div>
-              <div className="text-xs text-neutral-400 max-w-sm mx-auto">
+              <div className="text-xs text-neutral-500 max-w-sm mx-auto">
                 Try searching for a different keyword, date, or clear your active facet filter.
               </div>
             </div>
@@ -314,7 +314,7 @@ export default function OmniSearchModal({
           {/* Initial Prompt State */}
           {!query.trim() && (
             <div className="p-6 space-y-4">
-              <div className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 px-1">
+              <div className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 px-1">
                 Suggested Actions & Shortcuts
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -335,7 +335,7 @@ export default function OmniSearchModal({
                     className="p-2.5 rounded-xl border border-black/[0.06] dark:border-white/[0.08] hover:bg-black/[0.03] dark:hover:bg-white/[0.05] cursor-pointer flex items-center justify-between text-xs"
                   >
                     <span className="font-semibold">{sugg.label}</span>
-                    <span className="text-[10px] text-neutral-400">{sugg.cmd}</span>
+                    <span className="text-[10px] text-neutral-500">{sugg.cmd}</span>
                   </div>
                 ))}
               </div>
@@ -345,7 +345,7 @@ export default function OmniSearchModal({
         </div>
 
         {/* Modal Bottom Status Bar */}
-        <div className="h-10 px-4 sm:px-5 bg-black/[0.02] dark:bg-white/[0.03] border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between text-[11px] text-neutral-400 shrink-0">
+        <div className="h-10 px-4 sm:px-5 bg-black/[0.02] dark:bg-white/[0.03] border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between text-[11px] text-neutral-500 shrink-0">
           <div className="flex items-center gap-1.5">
             <Command className="w-3 h-3" />
             <span>Sub-Millisecond On-Device Index</span>

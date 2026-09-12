@@ -117,7 +117,7 @@ export default function AnalogueClock({
             style={{ fontSize: Math.max(12, size * 0.1) }}>
             {formatClock(shown)}
           </div>
-          <div className="mt-0.5 text-[9px] tracking-[0.08em] text-neutral-400">
+          <div className="mt-0.5 text-[9px] tracking-[0.08em] text-neutral-500">
             {overtime ? 'over' : 'remaining'}
           </div>
         </div>

@@ -84,7 +84,7 @@ export default function InlineTimeControl({
       <label
         className={`inline-flex h-7 items-center rounded-md border px-1.5 transition-colors ${
           inputDisabled
-            ? 'border-black/[0.06] dark:border-white/[0.08] text-neutral-300 dark:text-neutral-600'
+            ? 'border-black/[0.06] dark:border-white/[0.08] text-neutral-500 dark:text-neutral-500'
             : 'border-black/[0.12] dark:border-white/[0.14] text-neutral-700 dark:text-neutral-300 focus-within:border-black/35 dark:focus-within:border-white/35'
         }`}
         title={hasTask ? `Planned minutes for ${taskLabel}` : 'Write the priority before setting its time'}
@@ -115,7 +115,7 @@ export default function InlineTimeControl({
 
       {session.plannedDurationSec > 0 && !done && (
         breathing ? (
-          <span className="w-7 text-center text-[9px] text-neutral-400" aria-live="polite">Ready</span>
+          <span className="w-7 text-center text-[9px] text-neutral-500" aria-live="polite">Ready</span>
         ) : (
           <button
             type="button"

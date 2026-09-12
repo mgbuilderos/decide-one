@@ -92,7 +92,7 @@ export default function MonthPicker({ currentDate, onSelect, onClose, hasEntry, 
 
       <div className="mt-2 grid grid-cols-7 gap-y-0.5">
         {WEEKDAYS.map((w, i) => (
-          <span key={i} className="h-[20px] flex items-center justify-center text-[10px] font-semibold text-neutral-400 dark:text-neutral-500">
+          <span key={i} className="h-[20px] flex items-center justify-center text-[10px] font-semibold text-neutral-500 dark:text-neutral-500">
             {w}
           </span>
         ))}

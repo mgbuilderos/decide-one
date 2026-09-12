@@ -110,7 +110,7 @@ export default function PatronUpgradeModal({
           {/* Pricing Box */}
           <div className="p-4 rounded-2xl border border-black/[0.12] dark:border-white/[0.15] bg-neutral-50 dark:bg-neutral-900/50 flex items-center justify-between">
             <div>
-              <div className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 dark:text-neutral-500">
+              <div className="text-[10px] font-bold uppercase tracking-widest text-neutral-500 dark:text-neutral-500">
                 Lifetime License
               </div>
               <div className="flex items-baseline gap-1.5 mt-0.5">
@@ -126,7 +126,7 @@ export default function PatronUpgradeModal({
 
           {/* Feature list */}
           <div className="space-y-2.5">
-            <div className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 dark:text-neutral-500 px-1">
+            <div className="text-[10px] font-bold uppercase tracking-widest text-neutral-500 dark:text-neutral-500 px-1">
               Included With Lifetime Access
             </div>
 
@@ -197,7 +197,7 @@ export default function PatronUpgradeModal({
                     Enter Custom Key
                   </span>
                 </div>
-                <span className="text-[10px] font-semibold tracking-wider text-neutral-400">
+                <span className="text-[10px] font-semibold tracking-wider text-neutral-500">
                   From your receipt
                 </span>
               </div>
@@ -243,7 +243,7 @@ export default function PatronUpgradeModal({
         </div>
 
         {/* Modal Footer */}
-        <div className="h-11 px-6 bg-black/[0.02] dark:bg-white/[0.03] border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-[10px] text-neutral-400 shrink-0">
+        <div className="h-11 px-6 bg-black/[0.02] dark:bg-white/[0.03] border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-[10px] text-neutral-500 shrink-0">
           <span>On-Device By Default</span>
           <span>Version 2.0</span>
         </div>

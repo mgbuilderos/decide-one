@@ -42,3 +42,34 @@ and believe.
 - Test the first-use flow with five people who have not seen the product.
 - Measure whether they can explain the product, choose a method, enter priorities, and begin the first item without help.
 - Profile the 3D hero on mid-range mobile hardware. The scene is lazy-loaded, but the Three.js asset remains the largest optional chunk.
+
+## The instrument does not hold one screen on a short laptop
+
+Measured 13 September 2026 by `npm run test:visual`, which is the first thing
+here that could see it. At 1366 wide, the daily column pushes content out of
+reach below roughly 740px of viewport height:
+
+| Viewport height | Out of reach |
+|---:|---:|
+| 900, 820, 800, 768 | none |
+| 720 | 25px |
+| 700 | 25px |
+| 660 | 73px |
+| 640 | 97px |
+
+A 1366x768 laptop gives about 660px of viewport once browser chrome is taken,
+so this is a common real size, not an edge case. Two steps are already in:
+below 820px the execution panel tightens and the flexible spacer collapses;
+below 740px the clock steps from 88px to 60px. That fixed 768 and above and
+took 720 from 77px to 25px.
+
+**Closing the rest means reducing the height of the three priority rows**, which
+is the core content and a design decision rather than a bug fix. It needs the
+founder's call on what the instrument looks like on a short screen before
+anyone changes it.
+
+These heights are deliberately NOT in the visual gate's surface list yet. A gate
+that is known-red teaches every agent to ignore it, which is the failure this
+whole layer exists to prevent. Add `{ id: 'daily-short', url: '/?view=daily',
+vp: { w: 1366, h: 660 }, fixed: true }` to `scripts/visual_check.js` the moment
+it passes.

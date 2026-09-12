@@ -255,14 +255,14 @@ export default function ProductivityFrameworks({
           <h2 className="text-sm sm:text-base font-semibold tracking-wide text-neutral-900 dark:text-neutral-100">
             {currentMeta.name}
           </h2>
-          <span className="text-[11px] text-neutral-400 dark:text-neutral-500 italic hidden xs:inline">
+          <span className="text-[11px] text-neutral-500 dark:text-neutral-500 italic hidden xs:inline">
             {currentMeta.subtitle}
           </span>
         </div>
 
         {/* Quiet progress only; method selection lives in the icon group above. */}
         <div className="flex items-center gap-2 select-none no-print">
-          <span className="hidden sm:inline text-[9px] font-semibold uppercase tracking-[0.12em] text-neutral-400">Time</span>
+          <span className="hidden sm:inline text-[9px] font-semibold uppercase tracking-[0.12em] text-neutral-500">Time</span>
           <div className="text-[10px] font-semibold">
             <span className={`font-bold ${
               doneCount === 0 
@@ -273,7 +273,7 @@ export default function ProductivityFrameworks({
             }`}>
               {doneCount}
             </span>
-            <span className="text-neutral-400 dark:text-neutral-500">/{totalTasks} done</span>
+            <span className="text-neutral-500 dark:text-neutral-400">/{totalTasks} done</span>
           </div>
         </div>
       </div>
@@ -388,7 +388,7 @@ export default function ProductivityFrameworks({
                 <button
                   type="button"
                   onClick={() => setClassifier(null)}
-                  className="text-[10px] text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 px-1 cursor-pointer"
+                  className="text-[10px] text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-200 px-1 cursor-pointer"
                   title="Cancel"
                 >
                   ×
@@ -417,11 +417,11 @@ export default function ProductivityFrameworks({
                     {quad.title}
                   </span>
                   <div className="flex items-center gap-1.5 shrink-0">
-                    <span className="text-[10px] text-neutral-400 dark:text-neutral-500 font-medium whitespace-nowrap">
+                    <span className="text-[10px] text-neutral-500 dark:text-neutral-500 font-medium whitespace-nowrap">
                       {quad.tag}
                     </span>
                     <span
-                      className="text-[10px] text-neutral-300 dark:text-neutral-600 font-semibold tabular-nums"
+                      className="text-[10px] text-neutral-500 dark:text-neutral-600 font-semibold tabular-nums"
                       title="Tasks arrive here by being classified, not by choosing this box"
                     >
                       {tasks.filter(t => t.text && t.text.trim()).length}
@@ -501,7 +501,7 @@ export default function ProductivityFrameworks({
                   isDone ? 'opacity-40' : isLocked ? 'opacity-55' : 'hover:bg-black/[0.02] dark:hover:bg-white/[0.03]'
                 }`}
               >
-                <span className="font-bold text-xs sm:text-sm w-5 text-neutral-400 dark:text-neutral-500 select-none">
+                <span className="font-bold text-xs sm:text-sm w-5 text-neutral-500 dark:text-neutral-500 select-none">
                   0{idx + 1}
                 </span>
 

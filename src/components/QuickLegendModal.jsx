@@ -69,10 +69,10 @@ export default function QuickLegendModal({ isOpen, onClose }) {
                 <article key={method.id} className="p-4 rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-black/[0.015] dark:bg-white/[0.02]">
                   <div className="flex items-baseline justify-between gap-4">
                     <h3 className="text-sm font-bold">{method.name}</h3>
-                    <span className="text-[10px] text-neutral-400 tabular-nums">0{index + 1}</span>
+                    <span className="text-[10px] text-neutral-500 tabular-nums">0{index + 1}</span>
                   </div>
                   <p className="text-xs text-neutral-600 dark:text-neutral-300 mt-1 leading-relaxed">{method.description}</p>
-                  <p className="text-[11px] text-neutral-400 mt-2"><strong className="text-neutral-600 dark:text-neutral-300">Use It When:</strong> {method.bestFor}</p>
+                  <p className="text-[11px] text-neutral-500 mt-2"><strong className="text-neutral-600 dark:text-neutral-300">Use It When:</strong> {method.bestFor}</p>
                 </article>
               ))}
             </div>

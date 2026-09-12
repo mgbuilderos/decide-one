@@ -150,7 +150,7 @@ export default function UnifiedMenuModal({
                   Choose Method
                 </span>
               </div>
-              <div className="text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 whitespace-nowrap">
+              <div className="text-[10px] font-semibold text-neutral-500 dark:text-neutral-500 whitespace-nowrap">
                 Active: <span className="text-neutral-900 dark:text-white font-bold">{currentFw.name}</span>
               </div>
             </div>
@@ -349,7 +349,7 @@ export default function UnifiedMenuModal({
             <div className="flex items-center justify-between gap-2 pt-2 border-t border-black/[0.06] dark:border-white/[0.06]">
               <div>
                 <div className="text-xs font-semibold text-neutral-900 dark:text-white">Evening Closure Reminder</div>
-                <div className="text-[10px] text-neutral-400">Local notification & gold spine glow</div>
+                <div className="text-[10px] text-neutral-500">Local notification & gold spine glow</div>
               </div>
               <div className="flex items-center gap-2">
                 <input
@@ -441,7 +441,7 @@ export default function UnifiedMenuModal({
               >
                 <Download className="w-3.5 h-3.5 text-neutral-500" />
                 <span className="text-[11px] font-bold whitespace-nowrap">JSON Backup</span>
-                <span className="text-[9px] text-neutral-400 whitespace-nowrap">Full JSON</span>
+                <span className="text-[9px] text-neutral-500 whitespace-nowrap">Full JSON</span>
               </button>
 
               {/* Weekly Briefing PDF */}
@@ -457,7 +457,7 @@ export default function UnifiedMenuModal({
                   <Printer className="w-3.5 h-3.5 text-neutral-700 dark:text-neutral-300" />
                 </div>
                 <span className="text-[11px] font-bold whitespace-nowrap">Weekly Review</span>
-                <span className="text-[9px] text-neutral-400 whitespace-nowrap">Weekly PDF</span>
+                <span className="text-[9px] text-neutral-500 whitespace-nowrap">Weekly PDF</span>
               </button>
 
               {/* Patron Markdown Export */}
@@ -473,7 +473,7 @@ export default function UnifiedMenuModal({
                   <FileText className="w-3.5 h-3.5 text-neutral-700 dark:text-neutral-300" />
                 </div>
                 <span className="text-[11px] font-bold whitespace-nowrap">Markdown Vault</span>
-                <span className="text-[9px] text-neutral-400 whitespace-nowrap">Obsidian / Notion</span>
+                <span className="text-[9px] text-neutral-500 whitespace-nowrap">Obsidian / Notion</span>
               </button>
 
               {/* Patron Print Engine */}
@@ -489,7 +489,7 @@ export default function UnifiedMenuModal({
                   <BookOpen className="w-3.5 h-3.5 text-neutral-700 dark:text-neutral-300" />
                 </div>
                 <span className="text-[11px] font-bold whitespace-nowrap">Annual Archive</span>
-                <span className="text-[9px] text-neutral-400 whitespace-nowrap">Full Year PDF</span>
+                <span className="text-[9px] text-neutral-500 whitespace-nowrap">Full Year PDF</span>
               </button>
             </div>
 
@@ -503,7 +503,7 @@ export default function UnifiedMenuModal({
                   <div className="text-[11px] font-bold text-neutral-900 dark:text-white truncate">
                     Air-Gapped Encrypted Vault (.vault)
                   </div>
-                  <div className="text-[9px] text-neutral-400 truncate">
+                  <div className="text-[9px] text-neutral-500 truncate">
                     AES-GCM-256 • PBKDF2 100K Iterations • Zero Cloud
                   </div>
                 </div>
@@ -546,7 +546,7 @@ export default function UnifiedMenuModal({
         {/* Modal Bottom Bar (Nameplate + Done Action) */}
         <div className="h-12 px-5 sm:px-6 bg-black/[0.015] dark:bg-white/[0.02] border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-semibold text-neutral-400 whitespace-nowrap">Owner:</span>
+            <span className="text-[11px] font-semibold text-neutral-500 whitespace-nowrap">Owner:</span>
             <input
               type="text"
               value={settings.ownerName || 'Maulik'}

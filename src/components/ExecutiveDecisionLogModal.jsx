@@ -123,7 +123,7 @@ export default function ExecutiveDecisionLogModal({
                   {decisions.length} Logged
                 </span>
               </div>
-              <div className="text-[10px] text-neutral-400">
+              <div className="text-[10px] text-neutral-500">
                 Mental models, confidence calibration & 30/90-day retrospectives
               </div>
             </div>
@@ -268,7 +268,7 @@ export default function ExecutiveDecisionLogModal({
                     onChange={e => setConfidence(e.target.value)}
                     className="w-full accent-neutral-900 dark:accent-white cursor-pointer"
                   />
-                  <div className="flex justify-between text-[9px] text-neutral-400">
+                  <div className="flex justify-between text-[9px] text-neutral-500">
                     <span>50% (Coin Toss)</span>
                     <span>75% (Strong Edge)</span>
                     <span>100% (Certainty)</span>
@@ -368,7 +368,7 @@ export default function ExecutiveDecisionLogModal({
                   ))}
                 </div>
 
-                <div className="text-[11px] text-neutral-400 font-medium">
+                <div className="text-[11px] text-neutral-500 font-medium">
                   {filteredDecisions.length} of {decisions.length} shown
                 </div>
               </div>
@@ -378,7 +378,7 @@ export default function ExecutiveDecisionLogModal({
                 <div className="py-12 text-center space-y-2 border border-dashed border-black/[0.1] dark:border-white/[0.1] rounded-2xl">
                   <Scale className="w-8 h-8 mx-auto text-neutral-300 dark:text-neutral-600" />
                   <p className="text-xs font-bold text-neutral-500">No decisions match this filter.</p>
-                  <p className="text-[11px] text-neutral-400">Click "Log Decision" to register high-stakes architectural or venture milestones.</p>
+                  <p className="text-[11px] text-neutral-500">Click "Log Decision" to register high-stakes architectural or venture milestones.</p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -409,7 +409,7 @@ export default function ExecutiveDecisionLogModal({
                                 {dec.mentalModel || 'First Principles'}
                               </span>
 
-                              <span className="text-[10px] font-bold text-neutral-400">
+                              <span className="text-[10px] font-bold text-neutral-500">
                                 Confidence: {dec.confidence || 85}%
                               </span>
 
@@ -419,7 +419,7 @@ export default function ExecutiveDecisionLogModal({
                                   <span>Reviewed</span>
                                 </span>
                               ) : (
-                                <span className="text-[10px] font-bold text-neutral-400 flex items-center gap-1">
+                                <span className="text-[10px] font-bold text-neutral-500 flex items-center gap-1">
                                   <Clock className="w-3 h-3" />
                                   <span>Review Date: {dec.reviewDate}</span>
                                 </span>
@@ -484,7 +484,7 @@ export default function ExecutiveDecisionLogModal({
                               <button
                                 type="button"
                                 onClick={() => setSelectedDecision(null)}
-                                className="px-3 py-1 text-xs text-neutral-400 hover:text-neutral-700"
+                                className="px-3 py-1 text-xs text-neutral-500 hover:text-neutral-700"
                               >
                                 Cancel
                               </button>
@@ -524,7 +524,7 @@ export default function ExecutiveDecisionLogModal({
         </div>
 
         {/* Modal Bottom Bar */}
-        <div className="h-10 px-6 bg-black/[0.015] dark:bg-white/[0.02] border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between text-[10px] text-neutral-400 shrink-0">
+        <div className="h-10 px-6 bg-black/[0.015] dark:bg-white/[0.02] border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between text-[10px] text-neutral-500 shrink-0">
           <span>Keyboard Shortcut: Cmd+D</span>
           <span>100% On-Device Cryptographic Ledger</span>
         </div>

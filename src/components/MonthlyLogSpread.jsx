@@ -110,11 +110,11 @@ export default function MonthlyLogSpread({
     <section className="flex min-h-0 flex-1 flex-col select-none" aria-label={`${monthName} ${year}`}>
       <header className="flex flex-wrap items-end justify-between gap-3 border-b border-black/10 pb-3 dark:border-white/10">
         <div>
-          <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.18em] text-neutral-400">
+          <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.18em] text-neutral-500">
             Monthly View
           </p>
           <h1 className="text-xl font-bold tracking-tight text-neutral-900 dark:text-white sm:text-2xl">
-            {monthName} <span className="font-normal text-neutral-400">{year}</span>
+            {monthName} <span className="font-normal text-neutral-500">{year}</span>
           </h1>
         </div>
 
@@ -166,7 +166,7 @@ export default function MonthlyLogSpread({
         <div className="flex min-h-0 flex-1 flex-col pt-3">
           <div className="grid grid-cols-7 border-b border-black/10 pb-2 dark:border-white/10" aria-hidden="true">
             {WEEKDAYS.map((day) => (
-              <span key={day} className="text-center text-[9px] font-bold uppercase tracking-[0.12em] text-neutral-400 sm:text-[10px]">
+              <span key={day} className="text-center text-[9px] font-bold uppercase tracking-[0.12em] text-neutral-500 sm:text-[10px]">
                 {day}
               </span>
             ))}
@@ -205,7 +205,7 @@ export default function MonthlyLogSpread({
           </div>
 
           <div className="mt-3 flex min-h-11 items-center gap-3 border-t border-black/10 pt-3 dark:border-white/10">
-            <label htmlFor="monthly-event" className="hidden min-w-36 text-[10px] font-bold uppercase tracking-[0.12em] text-neutral-400 sm:block">
+            <label htmlFor="monthly-event" className="hidden min-w-36 text-[10px] font-bold uppercase tracking-[0.12em] text-neutral-500 sm:block">
               {formatSelectedDate(year, monthIndex, selectedDay)}
             </label>
             <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-black/10 text-[10px] font-bold text-neutral-600 dark:border-white/10 dark:text-neutral-300 sm:hidden">
@@ -224,7 +224,7 @@ export default function MonthlyLogSpread({
       ) : (
         <div className="mx-auto flex min-h-0 w-full max-w-3xl flex-1 flex-col pt-5">
           <div className="mb-4">
-            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-neutral-400">What Matters This Month</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-neutral-500">What Matters This Month</p>
             <h2 className="mt-1 text-lg font-bold tracking-tight text-neutral-900 dark:text-white">Keep the important work visible.</h2>
           </div>
 
@@ -253,13 +253,13 @@ export default function MonthlyLogSpread({
                 <div>
                   <Target className="mx-auto mb-3 h-7 w-7 text-neutral-300 dark:text-neutral-700" strokeWidth={1.25} />
                   <p className="text-sm font-semibold text-neutral-500">Nothing chosen for this month yet.</p>
-                  <p className="mt-1 text-xs text-neutral-400">Add only the work that deserves to remain visible.</p>
+                  <p className="mt-1 text-xs text-neutral-500">Add only the work that deserves to remain visible.</p>
                 </div>
               </div>
             ) : (
               masterTasks.map((task, index) => (
                 <div key={task.id} className="group flex min-h-12 items-center gap-3 border-b border-black/[0.08] dark:border-white/[0.08]">
-                  <span className="w-6 text-[10px] font-bold text-neutral-300 dark:text-neutral-700">{String(index + 1).padStart(2, '0')}</span>
+                  <span className="w-6 text-[10px] font-bold text-neutral-500 dark:text-neutral-700">{String(index + 1).padStart(2, '0')}</span>
                   <button
                     type="button"
                     className={`grid h-7 w-7 shrink-0 place-items-center rounded-full border transition-colors ${task.completed ? 'border-neutral-900 bg-neutral-900 text-white dark:border-white dark:bg-white dark:text-neutral-900' : 'border-neutral-300 text-transparent hover:border-neutral-900 dark:border-neutral-700 dark:hover:border-white'}`}
@@ -289,7 +289,7 @@ export default function MonthlyLogSpread({
         </div>
       )}
 
-      <footer className="mt-3 flex items-center justify-between border-t border-black/10 pt-2 text-[9px] font-semibold tracking-wide text-neutral-400 dark:border-white/10">
+      <footer className="mt-3 flex items-center justify-between border-t border-black/10 pt-2 text-[9px] font-semibold tracking-wide text-neutral-500 dark:border-white/10">
         <span>{view === 'calendar' ? 'A familiar month. One important line per day.' : 'The work that should shape this month.'}</span>
         <span>{masterTasks.filter((task) => !task.completed).length} Priorities</span>
       </footer>

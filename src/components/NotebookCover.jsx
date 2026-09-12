@@ -47,7 +47,7 @@ export function NotebookCoverFrontFace({
         
         {/* Top Header Monogram */}
         <div className="flex flex-col items-center pt-1 sm:pt-2 gap-1.5">
-          <span className="text-[10px] uppercase font-bold tracking-[0.28em] text-neutral-400 dark:text-neutral-500">
+          <span className="text-[10px] uppercase font-bold tracking-[0.28em] text-neutral-500 dark:text-neutral-500">
             The Priority Instrument
           </span>
         </div>
@@ -72,7 +72,7 @@ export function NotebookCoverFrontFace({
             <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-[0.16em] text-neutral-900 dark:text-white">
               {formattedMonth || monthData?.name}
             </h2>
-            <span className="text-xs font-semibold tracking-widest text-neutral-400 dark:text-neutral-500 uppercase">
+            <span className="text-xs font-semibold tracking-widest text-neutral-500 dark:text-neutral-500 uppercase">
               {year}
             </span>
           </div>
@@ -143,7 +143,7 @@ export function NotebookCoverFrontFace({
           </div>
 
           {/* Date Stamp */}
-          <div className="text-[11px] text-neutral-400 dark:text-neutral-500 tracking-wider">
+          <div className="text-[11px] text-neutral-500 dark:text-neutral-500 tracking-wider">
             {formattedWeekday} • Day {dayOfMonth}
           </div>
         </div>
@@ -194,7 +194,7 @@ export function NotebookCoverEndpaperFace({
           <div className="w-9 h-9 rounded-full border border-neutral-300 dark:border-neutral-700 flex items-center justify-center mb-2.5 bg-black/[0.02] dark:bg-white/[0.03]">
             <Bookmark className="w-4 h-4 text-neutral-500 dark:text-neutral-400" />
           </div>
-          <span className="text-[9px] uppercase font-bold tracking-[0.3em] text-neutral-400 dark:text-neutral-500">
+          <span className="text-[9px] uppercase font-bold tracking-[0.3em] text-neutral-500 dark:text-neutral-500">
             Archival Endpaper
           </span>
         </div>
@@ -212,13 +212,13 @@ export function NotebookCoverEndpaperFace({
             {ownerName}
           </div>
           <div className="w-12 h-px bg-neutral-200 dark:bg-neutral-800 my-2.5" />
-          <div className="text-[9px] uppercase font-semibold tracking-wider text-neutral-400 dark:text-neutral-500">
+          <div className="text-[9px] uppercase font-semibold tracking-wider text-neutral-500 dark:text-neutral-500">
             Daily Priority Instrument • {year}
           </div>
         </div>
 
         {/* Bottom Pocket Sleeve Stitching */}
-        <div className="w-full pt-3 border-t border-dashed border-black/[0.10] dark:border-white/[0.10] flex items-center justify-between text-[10px] text-neutral-400 dark:text-neutral-500 uppercase tracking-widest px-2">
+        <div className="w-full pt-3 border-t border-dashed border-black/[0.10] dark:border-white/[0.10] flex items-center justify-between text-[10px] text-neutral-500 dark:text-neutral-500 uppercase tracking-widest px-2">
           <span>Decide One Edition</span>
           <span>{formattedMonth}</span>
         </div>

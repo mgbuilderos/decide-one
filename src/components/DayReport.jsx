@@ -53,7 +53,7 @@ export default function DayReport({
     const over = isOvertime(session);
     return (
       <div className="w-full min-w-0 flex-1 min-h-0 flex flex-col items-center justify-center text-center px-6 py-8 select-none">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 mb-1">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-neutral-500 mb-1">
           {breathing ? 'Getting ready' : over ? 'Past the box' : 'Running'}
         </p>
         <p className="text-sm font-semibold text-neutral-900 dark:text-neutral-100 max-w-[260px] mb-4 leading-[20px]">
@@ -88,7 +88,7 @@ export default function DayReport({
         )}
 
         {over && (
-          <p className="mt-3 text-[11px] text-neutral-400 max-w-[240px] leading-[18px]">
+          <p className="mt-3 text-[11px] text-neutral-500 max-w-[240px] leading-[18px]">
             The box is spent. Nothing happens automatically — carry on, or give it more time.
           </p>
         )}
@@ -108,7 +108,7 @@ export default function DayReport({
       <div className="w-full min-w-0 flex-1 min-h-0 flex flex-col items-center justify-center text-center px-6 py-8 select-none">
         <AnalogueClock size={96} />
         <p className="mt-4 text-sm font-semibold text-neutral-700 dark:text-neutral-300">Nothing decided yet.</p>
-        <p className="mt-1 text-[11px] leading-[18px] text-neutral-400 max-w-[220px]">
+        <p className="mt-1 text-[11px] leading-[18px] text-neutral-500 max-w-[220px]">
           Turn back and write what deserves today. This side records how it went.
         </p>
       </div>
@@ -157,7 +157,7 @@ export default function DayReport({
           {planned > 0 ? `${formatDuration(actual)} against ${formatDuration(planned)} planned.` : 'No time was set today.'}
         </p>
         {anyInferred && (
-          <p className="mt-0.5 text-[10px] text-neutral-400 italic">
+          <p className="mt-0.5 text-[10px] text-neutral-500 italic">
             Some figures are estimated — a session was left running rather than measured.
           </p>
         )}

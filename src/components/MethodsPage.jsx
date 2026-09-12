@@ -105,21 +105,21 @@ export default function MethodsPage({ onBack }) {
           we credit the people who found them. None is renamed, and none is dressed up as ours.
         </p>
 
-        <h2 className="mt-9 text-[11px] font-bold uppercase tracking-widest text-neutral-400">
+        <h2 className="mt-9 text-[11px] font-bold uppercase tracking-widest text-neutral-500">
           The three methods
         </h2>
         <div className="mt-1">
           {METHODS.map(m => <Row key={m.name} {...m} />)}
         </div>
 
-        <h2 className="mt-9 text-[11px] font-bold uppercase tracking-widest text-neutral-400">
+        <h2 className="mt-9 text-[11px] font-bold uppercase tracking-widest text-neutral-500">
           What the right-hand side is built on
         </h2>
         <div className="mt-1">
           {SUPPORTING.map(m => <Row key={m.name} {...m} />)}
         </div>
 
-        <h2 className="mt-9 text-[11px] font-bold uppercase tracking-widest text-neutral-400">
+        <h2 className="mt-9 text-[11px] font-bold uppercase tracking-widest text-neutral-500">
           Why none of this is owned
         </h2>
         <p className="mt-2 text-[13px] leading-[22px] text-neutral-700 dark:text-neutral-300">
@@ -130,7 +130,7 @@ export default function MethodsPage({ onBack }) {
           <em> name</em>, which is exactly why we use the plain descriptive ones.
         </p>
 
-        <h2 className="mt-9 text-[11px] font-bold uppercase tracking-widest text-neutral-400">
+        <h2 className="mt-9 text-[11px] font-bold uppercase tracking-widest text-neutral-500">
           The one claim we make about evidence
         </h2>
         <p className="mt-2 text-[13px] leading-[22px] text-neutral-700 dark:text-neutral-300">
@@ -142,7 +142,7 @@ export default function MethodsPage({ onBack }) {
           produce any particular result for you.
         </p>
 
-        <p className="mt-10 pt-5 border-t border-black/[0.08] dark:border-white/[0.1] text-[11px] leading-[18px] text-neutral-400">
+        <p className="mt-10 pt-5 border-t border-black/[0.08] dark:border-white/[0.1] text-[11px] leading-[18px] text-neutral-500">
           Corrections are welcome. If something on this page is wrong, we would rather fix it than
           keep repeating it.
         </p>

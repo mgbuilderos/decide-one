@@ -59,7 +59,7 @@ export default function DayConditionPrompt({
               <div className="text-[13px] font-semibold tracking-[-0.01em] text-neutral-950 dark:text-white">
                 What does today look like?
               </div>
-              <div className="mt-1 text-[10px] uppercase tracking-[0.12em] text-neutral-400 dark:text-neutral-500">
+              <div className="mt-1 text-[10px] uppercase tracking-[0.12em] text-neutral-500 dark:text-neutral-500">
                 {dateLabel || 'Answer once. The instrument does the rest.'}
               </div>
             </div>
@@ -84,7 +84,7 @@ export default function DayConditionPrompt({
                   onClick={() => handleChoose(condition)}
                   className="group w-full min-h-[72px] grid grid-cols-[28px_1fr_20px] items-center gap-3 text-left py-3.5 transition-colors cursor-pointer hover:bg-black/[0.025] dark:hover:bg-white/[0.035] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px]"
                 >
-                  <span className="text-[10px] tabular-nums text-neutral-400 dark:text-neutral-500">{String(index + 1).padStart(2, '0')}</span>
+                  <span className="text-[10px] tabular-nums text-neutral-500 dark:text-neutral-500">{String(index + 1).padStart(2, '0')}</span>
                   <span>
                     <span className="block text-[14px] font-medium leading-5 tracking-[-0.01em] text-neutral-950 dark:text-neutral-100">{condition.label}</span>
                     <span className="block mt-1 text-[11px] leading-4 text-neutral-500 dark:text-neutral-400">{condition.effect}</span>
@@ -97,7 +97,7 @@ export default function DayConditionPrompt({
         </div>
 
         <div className="h-[56px] px-5 sm:px-7 flex items-center justify-between border-t border-black/[0.10] dark:border-white/[0.10] shrink-0">
-          <span className="text-[10px] uppercase tracking-[0.12em] text-neutral-400 dark:text-neutral-500">
+          <span className="text-[10px] uppercase tracking-[0.12em] text-neutral-500 dark:text-neutral-500">
             Nothing shares first.
           </span>
           <button

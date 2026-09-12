@@ -189,14 +189,14 @@ never going to scale. What is missing is not more writing; it is **retrieval**.
 | 4 | **Derived cache name** — `CACHE_NAME` stamped from a build hash | A (1), at the root | **built** |
 | 5 | **Log retrieval** — `npm run why "<term>"` over the whole record | D | **built** |
 | 6 | **Rule-shape review** — audit the 26 existing rules for existence-vs-effect | B | next |
-| 7 | **Visual regression** — rasterise and diff key surfaces | B (2, 4) | not justified yet |
+| 7 | **Visual regression** — `scripts/visual_check.js`, 12 surfaces in real Chrome | B (2, 4, 5) | **built**, in `predeploy` |
 | 8 | **CI** — run the gates without an agent remembering | all | after 6 |
 
 Layers 1–5 were cheap because they are all *static analysis of things nobody
 thought to look at* — the same technique already in use, pointed at the
 surfaces it was never pointed at.
 
-Layer 7 is the honest limit. Defects 2 and 4 — a brand name in a `.webp`, a
+Layer 7 was built on 13 September 2026 after a collapsed heading shipped — see §7d. The honest limit is now narrower but real: Defects 2 and 4 — a brand name in a `.webp`, a
 label protruding 0.19 units — are **not reachable by any amount of text
 analysis**. Until something renders, a human opening the site remains the only
 detector for that class, and that should be stated as a known ceiling rather
@@ -250,6 +250,39 @@ one line came from two different clocks, entries near midnight landed on the
 wrong day, and the log disagreed with git. AGENTS.md's atomic-grade standard
 asks for "correct numbers and an accurate clock" and the project's own memory
 did not meet it. Both now use one local `now`.
+
+## 7d. The visual layer, and what it found
+
+Chrome driven over CDP with Node's built-in WebSocket; `sharp` does the pixel
+diff. No new dependency. 12 surfaces — landing, all four instrument views, a
+guide, the FAQ — at desktop, laptop and phone, light and dark, each asserting:
+no console errors, no tracking tighter than -0.12em (the collapse signature),
+no text under 3:1 against its composited background, nothing overflowing
+sideways outside a deliberate scroller, no content out of reach on an
+instrument view, and pixels within 0.35% of a committed baseline.
+
+Two of its own checks were wrong before they were right, both found by breaking
+them on purpose:
+
+- The background reader took the first non-transparent ancestor, so a 2.5%-alpha
+  black overlay on white paper read as pure black and invented contrast failures.
+  Backgrounds are composited now.
+- **The zero-scroll assertion could never fire.** The app sets `h-screen
+  overflow-hidden`, so `documentElement.scrollHeight` is pinned to the viewport
+  and content is *clipped* rather than scrolled — which is worse, because it is
+  unreachable. Proved dead by rendering the daily view in a 300px viewport and
+  watching the check pass. It now measures inner containers for both scrolled
+  and clipped content.
+
+That second one is Rule 4's defect exactly: Rule 4 asserts `App.jsx` contains
+the strings `overflow-hidden` and `h-screen` and never measures anything, so it
+has been green for the entire life of the project while telling nobody anything.
+**Fourth instance of the class.**
+
+What the layer found on its first honest run: 18 unreadable text elements
+between 1.48:1 and 2.52:1 (fixed — 96 small-text colours raised), and the
+instrument pushing up to 97px of the day out of reach on a short laptop
+(partly fixed, the rest recorded in WORK_REMAINING.md as a design decision).
 
 ## 8. Deliberately not done
 

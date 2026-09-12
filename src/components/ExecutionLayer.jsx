@@ -14,6 +14,22 @@ import {
   beginRunning
 } from '../utils/executionModel';
 
+// A 1366x768 laptop gives roughly 660px of viewport once browser chrome is
+// taken, and the instrument has to hold the whole day on one surface there too.
+// The clock steps down a size rather than pushing the day out of reach.
+function useShortViewport(query = '(max-height: 740px)') {
+  const [short, setShort] = useState(() =>
+    typeof window !== 'undefined' && window.matchMedia(query).matches);
+  useEffect(() => {
+    const mq = window.matchMedia(query);
+    const on = e => setShort(e.matches);
+    mq.addEventListener('change', on);
+    setShort(mq.matches);
+    return () => mq.removeEventListener('change', on);
+  }, [query]);
+  return short;
+}
+
 /**
  * A single clock for the day. Durations and start controls live beside the
  * priorities themselves; this layer shows capacity and the one active task.
@@ -24,6 +40,7 @@ export default function ExecutionLayer({
   isMuted = false,
   isInteractive = true
 }) {
+  const shortViewport = useShortViewport();
   const items = useMemo(() => getFrameworkItems(dailyLog), [dailyLog]);
   const sessions = items.map(item => getSession(dailyLog, item.id));
   const capacity = computeCapacity(sessions);
@@ -75,12 +92,12 @@ export default function ExecutionLayer({
 
   if (items.length === 0) {
     return (
-      <div className="w-full min-w-0 min-h-[168px] flex flex-col items-center justify-center px-6 py-5 text-center select-none">
-        <AnalogueClock size={88} />
+      <div className="w-full min-w-0 min-h-[168px] [@media(max-height:820px)]:min-h-[120px] flex flex-col items-center justify-center px-6 py-5 [@media(max-height:820px)]:py-1 text-center select-none">
+        <AnalogueClock size={shortViewport ? 60 : 88} />
         <p className="mt-3 text-[13px] font-semibold text-neutral-700 dark:text-neutral-300">
           Set time beside a priority.
         </p>
-        <p className="mt-1 max-w-[250px] text-[10px] leading-[16px] text-neutral-400">
+        <p className="mt-1 max-w-[250px] text-[10px] leading-[16px] text-neutral-500">
           Write the task first, then enter the minutes on the same line.
         </p>
       </div>
@@ -123,7 +140,7 @@ export default function ExecutionLayer({
                   <p className="truncate text-[11px] font-semibold text-neutral-800 dark:text-neutral-200">
                     Still on “{item.text}”?
                   </p>
-                  <p className="text-[10px] leading-[16px] text-neutral-400">
+                  <p className="text-[10px] leading-[16px] text-neutral-500">
                     {formatDuration(session.actualFocusSec || 0)} is estimated because the clock was left running.
                   </p>
                 </div>
@@ -164,7 +181,7 @@ export default function ExecutionLayer({
             <p className="mt-1.5 max-w-[82%] truncate text-[11px] font-semibold text-neutral-800 dark:text-neutral-200">
               {activeSession.state === STATES.BREATHING ? 'Ready for' : 'Working on'} “{activeItem.text}”
             </p>
-            <p className="mt-0.5 text-[10px] text-neutral-400 tabular-nums">
+            <p className="mt-0.5 text-[10px] text-neutral-500 tabular-nums">
               {formatDuration(elapsedSeconds(activeSession))} used · {formatDuration(activeSession.plannedDurationSec || 0)} planned
             </p>
             {isOvertime(activeSession) && (
@@ -176,7 +193,7 @@ export default function ExecutionLayer({
             <p className="mt-3 text-[12px] font-semibold text-neutral-700 dark:text-neutral-300">
               {capacity.plannedSec > 0 ? 'Start from the priority row.' : 'Enter minutes beside a priority.'}
             </p>
-            <p className="mt-1 text-[10px] leading-[16px] text-neutral-400">
+            <p className="mt-1 text-[10px] leading-[16px] text-neutral-500">
               One clock appears here when the work begins.
             </p>
           </>

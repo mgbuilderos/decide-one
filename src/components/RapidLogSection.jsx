@@ -114,7 +114,7 @@ export default function RapidLogSection({
       <div className="pr-1">
         <div className="space-y-0">
           {filteredLog.length === 0 ? (
-            <div className="h-[24px] leading-[24px] text-xs text-neutral-400 dark:text-neutral-500 px-1">
+            <div className="h-[24px] leading-[24px] text-xs text-neutral-500 dark:text-neutral-500 px-1">
               Nothing here yet.
             </div>
           ) : (
@@ -143,7 +143,7 @@ export default function RapidLogSection({
         <button
           type="button"
           onClick={() => handleAddNewItem('personal')}
-          className="h-[24px] leading-[24px] text-xs text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 transition-colors flex items-center gap-1.5 px-1 select-none cursor-pointer"
+          className="h-[24px] leading-[24px] text-xs text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200 transition-colors flex items-center gap-1.5 px-1 select-none cursor-pointer"
         >
           <span className="text-neutral-400 dark:text-neutral-500 font-bold">+</span>
           <span>Add line (or press Enter on any entry)</span>

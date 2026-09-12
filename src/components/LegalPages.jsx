@@ -148,7 +148,7 @@ export default function LegalPages({ onBack }) {
           )}
         </div>
 
-        <p className="mt-10 pt-5 border-t border-black/[0.08] dark:border-white/[0.1] text-[11px] leading-[18px] text-neutral-400">
+        <p className="mt-10 pt-5 border-t border-black/[0.08] dark:border-white/[0.1] text-[11px] leading-[18px] text-neutral-500">
           Questions about any of this: {CONTACT}.
         </p>
       </div>

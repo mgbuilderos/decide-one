@@ -148,7 +148,7 @@ export default function ExecutiveScratchpadModal({
         />
 
         {/* Footer Bar */}
-        <div className="flex items-center justify-between pt-2 mt-2 border-t border-black/[0.06] dark:border-white/[0.06] text-[11px] text-neutral-400">
+        <div className="flex items-center justify-between pt-2 mt-2 border-t border-black/[0.06] dark:border-white/[0.06] text-[11px] text-neutral-500">
           <span>Esc to close • Cmd+Enter to dispatch</span>
 
           <button
