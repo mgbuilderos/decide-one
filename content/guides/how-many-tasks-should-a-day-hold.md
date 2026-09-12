@@ -6,7 +6,7 @@ intent: how many tasks should i plan per day
 published: 2026-09-12
 updated: 2026-09-12
 sources: FOUNDATIONS.md, FRAMEWORKS.md, VISION.md
-links: top-3-method, how-to-prioritise-tasks, littles-law-for-a-working-day
+links: top-3-method, how-to-prioritise-tasks, littles-law-for-a-working-day, how-long-should-a-task-take
 keywords: how many tasks per day, how many things should i do a day, ideal number of daily tasks, limit daily tasks
 ---
 

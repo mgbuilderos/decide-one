@@ -6,7 +6,7 @@ intent: how to choose your top 3 tasks for the day
 published: 2026-09-12
 updated: 2026-09-12
 sources: FRAMEWORKS.md, FOUNDATIONS.md, VISION.md
-links: ivy-lee-method, urgent-important-matrix, how-to-prioritise-tasks
+links: ivy-lee-method, urgent-important-matrix, how-to-prioritise-tasks, what-to-do-when-you-have-too-much-to-do
 keywords: top 3 method, rule of three tasks, how many tasks per day, limit daily tasks
 ---
 

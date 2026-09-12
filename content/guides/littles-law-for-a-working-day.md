@@ -6,7 +6,7 @@ intent: why does limiting work in progress make things faster
 published: 2026-09-12
 updated: 2026-09-12
 sources: FOUNDATIONS.md, FRAMEWORKS.md, VISION.md
-links: top-3-method, how-many-tasks-should-a-day-hold, how-to-prioritise-tasks
+links: top-3-method, how-many-tasks-should-a-day-hold, how-to-prioritise-tasks, why-you-cannot-finish-anything
 keywords: little's law, work in progress limit, wip limit, why limiting tasks works
 ---
 

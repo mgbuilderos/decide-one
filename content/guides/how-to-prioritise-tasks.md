@@ -6,7 +6,7 @@ intent: how to prioritise tasks
 published: 2026-09-12
 updated: 2026-09-12
 sources: FRAMEWORKS.md, FOUNDATIONS.md, VISION.md
-links: top-3-method, ivy-lee-method, urgent-important-matrix, everything-feels-urgent, ivy-lee-vs-top-3, why-to-do-lists-stop-working, how-many-tasks-should-a-day-hold, is-there-a-best-prioritisation-method, littles-law-for-a-working-day, why-important-work-never-gets-done, the-cost-of-switching-tasks, faq
+links: top-3-method, ivy-lee-method, urgent-important-matrix, everything-feels-urgent, ivy-lee-vs-top-3, why-to-do-lists-stop-working, how-many-tasks-should-a-day-hold, is-there-a-best-prioritisation-method, littles-law-for-a-working-day, why-important-work-never-gets-done, the-cost-of-switching-tasks, faq, what-to-do-when-you-have-too-much-to-do, plan-your-day-the-night-before, why-you-cannot-finish-anything, how-long-should-a-task-take, what-to-do-when-you-cannot-start, is-multitasking-real, why-deadlines-work, should-you-do-the-hardest-thing-first, how-to-handle-interruptions, do-productivity-systems-work
 keywords: how to prioritise tasks, how to prioritize work, prioritisation methods, which prioritisation method
 ---
 

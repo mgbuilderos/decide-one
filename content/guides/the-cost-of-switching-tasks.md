@@ -6,7 +6,7 @@ intent: how much does switching between tasks cost
 published: 2026-09-12
 updated: 2026-09-12
 sources: FOUNDATIONS.md, FRAMEWORKS.md, VISION.md
-links: ivy-lee-method, top-3-method, how-to-prioritise-tasks
+links: ivy-lee-method, top-3-method, how-to-prioritise-tasks, is-multitasking-real, how-to-handle-interruptions
 keywords: cost of task switching, context switching, multitasking cost, stop switching between tasks
 ---
 

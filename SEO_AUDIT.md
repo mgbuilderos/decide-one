@@ -88,15 +88,70 @@ Not conventional SEO, but the thing that decides whether a large body of content
 
 ## 6. Open, and owned
 
-| # | Item | Owner | Severity |
-| :--- | :--- | :--- | :--- |
-| O1 | **`decideone.app` is not this build.** `npm run brief` reports the live asset hash does not match `dist/`. Every fix in this audit is uncommitted to reality until a deploy lands | founder / `seo-technical` | **Blocking** — content that is not served ranks nothing |
-| O2 | Service worker behaviour under a cold crawl is unverified | `seo-technical` | Medium |
-| O3 | `MethodsPage` and the legal pages are still SPA views at `?view=`, so they have no independent canonical | `seo-technical` | Medium |
-| O4 | Wave 1 is 3 pages of ~12. The comparison queries people actually search are unwritten | `seo-content` | Medium |
-| O5 | No `FAQPage` or `HowTo` schema yet | `seo-answer-engine` | Medium |
-| O6 | No field performance data, because telemetry is compiled out | `seo-technical` | Low until traffic exists |
-| O7 | `npm audit` reports 3 high advisories in `miniflare`, `sharp`, `wrangler` — all build-time devDependencies, all pre-existing, none introduced here. Fixing means bumping `wrangler`, which touches the deploy path | founder | Low, but should be a decision rather than an oversight |
+*Revised 12 September 2026, after the technical pass. Items closed are kept with
+their evidence rather than deleted, so a later reader can tell the difference
+between "was never a problem" and "was fixed".*
+
+| # | Item | Owner | Severity | State |
+| :--- | :--- | :--- | :--- | :--- |
+| **O8** | **The site claims "nothing held back" while the app holds things back.** See below — this is now the largest open item on the list | founder | **Blocking** | **open** |
+| O3 | `?view=` app views have no independent canonical | `seo-technical` | Low | **closed — not a defect** |
+| O6 | No field performance data | `seo-technical` | Low | open, blocked on traffic |
+| O7 | `npm audit` reports 3 high advisories in `miniflare`, `sharp`, `wrangler` — build-time devDependencies, pre-existing. Fixing means bumping `wrangler`, which touches the deploy path | founder | Low | open, should be a decision rather than an oversight |
+| O9 | `decideone.app` is not verified in Google Search Console, so nothing published can be measured | founder | **Blocking** for Wave 2 | open |
+| ~~O1~~ | live site is not this build | — | — | closed — four deploys landed, `verify:live` MATCH each time |
+| ~~O2~~ | service worker under cold crawl unverified | — | — | **closed — verified.** `curl` *is* a cold crawl: no service worker, no JS, no prior registration. All 16 URLs returned correct server-rendered HTML that way. Googlebot does not run service workers either, so the worker cannot affect indexation |
+| ~~O4~~ | Wave 1 was 3 pages of ~12 | — | — | closed — 13 pages live |
+| ~~O5~~ | no `FAQPage` or `HowTo` schema | — | — | closed, and the item was partly obsolete when written: Google deprecated FAQ rich results in May 2026 and dropped `HowTo` support. `FAQPage` ships for the answer engines that are not Google Search; `HowTo` is deliberately absent |
+
+### O8 — the claim and the code disagree
+
+**What the site says.** `index.html` meta description: *"Free, with nothing held
+back."* `MarketingLandingPage.jsx` pricing section, as a headline: *"Everything,
+from today. **Nothing held back.**"* Its feature list includes *"Device-local
+storage, protected exports, and print."* Its disclosure: *"No account, no
+subscription, nothing held back."*
+
+**What the code does.** `UnifiedMenuModal.jsx` gates six things behind
+`isPatron`: paper tones Vellum and Washi, ink colours Oxblood, Kon-peki and
+Sepia, the Weekly Review PDF, the Markdown export, and the annual print. Each
+renders a padlock. **Two of those — the Markdown export and the print — are
+named on the landing page as included.**
+
+**Why nobody can unlock them.** `isPatron` comes only from a signed licence key.
+`useLicenseAutoActivation.js` activates one from a `?key=` parameter "upon return
+from Dodo Payments". `PatronUpgradeModal.jsx` offers key entry and nothing else —
+no price, no purchase, no link out. QC Rule 24 forbids any price appearing in
+`src/` while `VISION.md` §11.1 declares the product free, and it passes, correctly.
+
+So the locks are not a paid tier. **They are dead ends**: a person clicks a
+padlock, a modal opens, and there is nothing they can do in it.
+
+**Why the audit never caught it.** Rule 18 requires the Patron machinery to
+exist. Rule 24 requires the price to match `VISION.md`, which says free. No rule
+compares *feature gating* against the claim of completeness, so both rules pass
+while contradicting each other. This is the same shape as Rule 25's origin: two
+things each locally correct, and nothing checking them against each other.
+
+**What was done about it here.** The twelve content pages published this session
+carried the same sentence; it was corrected to *"free to use, with no account"*,
+which is verifiable, and `nothing held back` was added to the content price gate
+so it cannot be republished by accident. **The landing page and `index.html` were
+not touched**, because `CLAUDE.md` rule 5 governs that copy: §11 wins, and
+changing it means changing §11 first and saying why.
+
+**The decision, which is the founder's.** Either:
+
+1. **Remove the locks.** `VISION.md` §11.1 becomes true as written and the copy
+   needs no change. This will fail QC Rule 18, which asserts the Patron gating
+   exists — so Rule 18 has to be amended in the same change.
+2. **Amend §11.1** to say what actually ships — free to use, with some finishes
+   reserved — and bring the landing page copy in line with it.
+
+Doing neither leaves a claim on the homepage that the product contradicts two
+clicks later, and `VISION.md` §13 is explicit about what that costs: *an
+instrument is trusted because it is right, and a compass two degrees off is
+worse than no compass, because it is believed.*
 
 ---
 
