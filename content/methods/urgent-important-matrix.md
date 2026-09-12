@@ -78,4 +78,4 @@ Decide One requires the classification before you write, rather than offering it
 
 Nothing is scored and nothing is marked failed because a date passed. What you did not get to is not an accusation.
 
-[Open Decide One](/?view=daily) — free, for everyone, with nothing held back. Nothing you write leaves your device.
+[Open Decide One](/?view=daily) — free to use, with no account. Nothing you write leaves your device.

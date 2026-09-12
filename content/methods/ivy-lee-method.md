@@ -64,4 +64,4 @@ Decide One enforces the order rather than drawing it. The second line does not o
 
 Overrunning adds time and says nothing. There is no score and no streak, and a day you did not open is not counted against you.
 
-[Open Decide One](/?view=daily) — free, for everyone, with nothing held back. Nothing you write leaves your device.
+[Open Decide One](/?view=daily) — free to use, with no account. Nothing you write leaves your device.

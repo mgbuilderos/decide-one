@@ -19,7 +19,14 @@ import path from 'path';
  * FOUNDATIONS.md §5. None of them are stylistic preference.
  */
 
-const DIRS = ['content/methods', 'content/guides'];
+// Discovered, not listed. A hardcoded list is how content/pages/faq.md — the
+// single most claim-dense page on the site — was written, built and very nearly
+// deployed without a single gate running over it. Any directory under content/
+// is content, and content is gated.
+const DIRS = fs.existsSync('content')
+  ? fs.readdirSync('content', { withFileTypes: true })
+      .filter(d => d.isDirectory()).map(d => `content/${d.name}`).sort()
+  : [];
 const errors = [];
 
 // VISION.md §11.3 rule 1. Medical structure is fine; medical language invites
@@ -61,7 +68,15 @@ const BLACKLIST = [
 // QC Rule 24 enforces this in src/; this enforces it in what we publish.
 const PRICE = [
   'upgrade to pro', 'paid plan', 'paid tier', 'premium version', 'premium tier',
-  'free trial', 'pro version', 'when you upgrade', 'paywall', 'subscribe for'
+  'free trial', 'pro version', 'when you upgrade', 'paywall', 'subscribe for',
+  // "nothing held back" is VISION §11.1's own wording and it was published on
+  // twelve pages before anyone checked it against the app. It is not true as
+  // shipped: UnifiedMenuModal.jsx locks two paper tones, three ink colours,
+  // the weekly PDF, Markdown export and the annual print behind isPatron, and
+  // PatronUpgradeModal.jsx offers no way to obtain a licence. Until either the
+  // locks go or §11.1 is amended, the phrase may not be published. Saying the
+  // product is free is fine and true; claiming completeness is not.
+  'nothing held back'
 ];
 
 // TELEMETRY_SPEC.md and src/utils/telemetry.js. The honest claim is that
@@ -113,7 +128,9 @@ for (const dir of DIRS) {
     check(file, text, BLACKLIST, 'blacklisted name (FRAMEWORKS §6.3)',
       'Trademark exposure. This name may not appear anywhere.');
     check(file, text, PRICE, 'price claim (VISION §11.1)',
-      'The price is free. No tier, no licence, no trial, nothing held back.');
+      'Say it is free to use, with no account. Do not claim completeness: the '
+      + 'app still locks paper tones, ink colours, the weekly PDF, Markdown '
+      + 'export and the annual print behind isPatron.');
     check(file, text, TELEMETRY, 'telemetry claim (TELEMETRY_SPEC)',
       'The honest claim is that nothing is sent unless the person turns it on.');
 

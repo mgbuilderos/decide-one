@@ -66,4 +66,4 @@ Decide One asks for a duration on each thing you choose, which is the smallest a
 
 A line you did not finish is unfinished. It is not marked against you, and a day you did not open is not counted.
 
-[Open Decide One](/?view=daily) — free, for everyone, with nothing held back. Nothing you write leaves your device.
+[Open Decide One](/?view=daily) — free to use, with no account. Nothing you write leaves your device.

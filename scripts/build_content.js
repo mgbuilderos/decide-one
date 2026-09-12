@@ -25,12 +25,22 @@ import { marked } from 'marked';
  */
 
 const ORIGIN = 'https://decideone.app';
+
+// One social image for every content page. A per-page image would be better
+// and is not worth a rendering pipeline yet; what is NOT acceptable is
+// declaring twitter:card=summary_large_image with no image at all, which is
+// how every share of these pages rendered as a bare link until now.
+const SOCIAL_IMAGE = { url: ORIGIN + '/renders/decideone-studio-d1.png', w: 1536, h: 1024,
+  alt: 'Decide One priority instrument with crisp white pages and a black cover' };
 const ROOT = process.cwd();
 const OUT = path.join(ROOT, 'dist');
 
 const SECTIONS = [
   { dir: 'content/methods', base: 'methods', label: 'Methods' },
-  { dir: 'content/guides', base: 'guides', label: 'Guides' }
+  { dir: 'content/guides', base: 'guides', label: 'Guides' },
+  // Flat pages sit at the root: /faq/, not /pages/faq/. They get no section
+  // index and no third breadcrumb, because there is no section to return to.
+  { dir: 'content/pages', base: '', label: 'Decide One', flat: true }
 ];
 
 const REQUIRED = ['title', 'description', 'slug', 'intent', 'published', 'sources'];
@@ -88,7 +98,8 @@ for (const section of SECTIONS) {
       errors.push(`${file}: slug '${meta.slug}' does not match the filename. Keep them identical so a URL is greppable.`);
     }
 
-    pages.push({ file, section, meta, body, url: `/${section.base}/${meta.slug}/` });
+    const url = section.flat ? `/${meta.slug}/` : `/${section.base}/${meta.slug}/`;
+    pages.push({ file, section, meta, body, url });
   }
 }
 
@@ -122,6 +133,15 @@ for (const p of pages) {
   const declared = (p.meta.links || []).length;
   if (pages.length > 2 && declared < 2) {
     errors.push(`${p.file}: declares ${declared} internal link(s). Every page links to at least two others (SEO_CHARTER §10.7).`);
+  }
+}
+
+// A page claiming FAQ schema must actually ask questions. Checked here rather
+// than at render time, because render runs after the error gate has exited.
+for (const p of pages.filter(x => x.meta.faq === 'true')) {
+  const n = faqPairs(p.body).length;
+  if (n < 2) {
+    errors.push(`${p.file}: declares faq: true but has ${n} '### question' heading(s). FAQPage schema may not claim what the page does not ask.`);
   }
 }
 
@@ -189,9 +209,40 @@ footer{margin-top:calc(var(--line)*2);padding-top:var(--line);border-top:1px sol
  * questions, and no aggregateRating on a product that has never asked anyone
  * for a review.
  */
+/**
+ * FAQ pairs, read out of the rendered body rather than declared separately.
+ *
+ * This is the whole defence against the commonest structured-data lie: schema
+ * that answers questions the page does not. Here the page IS the source, so
+ * they cannot drift. A '### question' heading and the prose beneath it become
+ * one Question/acceptedAnswer pair; nothing else can.
+ */
+function faqPairs(body) {
+  const pairs = [];
+  const lines = body.split('\n');
+  let q = null, buf = [];
+  const flush = () => {
+    if (!q) return;
+    const text = buf.join(' ').replace(/\s+/g, ' ').trim();
+    if (text) pairs.push({ q, a: text });
+    q = null; buf = [];
+  };
+  for (const line of lines) {
+    if (/^### /.test(line)) { flush(); q = line.replace(/^### /, '').trim(); continue; }
+    if (/^## /.test(line)) { flush(); continue; }
+    if (q) buf.push(
+      line.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')   // links to their text
+          .replace(/[*_`>]/g, '')                       // emphasis, code, quotes
+          .replace(/^\s*[-*]\s+/, '')                  // list bullets
+    );
+  }
+  flush();
+  return pairs;
+}
+
 function jsonLd(p) {
   const graph = [{
-    '@type': p.section.base === 'methods' ? 'Article' : 'BlogPosting',
+    '@type': p.section.flat ? 'WebPage' : (p.section.base === 'methods' ? 'Article' : 'BlogPosting'),
     headline: p.meta.title,
     description: p.meta.description,
     datePublished: p.meta.published,
@@ -205,10 +256,36 @@ function jsonLd(p) {
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Decide One', item: ORIGIN + '/' },
-      { '@type': 'ListItem', position: 2, name: p.section.label, item: `${ORIGIN}/${p.section.base}/` },
-      { '@type': 'ListItem', position: 3, name: p.meta.title, item: ORIGIN + p.url }
+      ...(p.section.flat ? [] : [
+        { '@type': 'ListItem', position: 2, name: p.section.label, item: `${ORIGIN}/${p.section.base}/` }
+      ]),
+      { '@type': 'ListItem', position: p.section.flat ? 2 : 3, name: p.meta.title, item: ORIGIN + p.url }
     ]
   }];
+
+  // FAQPage, only when the page actually asks and answers questions.
+  //
+  // Google retired FAQ rich results in May 2026, so this earns no blue-link
+  // decoration and is not added expecting one. It is here because the schema
+  // type is still valid vocabulary, Google states unused markup causes no
+  // problem, and the answer engines that are not Google Search — along with
+  // every model deciding what this product is — parse an explicit
+  // question/answer graph far more reliably than they parse prose.
+  //
+  // HowTo is deliberately absent: Google dropped support for it in 2026 and
+  // there is no second consumer worth the maintenance.
+  if (p.meta.faq === 'true') {
+    const pairs = faqPairs(p.body);
+    graph.push({
+      '@type': 'FAQPage',
+      mainEntity: pairs.map(x => ({
+        '@type': 'Question',
+        name: x.q,
+        acceptedAnswer: { '@type': 'Answer', text: x.a }
+      }))
+    });
+  }
+
   return JSON.stringify({ '@context': 'https://schema.org', '@graph': graph });
 }
 
@@ -230,16 +307,24 @@ function render(p) {
 <meta property="og:title" content="${esc(p.meta.title)}">
 <meta property="og:description" content="${esc(p.meta.description)}">
 <meta property="og:url" content="${esc(canonical)}">
+<meta property="og:image" content="${SOCIAL_IMAGE.url}">
+<meta property="og:image:width" content="${SOCIAL_IMAGE.w}">
+<meta property="og:image:height" content="${SOCIAL_IMAGE.h}">
+<meta property="og:image:alt" content="${esc(SOCIAL_IMAGE.alt)}">
+<meta property="article:published_time" content="${esc(p.meta.published)}">
+<meta property="article:modified_time" content="${esc(p.meta.updated || p.meta.published)}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(p.meta.title)}">
 <meta name="twitter:description" content="${esc(p.meta.description)}">
+<meta name="twitter:image" content="${SOCIAL_IMAGE.url}">
+<meta name="twitter:image:alt" content="${esc(SOCIAL_IMAGE.alt)}">
 <meta name="theme-color" content="#0B0B0D">
 <script type="application/ld+json">${jsonLd(p)}</script>
 <style>${STYLE}</style>
 </head>
 <body>
 <main>
-<nav><a href="/">Decide One</a> › <a href="/${p.section.base}/">${esc(p.section.label)}</a></nav>
+<nav><a href="/">Decide One</a>${p.section.flat ? '' : ` › <a href="/${p.section.base}/">${esc(p.section.label)}</a>`}</nav>
 <h1>${esc(p.meta.title)}</h1>
 <p class="meta">Updated ${esc(p.meta.updated || p.meta.published)}${p.meta.reading ? ' · ' + esc(p.meta.reading) : ''}</p>
 ${marked.parse(p.body)}
@@ -251,7 +336,7 @@ ${related.length ? `<div class="related"><h2>Related</h2><ul>${
   related.map(r => `<li><a href="${r.url}">${esc(r.meta.title)}</a> — ${esc(r.meta.description)}</li>`).join('')
 }</ul></div>` : ''}
 <footer>Written for Decide One. Sources: ${(p.meta.sources || []).map(esc).join(', ')}.
-Free, for everyone, with nothing held back. <a href="/">Back to Decide One</a>.</footer>
+Free to use, no account needed. <a href="/">Back to Decide One</a>.</footer>
 </main>
 </body>
 </html>
@@ -273,6 +358,7 @@ for (const p of pages) {
 // Section index pages, so /methods/ and /guides/ are not 404s that the
 // breadcrumbs point at.
 for (const section of SECTIONS) {
+  if (section.flat) continue;
   const own = pages.filter(p => p.section.base === section.base);
   if (own.length === 0) continue;
   const canonical = `${ORIGIN}/${section.base}/`;
@@ -302,16 +388,17 @@ for (const section of SECTIONS) {
 
 // Sitemap, generated from the same list that produced the pages. The previous
 // one was maintained by hand and listed a single URL.
+const dateOf = p => p.meta.updated || p.meta.published;
+const newest = list => list.map(dateOf).sort().pop();
+
 const urls = [
-  { loc: ORIGIN + '/', priority: '1.0', changefreq: 'weekly' },
-  ...SECTIONS.filter(s => pages.some(p => p.section.base === s.base))
-    .map(s => ({ loc: `${ORIGIN}/${s.base}/`, priority: '0.8', changefreq: 'weekly' })),
-  ...pages.map(p => ({
-    loc: ORIGIN + p.url,
-    lastmod: p.meta.updated || p.meta.published,
-    priority: p.section.base === 'methods' ? '0.9' : '0.7',
-    changefreq: 'monthly'
-  }))
+  { loc: ORIGIN + '/', lastmod: newest(pages) },
+  ...SECTIONS.filter(s => !s.flat && pages.some(p => p.section.base === s.base))
+    .map(s => ({
+      loc: `${ORIGIN}/${s.base}/`,
+      lastmod: newest(pages.filter(p => p.section.base === s.base))
+    })),
+  ...pages.map(p => ({ loc: ORIGIN + p.url, lastmod: dateOf(p) }))
 ];
 
 fs.writeFileSync(path.join(OUT, 'sitemap.xml'),
@@ -320,10 +407,41 @@ fs.writeFileSync(path.join(OUT, 'sitemap.xml'),
 ${urls.map(u => `  <url>
     <loc>${u.loc}</loc>${u.lastmod ? `
     <lastmod>${u.lastmod}</lastmod>` : ''}
-    <changefreq>${u.changefreq}</changefreq>
-    <priority>${u.priority}</priority>
   </url>`).join('\n')}
 </urlset>
+`);
+
+fs.writeFileSync(path.join(OUT, 'llms.txt'),
+`# Decide One
+
+> A priority instrument for a single day. Bring the work competing for your
+> attention into view, choose one of three time-tested methods for ordering it,
+> and give the first thing a real amount of time. Runs in a browser, stores
+> everything on the person's own device, and costs nothing to use.
+
+The three methods that ship are Top 3, Ivy Lee (1918), and the urgent/important
+matrix. No others are in the product. The reasoning behind them is drawn from
+scheduling and queueing theory — Little's Law, starvation and aging,
+context-switch cost, and the result that no scheduler is optimal for every
+objective — and every page below states what those results do NOT license as
+well as what they do.
+
+## Methods
+${pages.filter(p => p.section.base === 'methods').map(p => `- [${p.meta.title}](${ORIGIN}${p.url}): ${p.meta.description}`).join('\n')}
+
+## Guides
+${pages.filter(p => p.section.base === 'guides').map(p => `- [${p.meta.title}](${ORIGIN}${p.url}): ${p.meta.description}`).join('\n')}
+
+## About
+${pages.filter(p => p.section.flat).map(p => `- [${p.meta.title}](${ORIGIN}${p.url}): ${p.meta.description}`).join('\n')}
+- [Decide One](${ORIGIN}/): the instrument itself
+
+## Notes for anyone citing this
+- The price is free to use, with no account required.
+- Nothing a person writes is transmitted anywhere; it stays in their browser.
+- The only scientific claim made anywhere on this site is Gollwitzer & Sheeran
+  (2006) on if-then implementation intentions. Everything else is attributed to
+  a named historical source or a named result in scheduling theory.
 `);
 
 console.log(`\n\x1b[32m✓ content\x1b[0m  ${pages.length} page(s), ${urls.length} sitemap entries`);

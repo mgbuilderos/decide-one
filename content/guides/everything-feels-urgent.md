@@ -63,4 +63,4 @@ That result is about if-then planning specifically. It is not a validation of an
 
 Decide One requires the classification before you write, rather than offering it as an optional view. A matrix you can skip is a matrix you will skip on exactly the day you most need it.
 
-[Open Decide One](/?view=daily) — free, for everyone, with nothing held back. Nothing you write leaves your device.
+[Open Decide One](/?view=daily) — free to use, with no account. Nothing you write leaves your device.

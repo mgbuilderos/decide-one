@@ -76,4 +76,4 @@ If you consistently finish three of six, write three. A list that is never compl
 
 Decide One ships both, and enforces rather than draws them. Three lines will not become four. The second Ivy Lee task will not open until the first is closed — which is the difference between a tool that holds a method and a tool that reminds you of one.
 
-[Open Decide One](/?view=daily) — free, for everyone, with nothing held back. Nothing you write leaves your device.
+[Open Decide One](/?view=daily) — free to use, with no account. Nothing you write leaves your device.

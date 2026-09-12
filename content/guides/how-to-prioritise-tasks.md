@@ -6,7 +6,7 @@ intent: how to prioritise tasks
 published: 2026-09-12
 updated: 2026-09-12
 sources: FRAMEWORKS.md, FOUNDATIONS.md, VISION.md
-links: top-3-method, ivy-lee-method, urgent-important-matrix, everything-feels-urgent, ivy-lee-vs-top-3, why-to-do-lists-stop-working, how-many-tasks-should-a-day-hold, is-there-a-best-prioritisation-method, littles-law-for-a-working-day, why-important-work-never-gets-done, the-cost-of-switching-tasks
+links: top-3-method, ivy-lee-method, urgent-important-matrix, everything-feels-urgent, ivy-lee-vs-top-3, why-to-do-lists-stop-working, how-many-tasks-should-a-day-hold, is-there-a-best-prioritisation-method, littles-law-for-a-working-day, why-important-work-never-gets-done, the-cost-of-switching-tasks, faq
 keywords: how to prioritise tasks, how to prioritize work, prioritisation methods, which prioritisation method
 ---
 
@@ -72,4 +72,4 @@ Decide One asks what today looks like before it offers a method, and then enforc
 
 Nothing is scored, and a day you did not open is not counted against you.
 
-[Open Decide One](/?view=daily) — free, for everyone, with nothing held back. Nothing you write leaves your device.
+[Open Decide One](/?view=daily) — free to use, with no account. Nothing you write leaves your device.

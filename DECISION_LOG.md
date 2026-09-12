@@ -1137,3 +1137,9 @@ Deployed Wave 1 complete. All 15 sitemap URLs verified live: 200, self-referenci
 ### 2026-09-12 17:27 — Claude Opus 5
 
 Recorded wave status in SEO_CHARTER §5. Wave 0 met, Wave 1 built but gate not met, Wave 2 blocked. Confirmed by four checks that decideone.app is not verified in Search Console: no meta tag in source or live HTML, no DNS TXT on the apex, no verification file in public/, no Google tag of any kind. Until a founder verifies the property there is no instrument, so Wave 2 would be F11 -- volume without evidence. What an agent may correctly do meanwhile is bounded to SEO_AUDIT §6 technical items that have defined answers and add no pages.
+
+---
+
+### 2026-09-12 18:00 — Claude Opus 5
+
+Technical SEO/AEO pass plus the FAQ. Researched current practice first: FAQ rich results were deprecated by Google in May 2026 and HowTo support dropped, so FAQPage ships as machine-readable vocabulary for non-Google answer engines rather than for a rich result, and HowTo is deliberately absent. Sitemap now emits lastmod only -- changefreq and priority have been ignored for a decade. Added og:image/twitter:image (pages declared summary_large_image with no image, so every share rendered as a bare link), article:published_time/modified_time, flat root-level pages so the FAQ is at /faq/, FAQPage schema derived FROM the page body so it cannot claim a question the page does not ask, and a generated llms.txt (no search engine reads it; agentic tools do -- documented as such, not as a ranking signal). FOUND AND FIXED A FALSE PUBLISHED CLAIM: 'nothing held back' was live on all 12 content pages while UnifiedMenuModal.jsx locks two paper tones, three ink colours, the weekly PDF, Markdown export and the annual print behind isPatron. Corrected the copy and gated the phrase. Also found check_content.js had a hardcoded directory list, so content/pages/faq.md -- the most claim-dense page on the site -- was ungated; DIRS is now discovered from content/.

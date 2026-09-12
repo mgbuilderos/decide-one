@@ -80,4 +80,4 @@ Decide One holds the limit rather than suggesting it: three lines will not becom
 
 It never scores the result, and an unfinished line is unfinished rather than failed.
 
-[Open Decide One](/?view=daily) — free, for everyone, with nothing held back. Nothing you write leaves your device.
+[Open Decide One](/?view=daily) — free to use, with no account. Nothing you write leaves your device.

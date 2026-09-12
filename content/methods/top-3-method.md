@@ -68,4 +68,4 @@ Decide One ships this as three lines that will not become four. That constraint 
 
 The instrument does not choose for you and does not score you. An unfinished line is unfinished — not failed. If you come back after a week away, you get a clean day, not an account of your absence.
 
-[Open Decide One](/?view=daily) — free, for everyone, with nothing held back. Nothing you write leaves your device.
+[Open Decide One](/?view=daily) — free to use, with no account. Nothing you write leaves your device.
