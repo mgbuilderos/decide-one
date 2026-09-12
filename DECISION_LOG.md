@@ -1149,3 +1149,9 @@ Technical SEO/AEO pass plus the FAQ. Researched current practice first: FAQ rich
 ### 2026-09-12 18:08 — Claude Opus 5
 
 Wave 2 first batch: ten guides, 13 pages to 23. Each answers a distinct question intent with no overlap with the existing thirteen -- too much to do, evening planning, not finishing, estimating, not starting, multitasking, deadlines, hardest-thing-first, interruptions, and whether productivity systems work at all. All grounded in FOUNDATIONS.md named results and all carrying the §5 guardrail about what those results do not license. Link graph is a mesh: the hub links to all, and each new page also takes a contextual inbound from its nearest existing neighbour. Content gates caught four violations in this batch (two unearned-science phrases I had quoted as examples of what NOT to trust, one 160-char description, one 'treating'); fixed the prose rather than the gate. Running total this project: 15 violations caught by gates in content written by the agent that wrote the gates.
+
+---
+
+### 2026-09-12 18:11 — Claude Opus 5
+
+Homepage was invisible to non-JS crawlers. <div id="root"></div> was empty, so the body contained no text and no links -- Google renders JS and reached the landing page eventually, but GPTBot, ClaudeBot and PerplexityBot largely do not, which meant the one URL defining what this product IS was blank to exactly the systems the GEO work targets. It also passed no link equity to any content page, having no links at all. Put the VISION §11.1 canonical statement plus seven internal links inside #root; React's createRoot clears them on first render, so this is shell content served to everyone rather than hidden text. 194 crawlable words and 7 links where there were zero of both. Verified in a browser: app mounts over it, both views render, zero console errors. Also corrected index.html's meta description, which carried the same 'nothing held back' claim as the content pages.
