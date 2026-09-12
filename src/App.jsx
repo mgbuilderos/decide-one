@@ -6,7 +6,7 @@ import { LeftPage, RightPage, PageTurnLeaf } from './components/SpreadPages';
 import NotebookCover, { NotebookCoverFrontFace, NotebookCoverEndpaperFace, InteractiveNotebookCover } from './components/NotebookCover';
 import MarketingLandingPage from './components/MarketingLandingPage';
 
-import { useJournalStorage, formatDateKey } from './hooks/useJournalStorage';
+import { useJournalStorage, formatDateKey, hasWrittenBefore } from './hooks/useJournalStorage';
 import { useProductivity } from './hooks/useProductivity';
 import { playSound } from './utils/audio';
 import { getStoredLicense, migrateLegacyActivation, revalidateStoredLicense } from './utils/licenseManager';
@@ -53,7 +53,9 @@ export default function App() {
         return 'landing';
       }
     }
-    return 'landing';
+    // A returning person opens the instrument, not the front door. ?view=landing
+    // is still honoured above, so the marketing page stays reachable on purpose.
+    return hasWrittenBefore() ? 'daily' : 'landing';
   });
   const [currentDate, setCurrentDate] = useState(new Date());
   const [activeFilter, setActiveFilter] = useState('all');

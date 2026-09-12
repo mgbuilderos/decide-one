@@ -259,40 +259,16 @@ function buildBook(textures, grain, finish) {
   ribbon.geometry.computeVertexNormals();
   ribbon.position.set(0.045, -0.2, 0.01);
   root.add(ribbon);
-  const labelCanvas = document.createElement('canvas');
-  labelCanvas.width = 512;
-  labelCanvas.height = 128;
-  const c = labelCanvas.getContext('2d');
-  c.fillStyle = '#151616';
-  c.fillRect(0, 0, 512, 128);
-  c.strokeStyle = '#ffffff17';
-  for (let y = 0; y < 128; y += 3) {
-    c.beginPath();
-    c.moveTo(0, y);
-    c.lineTo(512, y);
-    c.stroke();
-  }
-  c.fillStyle = '#ffffff';
-  c.font = '600 48px Helvetica';
-  c.textAlign = 'center';
-  c.fillText('D E C I D E  O N E', 256, 84);
-  // Fine cross-weave and perimeter stitches read under grazing light.
-  c.strokeStyle = '#ffffff16';
-  for (let x = 0; x < 512; x += 3) { c.beginPath(); c.moveTo(x, 0); c.lineTo(x + 22, 128); c.stroke(); }
-  c.strokeStyle = '#cccccc77'; c.lineWidth = 1; c.setLineDash([3, 4]); c.strokeRect(7, 7, 498, 114);
-  const labelTexture = new THREE.CanvasTexture(labelCanvas);
-  labelTexture.colorSpace = THREE.SRGBColorSpace;
-  const label = new THREE.Mesh(new THREE.BoxGeometry(1.18, 0.3, 0.025), new THREE.MeshStandardMaterial({
-    map: labelTexture,
-    roughness: 1
-  }));
-  label.position.set(0, 2.08, 0.075);
-  root.add(label);
+  // The spine label was removed on 13 September 2026. It sat at z=0.075, behind
+  // the page planes, so the only part of it that could ever be seen was the
+  // 0.19 units protruding above the cover — a tab poking out of the top of the
+  // book. No depth or height fixed that: in front of the pages it covers the
+  // writing, behind them it is invisible. VISION §13: ornament is a defect.
   return {
     root,
     coverMat,
     pages: parts,
-    extraTextures: [labelTexture],
+    extraTextures: [],
     updateTextures: next => parts.forEach((page, i) => { page.material.map = next[i]; page.material.needsUpdate = true; })
   };
 }

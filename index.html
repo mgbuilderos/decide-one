@@ -85,6 +85,23 @@
     <link rel="apple-touch-icon" href="/icon.svg?v=2" />
     
     <!-- Clean Helvetica / Inter Typography Stack -->
+    <style>
+      /* Critical first paint. Without this the browser renders the crawlable
+         summary below as unstyled black-on-white prose and then repaints, which
+         reads as a broken page rather than a loading one. Every value here is
+         one the bundle already sets on body, so the repaint changes no colour.
+         The summary is real content shown to anyone whose browser has not run
+         the bundle yet — most notably the AI crawlers, which do not execute JS. */
+      html { background: #EAEAE7; }
+      body { margin: 0; background: #EAEAE7; color: #18181B; -webkit-font-smoothing: antialiased;
+             font-family: "Helvetica Neue", Helvetica, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+      #root > main { max-width: 680px; margin: 0 auto; padding: 56px 24px; }
+      #root h1 { font-size: 34px; line-height: 1.12; letter-spacing: -.02em; font-weight: 600; margin: 0 0 22px; }
+      #root h2 { font-size: 18px; font-weight: 600; margin: 44px 0 14px; }
+      #root p, #root li { font-size: 15px; line-height: 1.7; color: #3f3f46; margin: 0 0 14px; }
+      #root ul { padding-left: 20px; }
+      #root a { color: #18181B; }
+    </style>
   </head>
   <body class="bg-[#E1E1E6] dark:bg-[#0B0B0D] text-neutral-900 dark:text-neutral-100 antialiased selection:bg-neutral-900 selection:text-white dark:selection:bg-white dark:selection:text-neutral-900">
     <!-- The app's shell content, and the only thing a crawler that does not run
@@ -102,17 +119,17 @@
          to everyone, it is the canonical statement from VISION.md §11.1, and it
          says the same thing the rendered page says. -->
     <div id="root">
-      <main style="max-width:680px;margin:0 auto;padding:48px 24px;font:16px/24px -apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">
-        <h1 style="font-size:32px;line-height:36px;letter-spacing:-.02em;margin:0 0 24px">You already know what matters. This helps you choose it.</h1>
+      <main>
+        <h1>You already know what matters. This helps you choose it.</h1>
         <p>Some mornings hold eleven things and no obvious first one. Bring them into view, pick the method that fits the day &mdash; Top 3, Ivy Lee, or the Urgent/Important Matrix &mdash; and give the first one a real amount of time. You make the decision. The instrument holds it steady while you work.</p>
         <p>Three methods older than the software industry. One page. Nothing leaves your device. Free to use, with no account.</p>
-        <h2 style="font-size:21px;margin:48px 0 24px">The three methods</h2>
+        <h2>The three methods</h2>
         <ul>
           <li><a href="/methods/top-3-method/">The Top 3 method</a> &mdash; three things for today and no fourth, for a day holding more than it can</li>
           <li><a href="/methods/ivy-lee-method/">The Ivy Lee method</a> &mdash; six tasks in strict order, given to Charles Schwab at Bethlehem Steel in 1918</li>
           <li><a href="/methods/urgent-important-matrix/">The urgent/important matrix</a> &mdash; sorting on two axes before deciding what to do</li>
         </ul>
-        <h2 style="font-size:21px;margin:48px 0 24px">Start here</h2>
+        <h2>Start here</h2>
         <ul>
           <li><a href="/guides/how-to-prioritise-tasks/">How to prioritise your tasks</a> &mdash; the three conditions, and which method each one calls for</li>
           <li><a href="/guides/">All guides</a> &mdash; why lists stop working, what switching costs, and what the scheduling literature actually supports</li>

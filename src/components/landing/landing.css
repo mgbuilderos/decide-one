@@ -2293,6 +2293,16 @@
 .pm-research-note { color: var(--pm-muted); font-size: 12px; margin: 40px 0 0; }
 .pm-light .pm-science-grid article { border-color: #00000022; }
 .pm-light .pm-science-grid a { color: #636363; }
+
+/* The writing. Monochrome like everything else — the cells are hairlines, not cards. */
+.pm-reading-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: #ffffff20; border: 1px solid #ffffff20; }
+.pm-reading-grid a { display: block; background: var(--pm-bg); padding: 30px 28px 34px; transition: background .18s ease; }
+.pm-reading-grid a:hover, .pm-reading-grid a:focus-visible { background: var(--pm-panel); }
+.pm-reading-grid h3 { font-size: 20px; font-weight: 500; letter-spacing: -.4px; margin: 15px 0 11px; color: var(--pm-text); }
+.pm-reading-grid p:last-child { font-size: 14px; color: var(--pm-muted); line-height: 1.75; margin: 0; }
+.pm-light .pm-reading-grid { background: #00000018; border-color: #00000018; }
+@media(max-width:1000px) { .pm-reading-grid { grid-template-columns: repeat(2,1fr); } }
+@media(max-width:700px) { .pm-reading-grid { grid-template-columns: 1fr; } }
 .pm-month-tabs button,.pm-device-tabs button { text-transform: none; }
 @media(max-width:1000px) { .pm-nav { padding-inline: 32px; }.pm-nav>nav { gap: 15px; }.pm-nav>nav a:last-child { display: none; }.pm-science-grid { gap: 26px; } }
 @media(max-width:700px) { .pm-nav { padding-inline: 22px; grid-template-columns: 1fr auto 1fr; height: 74px; }.pm-nav>nav { gap: 0; }.pm-nav>nav a { display: none; }.pm-nav>nav a:first-child { display: block; font-size: 11px; }.pm-nav>.pm-brand { font-size: 14px; letter-spacing: 2px; }.pm-nav .pm-theme-button { display:none; }.pm-nav .pm-button-small { padding: 9px 14px; font-size: 11px; }.pm-nav .pm-button-small svg { display: none; }.pm-hero-product .pm-scene { height: 370px; }.pm-science-grid { grid-template-columns: 1fr; gap: 30px; }.pm-science-grid a { margin-top: 12px; }.pm-hero-copy { padding-top: 50px; } }

@@ -69,6 +69,25 @@ function getLegacyVolumeStorageKeys() {
   return LEGACY_STORAGE_KEYS;
 }
 
+// Someone who has already written a day here is not a stranger, and should not
+// be shown the front door every morning. VISION §12.1a: the instrument opens,
+// it does not advertise.
+//
+// The test is a written day, not the presence of the store. useJournalStorage
+// persists on mount, so the key exists after a single landing-page visit and
+// would mark a first-timer as returning.
+export function hasWrittenBefore() {
+  if (typeof window === 'undefined') return false;
+  try {
+    const stored = localStorage.getItem(getVolumeStorageKey())
+      || getLegacyVolumeStorageKeys().reduce((found, k) => found || localStorage.getItem(k), null);
+    if (!stored) return false;
+    return Object.keys(JSON.parse(stored).dailyLogs || {}).length > 0;
+  } catch (e) {
+    return false;
+  }
+}
+
 export function getStoredActiveVolume() {
   if (typeof window === 'undefined') return 'vol_strategy';
   try {
