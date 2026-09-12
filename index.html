@@ -86,21 +86,24 @@
     
     <!-- Clean Helvetica / Inter Typography Stack -->
     <style>
-      /* Critical first paint. Without this the browser renders the crawlable
-         summary below as unstyled black-on-white prose and then repaints, which
-         reads as a broken page rather than a loading one. Every value here is
-         one the bundle already sets on body, so the repaint changes no colour.
-         The summary is real content shown to anyone whose browser has not run
-         the bundle yet — most notably the AI crawlers, which do not execute JS. */
+      /* Critical first paint — scoped to #prerender ONLY.
+         It was scoped to #root on 13 September 2026 and that broke the whole
+         application: #root is an ID, so `#root h2` (0,1,0,1) outranks every
+         class selector in the bundle. The final CTA's h2 was forced to 18px
+         while keeping the landing page's -5px tracking, collapsing "Three
+         lines. Then get to work." into overlapping letters, and `#root a` and
+         `#root p` pinned link and body colour past the light/dark toggle.
+         #prerender is destroyed by createRoot on mount, so these rules can
+         only ever apply to the crawlable summary they were written for. */
       html { background: #EAEAE7; }
       body { margin: 0; background: #EAEAE7; color: #18181B; -webkit-font-smoothing: antialiased;
              font-family: "Helvetica Neue", Helvetica, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-      #root > main { max-width: 680px; margin: 0 auto; padding: 56px 24px; }
-      #root h1 { font-size: 34px; line-height: 1.12; letter-spacing: -.02em; font-weight: 600; margin: 0 0 22px; }
-      #root h2 { font-size: 18px; font-weight: 600; margin: 44px 0 14px; }
-      #root p, #root li { font-size: 15px; line-height: 1.7; color: #3f3f46; margin: 0 0 14px; }
-      #root ul { padding-left: 20px; }
-      #root a { color: #18181B; }
+      #prerender { max-width: 680px; margin: 0 auto; padding: 56px 24px; }
+      #prerender h1 { font-size: 34px; line-height: 1.12; letter-spacing: -.02em; font-weight: 600; margin: 0 0 22px; }
+      #prerender h2 { font-size: 18px; font-weight: 600; margin: 44px 0 14px; }
+      #prerender p, #prerender li { font-size: 15px; line-height: 1.7; color: #3f3f46; margin: 0 0 14px; }
+      #prerender ul { padding-left: 20px; }
+      #prerender a { color: #18181B; }
     </style>
   </head>
   <body class="bg-[#E1E1E6] dark:bg-[#0B0B0D] text-neutral-900 dark:text-neutral-100 antialiased selection:bg-neutral-900 selection:text-white dark:selection:bg-white dark:selection:text-neutral-900">
@@ -119,7 +122,7 @@
          to everyone, it is the canonical statement from VISION.md §11.1, and it
          says the same thing the rendered page says. -->
     <div id="root">
-      <main>
+      <main id="prerender">
         <h1>You already know what matters. This helps you choose it.</h1>
         <p>Some mornings hold eleven things and no obvious first one. Bring them into view, pick the method that fits the day &mdash; Top 3, Ivy Lee, or the Urgent/Important Matrix &mdash; and give the first one a real amount of time. You make the decision. The instrument holds it steady while you work.</p>
         <p>Three methods older than the software industry. One page. Nothing leaves your device. Free to use, with no account.</p>

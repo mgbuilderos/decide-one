@@ -154,6 +154,26 @@ if (main && fs.existsSync(main)) {
   errors.push(`wrangler.jsonc points main at ${main}, which does not exist`);
 }
 
+// ── 7. Critical CSS must not outrank the application stylesheet ─────────────
+// On 13 September 2026 the inline <style> in index.html was scoped to #root.
+// An ID selector (0,1,0,1) beats every class in the bundle, so `#root h2`
+// re-sized every heading in the app while the bundle's negative tracking
+// stayed, collapsing display type into overlapping letters, and `#root a`
+// pinned link colour past the light/dark toggle. Inline critical CSS may
+// style the prerender and the document, never the mounted application.
+const indexHtml = fs.readFileSync(path.join(DIST, 'index.html'), 'utf8');
+for (const style of indexHtml.match(/<style>[\s\S]*?<\/style>/g) || []) {
+  const css = style.replace(/\/\*[\s\S]*?\*\//g, '');   // comments are not selectors
+  const leaks = [...css.matchAll(/(#root|#[\w-]+)\s+[.#\w[][^{]*\{/g)]
+    .map(m => m[0].replace(/\s*\{$/, '').trim())
+    .filter(sel => sel.startsWith('#root'));
+  for (const sel of leaks) {
+    errors.push(`index.html critical CSS has "${sel}" — an ID selector that outranks `
+      + 'the bundle and restyles the mounted app. Scope it to #prerender, which '
+      + 'createRoot destroys.');
+  }
+}
+
 // ── Report ───────────────────────────────────────────────────────────────────
 if (errors.length) {
   console.error(`\n\x1b[31m✗ artefact gate\x1b[0m  ${errors.length} problem(s) in what would be published:\n`);
