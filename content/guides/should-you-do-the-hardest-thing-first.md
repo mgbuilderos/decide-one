@@ -18,6 +18,8 @@ Sometimes. The advice is stated as a universal rule and it is not one, because t
 
 So the real question is not which is right. It is what today is short of.
 
+{{diagram:starvation-aging}}
+
 ## When hardest-first is right
 
 **When the hard thing is the day's actual output.** If one item is what the day is for, doing it first is not a discipline exercise — it is protecting the thing that matters from a day that will otherwise fill up. Everything else will still be possible at four o'clock. That will not.

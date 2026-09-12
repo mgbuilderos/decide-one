@@ -16,6 +16,8 @@ Write the three things that matter most today. Do not write a fourth. Work throu
 
 That is the whole method. The hard part is not the writing — it is accepting that the fourth thing does not get a line.
 
+{{diagram:three-and-no-fourth}}
+
 ## Why three, and what the number actually rests on
 
 There is a real result underneath this, and it is worth being precise about what it does and does not say.

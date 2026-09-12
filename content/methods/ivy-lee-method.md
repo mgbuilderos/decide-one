@@ -16,6 +16,8 @@ At the end of each day, write the six most important things you must do tomorrow
 
 The order is the method. The lock is what makes it work.
 
+{{diagram:ivy-lee-order}}
+
 ## Where it came from
 
 In 1918, the consultant Ivy Lee was asked by Charles Schwab, then president of Bethlehem Steel, to improve how his executives worked. Lee gave them this routine and asked for no payment up front — Schwab could pay him whatever he thought it was worth after three months.

@@ -24,6 +24,10 @@ import { marked } from 'marked';
  * be checked mechanically is checked mechanically.
  */
 
+import { DIAGRAMS } from './diagrams.js';
+
+const DIAGRAM_RE = /\{\{diagram:([a-z0-9-]+)\}\}/g;
+
 const ORIGIN = 'https://decideone.app';
 
 // One social image for every content page. A per-page image would be better
@@ -136,6 +140,17 @@ for (const p of pages) {
   }
 }
 
+// A diagram name that does not exist must fail the build. The alternative is
+// a page published with a literal {{diagram:...}} in the middle of it.
+for (const p of pages) {
+  for (const [, name] of p.body.matchAll(DIAGRAM_RE)) {
+    if (!DIAGRAMS[name]) {
+      errors.push(`${p.file}: references {{diagram:${name}}}, which is not in scripts/diagrams.js. `
+        + `Known: ${Object.keys(DIAGRAMS).join(', ')}`);
+    }
+  }
+}
+
 // A page claiming FAQ schema must actually ask questions. Checked here rather
 // than at render time, because render runs after the error gate has exited.
 for (const p of pages.filter(x => x.meta.faq === 'true')) {
@@ -193,6 +208,9 @@ hr{border:0;border-top:1px solid var(--rule);margin:calc(var(--line)*2) 0}
 .cta{margin:calc(var(--line)*2) 0;padding:var(--line);border:1px solid var(--ink)}
 .cta p{margin:0 0 calc(var(--line)/2)}
 .cta a{font-weight:700}
+.dgm{margin:calc(var(--line)*2) 0;padding:0;overflow-x:auto}
+.dgm svg{width:100%;height:auto;display:block;color:var(--ink);min-width:560px}
+.dgm figcaption{font-size:13px;line-height:var(--line);color:var(--muted);margin-top:calc(var(--line)/2);padding-top:calc(var(--line)/2);border-top:1px solid var(--rule)}
 footer{margin-top:calc(var(--line)*2);padding-top:var(--line);border-top:1px solid var(--rule);font-size:13px;color:var(--muted)}
 @media(prefers-color-scheme:dark){
   :root{--ink:#FAFAFA;--paper:#0B0B0D;--rule:#27272A;--muted:#A1A1AA}
@@ -289,6 +307,10 @@ function jsonLd(p) {
   return JSON.stringify({ '@context': 'https://schema.org', '@graph': graph });
 }
 
+const withDiagrams = (html) => html
+  .replace(new RegExp(`<p>\\s*${DIAGRAM_RE.source}\\s*</p>`, 'g'), (_, n) => DIAGRAMS[n])
+  .replace(DIAGRAM_RE, (_, n) => DIAGRAMS[n]);
+
 function render(p) {
   const canonical = ORIGIN + p.url;
   const related = (p.meta.links || []).map(s => bySlug.get(s)).filter(Boolean);
@@ -327,7 +349,7 @@ function render(p) {
 <nav><a href="/">Decide One</a>${p.section.flat ? '' : ` › <a href="/${p.section.base}/">${esc(p.section.label)}</a>`}</nav>
 <h1>${esc(p.meta.title)}</h1>
 <p class="meta">Updated ${esc(p.meta.updated || p.meta.published)}${p.meta.reading ? ' · ' + esc(p.meta.reading) : ''}</p>
-${marked.parse(p.body)}
+${withDiagrams(marked.parse(p.body))}
 <div class="cta">
 <p>Decide One is a priority instrument. Bring the day into view, choose a method, give the first thing real time.</p>
 <p><a href="/?view=daily">Open it — free, nothing to sign up for</a></p>

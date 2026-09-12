@@ -18,6 +18,8 @@ Most of the time there is not. "Work on the proposal" is a heading, not somethin
 
 The test takes five seconds: **can you say the first thirty seconds out loud?** *Open the document and write the section headings.* If you can, you are not stuck. If you cannot, you have found the problem.
 
+{{diagram:ivy-lee-order}}
+
 ## Why this is not a motivation failure
 
 A day where the volume is fine but nothing moves is a different condition from a day holding too much, and it needs a different response. Naming the difference matters, because the advice for overload — do less, cut scope — does nothing here. There is capacity. There is no sequence.

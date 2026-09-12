@@ -18,6 +18,8 @@ This has a name. In scheduling theory it is called **starvation**: low-priority 
 
 So does the fix.
 
+{{diagram:starvation-aging}}
+
 ## Why it feels like a personal failing
 
 Starvation produces a very particular experience. You know what the important work is. You can name it. You are not confused about its value, and you are not avoiding it — you can point at every hour of the week and say what it went to instead, and each of those things was genuinely more urgent at the moment it appeared.

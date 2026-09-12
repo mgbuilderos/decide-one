@@ -18,6 +18,8 @@ The useful question is different: **what is the estimate for?** It is not a pred
 
 An estimate that turns out wrong has still done its job if it made the arithmetic visible before the day started rather than at six o'clock.
 
+{{diagram:estimate-vs-capacity}}
+
 ## Why accuracy is not the point
 
 Estimates are bad. Everyone's are, consistently and in the same direction, and getting better at them is slow.

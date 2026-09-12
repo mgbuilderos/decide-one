@@ -18,6 +18,8 @@ A single processor core runs one instruction stream. It creates the appearance o
 
 That is a fact about processors. What it means for a person is an analogy — a well-founded one, because the structure genuinely corresponds, but an analogy, and this page will not dress it as a study of human attention.
 
+{{diagram:context-switch}}
+
 ## What the analogy does support
 
 The correspondence is specific rather than vague, which is what makes it worth anything.

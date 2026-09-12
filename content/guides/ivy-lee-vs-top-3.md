@@ -16,6 +16,8 @@ keywords: ivy lee vs rule of 3, ivy lee or top 3, which prioritisation method, i
 
 Pick Top 3 if the day holds more than a day fits. Pick Ivy Lee if the amount is fine but you keep starting things and finishing none.
 
+{{diagram:three-and-no-fourth}}
+
 ## Side by side
 
 | | Top 3 | Ivy Lee |

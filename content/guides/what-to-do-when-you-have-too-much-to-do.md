@@ -18,6 +18,8 @@ If yes, this is an **ordering problem** and the fix is a limit and a sequence. I
 
 Most days that feel impossible are ordering problems. Some genuinely are not, and recognising that is not defeatism.
 
+{{diagram:estimate-vs-capacity}}
+
 ## If it is an ordering problem
 
 The mechanism is the same one that makes a queue slow: too many things open at once. **Little's Law** says average completion time is proportional to work in progress, so the single highest-value move is reducing what is simultaneously live, not working faster. [The arithmetic is here](/guides/littles-law-for-a-working-day/).

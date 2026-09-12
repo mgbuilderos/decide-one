@@ -16,6 +16,8 @@ Sort every item on two separate questions before you start any of them: **is it 
 
 Do the urgent-and-important now. Schedule the important-and-not-urgent with a real time. Contain the urgent-and-not-important. Drop the rest.
 
+{{diagram:urgent-important}}
+
 ## Why they feel like the same question
 
 Urgency has a deadline attached, so it produces a physical pull. Importance does not. A message that arrived thirty seconds ago feels more pressing than work that will decide the quarter, because the message is *making a sound* and the work is not.

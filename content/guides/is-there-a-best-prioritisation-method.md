@@ -18,6 +18,8 @@ Shortest-job-first minimises average waiting time. Earliest-deadline-first meets
 
 That is why a method can work brilliantly for months and then stop. Nothing degraded. The objective changed.
 
+{{diagram:convoy-effect}}
+
 ## The disciplines, and what each is actually good at
 
 | Ordering rule | Provably good for | What it looks like in a day |

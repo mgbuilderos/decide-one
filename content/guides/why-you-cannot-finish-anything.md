@@ -18,6 +18,8 @@ Each thing you start stays in the system until it is done. Four half-finished pi
 
 The feeling is that you lack follow-through. The mechanism is that you have too much open, and open things do not decay quietly. They accumulate.
 
+{{diagram:wip-vs-cycle-time}}
+
 ## Why starting is so much cheaper
 
 **Starting has no capacity check.** Nothing stops you beginning something. There is no moment where a system says "you already have four of these open" — so the constraint has to come from you, every time, against a thing that feels productive.

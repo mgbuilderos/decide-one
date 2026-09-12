@@ -18,6 +18,8 @@ Each of those switches costs real work: the state has to be saved, the pipeline 
 
 The reason this is worth borrowing is not that a person is a computer. It is that the structure is the same — work in progress, state that has to be reloaded, and a cost per switch that nobody counts because it never appears as a task.
 
+{{diagram:context-switch}}
+
 ## Why the cost is invisible
 
 Switching never shows up on a list. Nothing is added, nothing is removed, no line gets longer. The hour simply goes.

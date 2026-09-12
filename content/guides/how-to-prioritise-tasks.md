@@ -22,6 +22,8 @@ Name what is actually going wrong today, then pick the method built for that. Th
 
 Most advice skips this step and hands you one method for every situation. That is where it goes wrong.
 
+{{diagram:urgent-important}}
+
 ## Why choosing the method is the actual work
 
 There is a result in scheduling theory worth knowing, because it settles an argument that otherwise runs forever: **no single scheduling discipline is best across all objectives.**

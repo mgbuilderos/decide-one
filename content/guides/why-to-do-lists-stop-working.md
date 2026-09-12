@@ -16,6 +16,8 @@ A plain list has no ordering discipline, so it defaults to the order things arri
 
 A list also has no limit, so it grows faster than any day can absorb. It ends up recording your decisions rather than helping you make them.
 
+{{diagram:convoy-effect}}
+
 ## The convoy effect
 
 First-in-first-out has a specific, named failure: **the convoy effect.** One long item at the front holds up every short item behind it, and total waiting time across everything goes up sharply.

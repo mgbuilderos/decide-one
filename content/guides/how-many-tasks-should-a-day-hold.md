@@ -16,6 +16,8 @@ Fewer than you are currently writing down, and a fixed number rather than whatev
 
 But the number is a practical choice, not a discovery. What is established is the **direction**: fewer things in flight means each one finishes sooner. Nobody has established the number, and this page is not going to pretend otherwise.
 
+{{diagram:wip-vs-cycle-time}}
+
 ## What is actually established
 
 **Little's Law**, published by John Little in 1961, describes any stable queueing system:

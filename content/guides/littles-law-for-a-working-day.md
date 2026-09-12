@@ -20,6 +20,8 @@ Rearranged, it says something more useful: **W = L / λ.** The average time an i
 
 Halve the work in progress and you halve the time each thing takes to finish. Not because anyone tried harder. Because of the arithmetic.
 
+{{diagram:wip-vs-cycle-time}}
+
 ## Why this is worth knowing
 
 Most advice about doing fewer things at once rests on an argument about focus or willpower. That argument is contestable, and if you have ever felt it did not apply to you, you were not being unreasonable.

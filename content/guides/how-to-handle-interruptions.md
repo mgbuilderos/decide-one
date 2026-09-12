@@ -18,6 +18,8 @@ That second part never appears anywhere. It is not a task, nobody schedules it, 
 
 So the useful strategies are the ones that reduce the **number of reloads**, not the ones that reduce the length of each interruption.
 
+{{diagram:context-switch}}
+
 ## What a scheduler does about this
 
 Operating systems face exactly this problem and have a vocabulary for it worth borrowing.

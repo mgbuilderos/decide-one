@@ -18,6 +18,8 @@ Almost everything built on top of them is packaging. That is not automatically b
 
 A system that stopped working usually kept the packaging and lost the mechanism.
 
+{{diagram:convoy-effect}}
+
 ## What actually has a basis
 
 **Limiting work in progress.** By Little's Law, average completion time is proportional to how many items are in the system at once. This is a theorem about queueing systems, not a finding about human cognition, and it names no particular number — but the direction is arithmetic rather than encouragement. [The full version, including what it does not license.](/guides/littles-law-for-a-working-day/)

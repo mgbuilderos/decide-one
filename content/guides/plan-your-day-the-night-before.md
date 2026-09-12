@@ -18,6 +18,8 @@ The best-known version of this is [the Ivy Lee method](/methods/ivy-lee-method/)
 
 The evening timing is not a discipline flourish. It moves the decision away from the moment when you are least able to make it well.
 
+{{diagram:ivy-lee-order}}
+
 ## What evening planning actually buys
 
 **It removes a decision from the start of the day.** A morning that opens with "what should I do first?" opens with an unbounded question. A morning that opens with a written first line opens with work. The difference is not motivation; it is that one of them has a next action and the other has a deliberation.

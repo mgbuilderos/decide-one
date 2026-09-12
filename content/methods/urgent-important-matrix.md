@@ -21,6 +21,8 @@ Take each thing competing for your day and place it on two axes: is it urgent, a
 
 The classification has to happen before you start working, not while.
 
+{{diagram:urgent-important}}
+
 ## Urgent and important are not the same question
 
 Urgency is about *when*: something has a deadline, someone is waiting, a window is closing. Importance is about *consequence*: it changes an outcome you actually care about.

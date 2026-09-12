@@ -18,6 +18,8 @@ That is a real guarantee and it comes with a real condition: it is optimal *for 
 
 So deadlines work. The question is what they cost, and the cost is specific enough to plan around.
 
+{{diagram:starvation-aging}}
+
 ## Why the mechanism is real
 
 A thing with no deadline has no position in any ordering. It competes with everything and loses to anything that is asking now, because "asking now" is the only comparison a queue can make without being told otherwise.
