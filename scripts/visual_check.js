@@ -57,7 +57,11 @@ const SURFACES = [
   { id: 'guide-desktop', url: '/guides/why-to-do-lists-stop-working/', vp: DESKTOP },
   { id: 'guide-mobile', url: '/guides/why-to-do-lists-stop-working/', vp: MOBILE },
   { id: 'guide-dark', url: '/guides/why-to-do-lists-stop-working/', vp: DESKTOP, dark: true },
-  { id: 'faq-desktop', url: '/faq/', vp: DESKTOP }
+  { id: 'faq-desktop', url: '/faq/', vp: DESKTOP },
+  // The sizes that were putting the day out of reach until 13 September 2026.
+  { id: 'daily-small', url: '/?view=daily', vp: { w: 1280, h: 600 }, fixed: true },
+  { id: 'daily-tiny', url: '/?view=daily', vp: { w: 320, h: 568 }, fixed: true },
+  { id: 'weekly-tiny', url: '/?view=weekly', vp: { w: 320, h: 568 }, fixed: true }
 ];
 
 // ── A static server for dist/, so the check runs against the real artefact ────
@@ -229,8 +233,18 @@ const PROBE = `(() => {
   const clipped = boxes.filter(el => getComputedStyle(el).overflowY === 'hidden')
     .map(el => ({ el: name(el), hidden: el.scrollHeight - el.clientHeight, kind: 'clipped' }));
 
+  const clipped_x = all.filter(e => e.clientWidth > 100 && e.scrollWidth > e.clientWidth + 8
+      // hidden only: with auto or scroll the reader can still reach it. An
+      // instrument view forbids scrolling outright via the check below, so
+      // this is about content that is silently gone, not merely off-screen.
+      && getComputedStyle(e).overflowX === 'hidden'
+      && getComputedStyle(e).textOverflow !== 'ellipsis')
+    .map(e => ({ el: name(e), over: e.scrollWidth - e.clientWidth }))
+    .sort((a, b) => b.over - a.over).slice(0, 2);
+
   const d = document.documentElement;
   return {
+    clipped_x,
     vpH: innerHeight, docH: d.scrollHeight,
     scrolls: d.scrollHeight > innerHeight + 2,
     hScroll: d.scrollWidth > innerWidth + 2,
@@ -275,6 +289,10 @@ for (const s of SURFACES) {
       + `out of a ${m.vpH}px viewport — the instrument must hold the day on one surface`);
   }
   if (m.hScroll) errors.push(`${at}: the page scrolls horizontally (${m.overflow[0]?.el || 'unknown'})`);
+  for (const c of m.clipped_x) {
+    errors.push(`${at}: ${c.el} cuts ${c.over}px of content off sideways with no ellipsis — `
+      + 'nothing on screen says anything is missing');
+  }
   for (const t of m.tracking.slice(0, 3)) {
     errors.push(`${at}: ${t.el} has ${t.letterSpacing}px tracking at ${t.fontSize}px (${t.em}em) — `
       + 'glyphs collide below -0.12em');

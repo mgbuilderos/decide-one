@@ -323,7 +323,7 @@ export default function WeeklyReviewSpread({
         }`}>
           
           {/* Executive KPI Bar */}
-          <div className="grid grid-cols-3 gap-2 p-2.5 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] mb-3 shrink-0">
+          <div className="grid grid-cols-3 gap-2 [@media(max-height:620px)]:gap-1 p-2.5 [@media(max-height:620px)]:p-1 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] mb-3 [@media(max-height:620px)]:mb-1 shrink-0">
             <div>
               <div className="text-[9px] uppercase tracking-wider font-bold text-neutral-500 dark:text-neutral-500">
                 Completed
@@ -362,7 +362,7 @@ export default function WeeklyReviewSpread({
           </div>
 
           {/* Where the week's time went — planned against actual (R7). */}
-          <div className="mb-3 shrink-0">
+          <div className="mb-3 [@media(max-height:620px)]:mb-0.5 shrink-0">
             <div className="flex items-center justify-between mb-1.5 px-0.5">
               <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400">
                 Planned vs Actual

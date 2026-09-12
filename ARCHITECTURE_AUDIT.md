@@ -281,8 +281,19 @@ has been green for the entire life of the project while telling nobody anything.
 
 What the layer found on its first honest run: 18 unreadable text elements
 between 1.48:1 and 2.52:1 (fixed — 96 small-text colours raised), and the
-instrument pushing up to 97px of the day out of reach on a short laptop
-(partly fixed, the rest recorded in WORK_REMAINING.md as a design decision).
+instrument pushing up to 97px of the day out of reach on a short laptop.
+
+The founder then made the requirement absolute — no scroll on either axis,
+anywhere in the instrument — and it now holds across **32 combinations**: four
+views at eight viewports from 1440x900 down to 320x568. Getting there exposed a
+fifth instance of the class, this time in the fix rather than the gate:
+**arbitrary Tailwind media variants all carry the same specificity**, so
+`[@media(max-height:820px)]` and `[@media(max-height:760px)]` both matching
+meant source order decided, and Tailwind emitted the wider one last. Several
+density rules were dead while reading as correct — found only by measuring a
+box at 120px whose only child was 20px. The tiers are non-overlapping ranges
+now. The lesson generalises past CSS: **a rule that is present is not a rule
+that is in effect**, and only measurement tells them apart.
 
 ## 8. Deliberately not done
 

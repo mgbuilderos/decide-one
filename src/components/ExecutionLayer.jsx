@@ -14,20 +14,25 @@ import {
   beginRunning
 } from '../utils/executionModel';
 
-// A 1366x768 laptop gives roughly 660px of viewport once browser chrome is
-// taken, and the instrument has to hold the whole day on one surface there too.
-// The clock steps down a size rather than pushing the day out of reach.
-function useShortViewport(query = '(max-height: 740px)') {
-  const [short, setShort] = useState(() =>
-    typeof window !== 'undefined' && window.matchMedia(query).matches);
+// The instrument holds the whole day on one surface at every height. A
+// 1366x768 laptop gives roughly 660px of viewport once browser chrome is
+// taken, so short is the common case, not the edge one. Three densities:
+// full, compact (the clock steps down), tight (the clock goes — the numbers
+// it illustrates are already on the page, so it is the one thing here that
+// can leave without taking information with it).
+function useDensity() {
+  const read = () => typeof window === 'undefined' ? 'full'
+    : window.matchMedia('(max-height: 760px)').matches ? 'tight'
+    : window.matchMedia('(max-height: 820px)').matches ? 'compact' : 'full';
+  const [density, setDensity] = useState(read);
   useEffect(() => {
-    const mq = window.matchMedia(query);
-    const on = e => setShort(e.matches);
-    mq.addEventListener('change', on);
-    setShort(mq.matches);
-    return () => mq.removeEventListener('change', on);
-  }, [query]);
-  return short;
+    const queries = ['(max-height: 760px)', '(max-height: 820px)'].map(q => window.matchMedia(q));
+    const on = () => setDensity(read());
+    queries.forEach(q => q.addEventListener('change', on));
+    on();
+    return () => queries.forEach(q => q.removeEventListener('change', on));
+  }, []);
+  return density;
 }
 
 /**
@@ -40,7 +45,7 @@ export default function ExecutionLayer({
   isMuted = false,
   isInteractive = true
 }) {
-  const shortViewport = useShortViewport();
+  const density = useDensity();
   const items = useMemo(() => getFrameworkItems(dailyLog), [dailyLog]);
   const sessions = items.map(item => getSession(dailyLog, item.id));
   const capacity = computeCapacity(sessions);
@@ -92,12 +97,12 @@ export default function ExecutionLayer({
 
   if (items.length === 0) {
     return (
-      <div className="w-full min-w-0 min-h-[168px] [@media(max-height:820px)]:min-h-[120px] flex flex-col items-center justify-center px-6 py-5 [@media(max-height:820px)]:py-1 text-center select-none">
-        <AnalogueClock size={shortViewport ? 60 : 88} />
-        <p className="mt-3 text-[13px] font-semibold text-neutral-700 dark:text-neutral-300">
+      <div className="w-full min-w-0 min-h-[168px] [@media(max-height:820px)_and_(min-height:761px)]:min-h-[120px] [@media(max-height:760px)]:min-h-0 flex flex-col items-center justify-center px-6 py-5 [@media(max-height:820px)_and_(min-height:761px)]:py-1 [@media(max-height:760px)]:py-1 text-center select-none">
+        {density !== 'tight' && <AnalogueClock size={density === 'compact' ? 60 : 88} />}
+        <p className="mt-3 [@media(max-height:760px)]:mt-1 text-[13px] font-semibold text-neutral-700 dark:text-neutral-300">
           Set time beside a priority.
         </p>
-        <p className="mt-1 max-w-[250px] text-[10px] leading-[16px] text-neutral-500">
+        <p className="mt-1 max-w-[250px] text-[10px] leading-[16px] text-neutral-500 [@media(max-height:660px)]:hidden">
           Write the task first, then enter the minutes on the same line.
         </p>
       </div>
@@ -105,8 +110,8 @@ export default function ExecutionLayer({
   }
 
   return (
-    <div className="w-full min-w-0 min-h-[180px] flex flex-col">
-      <div className="h-7 shrink-0 flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] text-[10px]">
+    <div className="w-full min-w-0 min-h-[180px] [@media(max-height:820px)_and_(min-height:761px)]:min-h-[140px] [@media(max-height:760px)]:min-h-0 flex flex-col">
+      <div className="h-7 [@media(max-height:760px)]:h-6 shrink-0 flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] text-[10px]">
         <span className="font-semibold uppercase tracking-[0.12em] text-neutral-800 dark:text-neutral-200">
           Today’s Time
         </span>
@@ -118,18 +123,18 @@ export default function ExecutionLayer({
       </div>
 
       {capacity.overcommitted && (
-        <p className="shrink-0 py-1.5 text-[10px] leading-[16px] text-neutral-600 dark:text-neutral-400 border-b border-black/[0.08] dark:border-white/[0.08]">
+        <p className="shrink-0 py-1.5 [@media(max-height:760px)]:py-0.5 text-[10px] leading-[16px] text-neutral-600 dark:text-neutral-400 border-b border-black/[0.08] dark:border-white/[0.08]">
           That is <span className="font-semibold">{formatDuration(capacity.overBySec)}</span> more than the day has left. Move something to tomorrow.
         </p>
       )}
       {capacity.noSlack && (
-        <p className="shrink-0 py-1.5 text-[10px] leading-[16px] text-neutral-500 dark:text-neutral-400 border-b border-black/[0.08] dark:border-white/[0.08]">
+        <p className="shrink-0 py-1.5 [@media(max-height:760px)]:py-0.5 text-[10px] leading-[16px] text-neutral-500 dark:text-neutral-400 border-b border-black/[0.08] dark:border-white/[0.08]">
           That fills the day without room between tasks.
         </p>
       )}
 
       {askingAbout.length > 0 && (
-        <div className="shrink-0 border-b border-black/[0.08] dark:border-white/[0.08] py-2 space-y-2">
+        <div className="shrink-0 border-b border-black/[0.08] dark:border-white/[0.08] py-2 space-y-2 [@media(max-height:760px)]:py-1 [@media(max-height:760px)]:space-y-1">
           {askingAbout.map(id => {
             const item = items.find(candidate => candidate.id === id);
             if (!item) return null;

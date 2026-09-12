@@ -50,7 +50,7 @@ export default function DayConditionPrompt({
         aria-modal="true"
         aria-label="What does today look like?"
       >
-        <div className="min-h-[72px] px-5 sm:px-7 py-4 flex items-center justify-between border-b border-black/[0.10] dark:border-white/[0.10] shrink-0">
+        <div className="min-h-[72px] [@media(max-height:760px)_and_(min-height:621px)]:min-h-[52px] [@media(max-height:620px)]:min-h-0 px-5 sm:px-7 py-4 [@media(max-height:760px)_and_(min-height:621px)]:py-2 [@media(max-height:620px)]:py-1 flex items-center justify-between border-b border-black/[0.10] dark:border-white/[0.10] shrink-0">
           <div className="flex items-center gap-4">
             <div className="text-[11px] font-bold tracking-[-0.02em] leading-none border border-black/20 dark:border-white/25 rounded-[4px] px-2 py-1.5">
               D1
@@ -82,12 +82,12 @@ export default function DayConditionPrompt({
                 <button
                   type="button"
                   onClick={() => handleChoose(condition)}
-                  className="group w-full min-h-[72px] grid grid-cols-[28px_1fr_20px] items-center gap-3 text-left py-3.5 transition-colors cursor-pointer hover:bg-black/[0.025] dark:hover:bg-white/[0.035] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px]"
+                  className="group w-full min-h-[72px] [@media(max-height:760px)_and_(min-height:621px)]:min-h-[52px] [@media(max-height:620px)]:min-h-0 grid grid-cols-[28px_1fr_20px] items-center gap-3 text-left py-3.5 [@media(max-height:760px)_and_(min-height:621px)]:py-1.5 [@media(max-height:620px)]:py-1 transition-colors cursor-pointer hover:bg-black/[0.025] dark:hover:bg-white/[0.035] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px]"
                 >
                   <span className="text-[10px] tabular-nums text-neutral-500 dark:text-neutral-500">{String(index + 1).padStart(2, '0')}</span>
                   <span>
-                    <span className="block text-[14px] font-medium leading-5 tracking-[-0.01em] text-neutral-950 dark:text-neutral-100">{condition.label}</span>
-                    <span className="block mt-1 text-[11px] leading-4 text-neutral-500 dark:text-neutral-400">{condition.effect}</span>
+                    <span className="block text-[14px] [@media(max-height:620px)]:text-[13px] font-medium leading-5 [@media(max-height:620px)]:leading-4 tracking-[-0.01em] text-neutral-950 dark:text-neutral-100">{condition.label}</span>
+                    <span className="block mt-1 [@media(max-height:620px)]:mt-0 text-[11px] [@media(max-height:620px)]:text-[10px] leading-4 [@media(max-height:620px)]:leading-[13px] text-neutral-500 dark:text-neutral-400">{condition.effect}</span>
                   </span>
                   <ArrowRight className="w-4 h-4 text-neutral-300 dark:text-neutral-600 transition-transform group-hover:translate-x-0.5 group-hover:text-neutral-700 dark:group-hover:text-neutral-300" />
                 </button>
@@ -96,7 +96,7 @@ export default function DayConditionPrompt({
           </ul>
         </div>
 
-        <div className="h-[56px] px-5 sm:px-7 flex items-center justify-between border-t border-black/[0.10] dark:border-white/[0.10] shrink-0">
+        <div className="h-[56px] [@media(max-height:760px)_and_(min-height:621px)]:h-[44px] [@media(max-height:620px)]:h-[38px] px-5 sm:px-7 flex items-center justify-between border-t border-black/[0.10] dark:border-white/[0.10] shrink-0">
           <span className="text-[10px] uppercase tracking-[0.12em] text-neutral-500 dark:text-neutral-500">
             Nothing shares first.
           </span>

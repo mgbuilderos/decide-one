@@ -1654,6 +1654,16 @@ body {
   .instrument-masthead { padding: 0 4px; }
   .instrument-quiet-action { font-size: 11px; }
   .instrument-wordmark { font-size: 17px; letter-spacing: 3.5px; text-indent: 3.5px; }
+}
+
+/* Narrow phones. Four perspective buttons plus three method icons come to more
+   than 360px at the 600px sizes, so the row was clipped 12px off the right —
+   the instrument may not scroll sideways any more than it scrolls down. */
+@media(max-width:400px) {
+  .instrument-navigation { gap: 6px; }
+  .instrument-navigation nav button { padding: 7px 6px; font-size: 11px; letter-spacing: 0; }
+  .instrument-method-icons { gap: 1px; padding: 1px; }
+  .instrument-method-icons button { width: 30px; height: 30px; }
   .instrument-popover { width: min(320px,calc(100vw - 24px)); }
 }
 

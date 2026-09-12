@@ -250,12 +250,12 @@ export default function ProductivityFrameworks({
     <section className={`flex flex-col ${isFullPage ? 'flex-1 min-h-0' : 'shrink-0 border-b border-black/[0.08] dark:border-white/[0.08]'}`}>
       
       {/* Universal 24px Grid Cadence Header Bar */}
-      <div className="h-[36px] leading-[36px] flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] shrink-0">
-        <div className="flex items-baseline gap-2">
+      <div className="h-[36px] leading-[36px] [@media(max-height:760px)]:h-[28px] [@media(max-height:760px)]:leading-[28px] flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] shrink-0">
+        <div className="flex items-baseline gap-2 min-w-0">
           <h2 className="text-sm sm:text-base font-semibold tracking-wide text-neutral-900 dark:text-neutral-100">
             {currentMeta.name}
           </h2>
-          <span className="text-[11px] text-neutral-500 dark:text-neutral-500 italic hidden xs:inline">
+          <span className="text-[11px] text-neutral-500 dark:text-neutral-500 italic hidden xs:inline truncate">
             {currentMeta.subtitle}
           </span>
         </div>
@@ -291,7 +291,7 @@ export default function ProductivityFrameworks({
             return (
               <div
                 key={idx}
-                className={`group flex items-center gap-3 transition-all min-h-[48px] px-1 -mx-1 ${
+                className={`group flex items-center gap-3 transition-all min-h-[48px] [@media(max-height:760px)]:min-h-[36px] px-1 -mx-1 ${
                   task.completed ? 'opacity-40' : 'hover:bg-black/[0.02] dark:hover:bg-white/[0.03]'
                 }`}
               >
@@ -326,7 +326,7 @@ export default function ProductivityFrameworks({
                     value={task.text || ''}
                     onChange={(e) => handleHardTaskTextChange(idx, e.target.value)}
                     placeholder={meta.placeholder || `Priority ${idx + 1}...`}
-                    className={`w-full bg-transparent font-normal focus:outline-none transition-all placeholder-neutral-400/60 text-[14px] sm:text-[15px] h-[48px] leading-[48px] ${
+                    className={`w-full bg-transparent font-normal focus:outline-none transition-all placeholder-neutral-400/60 text-[14px] sm:text-[15px] h-[48px] leading-[48px] [@media(max-height:760px)]:h-[36px] [@media(max-height:760px)]:leading-[36px] ${
                       task.completed 
                         ? 'line-through text-neutral-400 dark:text-neutral-500' 
                         : isMissed 

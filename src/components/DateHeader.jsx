@@ -15,8 +15,8 @@ export function DateDisplay({ currentDate }) {
   const dayOfYear = Math.floor((currentDate - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
 
   return (
-    <div className="flex items-baseline gap-2 sm:gap-2.5 min-w-0 whitespace-nowrap overflow-hidden tabular-nums">
-      <h1 className="text-lg sm:text-xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 leading-none flex items-baseline gap-1.5 sm:gap-2 whitespace-nowrap shrink-0">
+    <div className="flex items-baseline gap-2 sm:gap-2.5 min-w-0 whitespace-nowrap overflow-hidden text-ellipsis tabular-nums">
+      <h1 className="text-lg max-[400px]:text-[15px] sm:text-xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 leading-none flex items-baseline gap-1.5 sm:gap-2 whitespace-nowrap shrink-0">
         <span className="whitespace-nowrap">{formattedMonth} {dayOfMonth}</span>
         <span className="text-neutral-600 dark:text-neutral-400 font-normal text-sm sm:text-base whitespace-nowrap tabular-nums">
           {year}

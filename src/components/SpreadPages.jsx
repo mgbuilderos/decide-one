@@ -82,7 +82,7 @@ export function LeftPage({
         {/* Timeboxes — P11: durations attach per line, on the recto, beside the
             decision. Three tasks at three hours is nine hours, and the day has
             not got nine hours; that is found out here, not on the verso. */}
-        <div className="shrink-0 flex flex-col border-t border-black/[0.08] dark:border-white/[0.08] mt-3 pt-1">
+        <div className="shrink-0 flex flex-col border-t border-black/[0.08] dark:border-white/[0.08] mt-3 pt-1 [@media(max-height:760px)]:mt-1 [@media(max-height:760px)]:pt-0">
           <ExecutionLayer
             dailyLog={dailyLog}
             onUpdateExecution={onUpdateExecution}
@@ -95,7 +95,7 @@ export function LeftPage({
             still has to be written down somewhere it can be seen — B-23 has
             yet to settle what this stream is for, and until it does, the
             answer cannot be "nowhere". */}
-        <div className="shrink-0 flex flex-col border-t border-black/[0.08] dark:border-white/[0.08] mt-3 pt-1">
+        <div className="shrink-0 flex flex-col border-t border-black/[0.08] dark:border-white/[0.08] mt-3 pt-1 [@media(max-height:760px)]:mt-1 [@media(max-height:760px)]:pt-0">
           <RapidLogSection
             rapidLog={rapidLog}
             onUpdateRapidLog={onUpdateRapidLog}
@@ -107,7 +107,7 @@ export function LeftPage({
           />
         </div>
 
-        <div className="min-h-[36px] [@media(max-height:820px)]:min-h-0 flex-1" aria-hidden="true" />
+        <div className="min-h-[36px] [@media(max-height:820px)_and_(min-height:761px)]:min-h-0 [@media(max-height:760px)]:min-h-0 flex-1" aria-hidden="true" />
       </div>
 
       <footer className="shrink-0 h-[28px] border-t border-black/[0.08] dark:border-white/[0.08] flex items-center text-[10px] text-neutral-500 dark:text-neutral-400 select-none px-1">

@@ -43,33 +43,32 @@ and believe.
 - Measure whether they can explain the product, choose a method, enter priorities, and begin the first item without help.
 - Profile the 3D hero on mid-range mobile hardware. The scene is lazy-loaded, but the Three.js asset remains the largest optional chunk.
 
-## The instrument does not hold one screen on a short laptop
+## The instrument holds one screen — resolved 13 September 2026
 
-Measured 13 September 2026 by `npm run test:visual`, which is the first thing
-here that could see it. At 1366 wide, the daily column pushes content out of
-reach below roughly 740px of viewport height:
+The founder's instruction was absolute: no horizontal or vertical scroll
+anywhere in the instrument. Measured across four views and eight viewports —
+1440x900, 1366x768, 1366x700, 1366x640, 1280x600, 390x844, 360x740, 320x568 —
+**all 32 combinations are clean**: nothing scrolls, nothing is clipped.
 
-| Viewport height | Out of reach |
-|---:|---:|
-| 900, 820, 800, 768 | none |
-| 720 | 25px |
-| 700 | 25px |
-| 660 | 73px |
-| 640 | 97px |
+Three densities, chosen by viewport height and deliberately non-overlapping:
 
-A 1366x768 laptop gives about 660px of viewport once browser chrome is taken,
-so this is a common real size, not an edge case. Two steps are already in:
-below 820px the execution panel tightens and the flexible spacer collapses;
-below 740px the clock steps from 88px to 60px. That fixed 768 and above and
-took 720 from 77px to 25px.
+| Tier | Range | What changes |
+| :--- | :--- | :--- |
+| full | above 820px | as designed |
+| compact | 761–820px | execution panel and notebook padding step down; the clock goes 88px to 60px; the flexible spacer collapses |
+| tight | 760px and below | the clock goes; priority rows 48px to 36px, header 36px to 28px; block gaps and notebook padding tighten again |
+| tiny | 620px and below | the day-condition dialog tightens leading and padding — keeping both the label and what it does, because dropping the explanation would make the choice harder |
 
-**Closing the rest means reducing the height of the three priority rows**, which
-is the core content and a design decision rather than a bug fix. It needs the
-founder's call on what the instrument looks like on a short screen before
-anyone changes it.
+Narrow widths get their own step at 400px: the perspective buttons and method
+icons tighten, and the date header drops from 18px to 15px so the full date
+still fits at 320px rather than being cut mid-word.
 
-These heights are deliberately NOT in the visual gate's surface list yet. A gate
-that is known-red teaches every agent to ignore it, which is the failure this
-whole layer exists to prevent. Add `{ id: 'daily-short', url: '/?view=daily',
-vp: { w: 1366, h: 660 }, fixed: true }` to `scripts/visual_check.js` the moment
-it passes.
+**The ranges must stay non-overlapping.** Arbitrary media variants all have the
+same specificity, so when `max-height:820px` and `max-height:760px` both match,
+source order decides and Tailwind's order is not narrowest-last. That silently
+killed several of these rules while they looked correct in the source. This is
+why the compact tier is written `(max-height:820px) and (min-height:761px)`.
+
+Locked in by `npm run test:visual`, which now renders `daily-small` (1280x600),
+`daily-tiny` and `weekly-tiny` (320x568) on every deploy.
+

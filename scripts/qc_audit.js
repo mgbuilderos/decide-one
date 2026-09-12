@@ -265,7 +265,15 @@ if (fs.existsSync(cssPath)) {
 }
 if (fs.existsSync(appPath)) {
   const appContent = fs.readFileSync(appPath, 'utf8');
-  if (!appContent.includes('p-6 embossed-notebook')) {
+  // The check was the literal string 'p-6 embossed-notebook', which tested
+  // that two class names sat next to each other in the source rather than that
+  // the padding was 24px. On 13 September 2026 density steps were added for
+  // short viewports — below 820px the notebook padding tightens so the day
+  // stays reachable — and the rule failed on the adjacency while the 24px
+  // full-density padding it exists to protect was untouched. It now asserts
+  // the property: the notebook element carries p-6, whatever follows it.
+  const notebookLine = appContent.split('\n').find(l => l.includes('embossed-notebook'));
+  if (!notebookLine || !/\bp-6\b/.test(notebookLine)) {
     errors.push('[Rule 6 Violation] App.jsx notebook canvas does not use p-6 (24px) padding for exact grid coordinate sync.');
   }
 }
