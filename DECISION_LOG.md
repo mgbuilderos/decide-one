@@ -1011,3 +1011,23 @@ Record-keeping, which was the other half of the ask and mostly already existed. 
 Gates green: npm run test:qc passes, npm run build passes. No product code touched.
 
 Still open: Wave 0 technical work (real paths, self-referencing canonicals, JSON-LD, generated sitemap, the Markdown-to-HTML pipeline, content QC rules). Also unresolved and not mine yet: brief reports decideone.app is NOT this build, so main has commits the live site has never served — content shipped before that is resolved is invisible work.
+
+---
+
+### 2026-09-12 15:51 — Claude Opus 5
+
+Wave 0 and Wave 1: the site can now have more than one page, and has three.
+
+Wave 0 was the blocker. Before this, index.html carried a hardcoded canonical pointing at the homepage and the SPA fallback served that file at every path, so every URL on the site was instructing Google to ignore itself. No content could have ranked regardless of quality.
+
+scripts/build_content.js renders Markdown to real static HTML in dist/, per SEO_CHARTER §4. Not React routes, not a CMS, no framework migration — the product is an SPA because the instrument needs to be, but a guide is a document, and making documents into an application costs crawlability and buys nothing. Each page gets its own title, own description, and a self-referencing canonical. JSON-LD is emitted from front-matter rather than hand-written. sitemap.xml is generated from the same list that produced the pages; public/sitemap.xml is deleted, because a sitemap maintained by hand is a second source of truth and the second one goes stale.
+
+One dependency added: marked, devDependency, build-time only, never reaches the browser. Hand-rolling a Markdown parser is the kind of laziness that ships bugs. Front-matter is parsed by hand because the schema is fixed, flat and ours.
+
+Structured data added to index.html — SoftwareApplication, Organization, WebSite. There was none anywhere on the site before today, which was the largest gap for answer engines and for any model deciding whether this domain is citable. No aggregateRating: we have never asked anyone for a review and inventing one would be both spam and a lie. Price is 0 because VISION §11.1 says free.
+
+Wave 1 is decision G6, now partly delivered: the three shipped methods each have a real page at a real path. Attributions checked against FRAMEWORKS.md rather than recalled — Ivy Lee to Schwab at Bethlehem Steel in 1918; the urgent/important distinction from the 1954 speech but the 2x2 grid built later by Covey, whose coined vocabulary is avoided; Top 3 has no single author and the page says so rather than inventing an origin. The large fee usually attached to the Ivy Lee story is deliberately not repeated, because we have not verified it.
+
+Two sets of gates, both proven rather than asserted. build_content.js fails the build on a broken internal link, a duplicate intent, a missing front-matter field or an orphan page — verified by pointing a link at a slug that does not exist and watching the build stop. check_content.js runs inside test:qc and gates the prose against VISION §11.3, FRAMEWORKS §6.3 and FOUNDATIONS §5. On its first run it failed four violations in content I had just written: 'treats' three times, which is clinical vocabulary, and one 'a day you failed'. I fixed the prose, not the gate. That is the whole argument for gating mechanically.
+
+Still open: Wave 1 is three pages of roughly twelve — the comparison pages people actually search for are not written. Wave 2 has not started. And brief still reports decideone.app is NOT this build, so none of this is live yet.

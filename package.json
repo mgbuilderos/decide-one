@@ -5,12 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/build_content.js",
     "preview": "vite preview",
     "brief": "node scripts/brief.js",
     "log": "node scripts/log_session.js",
     "handoff": "node scripts/handoff.js",
-    "test:qc": "node scripts/qc_audit.js",
+    "test:qc": "node scripts/qc_audit.js && node scripts/check_content.js",
     "tree": "node scripts/tree_status.js",
     "test:launch": "node scripts/launch_check.js",
     "server": "node server/src/server.js",
@@ -32,6 +32,7 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
+    "marked": "^18.0.12",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
     "vite": "^6.1.0",

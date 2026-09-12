@@ -21,6 +21,61 @@
     <meta name="twitter:description" content="You already know what matters. This helps you choose it. Three methods older than the software industry, on a page that never leaves your device. Free, for everyone." />
     <meta name="twitter:image" content="https://decideone.app/renders/decideone-studio-d1.png" />
     
+    <!-- Structured data. There was none anywhere on this site before
+         12 September 2026, which was the largest gap for answer engines and
+         for any model deciding whether it can cite this product.
+
+         It asserts only what the page actually contains. No aggregateRating:
+         Decide One has never asked anyone for a review, and inventing one
+         would be both structured-data spam and a lie. The price is 0 because
+         VISION.md §11.1 says the price is free — no tier, no licence, nothing
+         held back — and QC Rule 24 fails the build if that stops being true. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://decideone.app/#app",
+          "name": "Decide One",
+          "applicationCategory": "BusinessApplication",
+          "applicationSubCategory": "Productivity",
+          "operatingSystem": "Any modern web browser",
+          "url": "https://decideone.app/",
+          "description": "A priority instrument. Bring the day's competing work into view, choose a method that has worked for a century, and give the first thing a real amount of time. Everything you write stays on your device.",
+          "isAccessibleForFree": true,
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock"
+          },
+          "featureList": [
+            "Top 3 — three lines and no fourth, for a day holding more than it can",
+            "Ivy Lee (1918) — strict order, the second task locked until the first is done",
+            "Urgent/important matrix — classification required before writing"
+          ],
+          "publisher": { "@id": "https://decideone.app/#org" }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://decideone.app/#org",
+          "name": "Decide One",
+          "url": "https://decideone.app/",
+          "description": "Makers of Decide One, a free priority instrument that keeps what you write on your own device."
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://decideone.app/#website",
+          "url": "https://decideone.app/",
+          "name": "Decide One",
+          "publisher": { "@id": "https://decideone.app/#org" },
+          "inLanguage": "en"
+        }
+      ]
+    }
+    </script>
+
     <!-- PWA & Mobile Web App Meta Tags -->
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#0B0B0D" />
