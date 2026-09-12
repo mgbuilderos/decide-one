@@ -19,7 +19,8 @@
     "verify:live": "node -e \"const{execSync}=require('child_process'),fs=require('fs');const live=execSync('curl -s --max-time 20 https://decideone.app/').toString().match(/assets\\\\/index-[A-Za-z0-9_-]+\\\\.js/)?.[0];const local=fs.readdirSync('dist/assets').find(f=>/^index-.*\\\\.js$/.test(f));console.log('live: '+live+'\\\\nlocal: assets/'+local+'\\\\n'+(live==='assets/'+local?'MATCH - the deploy landed':'DIFFERENT - the live site is not this build'))\"",
     "predeploy": "npm run test:qc && npm run build",
     "deploy": "wrangler deploy",
-    "postdeploy": "npm run verify:live"
+    "postdeploy": "npm run verify:live",
+    "metrics": "node scripts/metrics.js"
   },
   "dependencies": {
     "canvas-confetti": "^1.9.4",
