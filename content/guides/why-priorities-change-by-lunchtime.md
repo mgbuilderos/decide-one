@@ -6,7 +6,7 @@ intent: why do my priorities change during the day
 published: 2026-09-12
 updated: 2026-09-12
 sources: FOUNDATIONS.md, FRAMEWORKS.md, VISION.md
-links: ivy-lee-method, how-to-handle-interruptions, how-to-prioritise-tasks
+links: ivy-lee-method, how-to-handle-interruptions, how-to-prioritise-tasks, when-the-day-goes-wrong-early
 keywords: priorities change during the day, plan falls apart by lunchtime, keep changing priorities, stick to the plan
 ---
 

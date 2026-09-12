@@ -1272,3 +1272,9 @@ Found and fixed a soft 404 affecting every wrong URL on the site. wrangler.jsonc
 ### 2026-09-12 22:19 — Claude Opus 5
 
 Final metadata sweep. index.html's meta description was 191 characters -- Google shows about 158 -- so a third of it was written for nobody on the site's most important URL. Shortened to 155 and, more importantly, ADDED index.html TO THE GATE: check_content.js only ever looked at content/, so the home page was ungated. Same gap that left content/pages/faq.md ungated earlier today. Proved the new gate fires. Also removed quote characters from one description: they survive as &quot; and inflate the rendered attribute by ten characters while buying nothing.
+
+---
+
+### 2026-09-12 22:53 — Claude Opus 5
+
+Wave 2 batch three: twelve more guides, 33 pages to 45, 48 sitemap URLs. New intents: working for yourself, prioritising a backlog, whether a long list is bad, why small tasks pile up, batching, a day full of meetings, deciding what to drop, what a good task looks like, prioritising across a team, a day that goes wrong by ten, prioritising life rather than work, and recurring work. Two pieces of FOUNDATIONS material used for the first time: Amdahl's Law 1967 in the team page (adding people cannot shorten the irreducibly serial fraction) and rate-monotonic scheduling from Liu and Layland 1973 in the recurring-work page, both with the analogy limit stated on the page. Gates caught four 'treat' variants -- it is an unusually hard word to avoid in English and the gate has now caught it six times across the project. Fixed the prose each time. Running total: 20 violations caught by gates in content written by the agent that wrote the gates.

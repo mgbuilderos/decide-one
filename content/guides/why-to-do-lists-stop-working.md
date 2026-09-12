@@ -6,7 +6,7 @@ intent: why to-do lists do not work
 published: 2026-09-12
 updated: 2026-09-12
 sources: FRAMEWORKS.md, FOUNDATIONS.md, VISION.md
-links: how-to-prioritise-tasks, top-3-method
+links: how-to-prioritise-tasks, top-3-method, is-a-long-to-do-list-bad, why-small-tasks-pile-up
 keywords: why to-do lists do not work, to do list not working, problem with to do lists, to do list alternative
 ---
 

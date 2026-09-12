@@ -6,7 +6,7 @@ intent: what to do when you cannot start working
 published: 2026-09-12
 updated: 2026-09-12
 sources: FRAMEWORKS.md, FOUNDATIONS.md, VISION.md
-links: ivy-lee-method, plan-your-day-the-night-before, how-to-prioritise-tasks
+links: ivy-lee-method, plan-your-day-the-night-before, how-to-prioritise-tasks, what-a-good-task-looks-like
 keywords: cannot start working, procrastinating, how to start a task, stuck before starting
 ---
 
