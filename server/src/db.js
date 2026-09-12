@@ -51,7 +51,11 @@ db.exec(`
     total_events INTEGER DEFAULT 0,
     device_type TEXT,
     initial_view TEXT,
-    final_view TEXT
+    final_view TEXT,
+    -- The hour as the PERSON experienced it. Added 12 Sep 2026: this column
+    -- existed in worker/schema.sql and not here, so getCircadianMetrics could
+    -- only bucket by getUTCHours() — it had nothing else to read.
+    local_hour INTEGER
   );
 
   CREATE INDEX IF NOT EXISTS idx_sessions_start ON sessions(start_time);
@@ -128,5 +132,16 @@ db.exec(`
   );
   CREATE INDEX IF NOT EXISTS idx_exp_impressions ON experiment_impressions(experiment_id, variant);
 `);
+
+// CREATE TABLE IF NOT EXISTS does nothing to a table that already exists, so a
+// developer with a database from before 12 Sep 2026 would silently keep the old
+// shape and the circadian fix would read undefined forever. Add what is missing.
+for (const [table, column, type] of [['sessions', 'local_hour', 'INTEGER']]) {
+  const has = db.prepare(`PRAGMA table_info(${table})`).all().some(c => c.name === column);
+  if (!has) {
+    db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
+    console.log(`[Database] migrated: ${table}.${column} added`);
+  }
+}
 
 console.log(`[Database] SQLite initialized in WAL mode at: ${DB_PATH}`);

@@ -431,18 +431,35 @@ export const AnalyticsService = {
    */
   getCircadianMetrics() {
     const sessions = db.prepare(`
-      SELECT anonymous_id, start_time FROM sessions
+      SELECT anonymous_id, start_time, local_hour FROM sessions
     `).all();
 
     let morningCount = 0; // 05:00 - 11:59
     let middayCount = 0;  // 12:00 - 17:59
     let eveningCount = 0; // 18:00 - 04:59
+    let withLocalHour = 0;
     const userDays = {};
 
     for (const s of sessions) {
       const dateObj = new Date(s.start_time);
-      const hour = dateObj.getUTCHours();
-      const dayStr = s.start_time.slice(0, 10);
+      const utcHour = dateObj.getUTCHours();
+
+      // The hour the PERSON was living, when we have it. Bucketing by
+      // getUTCHours() files a Delhi morning under the small hours and was why
+      // this metric described a population that does not exist.
+      const hasLocal = Number.isInteger(s.local_hour) && s.local_hour >= 0 && s.local_hour <= 23;
+      if (hasLocal) withLocalHour++;
+      const hour = hasLocal ? s.local_hour : utcHour;
+
+      // And the person's own calendar day, reconstructed from the gap between
+      // their hour and UTC's. A dual visit is morning AND evening of the SAME
+      // day as they lived it; grouping by the UTC date splits an evening
+      // session in Asia onto the following day and the pair never matches.
+      let offset = hour - utcHour;
+      if (offset > 12) offset -= 24; else if (offset < -12) offset += 24;
+      const dayStr = new Date(dateObj.getTime() + offset * 3600 * 1000)
+        .toISOString().slice(0, 10);
+
       const key = `${s.anonymous_id}_${dayStr}`;
       if (!userDays[key]) userDays[key] = { morning: false, evening: false };
 
@@ -469,7 +486,12 @@ export const AnalyticsService = {
       evening_sessions: eveningCount,
       total_user_days: totalActiveUserDays,
       dual_visit_user_days: dualVisitDays,
-      circadian_dual_rate_pct: circadianDualRate
+      circadian_dual_rate_pct: circadianDualRate,
+      // How much of the above is real. If this is 0, every bucket above was
+      // derived from UTC and describes timezones rather than people — the
+      // reader deserves to know that without reading this file.
+      sessions_with_local_hour: withLocalHour,
+      sessions_total: sessions.length
     };
   },
 

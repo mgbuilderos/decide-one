@@ -115,8 +115,41 @@ console.log(`  ✅ Pathfinder: found ${pathfinders.top_transitions.length} surfa
 // Test 6: Circadian Morning vs Evening Dual Loop
 console.log('Test 6: Verifying Circadian dual-visit return loop...');
 const circadian = AnalyticsService.getCircadianMetrics();
+
+// `typeof x === 'number'` was the whole of this test, and 0 is a number. It
+// printed a 0% dual-visit rate and passed, every run, while seed_analytics.js
+// was deliberately building a circadian loop for 45% of user-days. A test that
+// cannot fail on a dead metric is not testing the metric — it is testing that
+// the function returns.
+//
+// So assert the relationship the seeder actually guarantees.
 assert(typeof circadian.circadian_dual_rate_pct === 'number');
-console.log(`  ✅ Circadian Metrics: Morning=${circadian.morning_sessions}, Evening=${circadian.evening_sessions}, Dual-Loop Rate=${circadian.circadian_dual_rate_pct}%`);
+
+assert(
+  circadian.sessions_with_local_hour > 0,
+  `No session carries a local_hour, so every bucket above came from getUTCHours(). `
+  + `That describes timezones, not people. (${circadian.sessions_with_local_hour}/${circadian.sessions_total})`
+);
+
+assert(
+  circadian.morning_sessions > 0 && circadian.evening_sessions > 0,
+  `Morning=${circadian.morning_sessions} Evening=${circadian.evening_sessions}: the seeder `
+  + `builds both, so a zero on either side means the hour bucketing is wrong.`
+);
+
+// seed_analytics.js pairs a morning and an evening session on 45% of user-days
+// (Math.random() < 0.45). Across a few hundred user-days the observed rate sits
+// close to that; this band is wide enough not to be flaky and narrow enough to
+// have caught the 0% that shipped.
+assert(
+  circadian.circadian_dual_rate_pct >= 30 && circadian.circadian_dual_rate_pct <= 60,
+  `Dual-visit rate is ${circadian.circadian_dual_rate_pct}%, outside 30–60%. The seeder `
+  + `builds this loop for 45% of user-days, so a figure outside that band means the `
+  + `morning/evening pairing is being lost — which is what a UTC day boundary does to `
+  + `an evening session in Asia.`
+);
+
+console.log(`  ✅ Circadian Metrics: Morning=${circadian.morning_sessions}, Evening=${circadian.evening_sessions}, Dual-Loop Rate=${circadian.circadian_dual_rate_pct}% (local_hour on ${circadian.sessions_with_local_hour}/${circadian.sessions_total} sessions)`);
 
 // Test 7: Task Debt & Rollover Fatigue
 console.log('Test 7: Verifying Task Debt & Rollover age analytics...');

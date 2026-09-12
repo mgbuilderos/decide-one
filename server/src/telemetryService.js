@@ -2,6 +2,16 @@ import { db } from './db.js';
 import crypto from 'node:crypto';
 import { sanitizeProperties } from '../../shared/telemetrySanitize.js';
 
+/**
+ * The visitor's own hour, validated. Deliberately identical to localHour() in
+ * worker/index.js: two ingest paths that disagree about what counts as a valid
+ * hour would produce two different circadian pictures from one population.
+ */
+function localHour(props) {
+  const h = Number(props?.local_hour);
+  return Number.isInteger(h) && h >= 0 && h <= 23 ? h : null;
+}
+
 // Prepared statements for high-throughput execution
 const insertEventStmt = db.prepare(`
   INSERT OR IGNORE INTO events (event_id, session_id, anonymous_id, event, properties, timestamp)
@@ -13,8 +23,8 @@ const getSessionStmt = db.prepare(`
 `);
 
 const insertSessionStmt = db.prepare(`
-  INSERT INTO sessions (session_id, anonymous_id, start_time, last_heartbeat, device_type, initial_view)
-  VALUES (?, ?, ?, ?, ?, ?)
+  INSERT INTO sessions (session_id, anonymous_id, start_time, last_heartbeat, device_type, initial_view, local_hour)
+  VALUES (?, ?, ?, ?, ?, ?, ?)
 `);
 
 const updateSessionHeartbeatStmt = db.prepare(`
@@ -118,7 +128,10 @@ export const TelemetryService = {
           const today = timestamp.slice(0, 10);
 
           try {
-            insertSessionStmt.run(session_id, anonymous_id, timestamp, timestamp, deviceType, initialView);
+            insertSessionStmt.run(
+              session_id, anonymous_id, timestamp, timestamp, deviceType, initialView,
+              localHour(cleanProps)
+            );
           } catch (e) {
             // Ignore if session already exists
           }
@@ -168,7 +181,7 @@ export const TelemetryService = {
   /**
    * Record a session heartbeat (tracks active dwell time vs idle)
    */
-  recordHeartbeat({ session_id, anonymous_id, active_seconds = 30, idle_seconds = 0, current_view = 'daily' }) {
+  recordHeartbeat({ session_id, anonymous_id, active_seconds = 30, idle_seconds = 0, current_view = 'daily', local_hour = null }) {
     if (typeof session_id !== 'string' || session_id.length === 0) {
       return { success: false, error: 'Missing session_id' };
     }
@@ -185,7 +198,10 @@ export const TelemetryService = {
     if (!existing) {
       // Create session on first heartbeat if session_start was missed
       try {
-        insertSessionStmt.run(session_id, anonymous_id || 'anonymous', now, now, 'unknown', current_view);
+        insertSessionStmt.run(
+          session_id, anonymous_id || 'anonymous', now, now, 'unknown', current_view,
+          localHour({ local_hour })
+        );
       } catch (e) {}
     }
 

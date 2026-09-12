@@ -35,6 +35,13 @@ const FRAMEWORKS = [
 ];
 
 const DEVICES = ['desktop_mac', 'desktop_win', 'mobile_ios', 'mobile_android'];
+
+// Seeded people live somewhere. Before this, every generated timestamp was a
+// UTC instant and local_hour would have equalled the UTC hour, so seeded data
+// could never have exposed the bug it was supposed to exercise: a population
+// entirely inside UTC is exactly the one population for which bucketing by
+// getUTCHours() is correct. Real offsets, weighted towards where people are.
+const TZ_OFFSETS = [-8, -5, -3, 0, 1, 2, 3, 5.5, 7, 8, 9, 10];
 const VIEWS = ['daily', 'monthly', 'weekly', 'yearly', 'cover'];
 const SURFACES = ['daily_spread', 'top3_slot_1', 'top3_slot_2', 'rapid_log_input', 'habit_checklist', 'evening_reflection', 'unified_menu', 'volume_switcher', 'privacy_shutter'];
 
@@ -47,13 +54,30 @@ for (let u = 0; u < NUM_USERS; u++) {
   const daysActive = 1 + Math.floor(Math.random() * 10);
   const firstSeenOffset = Math.floor(Math.random() * 14);
   const isPatron = Math.random() < 0.25;
+  const tzOffsetHours = TZ_OFFSETS[Math.floor(Math.random() * TZ_OFFSETS.length)];
 
   for (let d = 0; d < daysActive; d++) {
     const dayOffset = Math.max(0, firstSeenOffset - d);
-    const baseDayTimestamp = now - dayOffset * DAY_MS;
+    // Midnight of the target day, not "now, N days ago".
+    //
+    // `now - dayOffset * DAY_MS` carries the CURRENT time of day, so the
+    // "08:00" session was really now+8h and the "20:00" one now+20h. Seeded at
+    // 15:30 UTC that put the morning session at 23:30 (bucketed as evening),
+    // the evening session at 11:30 the NEXT day (bucketed as morning), and the
+    // two halves of the deliberate circadian pair on different calendar dates
+    // so they could never be matched. The 45% dual-visit loop this file builds
+    // read as 0% for exactly that reason, and Test 6 printed the 0% and passed.
+    const anchor = new Date(now - dayOffset * DAY_MS);
+    const baseDayTimestamp = Date.UTC(
+      anchor.getUTCFullYear(), anchor.getUTCMonth(), anchor.getUTCDate()
+    );
 
-    // Morning Session (08:00 UTC)
-    const morningTimestamp = new Date(baseDayTimestamp + (8 * 3600 + Math.floor(Math.random() * 3600)) * 1000).toISOString();
+    // Morning: 08:00–08:59 as the PERSON experiences it, converted to the UTC
+    // instant that corresponds to it. local_hour travels with the event.
+    const morningLocalHour = 8;
+    const morningTimestamp = new Date(
+      baseDayTimestamp + ((morningLocalHour - tzOffsetHours) * 3600 + Math.floor(Math.random() * 3600)) * 1000
+    ).toISOString();
     const morningSessionId = `sess_m_${crypto.randomUUID().slice(0, 8)}`;
     const device = DEVICES[Math.floor(Math.random() * DEVICES.length)];
     const chosenFramework = FRAMEWORKS[Math.floor(Math.random() * FRAMEWORKS.length)];
@@ -66,7 +90,7 @@ for (let u = 0; u < NUM_USERS; u++) {
       session_id: morningSessionId,
       anonymous_id: anonymousId,
       event: 'session_start',
-      properties: { device_type: device, view_mode: 'daily', is_patron: isPatron, paper_style: 'dots' },
+      properties: { device_type: device, view_mode: 'daily', is_patron: isPatron, paper_style: 'dots', local_hour: morningLocalHour },
       timestamp: morningTimestamp
     });
 
@@ -159,7 +183,12 @@ for (let u = 0; u < NUM_USERS; u++) {
     // Evening Session (45% of users complete the circadian loop)
     const hasEveningLoop = Math.random() < 0.45;
     if (hasEveningLoop) {
-      const eveningTimestamp = new Date(baseDayTimestamp + (20 * 3600 + Math.floor(Math.random() * 7200)) * 1000).toISOString();
+      // 20:00–21:59 local, same local day as the morning session — that pairing
+      // is the whole point of the circadian loop this block builds.
+      const eveningLocalHour = 20;
+      const eveningTimestamp = new Date(
+        baseDayTimestamp + ((eveningLocalHour - tzOffsetHours) * 3600 + Math.floor(Math.random() * 7200)) * 1000
+      ).toISOString();
       const eveningSessionId = `sess_e_${crypto.randomUUID().slice(0, 8)}`;
       const eveningEvents = [];
 
@@ -168,7 +197,7 @@ for (let u = 0; u < NUM_USERS; u++) {
         session_id: eveningSessionId,
         anonymous_id: anonymousId,
         event: 'session_start',
-        properties: { device_type: device, view_mode: 'daily', is_patron: isPatron, paper_style: 'dots' },
+        properties: { device_type: device, view_mode: 'daily', is_patron: isPatron, paper_style: 'dots', local_hour: eveningLocalHour },
         timestamp: eveningTimestamp
       });
 
