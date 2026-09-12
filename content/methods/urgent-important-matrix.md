@@ -1,6 +1,6 @@
 ---
-title: The urgent/important matrix — how to tell the difference when everything is shouting
-description: Sort work on two axes, urgent and important, before deciding what to do. The distinction comes from a 1954 Eisenhower speech; the grid was built later by Stephen Covey. Here is how to use it honestly.
+title: How to use the urgent/important matrix
+description: Sort work on two axes before deciding what to do. The distinction is from a 1954 speech; the grid came later. How to use it without it becoming busywork.
 slug: urgent-important-matrix
 intent: how to use the urgent important matrix
 published: 2026-09-12

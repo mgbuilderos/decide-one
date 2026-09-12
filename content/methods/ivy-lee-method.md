@@ -1,6 +1,6 @@
 ---
-title: The Ivy Lee method — six tasks, strict order, nothing started until the one before it is done
-description: Write six things tonight, order them, and tomorrow work strictly top to bottom without starting the second until the first is finished. A 1918 method, and the one discipline that makes it work.
+title: The Ivy Lee method: six tasks, strict order
+description: Write six things tonight, order them, and work strictly top to bottom tomorrow. A 1918 method, its one real discipline, and the failure it can cause.
 slug: ivy-lee-method
 intent: how to use the ivy lee method
 published: 2026-09-12

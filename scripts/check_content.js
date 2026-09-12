@@ -117,6 +117,26 @@ for (const dir of DIRS) {
     check(file, text, TELEMETRY, 'telemetry claim (TELEMETRY_SPEC)',
       'The honest claim is that nothing is sent unless the person turns it on.');
 
+    // Length. A title tag Google truncates is a title tag written for nobody —
+    // the template appends " — Decide One", 13 characters, so the front-matter
+    // title has 47 to work in. Descriptions are cut around 158. Both were
+    // wrong on the first three pages written, at 105 and ~190 characters.
+    const fm = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+    if (fm) {
+      const get = (k) => (fm[1].match(new RegExp('^' + k + ': (.*)$', 'm')) || [])[1] || '';
+      const title = get('title').trim();
+      const desc = get('description').trim();
+      if (title.length > 47) {
+        errors.push(`${file}: title is ${title.length} chars; the rendered tag adds " — Decide One" and Google truncates near 60. Keep it to 47.`);
+      }
+      if (desc.length > 158) {
+        errors.push(`${file}: description is ${desc.length} chars; search results cut near 158. The tail is written for nobody.`);
+      }
+      if (desc && desc.length < 70) {
+        errors.push(`${file}: description is only ${desc.length} chars. Use the space — it is the sentence that decides the click.`);
+      }
+    }
+
     const reaches = EVIDENCE_VOCAB.filter(v => hit(text, v));
     if (reaches.length && !hit(text, PERMITTED_CITATION)) {
       errors.push(
@@ -136,4 +156,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`\x1b[32m✓ content gates\x1b[0m  ${checked} file(s): no clinical, judgment, unearned-science, trademark, price or telemetry violations`);
+console.log(`\x1b[32m✓ content gates\x1b[0m  ${checked} file(s): no clinical, judgment, unearned-science, trademark, price or telemetry violations; titles and descriptions within length`);

@@ -1,6 +1,6 @@
 ---
-title: The Top 3 method — how to choose three things when everything is asking
-description: Pick three things for today and no fourth. The reasoning is arithmetic, not willpower — limiting work in progress shortens completion time, which is Little's Law from queueing theory.
+title: The Top 3 method: three things, no fourth
+description: Pick three things for today and no fourth. The reasoning is arithmetic rather than willpower: limiting work in progress shortens completion time.
 slug: top-3-method
 intent: how to choose your top 3 tasks for the day
 published: 2026-09-12
