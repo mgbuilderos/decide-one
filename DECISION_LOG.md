@@ -1218,3 +1218,9 @@ Sitemap submitted and read the same day: status Success, 26 discovered pages -- 
 ### 2026-09-12 19:49 — Claude Opus 5
 
 Search Console setup finished end to end: property verified, sitemap submitted and read (26 discovered), and indexing requested for the four priority URLs (home, the prioritisation hub, top-3-method, faq). Nothing further to do on measurement until data arrives -- roughly a week for Indexing > Pages, two to three weeks for Performance queries. The SEO workstream is now waiting on evidence rather than on work. Largest remaining risk in the project is elsewhere: the six backend defects, which must be fixed before VITE_ENABLE_TELEMETRY is ever set true, because every one of them corrupts a number a human would later read and believe.
+
+---
+
+### 2026-09-12 19:51 — Claude Opus 5
+
+Bing Webmaster Tools live, imported from Search Console with no second verification. Both measurement surfaces are now in place: Google Search Console for Google, Bing for the index ChatGPT search and Copilot draw on -- which is the one that matters for the GEO half of this work. Measurement setup is complete end to end; the SEO workstream is now waiting on evidence rather than on effort, and the next real reading is roughly a week away.
