@@ -1278,3 +1278,9 @@ Final metadata sweep. index.html's meta description was 191 characters -- Google
 ### 2026-09-12 22:53 — Claude Opus 5
 
 Wave 2 batch three: twelve more guides, 33 pages to 45, 48 sitemap URLs. New intents: working for yourself, prioritising a backlog, whether a long list is bad, why small tasks pile up, batching, a day full of meetings, deciding what to drop, what a good task looks like, prioritising across a team, a day that goes wrong by ten, prioritising life rather than work, and recurring work. Two pieces of FOUNDATIONS material used for the first time: Amdahl's Law 1967 in the team page (adding people cannot shorten the irreducibly serial fraction) and rate-monotonic scheduling from Liu and Layland 1973 in the recurring-work page, both with the analogy limit stated on the page. Gates caught four 'treat' variants -- it is an unusually hard word to avoid in English and the gate has now caught it six times across the project. Fixed the prose each time. Running total: 20 violations caught by gates in content written by the agent that wrote the gates.
+
+---
+
+### 2026-09-12 01:13 — Claude Opus 5
+
+Sitemap resubmitted to Search Console after the site grew from 26 to 48 URLs. Worth recording why a resubmit was needed rather than assumed to be cosmetic: Google's last read was 12 Sep and every lastmod in the file also reads 12 Sep, because that is genuinely when the pages were written -- so there was no date-based signal that anything had changed, and only a manual resubmit forces the fetch. Verified before submitting that the live file is well formed and crawlable: 48 loc entries, 48 lastmod values, 6 KB, and both Googlebot and bingbot fetch it at 200 with application/xml. No deploy was needed; all 41 guides were already live from the previous batch and verify:live reported MATCH.
