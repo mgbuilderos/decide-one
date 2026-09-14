@@ -863,6 +863,52 @@ if (!fs.existsSync(visionPath)) {
   }
 }
 
+// Rule 26: No celebration — UI_BRIEF §7.4.
+//
+// Ticking the last line confirms the tick; the verso's "X against Y planned" is
+// the whole acknowledgement. Until 14 September confetti fired in two places:
+// ProductivityFrameworks, whenever every written line was ticked, and the
+// licence hook after activation, whose static import put the library in the
+// entry bundle. An unmerged branch (claude/great-snyder-b287a3, abb1ab4) re-adds
+// it as a lazy import, which is why this rule exists rather than a deletion alone.
+//
+// It fails on each way back in. A dependency is how the library gets installed.
+// An import anywhere under src/ is how it gets used. When src/main.jsx reaches
+// the importing file, through the same walk Rule 0 uses, the library ships, and
+// the message says so. A dynamic `import('…')` counts, because Vite still emits
+// the chunk. A commented-out import is not an import.
+{
+  const CELEBRATION_PACKAGES = new Set(['fireworks-js', 'party-js', 'react-rewards']);
+  const isCelebrationPackage = name => /confetti/i.test(name) || CELEBRATION_PACKAGES.has(name);
+  const packageNameOf = specifier => specifier.split('/').slice(0, specifier.startsWith('@') ? 2 : 1).join('/');
+
+  const manifest = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+  for (const field of ['dependencies', 'devDependencies', 'optionalDependencies', 'peerDependencies']) {
+    for (const name of Object.keys(manifest[field] || {})) {
+      if (!isCelebrationPackage(name)) continue;
+      errors.push(
+        `[Rule 26 Violation] package.json ${field} lists ${name}. Completion confirms; ` +
+        'it does not celebrate (UI_BRIEF §7.4). Uninstall it.'
+      );
+    }
+  }
+
+  scanFiles(SRC_DIR, (file, content) => {
+    if (file.endsWith('.css')) return;
+    for (const specifier of importSpecifiers(content, false)) {
+      if (specifier.startsWith('.') || !isCelebrationPackage(packageNameOf(specifier))) continue;
+      const rel = path.relative(process.cwd(), file);
+      const reach = reachedFiles.has(file)
+        ? 'src/main.jsx reaches this file, so the library ships in the bundle.'
+        : 'Nothing reaches this file from src/main.jsx yet; wiring it in would ship the library.';
+      errors.push(
+        `[Rule 26 Violation] ${rel} imports '${specifier}'. ${reach} ` +
+        'Completion confirms; it does not celebrate (UI_BRIEF §7.4).'
+      );
+    }
+  });
+}
+
 // Summary Report
 if (errors.length === 0) {
   console.log('✅ ALL STRUCTURAL QC CHECKS PASSED (not security or legal certification):');
@@ -891,7 +937,8 @@ if (errors.length === 0) {
   console.log('  - Rule 22: Execution Layer Enforcement Gate (Ivy Lee order lock, breathing state, non-punitive overrun, timing provenance)');
   console.log('  - Rule 23: Licence Integrity Gate (signed per-buyer keys; no shared secret, no private key in source)');
   console.log('  - Rule 24: Price Consistency Gate (VISION §11.1 is the price - including when that price is free)');
-  console.log('  - Rule 25: Telemetry Contract Gate (analysed events are emitted; emitted events are in the TELEMETRY_SPEC §2 registry)\n');
+  console.log('  - Rule 25: Telemetry Contract Gate (analysed events are emitted; emitted events are in the TELEMETRY_SPEC §2 registry)');
+  console.log('  - Rule 26: No celebration (no confetti package in package.json, none imported under src/, none shipped from main.jsx)\n');
   process.exit(0);
 } else {
   console.error(`❌ QC AUDIT FAILED with ${errors.length} error(s):\n`);

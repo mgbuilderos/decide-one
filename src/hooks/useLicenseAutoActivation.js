@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import confetti from 'canvas-confetti';
 import { activateLicense, verifyAnyLicenseKey } from '../utils/licenseManager';
 import { looksLikeSignedKey } from '../utils/licenseKeys';
 import { playSound } from '../utils/audio';
@@ -7,8 +6,8 @@ import { playSound } from '../utils/audio';
 /**
  * Decide One 1-click URL license auto-activation hook.
  * Detects ?key=D1-... (plus legacy keys) or ?license=... upon return from Dodo Payments.
- * Verifies cryptographic checksum, plays audio chime, fires celebratory confetti,
- * and cleans the URL without reloading the page.
+ * Verifies cryptographic checksum, plays audio chime, and cleans the URL
+ * without reloading the page.
  */
 export function useLicenseAutoActivation({ isMuted = false, onActivated } = {}) {
   const [justActivated, setJustActivated] = useState(false);
@@ -43,18 +42,6 @@ export function useLicenseAutoActivation({ isMuted = false, onActivated } = {}) 
 
           // Audio chime celebration
           playSound('patron-chime', isMuted);
-
-          // Visual celebration with confetti
-          try {
-            confetti({
-              particleCount: 80,
-              spread: 60,
-              origin: { y: 0.7 },
-              colors: ['#D4AF37', '#18181B', '#E4E4E7']
-            });
-          } catch (e) {
-            // Ignore confetti errors if not in DOM context
-          }
 
           // Clean URL without reloading page
           const cleanUrl = window.location.pathname;

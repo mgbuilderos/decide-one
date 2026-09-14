@@ -9,8 +9,7 @@ import {
   Trash2, 
   UserCheck, 
   Calendar,
-  Lock,
-  Award
+  Lock
 } from 'lucide-react';
 import { playSound } from '../utils/audio';
 import { telemetry } from '../utils/telemetry';

@@ -51,20 +51,6 @@ export default function ProductivityFrameworks({
   isFullPage = false,
   isInteractive = true
 }) {
-  // Trigger celebration
-  const triggerCelebration = () => {
-    try {
-      import('canvas-confetti').then(({ default: confetti }) => confetti({
-        particleCount: 65,
-        spread: 65,
-        origin: { y: 0.6 },
-        colors: ['#16A34A', '#D97706', '#000000', '#FFFFFF']
-      }));
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   // Safe accessor for current framework data
   const currentFwData = frameworkData[activeFramework] || {};
 
@@ -105,9 +91,6 @@ export default function ProductivityFrameworks({
     playSound(nextCompleted ? 'check' : 'click', isMuted);
     onUpdateHardTasks(updated);
     syncCompletion(task.id || `r3_${index}`, nextCompleted);
-
-    const allDone = updated.every(t => t.text && t.text.trim() !== '' && t.completed);
-    if (allDone && nextCompleted) triggerCelebration();
   };
 
   const handleHardTaskTextChange = (index, newText) => {
@@ -139,11 +122,6 @@ export default function ProductivityFrameworks({
     const updated = { ...eData, [qKey]: list };
     updateActiveData({ quadrants: updated });
     syncCompletion(list[idx].id || `${qKey}_${idx}`, list[idx].completed);
-
-    const allTasks = Object.values(updated).flat().filter(t => t.text.trim() !== '');
-    if (list[idx].completed && allTasks.length > 0 && allTasks.every(t => t.completed)) {
-      triggerCelebration();
-    }
   };
 
   const handleTextEisenhower = (qKey, idx, text) => {
@@ -214,11 +192,6 @@ export default function ProductivityFrameworks({
     playSound(list[idx].completed ? 'check' : 'click', isMuted);
     updateActiveData({ tasks: list });
     syncCompletion(list[idx].id || `il_${idx}`, list[idx].completed);
-
-    const activeList = list.filter(t => t.text.trim() !== '');
-    if (list[idx].completed && activeList.length > 0 && activeList.every(t => t.completed)) {
-      triggerCelebration();
-    }
   };
 
   const handleTextIvy = (idx, text) => {
