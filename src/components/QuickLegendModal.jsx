@@ -4,8 +4,9 @@ import { FRAMEWORKS } from './ProductivityFrameworks';
 
 const SHORTCUTS = [
   ['1', 'Open Daily'],
-  ['2', 'Open Monthly'],
-  ['3', 'Open Yearly'],
+  ['2', 'Open Weekly'],
+  ['3', 'Open Monthly'],
+  ['4', 'Open Yearly'],
   ['T', 'Return To Today'],
   ['← / H', 'Previous Day'],
   ['→ / L', 'Next Day'],

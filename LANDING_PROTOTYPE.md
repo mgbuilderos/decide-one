@@ -1,30 +1,38 @@
-# Primacy landing prototype
+# The landing page — as built
 
-Open `http://127.0.0.1:3000/?view=landing` after `npm run dev -- --host 127.0.0.1`.
+*Rewritten 14 September 2026. The previous version described a prototype called Primacy with six methods, habits, reflection, a device selector and Sites hosting — none of which is true any more. For the instrument itself, read `UI_BRIEF.md`.*
 
-The original journal remains the default `/` view. Landing calls to action launch that journal and update the URL to `?view=daily`.
+## Who sees it
 
-## Implementation
+- A **first visit** to `decideone.app/` gets the landing page.
+- A visitor with **any written day** in storage opens the instrument directly (`hasWrittenBefore()` in `src/hooks/useJournalStorage.js`).
+- `?view=landing` always shows it.
 
-- `src/components/MarketingLandingPage.jsx`: product narrative, controlled highlights carousel, finish selector, device selector, monthly illustration gallery, appearance, FAQ, and pricing.
-- `src/components/landing/JournalScene.jsx`: lazily loaded Three.js scene with curved textured pages, layered edges, cover materials, woven label, ribbon, studio lighting, exploded layers, and laptop/tablet/phone geometry. Drag or use arrow keys; Home resets orientation.
-- `src/components/landing/JournalDemo.jsx`: isolated, editable sample spread with the six methods actually exported by the app, paper/grid/ink controls, notes, habits, reflection, and a visual privacy shutter. All demo edits are temporary component state.
-- `src/components/landing/landing.css`: scoped responsive design, light appearance, scroll-linked reveals, and reduced-motion overrides.
+## What is on it
 
-3D rendering is initialized near the viewport; offscreen/hidden-tab rendering is skipped. Motion can be paused. Unsupported WebGL falls back to the existing journal image. Context loss shows the fallback. Meshes, materials, textures, observers, and event handlers are disposed on unmount.
+`src/components/MarketingLandingPage.jsx`, styled by the scoped `src/components/landing/landing.css`:
 
-## Product facts used
+| Section | What it does |
+| :-- | :-- |
+| `#overview` | The canonical line from `VISION.md` §11.1, the body copy, *Start Free*, and a Three.js render of the page |
+| `#highlights` | A three-step carousel: make the work visible, choose the method, give the first line time |
+| `#approach` | What the evidence supports, and what it does not |
+| `#design` | An interactive sample of the three methods with timeboxes, in `landing/JournalDemo.jsx`; edits are temporary |
+| `#privacy` | Nothing leaves the device |
+| `#access` | Free, no account, and the one quiet support ask |
+| `#reading` | Links to the three methods, the prioritisation guide, every guide and the FAQ |
+| Final call to action | *Three lines. Then get to work.* |
 
-The app uses React 18 and Vite. Daily journal data is stored as JSON in localStorage; passphrase encryption is provided for exported vaults. The source includes behavioural telemetry. Six priority frameworks are currently exported. Checkout currently simulates Patron activation. The landing page therefore avoids the older documentation's claims of nine implemented methods, encrypted live storage, zero telemetry, and a production payment flow.
+The navigation reads *How It Works*, *Guides*, *Start Free*. The footer links the guides and the FAQ, and opens the in-app Methods & Attributions and legal pages.
 
-## Verification
+`landing/JournalScene.jsx` renders the hero lazily and falls back to `public/renders/decideone-studio-d1.webp` while WebGL loads, or where it is unavailable. Its spine label was removed on 13 September. Under `UI_BRIEF.md` §7.3 the render must be updated to depict the redesigned instrument, not a book.
 
-- Production build passed.
-- Existing 21-gate source audit passed (this is a structural audit, not a security certification).
-- Server-side React render checked nine section targets, all hash links, six framework options, 18 labeled checkbox controls, monthly artwork, and prototype pricing disclosure.
-- Development route and component requests returned HTTP 200.
-- Browser/GPU visual and interaction testing has not been performed.
+## Around it
 
-## Hosting
+- **45 static pages** — 3 methods, 41 guides and the FAQ — built from `content/` by `scripts/build_content.js`, together with the sitemap, `llms.txt` and the 404 page.
+- Served as the Cloudflare Worker `decide-one` from `dist/`. Publish only with `npm run deploy`.
+- Telemetry is compiled out unless `VITE_ENABLE_TELEMETRY` is set. The service worker is an offline shell whose cache name is derived by the build.
 
-The Sites project identifier is recorded in `.openai/hosting.json`. Static output is `dist`. Private hosting includes application assets only; existing local telemetry databases and browser profiles are excluded.
+## Checked by
+
+`npm run test:qc` (copy and content rules), `npm run test:artifact` (every link resolves; the home page reaches every content section) and `npm run test:visual` (`landing-desktop` and `landing-mobile`, rendered in Chrome).

@@ -126,9 +126,13 @@ and say why.** Silently diverging creates a conflict nobody notices for weeks.
 | How the site is published | `DEPLOY.md` |
 | Why the methods are sound | `FOUNDATIONS.md` |
 | Which methods ship, and their attribution | `FRAMEWORKS.md` |
+| How the instrument must look and behave | `UI_BRIEF.md` |
 
-`LANDING_PROTOTYPE.md` is the honest description of what is actually built.
-Several older documents overstate it — trust that one where they disagree.
+`UI_BRIEF.md` is the brief for any interface work — the vision, the
+constraints, what the gates do and do not catch, the decisions already made,
+and every learning so far. **Where a document and the code disagree, the code
+is the current truth:** verify in `src/` or on the live site, and run
+`npm run why "<term>"` before re-deriving a decision.
 
 ---
 

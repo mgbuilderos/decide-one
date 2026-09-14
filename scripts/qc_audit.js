@@ -184,6 +184,23 @@ function requireLiveSubjects(rule, subjects, why) {
   return subjects.filter(rel => fs.existsSync(path.join(SRC_DIR, rel)));
 }
 
+// AGENTS.md is read by Codex and Antigravity; CLAUDE.md by Claude Code. They are
+// two copies of one rulebook with nothing keeping them identical, so an edit to
+// one would silently give the agents different rules. Found 14 September 2026.
+if (fs.existsSync('AGENTS.md') && fs.existsSync('CLAUDE.md')
+    && fs.readFileSync('AGENTS.md', 'utf8') !== fs.readFileSync('CLAUDE.md', 'utf8')) {
+  errors.push('[Rule 0 Violation] AGENTS.md and CLAUDE.md have drifted apart. They are the same rulebook '
+    + 'for different agents; make every edit in both.');
+}
+
+// Shared by Rules 6, 19 and others. It used to be declared inside Rule 4's body;
+// rewriting Rule 4 on 13 September removed it and the whole audit crashed with a
+// ReferenceError, which `node --check` cannot see. No rule body may own a variable
+// another rule depends on.
+const appPath = path.join(SRC_DIR, 'App.jsx');
+
+const visualGate = fs.existsSync('scripts/visual_check.js') ? fs.readFileSync('scripts/visual_check.js', 'utf8') : '';
+
 // Rule 1: Zero font-mono classes (Strict Helvetica Rule)
 scanFiles(SRC_DIR, (filePath, content) => {
   if (content.includes('font-mono')) {
@@ -225,17 +242,26 @@ scanFiles(SRC_DIR, (filePath, content) => {
   }
 });
 
-// Rule 4: Viewport zero-scroll and slim notepad width constraint
-const appPath = path.join(SRC_DIR, 'App.jsx');
-if (fs.existsSync(appPath)) {
-  const appContent = fs.readFileSync(appPath, 'utf8');
-  if (!appContent.includes('overflow-hidden') || !appContent.includes('h-screen')) {
-    errors.push('[Rule 4 Violation] App.jsx does not enforce h-screen overflow-hidden for zero-scroll.');
-  }
-  if (!appContent.includes('max-w-[412px]') && !appContent.includes('max-w-[840px]') && !appContent.includes('max-w-[864px]') && !appContent.includes('max-w-[480px]')) {
-    errors.push('[Rule 4 Violation] App.jsx does not enforce authentic slim notepad width (max-w-[412px] mobile / max-w-[840px] or max-w-[864px] bi-fold desktop).');
-  }
+// Rule 4: The instrument holds one screen — no scroll on either axis.
+//
+// This rule used to assert that App.jsx contained the strings 'overflow-hidden'
+// and 'h-screen'. It was green for the life of the project while the daily view
+// pushed up to 97px of the day out of reach on a laptop, because a string being
+// present says nothing about what the page does. Proved dead on 13 September
+// 2026 by rendering the daily view in a 300px viewport and watching it pass.
+//
+// The measurement now lives in scripts/visual_check.js, which renders every
+// instrument view in Chrome at eight viewports and fails if any container
+// scrolls or clips. This rule guards that the measurement still exists.
+if (!/fixed:\s*true/.test(visualGate)) {
+  errors.push('[Rule 4 Violation] scripts/visual_check.js declares no `fixed: true` surface. '
+    + 'Nothing is measuring whether the instrument holds one screen.');
 }
+if (!/unreachable/.test(visualGate)) {
+  errors.push('[Rule 4 Violation] scripts/visual_check.js no longer checks for unreachable content. '
+    + 'A container that clips is worse than one that scrolls, and neither may ship.');
+}
+
 
 // Rule 5: Consumer-Friendly Language Gate (Prohibits technical jargon in user-facing UI)
 const forbiddenJargon = [
@@ -365,14 +391,18 @@ scanFiles(SRC_DIR, (filePath, content) => {
   }
 });
 
-// Rule 12: Framework Grid Alignment & Wrapping Safety Gate
-scanFiles(SRC_DIR, (filePath, content) => {
-  if (filePath.includes('ProductivityFrameworks.jsx')) {
-    if (!content.includes('whitespace-nowrap') || !content.includes('h-[28px]')) {
-      errors.push('[Rule 12 Violation] ProductivityFrameworks.jsx does not enforce fixed height (h-[28px]) and whitespace-nowrap for Eisenhower quadrant headers.');
-    }
-  }
-});
+// Rule 12: Framework grid alignment and wrapping safety.
+//
+// Was: ProductivityFrameworks.jsx must contain 'whitespace-nowrap' and
+// 'h-[28px]' somewhere in a thousand lines. That is satisfied by a comment.
+// Wrapping and misalignment are visible properties, so they are measured:
+// visual_check.js fails on any element that overflows its viewport or clips
+// content sideways without an ellipsis.
+if (!/clipped_x/.test(visualGate)) {
+  errors.push('[Rule 12 Violation] scripts/visual_check.js no longer checks for sideways clipping. '
+    + 'Text cut with text-overflow: clip gives no sign anything is missing.');
+}
+
 
 // Rule 13: FlippingBook 3D Page Leaf Flip Integration Gate (Stationary flat notebook canvas with 3D spine-hinged turning leaf)
 scanFiles(SRC_DIR, (filePath, content) => {
@@ -440,22 +470,19 @@ scanFiles(SRC_DIR, (filePath, content) => {
   }
 });
 
-// Rule 16: Zero Date Overflow & Header Wrapping Gate
-scanFiles(SRC_DIR, (filePath, content) => {
-  if (filePath.endsWith('DateHeader.jsx')) {
-    if (!content.includes('whitespace-nowrap')) {
-      errors.push('[Rule 16 Violation] DateHeader.jsx DateDisplay must enforce whitespace-nowrap to prevent date text wrapping.');
-    }
-    if (!content.includes('overflow-hidden')) {
-      errors.push('[Rule 16 Violation] DateHeader.jsx DateDisplay must enforce overflow-hidden to prevent container blowout.');
-    }
-  }
-  if (filePath.endsWith('SpreadPages.jsx')) {
-    if (!content.includes('h-[48px]')) {
-      errors.push('[Rule 16 Violation] SpreadPages.jsx must enforce fixed h-[48px] cadence headers.');
-    }
-  }
-});
+// Rule 16: Zero date overflow and header wrapping.
+//
+// Was: DateHeader.jsx must contain 'whitespace-nowrap' and 'overflow-hidden',
+// and SpreadPages.jsx must contain 'h-[48px]'. All three were present on
+// 13 September 2026 while the date header silently cut 23px off "September 13
+// 2026 · Sunday · Day 256" at 320px wide — the strings were there, the header
+// still lost text. The visual gate caught it by rendering at 320px, which is
+// why that viewport is now a permanent surface.
+if (!/320,\s*h:\s*568/.test(visualGate)) {
+  errors.push('[Rule 16 Violation] scripts/visual_check.js no longer renders a 320px-wide surface. '
+    + 'That is the width the date header was being clipped at.');
+}
+
 
 // Rule 17: Zero "Bullet Journal" & Ryder Carroll Gate + Right Page Containment
 const forbiddenBrands = ['bullet journal', 'ryder carroll', 'bujo'];
@@ -620,16 +647,16 @@ if (fs.existsSync(cssPath)) {
   }
 }
 
-// Rule 20: Executive Universal Keyboard Navigation Gate
-if (fs.existsSync(appPath)) {
-  const appContent = fs.readFileSync(appPath, 'utf8');
-  const requiredKeys = ["e.key === '1'", "e.key === '2'", "e.key === '3'", "e.key === 't'", "e.key === 'c'"];
-  for (const rk of requiredKeys) {
-    if (!appContent.includes(rk)) {
-      errors.push(`[Rule 20 Violation] App.jsx missing universal keyboard handler for ${rk}.`);
-    }
-  }
+// Rule 20: Executive keyboard navigation — 1/2/3/4/T/C routing.
+//
+// Was: App.jsx must contain the strings "e.key === '1'" and so on. A handler
+// can contain all five and be attached to nothing. visual_check.js now presses
+// the keys in Chrome and asserts the view actually changes.
+if (!/dispatchKeyEvent/.test(visualGate)) {
+  errors.push('[Rule 20 Violation] scripts/visual_check.js no longer presses keys. '
+    + 'A key handler that exists in source is not a key handler that is reached.');
 }
+
 
 // Rule 21: Zero IP Infringement / Trademark / Living Person Rights Gate (Strictly 0 Eat That Frog, 0 Buffett, 0 Pomodoro, 0 BuJo)
 const strictlyForbiddenIP = [
@@ -858,7 +885,7 @@ if (errors.length === 0) {
   console.log('  - Rule 17: Zero "Bullet Journal" / Ryder Carroll Gate (100% Decide One brand purity & right page flex containment)');
   console.log('  - Rule 18: Lifetime Patron & Archival Monetization Gate (100% offline verification, export engine & 12-month annual view)');
   console.log('  - Rule 19: Black Embossed Minimal Neumorphic Chassis Gate (No middle bookmark, no leather side border)');
-  console.log('  - Rule 20: Executive Universal Keyboard Navigation Gate (Instant 1/2/3/T/C thought-speed routing)');
+  console.log('  - Rule 20: Executive Universal Keyboard Navigation Gate (1/2/3/4/T/C routing, pressed in Chrome)');
   console.log('  - Rule 21: Restricted Naming Token Check (not trademark or copyright clearance)');
   console.log('  - Rule 22: Execution Layer Enforcement Gate (Ivy Lee order lock, breathing state, non-punitive overrun, timing provenance)');
   console.log('  - Rule 23: Licence Integrity Gate (signed per-buyer keys; no shared secret, no private key in source)');

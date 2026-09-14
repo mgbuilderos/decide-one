@@ -53,6 +53,7 @@ console.log(sh('git log -5 --format="  %h  %ad  %s" --date=format:%d-%b').split(
 console.log('\n\x1b[1mDocumentation — three layers, not a pile\x1b[0m');
 for (const [f, why] of [
   ['AGENTS.md', 'the rules. Start here'],
+  ['UI_BRIEF.md', 'how the instrument must look and behave. Read before any interface work'],
   ['VISION.md', 'WHY. §11 governs all copy and wins any conflict'],
   ['DECISIONS.md', 'WHAT IS TRUE NOW. One page, current state'],
   ['DECISION_LOG.md', 'HOW WE GOT HERE. Append-only; search it with npm run why'],
@@ -61,7 +62,7 @@ for (const [f, why] of [
   ['DEPLOY.md', 'one command: npm run deploy'],
   ['FRAMEWORKS.md', 'which methods ship, and their attribution'],
   ['FOUNDATIONS.md', 'why the methods are sound'],
-  ['LANDING_PROTOTYPE.md', 'the honest description of what is built'],
+  ['LANDING_PROTOTYPE.md', 'the landing page, as built'],
   ['TELEMETRY_SPEC.md', 'what to measure, and what must never be measured'],
   ['BRAND_BOOK.md', 'the voice. Read before writing any user-facing sentence'],
   ['BRAND_KEY.md', 'positioning: target, insight, discriminator'],

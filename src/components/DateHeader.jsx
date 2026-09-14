@@ -10,9 +10,18 @@ export function DateDisplay({ currentDate }) {
   const dayOfMonth = currentDate.getDate();
   const year = currentDate.getFullYear();
 
-  // Calculate day of the year
+  // Day of the year, counted in calendar days rather than milliseconds.
+  //
+  // The old form divided the raw millisecond difference by 86,400,000. In any
+  // timezone that observes DST one day of the year is 23 hours long, so after
+  // the spring change the elapsed time is an hour short of a whole number of
+  // days and Math.floor lands one low: in New York, 1 July 2026 read "Day 181"
+  // when it is day 182. It was right in IST, which has no DST, which is why it
+  // was never seen. VISION §13 — correct numbers, or the instrument is a
+  // compass two degrees off.
   const startOfYear = new Date(currentDate.getFullYear(), 0, 1);
-  const dayOfYear = Math.floor((currentDate - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
+  const midnightToday = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+  const dayOfYear = Math.round((midnightToday - startOfYear) / 86400000) + 1;
 
   return (
     <div className="flex items-baseline gap-2 sm:gap-2.5 min-w-0 whitespace-nowrap overflow-hidden text-ellipsis tabular-nums">

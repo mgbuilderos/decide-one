@@ -436,8 +436,12 @@ export default function App() {
       } else if (e.key === '2') {
         playSound('page', settings.isMuted);
         if (showCover) handleOpenJournal();
-        setActiveView('monthly');
+        setActiveView('weekly');
       } else if (e.key === '3') {
+        playSound('page', settings.isMuted);
+        if (showCover) handleOpenJournal();
+        setActiveView('monthly');
+      } else if (e.key === '4') {
         playSound('page', settings.isMuted);
         if (showCover) handleOpenJournal();
         setActiveView('yearly');
@@ -678,8 +682,11 @@ export default function App() {
   // Ask once per day, on today only, and only before a method is chosen.
   // Skipping is remembered for the session so the question never nags.
   useEffect(() => {
-    if (activeView !== 'daily') return;
-    if (dateKey !== todayKey) return;
+    // The question is about today's page. Leaving it — another view, another day —
+    // closes it, so it never covers a surface it has nothing to do with. It stayed
+    // mounted over Weekly after a keyboard switch until 14 September 2026. Coming
+    // back asks again until it is answered or skipped.
+    if (activeView !== 'daily' || dateKey !== todayKey) { setIsDayConditionOpen(false); return; }
     if (dailyLog.dayCondition || dailyLog.activeFramework) return;
     if (dayConditionDismissedFor === dateKey) return;
     setIsDayConditionOpen(true);

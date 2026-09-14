@@ -188,7 +188,7 @@ never going to scale. What is missing is not more writing; it is **retrieval**.
 | 3 | **Orphan detection** — every file in `public/` must be referenced | C | **built** |
 | 4 | **Derived cache name** — `CACHE_NAME` stamped from a build hash | A (1), at the root | **built** |
 | 5 | **Log retrieval** — `npm run why "<term>"` over the whole record | D | **built** |
-| 6 | **Rule-shape review** — audit the 26 existing rules for existence-vs-effect | B | next |
+| 6 | **Rule-shape review** — audit the 26 existing rules for existence-vs-effect | B | **done** 14 Sep — §7e |
 | 7 | **Visual regression** — `scripts/visual_check.js`, 12 surfaces in real Chrome | B (2, 4, 5) | **built**, in `predeploy` |
 | 8 | **CI** — run the gates without an agent remembering | all | after 6 |
 
@@ -294,6 +294,29 @@ density rules were dead while reading as correct — found only by measuring a
 box at 120px whose only child was 20px. The tiers are non-overlapping ranges
 now. The lesson generalises past CSS: **a rule that is present is not a rule
 that is in effect**, and only measurement tells them apart.
+
+## 7e. Rule-by-rule audit — 14 September 2026
+
+Every one of the 26 rules in `scripts/qc_audit.js`, classified by what a pass can actually prove.
+
+| Kind | Rules | What a pass means |
+| :-- | :-- | :-- |
+| **Effect** — measures behaviour, or a relationship between two sources | 0 (the import graph from `main.jsx` reaches every governed surface), 11 (exactly three frameworks, and the cut ones absent), 23 (no private key or retired shared secret in source), 24 (the price in `VISION.md` matches `src/`), 25 (emitted, analysed and registered events agree) | Something true about the system. |
+| **Guard of a measurement** — rewritten 14 September | 4 (no scroll), 12 (sideways clipping), 16 (the 320px surface that caught the date header), 20 (keys pressed in Chrome) | That `scripts/visual_check.js` still takes the measurement. The measurement itself runs in `test:visual`. |
+| **Deny by name** — fails if a named reversal returns | 1, 2, 3, 5, 7, 8, 9, 14, 17, 21, and the phrase half of 22 | That exact string is absent. A reversal spelled differently passes. **Rule 3 bans eight colour classes; every other hue passes.** |
+| **Presence only** — a string or a file exists | 6, 10, 13, 15, 18, 19, and the token half of 22 | Very little. |
+
+**Rule 18 is redundant.** It asserts that the licence, export, Patron and yearly files exist and contain certain function names. Rule 0 already asserts those same files are *reached* from `main.jsx`, which is strictly stronger — and the Patron gating Rule 18 was written to protect no longer exists.
+
+**Rules 10, 13, 15 and 19 enforce the physical-book chrome** — the woven tag, the 3D page leaf, twelve month illustrations with the cover stage, and the embossed chassis — which P11 and `VISION.md` §13.5 reject and BR8 left unresolved. `UI_BRIEF.md` §7.3 retires them.
+
+**Rule 20's rewrite found two live defects on its first run.** The number keys skipped Weekly — pressing 2 while looking at Weekly in second position opened Monthly, and the legend documented the gap as if it were a design. And the morning prompt stayed mounted over Weekly after a keyboard switch. The string check had been green throughout. Both were fixed on 14 September. The same pass also reported keys as dead that were only late. It slept a fixed second after each press, while switching back to Daily took up to 2.5 seconds in headless Chrome, and occasionally longer under the surfaces' emulation. The pass now runs in its own un-emulated tab and waits up to six seconds for each view, failing only when a key never arrives.
+
+**`AGENTS.md` and `CLAUDE.md` were two identical copies of one rulebook with nothing keeping them identical** — one read by Codex and Antigravity, the other by Claude Code. `test:qc` now fails if they drift.
+
+**The rewrite itself broke the audit.** Rule 4's old body declared `appPath`, which Rules 6 and 19 also used. Replacing the body removed the declaration; `node --check` passed, and the audit crashed with a `ReferenceError` on every run until it was found on 14 September by running the script unfiltered. `appPath` is now declared at module scope. Every rule changed here was then broken on purpose and seen to fail: the drift check, Rule 4's two guards, and Rules 12, 16 and 20.
+
+**Recommended next:** replace Rule 3's deny-list with an allow-list (neutral, black, white and the progress classes only); fold Rule 18 into Rule 0; and give Rules 6, 10, 13, 15 and 19 the treatment Rules 4, 12, 16 and 20 received — a guard in front of a real measurement.
 
 ## 8. Deliberately not done
 

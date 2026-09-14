@@ -20,7 +20,11 @@ import sharp from 'sharp';
 
 const UPDATE = process.argv.includes('--update');
 const DIST = 'dist';
-const BASELINES = 'tests/baselines';
+// Baselines are per platform. Fonts rasterise differently on macOS and Linux, so
+// a baseline recorded on one can never match the other, and each machine records
+// its own on first run. The measurements (contrast, scroll, tracking, console,
+// keyboard) are platform-independent and gate everywhere.
+const BASELINES = path.join('tests/baselines', process.platform);
 const CHROME = ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
                 '/Applications/Chromium.app/Contents/MacOS/Chromium',
                 '/usr/bin/google-chrome', '/usr/bin/chromium'].find(p => fs.existsSync(p));
@@ -61,7 +65,9 @@ const SURFACES = [
   // The sizes that were putting the day out of reach until 13 September 2026.
   { id: 'daily-small', url: '/?view=daily', vp: { w: 1280, h: 600 }, fixed: true },
   { id: 'daily-tiny', url: '/?view=daily', vp: { w: 320, h: 568 }, fixed: true },
-  { id: 'weekly-tiny', url: '/?view=weekly', vp: { w: 320, h: 568 }, fixed: true }
+  { id: 'weekly-tiny', url: '/?view=weekly', vp: { w: 320, h: 568 }, fixed: true },
+  // The morning question, held open on purpose, at the size it was hardest to fit.
+  { id: 'daily-prompt-tiny', url: '/?view=daily', vp: { w: 320, h: 568 }, fixed: true, prompt: true }
 ];
 
 // ── A static server for dist/, so the check runs against the real artefact ────
@@ -88,8 +94,17 @@ const chrome = spawn(CHROME, ['--headless=new', '--remote-debugging-port=0', '--
   // page falls back to a static image and the baseline would never cover the
   // geometry — which is exactly where a label was protruding out of the book.
   '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--use-gl=angle',
+  // A real key press is a user gesture and lifts Chrome's autoplay restriction;
+  // an injected one in headless Chrome did not, and the keyboard pass reported
+  // dead keys that never reproduced in the app itself.
+  '--autoplay-policy=no-user-gesture-required',
   '--force-device-scale-factor=1', '--disable-lcd-text', `--user-data-dir=${PROFILE}`,
   'about:blank'], { stdio: ['ignore', 'ignore', 'pipe'] });
+process.on('unhandledRejection', (e) => {
+  console.error(red('\n✗ visual') + `  ${e?.message || e}\n`);
+  try { chrome.kill(); } catch { /* already gone */ }
+  process.exit(1);
+});
 
 const wsUrl = await new Promise((resolve, reject) => {
   const t = setTimeout(() => reject(new Error('Chrome did not report a debugging port in 20s')), 20000);
@@ -116,9 +131,19 @@ ws.onmessage = (e) => {
     listeners.forEach(fn => fn(msg));
   }
 };
+// A page stuck in a loop never answers, and a gate that waits forever reads as
+// "still working" to every agent watching it. Every call fails loudly after 30s.
+const CDP_TIMEOUT_MS = 30000;
 const send = (method, params = {}, sessionId) => new Promise((resolve, reject) => {
   const id = nextId++;
-  pending.set(id, { resolve, reject });
+  const timer = setTimeout(() => {
+    pending.delete(id);
+    reject(new Error(`Chrome did not answer ${method} within ${CDP_TIMEOUT_MS / 1000}s — the page is likely stuck`));
+  }, CDP_TIMEOUT_MS);
+  pending.set(id, {
+    resolve: (v) => { clearTimeout(timer); resolve(v); },
+    reject: (e) => { clearTimeout(timer); reject(e); }
+  });
   ws.send(JSON.stringify({ id, method, params, ...(sessionId ? { sessionId } : {}) }));
 });
 
@@ -128,6 +153,25 @@ const call = (m, p) => send(m, p, sessionId);
 
 await call('Page.enable');
 await call('Runtime.enable');
+
+// Freeze the clock and the timezone. The instrument renders today's date and the
+// time left in the day, so an unfrozen render changes daily and per machine: a
+// baseline recorded on 13 September failed on the 14th, and one recorded in India
+// would fail in a UTC container. Every surface renders at 09:30 on Monday
+// 14 September 2026, Asia/Kolkata.
+const FROZEN_ISO = '2026-09-14T09:30:00+05:30';
+await call('Emulation.setTimezoneOverride', { timezoneId: 'Asia/Kolkata' });
+await call('Page.addScriptToEvaluateOnNewDocument', { source: `(() => {
+  const Real = Date;
+  const fixed = Real.parse('${FROZEN_ISO}');
+  class Frozen extends Real {
+    constructor(...args) { super(...(args.length ? args : [fixed])); }
+    static now() { return fixed; }
+  }
+  Frozen.parse = Real.parse;
+  Frozen.UTC = Real.UTC;
+  globalThis.Date = Frozen;
+})();` });
 
 let consoleErrors = [];
 listeners.push((msg) => {
@@ -139,6 +183,14 @@ listeners.push((msg) => {
   if (msg.method === 'Runtime.consoleAPICalled' && msg.params.type === 'error') {
     consoleErrors.push(msg.params.args.map(a => a.value ?? a.description ?? '').join(' '));
   }
+});
+
+// A native alert or confirm blocks every CDP call until it is answered, which hangs
+// the gate — and a browser dialog inside an instrument is a defect in its own right.
+listeners.push((msg) => {
+  if (msg.sessionId !== sessionId || msg.method !== 'Page.javascriptDialogOpening') return;
+  errors.push(`a native ${msg.params.type} dialog opened: "${String(msg.params.message).slice(0, 100)}"`);
+  send('Page.handleJavaScriptDialog', { accept: false }, sessionId).catch(() => {});
 });
 
 const evaluate = async (expression) => {
@@ -260,6 +312,7 @@ fs.mkdirSync(BASELINES, { recursive: true });
 const diffs = [];
 
 for (const s of SURFACES) {
+  process.stderr.write(`  rendering ${s.id} (${s.vp.w}×${s.vp.h})\n`);
   consoleErrors = [];
   await call('Emulation.setDeviceMetricsOverride',
     { width: s.vp.w, height: s.vp.h, deviceScaleFactor: 1, mobile: s.vp.w < 768 });
@@ -269,6 +322,14 @@ for (const s of SURFACES) {
 
   await call('Page.navigate', { url: ORIGIN + s.url });
   await settle(2600);                       // fonts, lazy chunks, WebGL fallback
+  // Daily surfaces measure and baseline the instrument itself. On an empty today the
+  // morning question covers it — until 14 September every daily baseline was a
+  // picture of that dialog — so dismiss it as a person would, except on the one
+  // surface that exists to show the question.
+  if (s.url.includes('view=daily') && !s.prompt) {
+    await evaluate('[...document.querySelectorAll("button")].find(b => /already know/i.test(b.textContent))?.click(); 1');
+    await settle(700);
+  }
 
   let m;
   try {
@@ -335,6 +396,104 @@ for (const s of SURFACES) {
     diffs.push(`${s.id}: ${pct.toFixed(2)}% of pixels changed — see ${out}`);
   }
 }
+
+process.stderr.write('  keyboard pass\n');
+// ── Keyboard routing, pressed rather than grepped ───────────────────────────
+// Rule 20 used to assert App.jsx contained the string "e.key === '1'". A handler
+// can contain every shortcut and still route wrongly — Weekly had no key at all.
+//
+// It runs in its own tab with no emulation: it tests routing, not rendering. It
+// waits for each view instead of sleeping a fixed time — a fixed one-second sleep
+// reported keys as dead that were only late (switching back to Daily took up to
+// 2.5s in headless Chrome) — and it fails only when a key never arrives.
+const kbTarget = await send('Target.createTarget', { url: 'about:blank' });
+const { sessionId: kbSession } = await send('Target.attachToTarget', { targetId: kbTarget.targetId, flatten: true });
+const kbCall = (method, params) => send(method, params, kbSession);
+const kbEval = async (expression) => {
+  const { result, exceptionDetails } = await kbCall('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true });
+  if (exceptionDetails) throw new Error(exceptionDetails.text + ' ' + (exceptionDetails.exception?.description || ''));
+  return result.value;
+};
+await kbCall('Page.enable');
+await kbCall('Runtime.enable');
+await kbCall('Emulation.setDeviceMetricsOverride', { width: DESKTOP.w, height: DESKTOP.h, deviceScaleFactor: 1, mobile: false });
+
+const kbProblems = [];
+listeners.push((msg) => {
+  if (msg.sessionId !== kbSession) return;
+  if (msg.method === 'Runtime.exceptionThrown') {
+    kbProblems.push(msg.params.exceptionDetails.exception?.description || msg.params.exceptionDetails.text);
+  }
+  if (msg.method === 'Runtime.consoleAPICalled' && msg.params.type === 'error') {
+    kbProblems.push(msg.params.args.map(x => x.value ?? x.description ?? '').join(' '));
+  }
+  if (msg.method === 'Page.javascriptDialogOpening') {
+    kbProblems.push(`a native ${msg.params.type} dialog opened: ${msg.params.message}`);
+    send('Page.handleJavaScriptDialog', { accept: false }, kbSession).catch(() => {});
+  }
+});
+
+const press = async (key, code) => {
+  for (const type of ['keyDown', 'keyUp']) {
+    await kbCall('Input.dispatchKeyEvent', { type, key, text: type === 'keyDown' ? key : undefined,
+      windowsVirtualKeyCode: code, nativeVirtualKeyCode: code });
+  }
+  await settle(250);
+};
+const viewNow = () => kbEval('new URLSearchParams(location.search).get("view")');
+const promptOpen = () => kbEval('document.body.innerText.includes("What does today look like")');
+const waitForView = async (expected, ceilingMs = 6000) => {
+  const started = Date.now();
+  while (Date.now() - started < ceilingMs) {
+    if (await viewNow() === expected) return Date.now() - started;
+    await settle(150);
+  }
+  return null;
+};
+
+await kbCall('Page.navigate', { url: ORIGIN + '/?view=daily' });
+await settle(2600);
+
+// The morning prompt belongs to today's page. Switching view must close it, or it
+// covers a surface it has nothing to do with — found 14 September 2026, when it
+// stayed mounted over Weekly after a keyboard switch.
+if (await promptOpen()) {
+  await press('2', 50);
+  await waitForView('weekly');
+  if (await promptOpen()) {
+    errors.push('keyboard: the morning prompt stayed open over the weekly view — '
+      + 'a question about today must not cover another surface');
+  }
+  await press('1', 49);
+  await waitForView('daily');
+  await kbEval('[...document.querySelectorAll("button")].find(b => /already know/i.test(b.textContent))?.click(); 1');
+  await settle(600);
+}
+
+const routes = [['2', 50, 'weekly'], ['3', 51, 'monthly'], ['4', 52, 'yearly'], ['1', 49, 'daily']];
+for (const [key, code, expected] of routes) {
+  await kbEval('document.activeElement?.blur(); 1');
+  await press(key, code);
+  const ms = await waitForView(expected);
+  if (ms === null) {
+    errors.push(`keyboard: pressing "${key}" never reached ${expected} within 6s (the view is ${await viewNow()}) — the key was dropped`);
+  } else if (ms > 1500) {
+    notes.push(`"${key}" reached ${expected} after ${ms}ms`);
+  }
+}
+await press('4', 52);
+await waitForView('yearly');
+await press('t', 84);
+await waitForView('daily');
+const afterT = JSON.parse(await kbEval('JSON.stringify({view:new URLSearchParams(location.search).get("view"),'
+  + ' today:document.body.innerText.includes(String(new Date().getDate()))})'));
+if (afterT.view !== 'daily' || !afterT.today) {
+  errors.push(`keyboard: pressing "t" left the view on ${afterT.view} (today shown: ${afterT.today}) `
+    + '— it must return the instrument to today');
+}
+for (const problem of kbProblems.slice(0, 2)) errors.push(`keyboard: ${String(problem).slice(0, 140)}`);
+await send('Target.closeTarget', { targetId: kbTarget.targetId }).catch(() => {});
+if (!errors.some(e => e.startsWith('keyboard'))) notes.push('keyboard routing 1/2/3/4/T verified by pressing');
 
 // ── Down ─────────────────────────────────────────────────────────────────────
 ws.close(); chrome.kill(); server.close();
