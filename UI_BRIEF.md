@@ -172,7 +172,7 @@ Four gates run inside `npm run deploy`. **Know exactly what each one looks at**,
 
 Most of the 26 rules check that a string is present or absent. That makes them good at catching a named decision being reversed and blind to everything else. Four were rewritten on 14 September because they asserted things the site was visibly not doing — Rule 4 was green for the life of the project while the day scrolled out of reach. The full classification is in `ARCHITECTURE_AUDIT.md` §7e.
 
-**Four rules still enforce the physical-book chrome:** Rule 10 (`woven-fabric-tag`), Rule 13 (the 3D page leaf), Rule 15 (twelve month illustrations and the book-cover stage classes) and Rule 19 (`.embossed-notebook`). They encode decisions that §7 retires. Retire them by the procedure in §7 — never by weakening them to get a pass.
+**Three rules still enforce the physical-book chrome:** Rule 10 (`woven-fabric-tag`), Rule 13 (the 3D page leaf) and Rule 19 (`.embossed-notebook`). Rule 15 was rewritten on 14 September to guard the cover's absence. They encode decisions that §7 retires. Retire them by the procedure in §7 — never by weakening them to get a pass.
 
 ### 6.2 Rules of engagement with the gates
 
@@ -222,6 +222,7 @@ These are founder decisions. Apply them; do not re-open them.
    - Keep the leaflet's *structure* — recto, verso, and the turn as the closure gesture. A flat, exact turn is the instrument form of it.
    - Rewrite Rules 10, 13, 15 and 19 to guard the new truth — for example, that no book chrome is reachable from `main.jsx` — and break each once to prove it fires. Also update **Rule 0**, whose governed-surface list names `data/monthIllustrations.jsx`, and **Rule 6**, which finds the notebook by its `embossed-notebook` class: rename the class and the rule together. Rule 14's `pendingTurnRef` requirement stays only if the remaining turn still needs it.
    - The landing page must still depict the actual product (§13.5): update `landing/JournalScene.jsx`, `landing/JournalDemo.jsx` and the renders in `public/renders/` so nobody believes a paper notebook is for sale.
+   - **Applied in part, 14 September:** the cover (with `showCover`, the C key, the menu and Tools entries and its sounds) and `src/data/monthIllustrations.jsx` are gone, including from the privacy shutter; `?view=cover` opens daily through `src/utils/viewParam.js`; BR8, B-15 and C6 are amended. Rule 0 fails if either module is reached from `main.jsx`, and Rule 15 executes the view mapping. The woven tag, the day-step curl and the chassis remain.
 4. **No celebration.** `canvas-confetti` is still a dependency, imported by `ProductivityFrameworks.jsx` and `useLicenseAutoActivation.js`. Confetti is congratulation, which `BRAND_BOOK.md` §4 (*closure is observational, never congratulatory*) and R12 (no gamified visualisers) exclude. Find what triggers it and remove it; a verso line like *"4h 10m against 4h 30m planned."* is the whole reward.
 5. **Returning visitors open the instrument** (shipped 13 September): a written day in storage sends `/` straight to the daily view; first visits get the landing page. Keep it.
 6. **Number keys match the visible order** (fixed 14 September): 1 Daily · 2 Weekly · 3 Monthly · 4 Yearly. Weekly previously had no key at all.
@@ -294,9 +295,9 @@ Every item below shipped, or nearly shipped, in September 2026.
 - Reviews — `WeeklyReviewSpread.jsx`, `MonthlyLogSpread.jsx` (with `MonthPicker.jsx`), `YearlyViewSpread.jsx`.
 - Morning and closure — `DayConditionPrompt.jsx` (with `src/data/dayConditions.js`), `CarryForwardModal.jsx`, `ExecutiveClosureRitualModal.jsx`.
 - Secondary — `UnifiedMenuModal.jsx` (settings, export, print), `OmniSearchModal.jsx`, `QuickLegendModal.jsx`, `ExecutiveDecisionLogModal.jsx`, `ExecutiveScratchpadModal.jsx`, `ExecutiveVoiceHUD.jsx` (dictation), `ExecutivePrivacyOverlay.jsx` with `usePrivacyShutter.js` (reacts to the window losing focus and to a three-minute idle timeout; ⌘⇧L locks), `PatronUpgradeModal.jsx`.
-- Book chrome retired by §7.3 — `NotebookCover.jsx` / `InteractiveNotebookCover`, `src/data/monthIllustrations.jsx`.
+- Book chrome retired by §7.3 on 14 September — `NotebookCover.jsx` / `InteractiveNotebookCover` and `src/data/monthIllustrations.jsx` are deleted; `?view=cover` opens daily (`src/utils/viewParam.js`).
 
-**Keyboard** (`App.jsx`; the legend is `QuickLegendModal.jsx`): ← / H and → / L step the day · 1 Daily · 2 Weekly · 3 Monthly · 4 Yearly · T today · C cover (goes with §7.3) · M menu · / or ⌘K search · ? legend · ⌘N scratchpad · ⌘D decision log · ⌘⇧C closure · ⌘⇧V dictation · ⌘⇧L lock · Esc closes. Shortcuts never fire while focus is in an input.
+**Keyboard** (`App.jsx`; the legend is `QuickLegendModal.jsx`): ← / H and → / L step the day · 1 Daily · 2 Weekly · 3 Monthly · 4 Yearly · T today · M menu · / or ⌘K search · ? legend · ⌘N scratchpad · ⌘D decision log · ⌘⇧C closure · ⌘⇧V dictation · ⌘⇧L lock · Esc closes. Shortcuts never fire while focus is in an input.
 
 **Storage.** `localStorage` key `DECIDEONE_STUDIO_V1`: `dailyLogs`, `monthlyLogs`, `weeklyReviews`, `decisions`, `closureLogs`, `habits` (legacy — habits were cut by P2) and `settings` (`paperStyle` plain/dots/square, `paperTone` and `inkColor` (kept for old backups, but always `white` and `carbon`: `normaliseAppearance` pins them on load and on import), `darkMode`, `isMuted`, `viewMode`). Data never leaves the device. Keys under earlier product names are migrated on read; never delete them.
 

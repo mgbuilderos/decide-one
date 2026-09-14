@@ -3,7 +3,6 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import HeaderToolbar from './components/HeaderToolbar';
 import DateHeader from './components/DateHeader';
 import { LeftPage, RightPage, PageTurnLeaf } from './components/SpreadPages';
-import NotebookCover, { NotebookCoverFrontFace, NotebookCoverEndpaperFace, InteractiveNotebookCover } from './components/NotebookCover';
 import MarketingLandingPage from './components/MarketingLandingPage';
 
 import { useJournalStorage, formatDateKey, hasWrittenBefore } from './hooks/useJournalStorage';
@@ -22,6 +21,7 @@ import { useAmbientReminders } from './hooks/useAmbientReminders';
 import { telemetry, getHistoryDepthDays, lengthBucket, wordBucket } from './utils/telemetry';
 import { shouldOfferCarryForward, applyCarryForward, markOffered } from './utils/carryForward';
 import { observeWebVitals } from './utils/webVitals';
+import { viewFromParam } from './utils/viewParam';
 
 const MonthlyLogSpread = lazy(() => import('./components/MonthlyLogSpread'));
 const CarryForwardModal = lazy(() => import('./components/CarryForwardModal'));
@@ -45,10 +45,11 @@ export default function App() {
   const [activeView, setActiveView] = useState(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      const v = params.get('view');
       // 'legal' is directly linkable on purpose: a merchant of record needs a
-      // stable URL for terms, privacy and refunds (B4).
-      if (['daily', 'weekly', 'monthly', 'yearly', 'landing', 'legal', 'methods'].includes(v)) return v;
+      // stable URL for terms, privacy and refunds (B4). A retired view, such as
+      // an old cover bookmark, opens the daily instrument (utils/viewParam.js).
+      const v = viewFromParam(params.get('view'));
+      if (v) return v;
       if (window.location.hash && ['#overview', '#highlights', '#design', '#craft', '#devices', '#privacy', '#pricing', '#anatomy', '#audience'].includes(window.location.hash)) {
         return 'landing';
       }
@@ -94,16 +95,6 @@ export default function App() {
   useEffect(() => {
     revalidateStoredLicense().then(setLicense);
   }, []);
-  const [showCover, setShowCover] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      return params.get('view') === 'cover';
-    }
-    return false;
-  });
-  const [coverAnimation, setCoverAnimation] = useState('idle'); // 'idle' | 'opening' | 'closing'
-  const coverTimerRef = useRef(null);
-  
   // FlippingBook-Grade 3D Physical Spine-Hinged Page Turn State ('idle' | 'flipping-next' | 'flipping-prev')
   const [flipState, setFlipState] = useState('idle');
   const [targetDate, setTargetDate] = useState(null);
@@ -138,7 +129,7 @@ export default function App() {
     if (stage) observer.observe(stage);
     window.addEventListener('resize', updateNotebookCadenceHeight);
     return () => { observer.disconnect(); window.removeEventListener('resize', updateNotebookCadenceHeight); };
-  }, [activeView, showCover]);
+  }, [activeView]);
 
   // Hash Navigation Sync for Overview / Landing Page
   useEffect(() => {
@@ -156,14 +147,13 @@ export default function App() {
   // a copied app URL reopen the view that is actually on screen.
   useEffect(() => {
     const url = new URL(window.location.href);
-    const visibleView = showCover ? 'cover' : activeView;
-    const viewChanged = url.searchParams.get('view') !== visibleView;
-    const shouldClearHash = visibleView !== 'landing' && url.hash;
+    const viewChanged = url.searchParams.get('view') !== activeView;
+    const shouldClearHash = activeView !== 'landing' && url.hash;
     if (!viewChanged && !shouldClearHash) return;
-    url.searchParams.set('view', visibleView);
+    url.searchParams.set('view', activeView);
     if (shouldClearHash) url.hash = '';
     window.history.replaceState(window.history.state, '', url);
-  }, [activeView, showCover]);
+  }, [activeView]);
 
   const {
     data,
@@ -301,61 +291,6 @@ export default function App() {
     setTargetDate(null);
   };
 
-  // Frame-Accurate 3D Book Opening Handler
-  const handleOpenJournal = () => {
-    if (coverAnimation !== 'idle') return;
-    playSound('book-open', settings.isMuted);
-    setCurrentDate(new Date());
-    setCoverAnimation('opening');
-
-    if (coverTimerRef.current) {
-      clearTimeout(coverTimerRef.current);
-    }
-    coverTimerRef.current = setTimeout(() => {
-      completeCoverOpen();
-    }, 580);
-  };
-
-  const completeCoverOpen = () => {
-    if (coverTimerRef.current) {
-      clearTimeout(coverTimerRef.current);
-      coverTimerRef.current = null;
-    }
-    setShowCover(false);
-    setCoverAnimation('idle');
-  };
-
-  // Frame-Accurate 3D Book Closing Handler
-  const handleCloseJournal = () => {
-    if (coverAnimation !== 'idle') return;
-    playSound('book-close', settings.isMuted);
-    setShowCover(true);
-    setCoverAnimation('closing');
-
-    if (coverTimerRef.current) {
-      clearTimeout(coverTimerRef.current);
-    }
-    coverTimerRef.current = setTimeout(() => {
-      completeCoverClose();
-    }, 580);
-  };
-
-  const completeCoverClose = () => {
-    if (coverTimerRef.current) {
-      clearTimeout(coverTimerRef.current);
-      coverTimerRef.current = null;
-    }
-    setCoverAnimation('idle');
-  };
-
-  const handleToggleCover = () => {
-    if (showCover) {
-      handleOpenJournal();
-    } else {
-      handleCloseJournal();
-    }
-  };
-
   // FlippingBook-Grade 3D Physical Page Turn Handler (Spine-Hinged 50% Page Sheet)
   const handleStepDay = (delta, directTargetDate = null) => {
     if (flipState !== 'idle') return; // Prevent double trigger during turn
@@ -431,25 +366,18 @@ export default function App() {
         handleStepDay(1);
       } else if (e.key === '1') {
         playSound('page', settings.isMuted);
-        if (showCover) handleOpenJournal();
         setActiveView('daily');
       } else if (e.key === '2') {
         playSound('page', settings.isMuted);
-        if (showCover) handleOpenJournal();
         setActiveView('weekly');
       } else if (e.key === '3') {
         playSound('page', settings.isMuted);
-        if (showCover) handleOpenJournal();
         setActiveView('monthly');
       } else if (e.key === '4') {
         playSound('page', settings.isMuted);
-        if (showCover) handleOpenJournal();
         setActiveView('yearly');
-      } else if (e.key === 'c' || e.key === 'C') {
-        handleToggleCover();
       } else if (e.key === 't' || e.key === 'T') {
         playSound('page', settings.isMuted);
-        if (showCover) handleOpenJournal();
         setCurrentDate(new Date());
         setActiveView('daily');
       } else if (e.key === 'm' || e.key === 'M') {
@@ -485,13 +413,10 @@ export default function App() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeView, currentDate, flipState, showCover, settings.isMuted, toggleDictation]);
+  }, [activeView, currentDate, flipState, settings.isMuted, toggleDictation]);
 
   // Teleportation to specific page from Omnisearch
   const handleTeleportToPage = (dateObj) => {
-    if (showCover) {
-      completeCoverOpen();
-    }
     if (activeView !== 'daily') {
       setActiveView('daily');
     }
@@ -824,8 +749,6 @@ export default function App() {
         activeFramework={activeFramework}
         onSelectFramework={handleSelectFramework}
         score={dailyMetrics.score}
-        showCover={showCover}
-        onToggleCover={handleToggleCover}
         isPatron={license.isPatron}
         onOpenUpgrade={() => setIsUpgradeModalOpen(true)}
         onOpenSearch={() => setIsSearchOpen(true)}
@@ -837,27 +760,8 @@ export default function App() {
         isListening={isListening}
       />
 
-      {/* Closed Notebook Cover (Single Minimalist Stationery Notepad Centered on Viewport) */}
-      {showCover ? (
-        <div className={`w-full max-w-[412px] md:max-w-[420px] mx-auto flex-1 min-h-0 flex flex-col justify-center items-center relative pt-5 sm:pt-6 pb-12 sm:pb-0 ${
-          coverAnimation === 'opening' 
-            ? 'cover-opening-transition pointer-events-none' 
-            : coverAnimation === 'closing' 
-              ? 'cover-closing-transition' 
-              : 'animate-in fade-in zoom-in-98 duration-200'
-        }`}>
-          <InteractiveNotebookCover
-            ownerName={settings.ownerName || 'Maulik'}
-            onUpdateOwnerName={(name) => updateSettings({ ownerName: name })}
-            currentDate={currentDate}
-            onOpenJournal={handleOpenJournal}
-          />
-        </div>
-      ) : (
-        /* Open Notebook 2-Page Spread (Bi-Fold Desktop / Two-Fold Mobile) */
-        <main ref={mainStageRef} className={`w-full max-w-[412px] md:max-w-[960px] mx-auto flex-1 min-h-0 flex flex-col justify-center print-page transition-all pb-12 sm:pb-0 relative pt-5 sm:pt-6 stage-book-open flippingbook-stage ${
-          coverAnimation === 'opening' ? 'book-spread-reveal' : ''
-        }`}>
+      {/* Open Notebook 2-Page Spread (Bi-Fold Desktop / Two-Fold Mobile) */}
+        <main ref={mainStageRef} className={`w-full max-w-[412px] md:max-w-[960px] mx-auto flex-1 min-h-0 flex flex-col justify-center print-page transition-all pb-12 sm:pb-0 relative pt-5 sm:pt-6 flippingbook-stage`}>
             
             {/* Floating day controls only belong to the daily instrument. */}
             {activeView === 'daily' && <button
@@ -930,7 +834,7 @@ export default function App() {
                         isPastDay={flipState === 'flipping-prev' ? targetDateKey < todayKey : isPastDay}
                         onStepDay={handleStepDay}
                         setCurrentDate={setCurrentDate}
-                        isInteractive={flipState === 'idle' && coverAnimation === 'idle'}
+                        isInteractive={flipState === 'idle'}
                       />
                     </div>
 
@@ -948,7 +852,7 @@ export default function App() {
                         updateSettings={updateSettings}
                         onStepDay={handleStepDay}
                         setCurrentDate={setCurrentDate}
-                        isInteractive={flipState === 'idle' && coverAnimation === 'idle'}
+                        isInteractive={flipState === 'idle'}
                       />
                     </div>
 
@@ -1036,10 +940,9 @@ export default function App() {
 
           </div>
         </main>
-      )}
 
       {/* Mobile Ergonomic Bottom Thumb-Zone Navigation Bar */}
-      {activeView === 'daily' && !showCover && (
+      {activeView === 'daily' && (
         <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#141416]/95 backdrop-blur-xl border-t border-black/[0.08] dark:border-white/[0.1] px-4 py-2 flex items-center justify-around no-print" aria-label="Daily Page Sides">
           {[
             { id: 'side1', label: 'Decide' },
@@ -1073,7 +976,6 @@ export default function App() {
         onExport={exportJSON}
         onOpenGuide={() => setIsHelpOpen(true)}
         onOpenLanding={() => setActiveView('landing')}
-        onViewCover={handleCloseJournal}
         isPatron={license.isPatron}
         onOpenUpgrade={() => setIsUpgradeModalOpen(true)}
         onExportMarkdown={() => downloadMarkdownVault(data, settings)}

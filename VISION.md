@@ -151,7 +151,7 @@ The make-or-break implementation rule. If selecting a method only changes labels
 
 **Say time-tested instead.** *"Methods that have worked for a century — not another blank page."* A hundred years of executives using Ivy Lee is a better warrant than a study of forty undergraduates, and nobody can knock it down.
 
-**On the craft — hold the right defence.** The 3D page turn, the twelve month illustrations, the woven label and the Three.js scene do **not** move a user from confusion to clarity, and cannot be defended on the §9 test that justified cutting habits and reflection. They are defensible on a different ground: **craft is what makes a person want to return**, and day-30 retention is the metric everything else depends on. A beautiful instrument gets opened; a plain one does not. Hold that defence consciously rather than have someone else point out the inconsistency.
+**On the craft — hold the right defence.** The 3D page turn, the twelve month illustrations, the woven label and the Three.js scene do **not** move a user from confusion to clarity, and cannot be defended on the §9 test that justified cutting habits and reflection. They are defensible on a different ground: **craft is what makes a person want to return**, and day-30 retention is the metric everything else depends on. A beautiful instrument gets opened; a plain one does not. Hold that defence consciously rather than have someone else point out the inconsistency. *(Superseded 14 September 2026 — §12.4 was resolved toward the instrument register, so this defence no longer stands. The month illustrations were retired that day; `DECISIONS.md` BR8.)*
 
 ---
 
@@ -307,6 +307,8 @@ Every competitor's changelog is their marketing, which makes this commitment str
 
 Either position is holdable. Both are not. **This is recorded as an open conflict (`DECISIONS.md` BR8) and must be resolved before further craft investment**, because it decides whether that work survives at all.
 
+**Resolved 14 September 2026, toward the instrument register** (`DECISIONS.md` BR8, `UI_BRIEF.md` §7.3). The founder: *"we are not a journal, we are an instrument."* The notebook cover and the twelve monthly illustrations were retired that day; the woven tag, the embossed chassis and the page curl between days are listed for retirement under the same decision. The leaflet (§12.5) stays.
+
 ### 12.5 The page is a single leaflet
 
 Settled alongside the brand model, and independent of it.
@@ -317,7 +319,7 @@ Settled alongside the brand model, and independent of it.
 - **Turning it over is the day-closure gesture.** §10.2 kept day closure but gave it no physical act. This is the act.
 - **It satisfies R3 structurally rather than by discipline** — a verso cannot introduce objects of its own, because it is the same sheet.
 - **A book accumulates; a leaf does not.** Pages fill and the backlog stares at the user. A sheet is finite and replaced tomorrow. That is the Rule of 3 rendered as an object.
-- **It licenses the deletion §12.4 already demands.** A leaflet has no spine, no cover, no ribbon, no months.
+- **It licenses the deletion §12.4 already demands.** A leaflet has no spine, no cover, no ribbon, no months. *(Applied to the cover and the month illustrations, 14 September 2026.)*
 
 **One closure for the record: the word *Leaflet* is unusable as a wordmark.** Leaflet.js is among the most-used mapping libraries on the web. The metaphor is available; the word is not.
 

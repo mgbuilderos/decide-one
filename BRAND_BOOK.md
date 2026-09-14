@@ -191,6 +191,10 @@ throughout; `font-mono` fails the build (Rule 1).
 spine curvature and woven twill tag are **Leica register — the opposite of an
 F-91W** — and this is logged as unresolved, not settled.
 
+**Resolved 14 September 2026, toward the instrument register** (BR8,
+`UI_BRIEF.md` §7.3). The notebook cover and the month illustrations were
+retired that day; the rest of the book chrome is listed for retirement.
+
 **What that means for a writer today:** do not write copy that depends on the
 craft layer. Describing the renders as proof of quality bets the words on a
 decision that has not been made. Write about what the product *does*.

@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, SlidersHorizontal, Lock, Sun, Moon, Scale, Sunset, Mic, Compass, BookOpen, BarChart3, Target, ListOrdered, Grid2X2 } from 'lucide-react';
+import { Search, SlidersHorizontal, Lock, Sun, Moon, Scale, Sunset, Mic, Compass, BarChart3, Target, ListOrdered, Grid2X2 } from 'lucide-react';
 import { FRAMEWORKS } from './ProductivityFrameworks';
 import { playSound } from '../utils/audio';
 
-export default function HeaderToolbar({ activeView, setActiveView, settings, updateSettings, onOpenAnalytics, onOpenMenu, activeFramework = 'rule_of_3', onSelectFramework, showCover, onToggleCover, isPatron, onOpenUpgrade, onOpenSearch, onLockVault, onOpenDecisions, onOpenClosure, onToggleDictation, isListening }) {
+export default function HeaderToolbar({ activeView, setActiveView, settings, updateSettings, onOpenAnalytics, onOpenMenu, activeFramework = 'rule_of_3', onSelectFramework, isPatron, onOpenUpgrade, onOpenSearch, onLockVault, onOpenDecisions, onOpenClosure, onToggleDictation, isListening }) {
   const [menu, setMenu] = useState(null);
   const root = useRef(null);
   const trigger = useRef(null);
@@ -23,8 +23,8 @@ export default function HeaderToolbar({ activeView, setActiveView, settings, upd
       <button className="instrument-quiet-action instrument-tools-trigger" ref={trigger} onClick={() => setMenu(menu === 'tools' ? null : 'tools')} aria-expanded={menu === 'tools'} aria-controls="instrument-tools"><SlidersHorizontal size={17}/><span>Tools</span></button>
     </div>
     <div className="instrument-navigation">
-      <nav aria-label="Time Perspective">{[['daily','Daily'],['weekly','Weekly'],['monthly','Monthly'],['yearly','Yearly']].map(([id,label]) => <button key={id} aria-current={activeView === id && !showCover ? 'page' : undefined} onClick={() => { playSound('page',settings?.isMuted); act(() => setActiveView(id)); if(showCover) onToggleCover?.(); }}>{label}</button>)}</nav>
-      {activeView === 'daily' && !showCover && <div className="instrument-method-icons" role="group" aria-label="Choose A Prioritization Method">
+      <nav aria-label="Time Perspective">{[['daily','Daily'],['weekly','Weekly'],['monthly','Monthly'],['yearly','Yearly']].map(([id,label]) => <button key={id} aria-current={activeView === id ? 'page' : undefined} onClick={() => { playSound('page',settings?.isMuted); act(() => setActiveView(id)); }}>{label}</button>)}</nav>
+      {activeView === 'daily' && <div className="instrument-method-icons" role="group" aria-label="Choose A Prioritization Method">
           {FRAMEWORKS.map(method => {
             const MethodIcon = methodIcons[method.id];
             return <button
@@ -40,7 +40,7 @@ export default function HeaderToolbar({ activeView, setActiveView, settings, upd
     </div>
     {menu === 'tools' && <div className="instrument-popover instrument-tools" id="instrument-tools">
       <p>Your Workspace</p>
-      {[['Decisions',Scale,onOpenDecisions],['Review Progress',BarChart3,onOpenAnalytics],['Close Day',Sunset,onOpenClosure],[isListening ? 'Stop Dictation' : 'Dictate',Mic,onToggleDictation],['Privacy Shutter',Lock,onLockVault],[showCover ? 'Open Workspace' : 'View Cover',BookOpen,onToggleCover]].map(([label,Icon,fn]) => <button key={label} onClick={() => act(fn)}><Icon size={16}/><span>{label}</span></button>)}
+      {[['Decisions',Scale,onOpenDecisions],['Review Progress',BarChart3,onOpenAnalytics],['Close Day',Sunset,onOpenClosure],[isListening ? 'Stop Dictation' : 'Dictate',Mic,onToggleDictation],['Privacy Shutter',Lock,onLockVault]].map(([label,Icon,fn]) => <button key={label} onClick={() => act(fn)}><Icon size={16}/><span>{label}</span></button>)}
       <div className="instrument-paper-options"><span>Page</span>{[['dots','Dots'],['square','Squared'],['plain','Plain']].map(([id,label]) => <button key={id} aria-pressed={settings?.paperStyle === id} onClick={() => updateSettings?.({paperStyle:id})}>{label}</button>)}</div>
       <button onClick={() => updateSettings?.({darkMode:!settings?.darkMode})}>{settings?.darkMode ? <Sun size={16}/> : <Moon size={16}/>}<span>{settings?.darkMode ? 'Light Appearance' : 'Dark Appearance'}</span></button>
       <button onClick={() => act(onOpenMenu)}><SlidersHorizontal size={16}/><span>All Settings</span></button>

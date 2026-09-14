@@ -33,7 +33,6 @@ export default function UnifiedMenuModal({
   onExport,
   onOpenGuide,
   onOpenLanding,
-  onViewCover,
   isPatron = false,
   onOpenUpgrade,
   onExportMarkdown,
@@ -485,17 +484,6 @@ export default function UnifiedMenuModal({
               placeholder="Name..."
               className="px-2 py-0.5 text-xs font-bold rounded-lg border border-black/[0.12] dark:border-white/[0.15] bg-transparent text-neutral-900 dark:text-white focus:outline-none focus:border-neutral-900 dark:focus:border-white w-28 sm:w-36"
             />
-            <button
-              type="button"
-              onClick={() => {
-                playSound('page', settings.isMuted);
-                onClose();
-                onViewCover?.();
-              }}
-              className="text-[11px] font-semibold text-neutral-500 hover:text-neutral-900 dark:hover:text-white underline cursor-pointer whitespace-nowrap ml-1"
-            >
-              Cover
-            </button>
           </div>
 
           <button

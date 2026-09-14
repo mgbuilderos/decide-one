@@ -166,6 +166,11 @@ that rather than against a style label. Until the founder rules on the specific
 pieces, copy still should not describe craft as proof of quality - the product
 doing its job is the proof.
 
+**Resolved 14 September 2026, toward the instrument register** (`DECISIONS.md`
+BR8). The notebook cover and the month illustrations were retired that day; the
+woven tag, chassis and page curl are listed for retirement. Copy still never
+describes craft as proof of quality.
+
 ---
 
 ## Why it is free

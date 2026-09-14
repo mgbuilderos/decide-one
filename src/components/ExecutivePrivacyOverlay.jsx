@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Lock, Fingerprint, ShieldCheck, Sun, Moon, Sparkles } from 'lucide-react';
+import { Lock, Fingerprint, ShieldCheck, Sun, Moon } from 'lucide-react';
 import { playSound } from '../utils/audio';
 import { authenticateWithBiometrics } from '../utils/cryptoVault';
-import { MONTH_ILLUSTRATIONS } from '../data/monthIllustrations';
 
 export default function ExecutivePrivacyOverlay({
   shutterState, // 'UNLOCKED' | 'SOFT_FROST' | 'HARD_LOCKED'
@@ -19,8 +18,6 @@ export default function ExecutivePrivacyOverlay({
   const [currentTime, setCurrentTime] = useState('');
 
   const dateObj = currentDate || new Date();
-  const monthIndex = dateObj.getMonth();
-  const monthData = MONTH_ILLUSTRATIONS[monthIndex] || MONTH_ILLUSTRATIONS[8];
   const formattedMonth = dateObj.toLocaleDateString('en-US', { month: 'long' });
   const year = dateObj.getFullYear();
   const dayOfMonth = dateObj.getDate();
@@ -165,18 +162,9 @@ export default function ExecutivePrivacyOverlay({
               </span>
             </div>
 
-            {/* Center Content: Month Art, Clock, Date, Owner Seal */}
+            {/* Center Content: Clock, Date, Owner Seal */}
             <div className="my-auto py-2 flex flex-col items-center w-full">
               
-              {/* Bespoke Vector Line Illustration for the Active Month */}
-              <div className="mb-2 text-neutral-800 dark:text-neutral-200 transition-transform duration-300 hover:scale-105">
-                {monthData?.render ? (
-                  monthData.render("w-20 h-20 sm:w-24 sm:h-24 text-neutral-800 dark:text-neutral-200 opacity-90")
-                ) : (
-                  <Sparkles className="w-8 h-8 text-neutral-400" />
-                )}
-              </div>
-
               {/* Swiss Tabular Digital Clock */}
               <div className="text-4xl sm:text-5xl font-light tracking-tight tabular-nums text-neutral-900 dark:text-white mb-1">
                 {currentTime}

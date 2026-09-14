@@ -55,7 +55,6 @@ const governedSurfaces = [
   ['index.css', 'Rules 6 and 9 — the 24px grid cadence'],
   ['components/MonthlyLogSpread.jsx', 'Rule 7 — single-column monthly spread'],
   ['components/HeaderToolbar.jsx', 'Rule 8 — two-tier masthead, no speaker button'],
-  ['data/monthIllustrations.jsx', 'Rule 15 — twelve bespoke month illustrations'],
   ['utils/executionModel.js', 'Rule 22 — the methods are enforced here, not suggested'],
   ['utils/licenseManager.js', 'Rules 18 and 23 — offline verification, signed keys'],
   ['utils/licenseKeys.js', 'Rule 23 — signed per-buyer licences replaced shared keys'],
@@ -153,6 +152,39 @@ for (const [rel, why] of governedSurfaces) {
       'product does not contain. Either wire it back into the running ' +
       'application, or take it off governedSurfaces and record in DECISIONS.md ' +
       'why those rules no longer need to guard anything.'
+    );
+  }
+}
+
+// Retired surfaces are the inverse of the list above: modules a decision took
+// out of the product, which must stay out. They are checked the same way, by
+// walking the import graph from src/main.jsx, because that is the question
+// that matters. A retired file reached by any path ships all of itself,
+// whatever imports it. One that is only back on disk ships nothing yet, but is
+// one import away, so it fails too.
+//
+// Both entries were retired on 14 September 2026, when BR8 was resolved toward
+// the instrument register (DECISIONS.md BR8, UI_BRIEF §7.3). Until then the
+// illustrations were a governed surface here, required by Rule 15. Bringing
+// either back is a decision to reverse in DECISIONS.md first; git history
+// holds both files.
+const retiredSurfaces = [
+  ['components/NotebookCover.jsx', 'the notebook cover and its open/close stage (P11; BR8 resolved toward the instrument register)'],
+  ['data/monthIllustrations.jsx', 'the twelve month illustrations (P11; BR8 resolved toward the instrument register)']
+];
+
+for (const [rel, why] of retiredSurfaces) {
+  const fullPath = path.join(SRC_DIR, rel);
+  if (entryExists && reachedFiles.has(fullPath)) {
+    errors.push(
+      `[Rule 0 Violation] Retired surface src/${rel} is reached from src/main.jsx, so it ships in ` +
+      `the bundle — ${why}. Remove the import that reaches it, or reverse the decision in ` +
+      'DECISIONS.md first.'
+    );
+  } else if (fs.existsSync(fullPath)) {
+    errors.push(
+      `[Rule 0 Violation] Retired surface src/${rel} is back on disk — ${why}. Nothing reaches it ` +
+      'yet, but one import would ship it. Delete it, or reverse the decision in DECISIONS.md first.'
     );
   }
 }
@@ -525,33 +557,89 @@ scanFiles(SRC_DIR, (filePath, content) => {
   }
 });
 
-// Rule 15: Minimalist Stationery Cover & 12-Month Illustrations Gate
-const illustrationsPath = path.join(SRC_DIR, 'data/monthIllustrations.jsx');
-if (fs.existsSync(illustrationsPath)) {
-  const illusContent = fs.readFileSync(illustrationsPath, 'utf8');
-  for (let m = 0; m < 12; m++) {
-    if (!illusContent.includes(`${m}: {`)) {
-      errors.push(`[Rule 15 Violation] monthIllustrations.jsx is missing month index ${m}.`);
+// Rule 15: No notebook cover, and an old ?view=cover link opens the instrument.
+//
+// Was: monthIllustrations.jsx had to hold all twelve months, index.css had to
+// carry .stage-book-closed and .stage-book-opening, and NotebookCover.jsx had to
+// render the illustrations. BR8 was resolved toward the instrument register on
+// 14 September 2026 (DECISIONS.md BR8, UI_BRIEF §7.3) and all three went, so the
+// rule now guards the absence.
+//
+// Rule 0 fails if either retired module is reached from src/main.jsx. That
+// catches the files coming back under their own names. This catches the cover
+// coming back under another name, in any file main.jsx reaches: its state and
+// props, its stage and transition classes, its open and close sounds, and the
+// monogram styles only it used. Comments are stripped first, so a sentence
+// about the cover is not the cover.
+//
+// It also executes viewFromParam, the function App.jsx passes ?view= through.
+// Without the retired-view mapping, a ?view=cover bookmark from someone with no
+// written days would open the landing page instead of the instrument.
+{
+  const COVER_REMNANTS = [
+    /\bshowCover\b/, /\bonToggleCover\b/, /\bonViewCover\b/, /\bhandleToggleCover\b/,
+    /\bcoverAnimation\b/, /NotebookCover\b/, /\bMONTH_ILLUSTRATIONS\b/,
+    /stage-book-/, /cover-(?:opening|closing)-transition/, /book-cover-3d-leaf/, /\bcover-leaf-/,
+    /['"]book-(?:open|close)['"]/, /monogram-(?:gold-foil|blind-deboss)/
+  ];
+  for (const file of reachedFiles) {
+    let content;
+    try {
+      content = stripComments(fs.readFileSync(file, 'utf8'));
+    } catch {
+      continue;
+    }
+    for (const pattern of COVER_REMNANTS) {
+      const match = content.match(pattern);
+      if (!match) continue;
+      errors.push(
+        `[Rule 15 Violation] ${path.relative(process.cwd(), file)} carries "${match[0]}", part of the ` +
+        'retired notebook cover, and src/main.jsx reaches it. The cover was retired when BR8 was ' +
+        'resolved toward the instrument register (UI_BRIEF §7.3).'
+      );
     }
   }
-} else {
-  errors.push('[Rule 15 Violation] src/data/monthIllustrations.jsx does not exist.');
+
+  const viewSubjects = requireLiveSubjects(
+    'Rule 15',
+    ['utils/viewParam.js'],
+    'it decides where a ?view= link opens, including an old cover bookmark'
+  );
+  if (viewSubjects.includes('utils/viewParam.js')) {
+    try {
+      const { viewFromParam } = await import(pathToFileURL(path.join(SRC_DIR, 'utils/viewParam.js')).href);
+      const opened = viewFromParam('cover');
+      if (opened !== 'daily') {
+        errors.push(
+          `[Rule 15 Violation] viewFromParam('cover') returned ${JSON.stringify(opened)}; it must return ` +
+          '"daily". A ?view=cover bookmark has to open the instrument, not the landing page.'
+        );
+      }
+      for (const view of ['daily', 'weekly', 'monthly', 'yearly', 'landing', 'legal', 'methods']) {
+        if (viewFromParam(view) !== view) {
+          errors.push(`[Rule 15 Violation] viewFromParam('${view}') no longer opens ${view}.`);
+        }
+      }
+    } catch (e) {
+      errors.push(
+        `[Rule 15 Violation] src/utils/viewParam.js could not be run (${e.message}). It must stay a ` +
+        'pure, dependency-free module so this audit can execute it.'
+      );
+    }
+    const app = stripComments(fs.readFileSync(path.join(SRC_DIR, 'App.jsx'), 'utf8'));
+    if (!/viewFromParam\(\s*params\.get\(\s*['"]view['"]\s*\)\s*\)/.test(app)) {
+      errors.push(
+        '[Rule 15 Violation] App.jsx does not pass ?view= through viewFromParam(), so the mapping ' +
+        'this rule executes is not the one the application runs.'
+      );
+    }
+  }
+
+  const css = fs.readFileSync(path.join(SRC_DIR, 'index.css'), 'utf8');
+  if (css.includes('calc(50% - 210px)')) {
+    errors.push('[Rule 15 Violation] index.css still contains buggy calc(50% - 210px) strip offset.');
+  }
 }
-scanFiles(SRC_DIR, (filePath, content) => {
-  if (filePath.endsWith('index.css')) {
-    if (content.includes('calc(50% - 210px)')) {
-      errors.push('[Rule 15 Violation] index.css still contains buggy calc(50% - 210px) strip offset.');
-    }
-    if (!content.includes('.stage-book-closed') || !content.includes('.stage-book-opening')) {
-      errors.push('[Rule 15 Violation] index.css is missing Turn.js stage-book-closed / stage-book-opening classes.');
-    }
-  }
-  if (filePath.endsWith('NotebookCover.jsx')) {
-    if (!content.includes('MONTH_ILLUSTRATIONS')) {
-      errors.push('[Rule 15 Violation] NotebookCover.jsx must import and render MONTH_ILLUSTRATIONS.');
-    }
-  }
-});
 
 // Rule 16: Zero date overflow and header wrapping.
 //
@@ -730,7 +818,7 @@ if (fs.existsSync(cssPath)) {
   }
 }
 
-// Rule 20: Executive keyboard navigation — 1/2/3/4/T/C routing.
+// Rule 20: Executive keyboard navigation — 1/2/3/4/T routing.
 //
 // Was: App.jsx must contain the strings "e.key === '1'" and so on. A handler
 // can contain all five and be attached to nothing. visual_check.js now presses
@@ -1000,7 +1088,7 @@ if (errors.length === 0) {
   console.log('  - Rule 3: 3-Color Progress Gate (progress colours only; retired inks and paper tones stay retired; the carbon-on-white migration is run)');
   console.log('  - Rule 4: Zero-scroll viewport lock & slim notepad proportions (max-w-[412px])');
   console.log('  - Rule 5: Consumer-friendly language gate (zero technical jargon in UI labels)');
-  console.log('  - Rule 0: Governed surfaces exist AND are reached from main.jsx (a deleted or orphaned file fails rather than skipping its rules)');
+  console.log('  - Rule 0: Governed surfaces exist AND are reached from main.jsx (a deleted or orphaned file fails rather than skipping its rules); retired surfaces are neither');
   console.log('  - Rule 6: Strict 24px universal grid cadence alignment (paper-grid & canvas padding)');
   console.log('  - Rule 7: Single-column full-width monthly spread (no 2-column desktop squishing)');
   console.log('  - Rule 8: 2-Tier header masthead (brand at top, utilities below, zero speaker button)');
@@ -1010,12 +1098,12 @@ if (errors.length === 0) {
   console.log('  - Rule 12: Framework Grid Alignment & Wrapping Safety Gate (fixed header heights & whitespace-nowrap)');
   console.log('  - Rule 13: FlippingBook 3D Page Leaf Flip Integration Gate (Stationary flat notebook canvas with 3D spine-hinged turning leaf)');
   console.log('  - Rule 14: Seamless Friction-Free 3D Page Turn Gate (Flush spine crease, closure immunity & zero layout shift)');
-  console.log('  - Rule 15: Minimalist Stationery Cover & 12-Month Illustrations Gate (Turn.js autoCenter, 12 bespoke SVGs, zero narrow strips)');
+  console.log('  - Rule 15: No notebook cover reachable from main.jsx, and ?view=cover opens the daily instrument (executed)');
   console.log('  - Rule 16: Zero Date Overflow & Header Wrapping Gate (whitespace-nowrap & fixed 48px header boundary)');
   console.log('  - Rule 17: Zero "Bullet Journal" / Ryder Carroll Gate (100% Decide One brand purity & right page flex containment)');
   console.log('  - Rule 18: Lifetime Patron & Archival Monetization Gate (100% offline verification, export engine & 12-month annual view)');
   console.log('  - Rule 19: Black Embossed Minimal Neumorphic Chassis Gate (No middle bookmark, no leather side border)');
-  console.log('  - Rule 20: Executive Universal Keyboard Navigation Gate (1/2/3/4/T/C routing, pressed in Chrome)');
+  console.log('  - Rule 20: Executive Universal Keyboard Navigation Gate (1/2/3/4/T routing, pressed in Chrome)');
   console.log('  - Rule 21: Restricted Naming Token Check (not trademark or copyright clearance)');
   console.log('  - Rule 22: Execution Layer Enforcement Gate (Ivy Lee order lock, breathing state, non-punitive overrun, timing provenance)');
   console.log('  - Rule 23: Licence Integrity Gate (signed per-buyer keys; no shared secret, no private key in source)');
