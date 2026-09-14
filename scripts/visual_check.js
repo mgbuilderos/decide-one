@@ -541,6 +541,12 @@ if (errors.length) {
   console.error('');
   process.exit(1);
 }
+const recorded = notes.filter(n => n.endsWith(' recorded'));
+const others = notes.filter(n => !n.endsWith(' recorded'));
 console.log(`\x1b[32m✓ visual\x1b[0m   ${SURFACES.length} surfaces rendered in Chrome: no console errors, no `
   + `collapsed type, no unreadable text, no overflow, instruments hold one screen`
-  + (notes.length ? `; ${notes.length} baseline(s) recorded` : '; pixels match baseline'));
+  // notes also carry the keyboard result and late arrivals, so only "recorded"
+  // entries are baselines — counting all of them once reported a baseline that
+  // was never written.
+  + (recorded.length ? `; ${recorded.length} baseline(s) recorded` : '; pixels match baseline')
+  + (others.length ? `\n           ${others.join('; ')}` : ''));
