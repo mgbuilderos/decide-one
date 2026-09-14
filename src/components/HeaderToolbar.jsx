@@ -19,7 +19,7 @@ export default function HeaderToolbar({ activeView, setActiveView, settings, upd
   return <header ref={root} className="instrument-header no-print">
     <div className="instrument-masthead">
       <button className="instrument-quiet-action" onClick={() => act(onOpenSearch)} aria-label="Search Your Work"><Search size={17}/><span>Search</span></button>
-      <button className="instrument-wordmark" onClick={() => setActiveView('landing')} aria-label="Decide One Overview">Decide One</button>
+      <button className="instrument-wordmark" onClick={() => setActiveView('daily')} aria-label="Decide One Today">Decide One</button>
       <button className="instrument-quiet-action instrument-tools-trigger" ref={trigger} onClick={() => setMenu(menu === 'tools' ? null : 'tools')} aria-expanded={menu === 'tools'} aria-controls="instrument-tools"><SlidersHorizontal size={17}/><span>Tools</span></button>
     </div>
     <div className="instrument-navigation">
@@ -44,7 +44,9 @@ export default function HeaderToolbar({ activeView, setActiveView, settings, upd
       <div className="instrument-paper-options"><span>Page</span>{[['dots','Dots'],['square','Squared'],['plain','Plain']].map(([id,label]) => <button key={id} aria-pressed={settings?.paperStyle === id} onClick={() => updateSettings?.({paperStyle:id})}>{label}</button>)}</div>
       <button onClick={() => updateSettings?.({darkMode:!settings?.darkMode})}>{settings?.darkMode ? <Sun size={16}/> : <Moon size={16}/>}<span>{settings?.darkMode ? 'Light Appearance' : 'Dark Appearance'}</span></button>
       <button onClick={() => act(onOpenMenu)}><SlidersHorizontal size={16}/><span>All Settings</span></button>
-      <button onClick={() => act(() => setActiveView('landing'))}><Compass size={16}/><span>About Decide One</span></button>
+      <a href="/guides/">Guides</a><a href="/methods/">Methods</a><a href="/faq/">Questions</a>
+      <button onClick={() => act(() => setActiveView('methods'))}>Methods &amp; Attributions</button>
+      <button onClick={() => act(() => setActiveView('legal'))}>Terms, Privacy &amp; Refunds</button>
     </div>}
   </header>;
 }

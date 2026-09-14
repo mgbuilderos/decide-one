@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import { pathToFileURL } from 'url';
+import { parse } from '@babel/parser';
+import vm from 'node:vm';
 
 const SRC_DIR = path.resolve('src');
 let errors = [];
@@ -650,15 +652,17 @@ scanFiles(SRC_DIR, (filePath, content) => {
   );
   if (viewSubjects.includes('utils/viewParam.js')) {
     try {
-      const { viewFromParam } = await import(pathToFileURL(path.join(SRC_DIR, 'utils/viewParam.js')).href);
-      const opened = viewFromParam('cover');
+      const { viewFromParam, initialView } = await import(pathToFileURL(path.join(SRC_DIR, 'utils/viewParam.js')).href);
+      for (const retired of ['cover', 'landing']) {
+      const opened = viewFromParam(retired);
       if (opened !== 'daily') {
         errors.push(
-          `[Rule 15 Violation] viewFromParam('cover') returned ${JSON.stringify(opened)}; it must return ` +
+          `[Rule 15 Violation] viewFromParam('${retired}') returned ${JSON.stringify(opened)}; it must return ` +
           '"daily". A ?view=cover bookmark has to open the instrument, not the landing page.'
         );
       }
-      for (const view of ['daily', 'weekly', 'monthly', 'yearly', 'landing', 'legal', 'methods']) {
+      }
+      for (const view of ['daily', 'weekly', 'monthly', 'yearly', 'legal', 'methods']) {
         if (viewFromParam(view) !== view) {
           errors.push(`[Rule 15 Violation] viewFromParam('${view}') no longer opens ${view}.`);
         }
@@ -669,13 +673,27 @@ scanFiles(SRC_DIR, (filePath, content) => {
         'pure, dependency-free module so this audit can execute it.'
       );
     }
-    const app = stripComments(fs.readFileSync(path.join(SRC_DIR, 'App.jsx'), 'utf8'));
-    if (!/viewFromParam\(\s*params\.get\(\s*['"]view['"]\s*\)\s*\)/.test(app)) {
-      errors.push(
-        '[Rule 15 Violation] App.jsx does not pass ?view= through viewFromParam(), so the mapping ' +
-        'this rule executes is not the one the application runs.'
-      );
-    }
+    // Execute the actual activeView useState initializer. An unused resolver call
+    // or a comment cannot satisfy this check. Babel already ships with Vite.
+    try {
+      const source = fs.readFileSync(path.join(SRC_DIR, 'App.jsx'), 'utf8');
+      const ast = parse(source, { sourceType: 'module', plugins: ['jsx'] });
+      const app = ast.program.body.find(n => n.type === 'ExportDefaultDeclaration').declaration;
+      const binding = app.body.body.filter(n => n.type === 'VariableDeclaration')
+        .flatMap(n => n.declarations).find(n => n.id.type === 'ArrayPattern' && n.id.elements[0]?.name === 'activeView');
+      if (binding?.init?.callee?.name !== 'useState') throw new Error('activeView must be initialized with useState');
+      const init = binding.init.arguments[0];
+      const imported = ast.program.body.find(n => n.type === 'ImportDeclaration' && n.source.value === './utils/viewParam');
+      if (!imported?.specifiers.some(n => n.imported?.name === 'initialView' && n.local.name === 'initialView')) throw new Error('initialView is not imported from viewParam');
+      const { initialView } = await import(pathToFileURL(path.join(SRC_DIR, 'utils/viewParam.js')).href);
+      for (const [search, expected] of [['', 'daily'], ['?view=landing', 'daily'], ['?view=cover', 'daily'], ['?view=unknown', 'daily'], ...['daily','weekly','monthly','yearly','legal','methods'].map(v => ['?view=' + v, v])]) {
+        const actual = vm.runInNewContext('(' + source.slice(init.start, init.end) + ')()', { initialView, window: { location: { search } } }, { timeout: 1000 });
+        if (actual !== expected) throw new Error(search + ' opens ' + actual + ' instead of ' + expected);
+      }
+      for (const retired of ['components/MarketingLandingPage.jsx', 'components/landing/JournalScene.jsx', 'components/landing/JournalDemo.jsx']) {
+        if (fs.existsSync(path.join(SRC_DIR, retired))) throw new Error(retired + ' is retired');
+      }
+    } catch (e) { errors.push('[Rule 15 Violation] actual App activeView initializer: ' + e.message); }
   }
 
   const css = fs.readFileSync(path.join(SRC_DIR, 'index.css'), 'utf8');
@@ -1212,7 +1230,7 @@ if (errors.length === 0) {
   console.log('  - Rule 12: Framework Grid Alignment & Wrapping Safety Gate (fixed header heights & whitespace-nowrap)');
   console.log('  - Rule 13: FlippingBook 3D Page Leaf Flip Integration Gate (Stationary flat notebook canvas with 3D spine-hinged turning leaf)');
   console.log('  - Rule 14: Seamless Friction-Free 3D Page Turn Gate (Flush spine crease, closure immunity & zero layout shift)');
-  console.log('  - Rule 15: No notebook cover reachable from main.jsx, and ?view=cover opens the daily instrument (executed)');
+  console.log('  - Rule 15: Direct instrument arrival: actual App initializer executed for first, retired and information links; no marketing or cover modules');
   console.log('  - Rule 16: Zero Date Overflow & Header Wrapping Gate (whitespace-nowrap & fixed 48px header boundary)');
   console.log('  - Rule 17: Zero "Bullet Journal" / Ryder Carroll Gate (100% Decide One brand purity & right page flex containment)');
   console.log('  - Rule 18: Lifetime Patron & Archival Monetization Gate (100% offline verification, export engine & 12-month annual view)');

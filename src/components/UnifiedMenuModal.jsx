@@ -32,7 +32,6 @@ export default function UnifiedMenuModal({
   onSelectFramework,
   onExport,
   onOpenGuide,
-  onOpenLanding,
   isPatron = false,
   onOpenUpgrade,
   onExportMarkdown,
@@ -52,7 +51,6 @@ export default function UnifiedMenuModal({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
 
   const toggleDarkMode = () => {
     playSound('click', settings.isMuted);
@@ -79,6 +77,8 @@ export default function UnifiedMenuModal({
     playSound('click', false);
     updateSettings({ isMuted: !settings.isMuted });
   };
+
+  if (!isOpen) return null;
 
   const currentFw = FRAMEWORKS.find(f => f.id === activeFramework) || FRAMEWORKS[0];
 
@@ -207,20 +207,6 @@ export default function UnifiedMenuModal({
             </div>
 
             <div className="pt-1 flex items-center justify-end gap-3 text-[10px]">
-                <button
-                  type="button"
-                  onClick={() => {
-                    playSound('page', settings.isMuted);
-                    onClose();
-                    onOpenLanding?.();
-                  }}
-                  className="font-semibold text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
-                  title="View Product Tour & Single-Page Website"
-                >
-                  <Compass className="w-3 h-3" />
-                  <span>Tour</span>
-                </button>
-
                 <button
                   type="button"
                   onClick={() => {

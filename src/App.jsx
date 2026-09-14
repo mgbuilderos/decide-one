@@ -3,9 +3,9 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import HeaderToolbar from './components/HeaderToolbar';
 import DateHeader from './components/DateHeader';
 import { LeftPage, RightPage, PageTurnLeaf } from './components/SpreadPages';
-import MarketingLandingPage from './components/MarketingLandingPage';
+import QuickStart from './components/QuickStart';
 
-import { useJournalStorage, formatDateKey, hasWrittenBefore } from './hooks/useJournalStorage';
+import { useJournalStorage, formatDateKey } from './hooks/useJournalStorage';
 import { useProductivity } from './hooks/useProductivity';
 import { playSound } from './utils/audio';
 import { getStoredLicense, migrateLegacyActivation, revalidateStoredLicense } from './utils/licenseManager';
@@ -21,7 +21,8 @@ import { useAmbientReminders } from './hooks/useAmbientReminders';
 import { telemetry, getHistoryDepthDays, lengthBucket, wordBucket } from './utils/telemetry';
 import { shouldOfferCarryForward, applyCarryForward, markOffered } from './utils/carryForward';
 import { observeWebVitals } from './utils/webVitals';
-import { viewFromParam } from './utils/viewParam';
+import { initialView } from './utils/viewParam';
+import { needsQuickStart, finishQuickStart } from './utils/quickStart';
 
 const MonthlyLogSpread = lazy(() => import('./components/MonthlyLogSpread'));
 const CarryForwardModal = lazy(() => import('./components/CarryForwardModal'));
@@ -42,22 +43,9 @@ const ExecutiveScratchpadModal = lazy(() => import('./components/ExecutiveScratc
 const ViewLoading = () => <div className="w-full min-h-[320px] flex-1 grid place-items-center bg-white text-sm text-neutral-500">Opening Decide One…</div>;
 
 export default function App() {
-  const [activeView, setActiveView] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      // 'legal' is directly linkable on purpose: a merchant of record needs a
-      // stable URL for terms, privacy and refunds (B4). A retired view, such as
-      // an old cover bookmark, opens the daily instrument (utils/viewParam.js).
-      const v = viewFromParam(params.get('view'));
-      if (v) return v;
-      if (window.location.hash && ['#overview', '#highlights', '#design', '#craft', '#devices', '#privacy', '#pricing', '#anatomy', '#audience'].includes(window.location.hash)) {
-        return 'landing';
-      }
-    }
-    // A returning person opens the instrument, not the front door. ?view=landing
-    // is still honoured above, so the marketing page stays reachable on purpose.
-    return hasWrittenBefore() ? 'daily' : 'landing';
-  });
+  const [activeView, setActiveView] = useState(() => initialView(window.location.search));
+  const [isQuickStartOpen, setIsQuickStartOpen] = useState(() => initialView(window.location.search) === 'daily' && needsQuickStart());
+  const closeQuickStart = useCallback(() => { finishQuickStart(); setIsQuickStartOpen(false); }, []);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [activeFilter, setActiveFilter] = useState('all');
   const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
@@ -131,24 +119,11 @@ export default function App() {
     return () => { observer.disconnect(); window.removeEventListener('resize', updateNotebookCadenceHeight); };
   }, [activeView]);
 
-  // Hash Navigation Sync for Overview / Landing Page
-  useEffect(() => {
-    const handleHashChange = () => {
-      if (window.location.hash && ['#overview', '#anatomy', '#audience', '#performance', '#methods', '#gallery', '#privacy', '#pricing'].includes(window.location.hash)) {
-        setActiveView('landing');
-      }
-    };
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
-
-  // Keep direct links honest as people move between the landing page and the
-  // four review surfaces. This preserves any landing-page anchor while making
-  // a copied app URL reopen the view that is actually on screen.
+  // Keep copied links aligned with the visible instrument or information page.
   useEffect(() => {
     const url = new URL(window.location.href);
     const viewChanged = url.searchParams.get('view') !== activeView;
-    const shouldClearHash = activeView !== 'landing' && url.hash;
+    const shouldClearHash = url.hash;
     if (!viewChanged && !shouldClearHash) return;
     url.searchParams.set('view', activeView);
     if (shouldClearHash) url.hash = '';
@@ -248,7 +223,7 @@ export default function App() {
   } = usePrivacyShutter({
     idleTimeoutMs: 180000,
     isVaultUnlocked: true,
-    enabled: activeView !== 'landing'
+    enabled: !['legal', 'methods'].includes(activeView) && !isQuickStartOpen
   });
 
   // Dark mode class sync on load
@@ -260,19 +235,11 @@ export default function App() {
     }
   }, [settings.darkMode]);
 
-  // Viewport scroll locking: locked inside app, natural vertical scrolling on marketing landing page
+  // Information pages scroll; the instrument holds one screen.
   useEffect(() => {
-    if (activeView === 'landing') {
-      document.documentElement.classList.remove('app-locked');
-      document.body.classList.remove('app-locked');
-      document.documentElement.classList.add('landing-page-active');
-      document.body.classList.add('landing-page-active');
-    } else {
-      document.documentElement.classList.remove('landing-page-active');
-      document.body.classList.remove('landing-page-active');
-      document.documentElement.classList.add('app-locked');
-      document.body.classList.add('app-locked');
-    }
+    const locked = !['legal', 'methods'].includes(activeView);
+    document.documentElement.classList.toggle('app-locked', locked);
+    document.body.classList.toggle('app-locked', locked);
     telemetry.setCurrentView(activeView);
   }, [activeView]);
 
@@ -357,7 +324,7 @@ export default function App() {
   // Executive Universal Keyboard Shortcuts & Navigation
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (activeView === 'landing') return;
+      if (isQuickStartOpen || ['legal', 'methods'].includes(activeView)) return;
       if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
       
       if (e.key === 'ArrowLeft' || e.key === 'h') {
@@ -413,7 +380,7 @@ export default function App() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeView, currentDate, flipState, settings.isMuted, toggleDictation]);
+  }, [activeView, currentDate, flipState, settings.isMuted, toggleDictation, isQuickStartOpen]);
 
   // Teleportation to specific page from Omnisearch
   const handleTeleportToPage = (dateObj) => {
@@ -503,12 +470,12 @@ export default function App() {
   // long before anyone navigates.
   useEffect(() => {
     const opened = new URLSearchParams(window.location.search).get('view');
-    const isMarketingEntry = !opened || ['landing', 'legal', 'methods'].includes(opened);
+    const isMarketingEntry = ['legal', 'methods'].includes(opened);
     if (!isMarketingEntry) return undefined;
     // entry_view rides along because §3.2 asks for these per page, and the
     // view the page opened on is the only page identity that is correct for
     // LCP - it is decided during first paint, before any navigation.
-    const entryView = opened || 'landing';
+    const entryView = opened;
     return observeWebVitals((metrics) => telemetry.track('web_vitals', { ...metrics, entry_view: entryView }));
   }, []);
 
@@ -611,11 +578,11 @@ export default function App() {
     // closes it, so it never covers a surface it has nothing to do with. It stayed
     // mounted over Weekly after a keyboard switch until 14 September 2026. Coming
     // back asks again until it is answered or skipped.
-    if (activeView !== 'daily' || dateKey !== todayKey) { setIsDayConditionOpen(false); return; }
+    if (isQuickStartOpen || activeView !== 'daily' || dateKey !== todayKey) { setIsDayConditionOpen(false); return; }
     if (dailyLog.dayCondition || dailyLog.activeFramework) return;
     if (dayConditionDismissedFor === dateKey) return;
     setIsDayConditionOpen(true);
-  }, [activeView, dateKey, todayKey, dailyLog.dayCondition, dailyLog.activeFramework, dayConditionDismissedFor]);
+  }, [isQuickStartOpen, activeView, dateKey, todayKey, dailyLog.dayCondition, dailyLog.activeFramework, dayConditionDismissedFor]);
 
   // R7 — planned-versus-actual accounting, stored per decided item.
   const handleUpdateExecution = (itemId, session) => {
@@ -704,35 +671,11 @@ export default function App() {
 
   // Single-Page Marketing Website Route (Natural Window Scrolling)
   if (activeView === 'legal') {
-    return <Suspense fallback={<ViewLoading />}><LegalPages onBack={() => setActiveView('landing')} /></Suspense>;
+    return <Suspense fallback={<ViewLoading />}><LegalPages onBack={() => setActiveView('daily')} /></Suspense>;
   }
 
   if (activeView === 'methods') {
-    return <Suspense fallback={<ViewLoading />}><MethodsPage onBack={() => setActiveView('landing')} /></Suspense>;
-  }
-
-  if (activeView === 'landing') {
-    return (
-      <div className="w-full min-h-screen selection:bg-neutral-900 selection:text-white dark:selection:bg-white dark:selection:text-neutral-900">
-        <MarketingLandingPage
-          onOpenLegal={() => setActiveView('legal')}
-          onOpenMethods={() => setActiveView('methods')}
-          onLaunchJournal={() => {
-            playSound('page', settings.isMuted);
-            const url = new URL(window.location.href);
-            url.searchParams.set('view', 'daily');
-            url.hash = '';
-            window.history.replaceState({}, '', url);
-            window.scrollTo({ top: 0, behavior: 'instant' });
-            setActiveView('daily');
-          }}
-          onOpenUpgrade={() => setIsUpgradeModalOpen(true)}
-          settings={settings}
-          updateSettings={updateSettings}
-          isPatron={license.isPatron}
-        />
-      </div>
-    );
+    return <Suspense fallback={<ViewLoading />}><MethodsPage onBack={() => setActiveView('daily')} /></Suspense>;
   }
 
   return (
@@ -962,7 +905,6 @@ export default function App() {
         onSelectFramework={handleSelectFramework}
         onExport={exportJSON}
         onOpenGuide={() => setIsHelpOpen(true)}
-        onOpenLanding={() => setActiveView('landing')}
         isPatron={license.isPatron}
         onOpenUpgrade={() => setIsUpgradeModalOpen(true)}
         onExportMarkdown={() => downloadMarkdownVault(data, settings)}
@@ -1040,6 +982,7 @@ export default function App() {
       /></Suspense>}
 
       {/* C3 — "What does today look like?", asked before the day has a method. */}
+      <QuickStart isOpen={isQuickStartOpen} onClose={closeQuickStart} />
       <DayConditionPrompt
         isOpen={isDayConditionOpen}
         onClose={() => {

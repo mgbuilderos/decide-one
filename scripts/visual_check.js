@@ -50,8 +50,8 @@ const LAPTOP = { w: 1366, h: 768 };
 const MOBILE = { w: 390, h: 844 };
 
 const SURFACES = [
-  { id: 'landing-desktop', url: '/?view=landing', vp: DESKTOP },
-  { id: 'landing-mobile', url: '/?view=landing', vp: MOBILE },
+  { id: 'landing-desktop', url: '/', vp: DESKTOP, fixed: true, quickStart: true },
+  { id: 'landing-mobile', url: '/', vp: MOBILE, fixed: true, quickStart: true },
   { id: 'daily-desktop', url: '/?view=daily', vp: DESKTOP, fixed: true },
   { id: 'daily-laptop', url: '/?view=daily', vp: LAPTOP, fixed: true },
   { id: 'daily-mobile', url: '/?view=daily', vp: MOBILE, fixed: true },
@@ -338,7 +338,9 @@ for (const s of SURFACES) {
     { features: [{ name: 'prefers-color-scheme', value: s.dark ? 'dark' : 'light' },
                  { name: 'prefers-reduced-motion', value: 'reduce' }] });
 
+  const seed = await call('Page.addScriptToEvaluateOnNewDocument', { source: `localStorage.removeItem('DECIDEONE_STUDIO_V1'); localStorage.${s.quickStart ? "removeItem('DECIDEONE_QUICK_START_V1')" : "setItem('DECIDEONE_QUICK_START_V1', 'done')"};` });
   await call('Page.navigate', { url: ORIGIN + s.url });
+  await call('Page.removeScriptToEvaluateOnNewDocument', { identifier: seed.identifier });
   await settle(2600);                       // fonts, lazy chunks, WebGL fallback
   // Daily surfaces measure and baseline the instrument itself. On an empty today the
   // morning question covers it — until 14 September every daily baseline was a
@@ -496,6 +498,8 @@ if (await promptOpen()) {
   }
   await press('1', 49);
   await waitForView('daily');
+  await kbEval('document.querySelector(".quick-start footer button")?.click(); 1');
+  await settle(100);
   await kbEval('[...document.querySelectorAll("button")].find(b => /already know/i.test(b.textContent))?.click(); 1');
   await settle(600);
 }

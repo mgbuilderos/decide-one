@@ -222,9 +222,9 @@ These are founder decisions. Apply them; do not re-open them.
    - Keep the leaflet's *structure* — recto, verso, and the turn as the closure gesture. A flat, exact turn is the instrument form of it.
    - Rewrite Rules 10, 13, 15 and 19 to guard the new truth — for example, that no book chrome is reachable from `main.jsx` — and break each once to prove it fires. Also update **Rule 0**, whose governed-surface list names `data/monthIllustrations.jsx`, and **Rule 6**, which finds the notebook by its `embossed-notebook` class: rename the class and the rule together. Rule 14's `pendingTurnRef` requirement stays only if the remaining turn still needs it.
    - The landing page must still depict the actual product (§13.5): update `landing/JournalScene.jsx`, `landing/JournalDemo.jsx` and the renders in `public/renders/` so nobody believes a paper notebook is for sale.
-   - **Applied in part, 14 September:** the cover (with `showCover`, the C key, the menu and Tools entries and its sounds) and `src/data/monthIllustrations.jsx` are gone, including from the privacy shutter; `?view=cover` opens daily through `src/utils/viewParam.js`; BR8, B-15 and C6 are amended. Rule 0 fails if either module is reached from `main.jsx`, and Rule 15 executes the view mapping. The woven tag, the day-step curl and the chassis remain.
-4. **No celebration.** `canvas-confetti` is still a dependency, imported by `ProductivityFrameworks.jsx` and `useLicenseAutoActivation.js`. Confetti is congratulation, which `BRAND_BOOK.md` §4 (*closure is observational, never congratulatory*) and R12 (no gamified visualisers) exclude. Find what triggers it and remove it; a verso line like *"4h 10m against 4h 30m planned."* is the whole reward.
-5. **There is no landing page** (the founder, 12 September; confirmed 15 September): `/` opens the instrument for everyone, first visit included. A first visit gets a short quick start that explains the page, then the morning question; a returning person opens straight to today. The marketing page, its 3D book scene and its renders are retired. The static guides, methods and FAQ pages, `?view=legal`, `?view=methods` and the `#prerender` summary in `index.html` stay. This replaces "first visits get the landing page" (shipped 13 September). Not yet built — Appendix A, Part 1.
+   - **Applied in part, 14 September:** the cover (with `showCover`, the C key, the menu and Tools entries and its sounds) and `src/data/monthIllustrations.jsx` are gone, including from the privacy shutter; `?view=cover` opens daily through `src/utils/viewParam.js`; BR8, B-15 and C6 are amended. Rule 0 fails if either module is reached from `main.jsx`, and Rule 15 executes the view mapping. The woven tag and chassis were also removed on 14 September. Only the day-step curl remains.
+4. **No celebration.** **Applied 14 September:** `canvas-confetti` and its call sites were removed; Rule 26 guards their absence. Confetti is congratulation, which `BRAND_BOOK.md` §4 (*closure is observational, never congratulatory*) and R12 (no gamified visualisers) exclude. Find what triggers it and remove it; a verso line like *"4h 10m against 4h 30m planned."* is the whole reward.
+5. **There is no landing page** (the founder, 12 September; confirmed 15 September): `/` opens the instrument for everyone, first visit included. A first visit gets a short quick start that explains the page, then the morning question; a returning person opens straight to today. The marketing page, its 3D book scene and its renders are retired. The static guides, methods and FAQ pages, `?view=legal`, `?view=methods` and the `#prerender` summary in `index.html` stay. This replaces "first visits get the landing page" (shipped 13 September). **Arrival applied 15 September:** the marketing route, 3D scene, demo, studio renders and Three.js are removed. `/` and retired links open daily; the three-step quick start is skipped after completion or existing written history. Header links reach guides, methods, FAQ and legal information. Static-template redesign and the social capture remain.
 6. **Number keys match the visible order** (fixed 14 September): 1 Daily · 2 Weekly · 3 Monthly · 4 Yearly. Weekly previously had no key at all.
 
 ---
@@ -301,9 +301,9 @@ Every item below shipped, or nearly shipped, in September 2026.
 
 **Storage.** `localStorage` key `DECIDEONE_STUDIO_V1`: `dailyLogs`, `monthlyLogs`, `weeklyReviews`, `decisions`, `closureLogs`, `habits` (legacy — habits were cut by P2) and `settings` (`paperStyle` plain/dots/square, `paperTone` and `inkColor` (kept for old backups, but always `white` and `carbon`: `normaliseAppearance` pins them on load and on import), `darkMode`, `isMuted`, `viewMode`). Data never leaves the device. Keys under earlier product names are migrated on read; never delete them.
 
-**Separate from the instrument.** `MarketingLandingPage.jsx` with `landing/landing.css`, `landing/JournalScene.jsx` and `landing/JournalDemo.jsx` (see `LANDING_PROTOTYPE.md`); and the 45 static pages built from `content/` by `scripts/build_content.js`. Their copy is governed by VISION §11 and `BRAND_BOOK.md`.
+**Separate from the instrument.** The 45 static pages built from `content/` by `scripts/build_content.js`; legal and methods views remain. The marketing components and Three.js were removed 15 September; `QuickStart.jsx` explains the real daily page. Their copy is governed by VISION §11 and `BRAND_BOOK.md`.
 
-**Stack.** React 18 · Vite 6 · Tailwind 3.4 · `lucide-react` icons · Three.js (landing only) · served as a Cloudflare Worker. Add no dependency that a few lines of code or the platform can replace.
+**Stack.** React 18 · Vite 6 · Tailwind 3.4 · `lucide-react` icons · served as a Cloudflare Worker. Add no dependency that a few lines of code or the platform can replace.
 
 ---
 
@@ -336,7 +336,7 @@ npm run deploy                 # the only way to publish; runs every gate, then 
 - [ ] Zero console errors in any state.
 - [ ] BR8 recorded as resolved; Rules 0, 6, 10, 13, 15 and 19 updated, and each changed rule broken once on purpose.
 - [ ] The visual gate covers the populated states you designed, with reviewed baselines.
-- [ ] The landing render and demo match the redesigned instrument.
+- [ ] The direct instrument arrival, quick start, static information pages and social capture match the redesigned instrument.
 - [ ] `npm run deploy` green; `verify:live` reports MATCH; `DECISION_LOG.md` says what changed and why.
 
 ---

@@ -191,6 +191,9 @@ It does three things the previous line did not. It **begins by trusting the read
 | *You don't need another list. You need to know which three.* | The enemy. |
 | *Three methods. One clear order.* | The mechanism. |
 
+**Quick-start control guidance — approved 15 September 2026 for the direct arrival.**
+“Pick the method that fits the day.” “Choose at the top of the page. Set minutes beside the first line. Turn Over to close the day.” Navigation: “Next”, “Back”, “Skip”, “Start”. Method descriptions may excerpt the existing crawlable one-liners: “Three things for today and no fourth.” “Six tasks in strict order.” “Sorting on two axes before deciding what to do.” These locate existing controls and explain the three-step arrival without adding a promise, field or method. The primary statement and privacy/free promise above supply the other two steps.
+
 ### 11.2 What the product does — the four movements
 
 1. **It makes the competing work visible.** A bounded page turns a crowded mental list into a choice the person can see.

@@ -50,13 +50,14 @@ the page where a person writes their priorities. So:
    Monitoring was turned off rather than permitted: it was giving accurate Core
    Web Vitals for free, and it still could not be allowed.
 2. **Site measurement must be first-party and route-scoped.** Whatever measures
-   the landing page must be code this repository owns, mounted on landing routes
-   and never on `?view=daily` or any instrument view. Heatmaps and session
+   site must be code this repository owns. **15 September: `/` opens the instrument;
+   within React only `?view=legal` and `?view=methods` entries collect web vitals,
+   never `/`, retired landing links or any instrument view.** Heatmaps and session
    replay were the obvious candidates and have been cut outright — see §0b.
 3. **Performance metrics are now ours to build.** §3.2's LCP, INP, CLS and TTFB
    no longer arrive free from the edge. They come from `PerformanceObserver` in
    first-party code, reported through the existing telemetry pipeline, on
-   landing routes.
+   legal/methods entry routes.
 
 **What a second origin would have bought**, recorded because it will be proposed
 again: `app.decideone.app` would have let the marketing host run full
