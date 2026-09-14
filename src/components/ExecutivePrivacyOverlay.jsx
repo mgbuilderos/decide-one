@@ -100,12 +100,6 @@ export default function ExecutivePrivacyOverlay({
         className="fixed inset-0 z-[150] backdrop-blur-2xl bg-black/40 flex flex-col items-center justify-center cursor-pointer transition-all duration-300 select-none p-4 animate-in fade-in"
       >
         <div className="relative text-center p-8 sm:p-10 rounded-[26px] bg-white/95 dark:bg-[#141416]/95 border border-black/10 dark:border-white/10 shadow-2xl backdrop-blur-xl max-w-sm w-full mx-4">
-          <div 
-            className="woven-fabric-tag cursor-default"
-            title="Decide One Priority Instrument"
-          >
-            DECIDE ONE
-          </div>
           <div className="w-12 h-12 mx-auto mb-4 rounded-full border border-black/10 dark:border-white/20 bg-black/[0.03] dark:bg-white/[0.05] flex items-center justify-center text-neutral-800 dark:text-white/80">
             <Lock className="w-5 h-5" />
           </div>
@@ -144,14 +138,6 @@ export default function ExecutivePrivacyOverlay({
       <div className="w-full max-w-[412px] md:max-w-[420px] mx-auto my-auto flex flex-col justify-center items-center relative">
         <div className="w-full bg-white dark:bg-[#141416] text-neutral-900 dark:text-neutral-100 p-6 sm:p-8 rounded-[26px] flex flex-col justify-between items-center relative shadow-2xl embossed-notebook paper-block-edge border border-black/[0.08] dark:border-white/[0.08] select-none">
           
-          {/* Authentic Folded Woven Twill Brand Tag (Tucked under paper edge) */}
-          <div 
-            className="woven-fabric-tag cursor-default"
-            title="Decide One Priority Instrument"
-          >
-            DECIDE ONE
-          </div>
-
           {/* Subtle Hairline Perimeter Inner Frame */}
           <div className="w-full h-full border border-black/[0.06] dark:border-white/[0.06] rounded-[20px] p-5 sm:p-6 flex flex-col justify-between items-center text-center relative">
             

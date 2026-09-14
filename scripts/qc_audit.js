@@ -466,8 +466,30 @@ scanFiles(SRC_DIR, (filePath, content) => {
   }
 });
 
-// Rule 10: Clean Unified Stationery Gate (Zero 3-dot menus, zero black tie cord, authentic sewn label)
+// Rule 10: No 3-dot menu, no tie cord, and no woven tag.
+//
+// Until 15 September 2026 this rule required App.jsx to carry the woven
+// "DECIDE ONE" twill tag. BR8 was resolved toward the instrument register on
+// 14 September (DECISIONS.md BR8, UI_BRIEF §7.3), and the tag was removed from
+// App.jsx, from both privacy-shutter cards and from index.css. So the rule is
+// inverted: a woven tag anywhere under src/ fails, in markup or in CSS.
+//
+// It matches `woven`, not the "DECIDE ONE" label, because that label is also
+// the weekly PDF's heading, which is not book chrome. Comments are stripped
+// first, so a note about the tag is not the tag. The message says whether
+// src/main.jsx reaches the file, which is the difference between shipping it
+// and being one import away from shipping it.
 scanFiles(SRC_DIR, (filePath, content) => {
+  if (/woven/i.test(stripComments(content))) {
+    const reach = reachedFiles.has(filePath)
+      ? 'src/main.jsx reaches this file, so the tag ships.'
+      : 'Nothing reaches this file from src/main.jsx yet; one import would ship it.';
+    errors.push(
+      `[Rule 10 Violation] ${path.relative(process.cwd(), filePath)} carries the woven tag, which was retired ` +
+      `with the book chrome (P11; BR8 resolved toward the instrument register). ${reach} ` +
+      'Remove it, or reverse the decision in DECISIONS.md first.'
+    );
+  }
   if (filePath.includes('HeaderToolbar.jsx')) {
     if (content.includes('MoreHorizontal') || content.includes('isMoreOpen')) {
       errors.push(`[Rule 10 Violation] HeaderToolbar still contains floating 3-dot menu.`);
@@ -476,9 +498,6 @@ scanFiles(SRC_DIR, (filePath, content) => {
   if (filePath.includes('App.jsx')) {
     if (content.includes('connecting-tie-cord') || content.includes('tie-clasp-top')) {
       errors.push(`[Rule 10 Violation] App.jsx still contains harsh black tie cord.`);
-    }
-    if (!content.includes('woven-fabric-tag')) {
-      errors.push(`[Rule 10 Violation] App.jsx is missing sewn woven-fabric-tag.`);
     }
   }
 });
@@ -1093,7 +1112,7 @@ if (errors.length === 0) {
   console.log('  - Rule 7: Single-column full-width monthly spread (no 2-column desktop squishing)');
   console.log('  - Rule 8: 2-Tier header masthead (brand at top, utilities below, zero speaker button)');
   console.log('  - Rule 9: 24px grid cadence in the components that ship it, each asserted reachable');
-  console.log('  - Rule 10: Clean Unified Stationery Gate (zero 3-dots, zero black tie cord, authentic sewn label)');
+  console.log('  - Rule 10: Zero 3-dot menus, zero black tie cord, and no woven tag anywhere under src/ (retired with the book chrome)');
   console.log('  - Rule 11: Framework Roster Gate (exactly 3 methods ship; MoSCoW, 1-3-5 and Pareto stay cut)');
   console.log('  - Rule 12: Framework Grid Alignment & Wrapping Safety Gate (fixed header heights & whitespace-nowrap)');
   console.log('  - Rule 13: FlippingBook 3D Page Leaf Flip Integration Gate (Stationary flat notebook canvas with 3D spine-hinged turning leaf)');

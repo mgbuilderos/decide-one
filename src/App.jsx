@@ -761,7 +761,7 @@ export default function App() {
       />
 
       {/* Open Notebook 2-Page Spread (Bi-Fold Desktop / Two-Fold Mobile) */}
-        <main ref={mainStageRef} className={`w-full max-w-[412px] md:max-w-[960px] mx-auto flex-1 min-h-0 flex flex-col justify-center print-page transition-all pb-12 sm:pb-0 relative pt-5 sm:pt-6 flippingbook-stage`}>
+        <main ref={mainStageRef} className={`w-full max-w-[412px] md:max-w-[960px] mx-auto flex-1 min-h-0 flex flex-col justify-center print-page transition-all pb-12 sm:pb-0 relative flippingbook-stage`}>
             
             {/* Floating day controls only belong to the daily instrument. */}
             {activeView === 'daily' && <button
@@ -790,19 +790,6 @@ export default function App() {
               style={snappedNotebookHeight ? { height: `${snappedNotebookHeight}px`, maxHeight: `${snappedNotebookHeight}px` } : undefined}
               className={`relative ${paperClass} rounded-[20px] p-6 [@media(max-height:820px)_and_(min-height:761px)]:p-4 [@media(max-height:760px)]:p-3 embossed-notebook w-full flex-shrink-0 flex flex-col justify-between transition-all`}
             >
-              {/* Authentic Folded Woven Twill Brand Tag (Tucked under paper edge) */}
-              <button
-                type="button"
-                onClick={() => {
-                  playSound('click', settings.isMuted);
-                  setIsMenuOpen(true);
-                }}
-                className="woven-fabric-tag cursor-pointer"
-                title="Decide One Priority Instrument (Click to open menu)"
-              >
-                DECIDE ONE
-              </button>
-
             <div className="relative z-10 flex-1 min-h-0 flex flex-col overflow-hidden">
               {activeView === 'daily' ? (
                 <div className="flex-1 min-h-0 flex flex-col">
