@@ -138,7 +138,7 @@ const send = (method, params = {}, sessionId) => new Promise((resolve, reject) =
   const id = nextId++;
   const timer = setTimeout(() => {
     pending.delete(id);
-    reject(new Error(`Chrome did not answer ${method} within ${CDP_TIMEOUT_MS / 1000}s — the page is likely stuck`));
+    reject(new Error(`Chrome did not answer ${method}${params && params.expression ? ' (' + String(params.expression).slice(0, 60) + '…)' : ''} within ${CDP_TIMEOUT_MS / 1000}s — the page is likely stuck`));
   }, CDP_TIMEOUT_MS);
   pending.set(id, {
     resolve: (v) => { clearTimeout(timer); resolve(v); },
@@ -408,6 +408,12 @@ process.stderr.write('  keyboard pass\n');
 // 2.5s in headless Chrome) — and it fails only when a key never arrives.
 const kbTarget = await send('Target.createTarget', { url: 'about:blank' });
 const { sessionId: kbSession } = await send('Target.attachToTarget', { targetId: kbTarget.targetId, flatten: true });
+// Close the surfaces' tab so this is the only page, in front. Left open, it kept
+// focus and this tab ran in the background — where the privacy shutter frosts a
+// window that has lost focus, and a full-screen blur under software rendering
+// starved the page until Chrome stopped answering (the deploy of 14 September).
+await send('Target.closeTarget', { targetId }).catch(() => {});
+await send('Target.activateTarget', { targetId: kbTarget.targetId }).catch(() => {});
 const kbCall = (method, params) => send(method, params, kbSession);
 const kbEval = async (expression) => {
   const { result, exceptionDetails } = await kbCall('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true });
@@ -416,6 +422,7 @@ const kbEval = async (expression) => {
 };
 await kbCall('Page.enable');
 await kbCall('Runtime.enable');
+await kbCall('Emulation.setFocusEmulationEnabled', { enabled: true });
 await kbCall('Emulation.setDeviceMetricsOverride', { width: DESKTOP.w, height: DESKTOP.h, deviceScaleFactor: 1, mobile: false });
 
 const kbProblems = [];
