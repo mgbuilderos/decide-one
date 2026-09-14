@@ -224,7 +224,7 @@ These are founder decisions. Apply them; do not re-open them.
    - The landing page must still depict the actual product (§13.5): update `landing/JournalScene.jsx`, `landing/JournalDemo.jsx` and the renders in `public/renders/` so nobody believes a paper notebook is for sale.
    - **Applied in part, 14 September:** the cover (with `showCover`, the C key, the menu and Tools entries and its sounds) and `src/data/monthIllustrations.jsx` are gone, including from the privacy shutter; `?view=cover` opens daily through `src/utils/viewParam.js`; BR8, B-15 and C6 are amended. Rule 0 fails if either module is reached from `main.jsx`, and Rule 15 executes the view mapping. The woven tag, the day-step curl and the chassis remain.
 4. **No celebration.** `canvas-confetti` is still a dependency, imported by `ProductivityFrameworks.jsx` and `useLicenseAutoActivation.js`. Confetti is congratulation, which `BRAND_BOOK.md` §4 (*closure is observational, never congratulatory*) and R12 (no gamified visualisers) exclude. Find what triggers it and remove it; a verso line like *"4h 10m against 4h 30m planned."* is the whole reward.
-5. **Returning visitors open the instrument** (shipped 13 September): a written day in storage sends `/` straight to the daily view; first visits get the landing page. Keep it.
+5. **There is no landing page** (the founder, 12 September; confirmed 15 September): `/` opens the instrument for everyone, first visit included. A first visit gets a short quick start that explains the page, then the morning question; a returning person opens straight to today. The marketing page, its 3D book scene and its renders are retired. The static guides, methods and FAQ pages, `?view=legal`, `?view=methods` and the `#prerender` summary in `index.html` stay. This replaces "first visits get the landing page" (shipped 13 September). Not yet built — Appendix A, Part 1.
 6. **Number keys match the visible order** (fixed 14 September): 1 Daily · 2 Weekly · 3 Monthly · 4 Yearly. Weekly previously had no key at all.
 
 ---
@@ -355,47 +355,95 @@ npm run deploy                 # the only way to publish; runs every gate, then 
 
 ## Appendix A — the kick-off prompt
 
-This is the prompt to start an agent on this work. Paste it as the first message in the repository.
+Paste this as the first message to the agent doing the design work (ChatGPT Codex). Written 15 September 2026 against commit 8b9756e; where it and older sections of this brief disagree, this prompt is newer.
 
 ```text
-You are the lead product designer and front-end engineer for Decide One — a free, private, one-page priority instrument (React 18, Vite, Tailwind, served as a Cloudflare Worker). The repository is your working directory. Other agents (Claude Code, Antigravity) work in this repository too, so follow its rules exactly.
+You are the lead product designer and front-end engineer for Decide One — a free, private, one-page priority instrument (React 18, Vite 6, Tailwind 3.4, served as a Cloudflare Worker at decideone.app). The repository is your working directory. Claude Code and Antigravity also work in it, so follow its rules exactly. You own every design change from here.
 
 MISSION
-Redesign the instrument's interface to the standard of a precision instrument panel: premium through exactness, never ornament; built to look the same in ten years; and genuinely better at its one job — helping a person choose what deserves today, give it real time, and close the day. The bar: someone who could afford anything would still choose this, because it does the one job better than anything else. The founder, in their own words: "We are an instrument, not a diary." "The frameworks are not just a skin but a theme that works accordingly."
+Make the instrument premium through exactness, never ornament — built to look the same in ten years, and genuinely better at its one job: helping a person choose what deserves today, give it real time, and close the day. The standing test: someone who could afford anything would still choose this, because it does the one job better than anything else. The founder: "We are an instrument, not a diary." "The frameworks are not just a skin but a theme that works accordingly."
 
-READ BEFORE YOU TOUCH ANYTHING, IN THIS ORDER
-1. Run `npm run brief`.
-2. Read AGENTS.md in full.
-3. Read UI_BRIEF.md in full. It is the source of truth for this task: the vision, the constraints, what the gates do and do not catch, the decisions already made, and every learning so far. Where it points to VISION.md §11–§13, FRAMEWORKS.md §5 and §7, or BRAND_BOOK.md, read those sections too.
-4. Run `npm run build && npm run test:qc && npm run test:artifact && npm run test:visual` and confirm the tree starts green. The visual gate needs Google Chrome and Node 22+ and takes about twenty minutes — run it in the background; if Chrome is unavailable where you run, say so instead of skipping it. If any gate fails, stop and report what fails. Do not build on a red tree.
-5. Run the app (`npm run dev`) and open `?view=daily`, `?view=weekly`, `?view=monthly` and `?view=yearly` at 1440×900, 1366×768 and 390×844, in light and dark. List every defect you can see against UI_BRIEF.md §5 and §8 before changing any code.
+READ FIRST, IN THIS ORDER
+1. `npm run brief` (always first), then `npm run tree` — if another agent wrote in the last five minutes, wait.
+2. AGENTS.md in full.
+3. UI_BRIEF.md in full — the vision, constraints, what the gates catch and miss, decisions, learnings. Where it points to VISION.md §11–§13, FRAMEWORKS.md §5/§7, BRAND_BOOK.md or DECISIONS.md, read those sections. Before re-deriving anything: `npm run why "<term>"`. Where a document and the code disagree, the code is the truth.
+4. `npm run build && npm run test:qc && npm run test:artifact` must be green before you change anything (they are, at commit 8b9756e). Then run `npm run test:visual` (needs Google Chrome and Node 22+; several minutes; run one at a time). It is EXPECTED to report pixel changes on first run — see "State of the gates". If Chrome is unavailable where you run, say so; do not skip it and do not deploy without it.
+5. Run `npm run dev` and look at `/`, `?view=daily`, `weekly`, `monthly`, `yearly` at 1440×900, 1366×768 and 390×844, light and dark. List every defect against UI_BRIEF §5 and §8 before writing code.
+
+FOUNDER DECISIONS THAT OVERRIDE ANYTHING OLDER
+- There is no marketing landing page. `/` opens the instrument for everyone (Part 1).
+- No `?giftFrom=` links are in circulation; the greeting went with the cover and stays gone.
+- Black and white only. Colour appears solely as the red/yellow/green progress marks, and only to mean progress.
+
+This brief has two parts that share one design system and every rule below. PART 1 is the landing — what a person arrives at. PART 2 is the journal — the instrument itself. Do Part 1's decision record and removal first, then design both parts from the same tokens.
+
+PART 1 — THE LANDING: WHAT A VISITOR ARRIVES AT
+There is no marketing landing page any more. `/` opens the instrument for everyone, first visit included. The founder (12 September): "instead of sharing the landing page why cannot we just show directly the journal so they can start straight away... we don't want to waste their time by reading this. We can highlight the features across, but then having them directly [start] with a few guidance steps is like a quick start... pop-ups that explain how to use, ask them their state, and then they can start."
+   So: a first visit opens the daily instrument with a short quick start — a few steps that say what this is and how the page works — then the existing morning question (`DayConditionPrompt`, "What does today look like?"), then the person starts. A returning person opens straight to today. The quick start is the one new surface you are asked to build; keep it to a few steps, skippable, keyboard-operable, shown once, fitting 320×568 without scroll.
+   Record this BEFORE the code, in one commit: amend DECISIONS.md B-39 (it still says decideone.app serves "the landing page and the instrument") — IDs are duplicated in that file, so find the row by line AND content. UI_BRIEF §7.5 already carries the decision.
+   What goes: `src/components/MarketingLandingPage.jsx`; `src/components/landing/` (JournalScene.jsx — the 3D book, 801 lines; JournalDemo.jsx; landing.css, 2,687 lines); the `three` dependency (only JournalScene uses it); `public/renders/decideone-studio-d1*.webp`; the menu's "Tour" button (`onOpenLanding` in UnifiedMenuModal.jsx); the `landing-page-active` / `.pm-landing` rules in src/index.css; the landing hash list and hash-sync effect in App.jsx.
+   What changes with it, all in src/App.jsx unless named: the initial view (drop the `hasWrittenBefore()` gate and the hash branch — first-visit detection moves to the quick start); `src/utils/viewParam.js` — `landing` becomes a retired view that opens `daily`, and Rule 15 in scripts/qc_audit.js executes the view list including `landing`, so update both together and break the rule once; the URL-sync effect; `usePrivacyShutter({ enabled })`; the scroll-lock effect; the keyboard handler's landing guard; `LegalPages` and `MethodsPage` onBack (to daily); the `web_vitals` entry logic (TELEMETRY_SPEC §0a scopes site measurement to marketing routes — keep only legal/methods, and note it in TELEMETRY_SPEC).
+   What stays: `index.html`'s `#prerender` crawlable summary (VISION §11.1 copy and links — search engines and AI crawlers read it; createRoot removes it on mount); the static `/guides/`, `/methods/`, `/faq/` pages; `?view=legal` and `?view=methods`. `scripts/qc_artifact.js` fails unless the app bundle links every content section — link them from inside the instrument (quick start and/or menu). The social image `public/renders/decideone-social.jpg` (index.html:15 and :22, scripts/build_content.js:38) shows the old book: replace it with a capture of the redesigned instrument once the design is final, and update its alt text through VISION §11.
+   Quick-start copy: only VISION §11.1 (the statement and its approved alternates) and the method one-liners already in index.html `#prerender`. Any other sentence goes into VISION §11 first, with the reason. Never call the product a journal, diary or planner in the interface.
+   Designing the arrival:
+   - The first screen IS the product: today's page, ready to write on, with the quick start over it. It must look finished in the first second — no loading shell flashing, no layout shift when the quick start appears, the correct date and a running clock immediately.
+   - The quick start is explanation, not onboarding theatre. A few steps (three is the working number), one idea each: (1) what this is — VISION §11.1's primary line and its second sentence; (2) how the page works — bring what is on your mind into view, pick the method that fits the day (Top 3, Ivy Lee, the Urgent/Important Matrix, using the one-liners in index.html `#prerender`), give the first one real time, close the day — pointing at the real controls on the page rather than describing them in the abstract; (3) the promise — one page, nothing leaves your device, free, no account — then hand over to the morning question. Next, Back and Skip; Esc skips; focus is trapped and restored; position shown as a figure (1/3). No mascots, illustrations, animation loops or progress rewards.
+   - People also land on the static guides, methods and FAQ pages that `scripts/build_content.js` builds from `content/` (45 pages; its `STYLE` constant and `render()` templates, roughly lines 324–530; every page links "Back to Decide One" to `/`). Restyle that template to the same tokens and type so arriving from search feels like the same instrument. Do not change their words — `scripts/check_content.js` and VISION §11 govern them. Keep `?view=legal` and `?view=methods` (LegalPages.jsx, MethodsPage.jsx) reachable and styled the same; the legal URL must stay stable for the payment provider.
+   - The document head in index.html — title, description, og/twitter meta and the `#prerender` summary — stays truthful to the instrument, and the summary keeps its links to the methods, guides and FAQ.
+
+ALREADY DONE — DO NOT REDO (commits 577af4f..8b9756e, not yet deployed)
+- Confetti removed; `canvas-confetti` uninstalled; Rule 26 keeps celebration packages out.
+- Coloured inks and paper tones removed; `src/utils/appearance.js` `normaliseAppearance` pins carbon on white on load and on both imports; Rule 3 executes it and bans the retired names.
+- Notebook cover, `showCover`, the C shortcut, cover sounds and the twelve month illustrations removed; `?view=cover` opens daily; BR8 resolved toward the instrument in DECISIONS.md.
+- Woven "DECIDE ONE" tag removed; Rule 10 inverted.
+- The sheet is flat: `.instrument-sheet` is one hairline, no shadow or chassis; Rules 6 and 19 share that anchor.
+UI_BRIEF §7.1–§7.4 still describe some of these as to-do; mark them applied when you next edit the brief.
+
+PART 2 — THE JOURNAL: THE INSTRUMENT ITSELF
+1. The 3D page curl between days. 66 references remain — `flipState`, `PageTurnLeaf`, `flippingbook-stage`, `mobile-fold-turn`, `preserve-3d`, `rotateY`, `kindle-turn`, `bifold` — in src/App.jsx, SpreadPages.jsx, YearlyViewSpread.jsx and src/index.css. Replace with a flat, exact day step that honours `prefers-reduced-motion`. Keep the leaflet's structure — recto, verso, and the turn as the closure gesture — and every B-19, P11 and P12 condition. Rules 13 and 14 still require the "FlippingBook 3D page leaf": rewrite them for the flat step and break each once. The snapper ResizeObserver in App.jsx depends on `[activeView]`; decide its deps with evidence.
+2. Colour. About 60 chromatic Tailwind classes remain in OmniSearchModal, ExecutivePrivacyOverlay, ExecutiveDecisionLogModal, UnifiedMenuModal, ExecutiveClosureRitualModal, ExecutiveVoiceHUD, PatronUpgradeModal and ExecutiveScratchpadModal; the daily count renders a red "0/3"; ExecutiveVoiceHUD has a looping `animate-ping` dot (§5: nothing loops for attention); src/index.css has an olive-tinted dark header; index.html uses `bg-[#E1E1E6]` and `#3f3f46`; UnifiedMenuModal still says "gold spine glow". Neutralise — recolour only; keeping, demoting or removing those surfaces is the founder's call. Then turn Rule 3 from a deny list into an allow-list (black/white/neutral/transparent/current, one chroma threshold for literals, index.html in scope, only the `.progress-*` blocks exempt), green on arrival.
+3. The founder's first name is the hardcoded default owner name in src/utils/archivalExport.js, src/utils/weeklyBriefingPDF.js, ExecutivePrivacyOverlay.jsx, UnifiedMenuModal.jsx and ExecutiveClosureRitualModal.jsx. Default to empty and make every render site read correctly when empty.
+4. The premium redesign itself: a design system as tokens in one place (type scale, spacing on the 24px cadence, neutral colour tokens, motion), used by both parts. Then the daily recto (the header, date and day-of-year, the method's lines, the execution layer's time controls, the clock, the footer) and the verso (the day report and the closure turn); each of the three modes, so the rule of the mode is visible in the page itself; weekly, monthly and yearly; and the secondary surfaces (menu, search, decision log, scratchpad, dictation HUD, privacy shutter, closure and carry-forward dialogs) restyled to the same system without changing what they do. Light and dark are one design, not two.
+5. UI_BRIEF §8 defects: the execution hint's one-word widow at 1440×900; priority placeholders clipped mid-word at 320px; DayReport says "The day is done" on an already-closed day; six fixed 48px Ivy Lee rows unmeasured at 1366×768 and 1280×600; view-switch speed unmeasured — measure it in a visible browser against §5's 100ms.
+6. Gate weaknesses found in review — fix while you are in those rules: Rule 3's normaliseAppearance call-site check is fooled by a trailing `//` comment; Rule 15's App.jsx wiring check is a text grep that an unused call satisfies; Rule 10 is a name grep; Rule 26 reads src imports only (add a dist check to qc_artifact.js); Rule 18 is redundant with Rule 0. Add seeded visual surfaces for the populated states you design: three lines written, an Ivy Lee lock, a running timer, overrun, the verso, a past day, the quick start.
 
 NON-NEGOTIABLES
-- No vertical or horizontal scroll, and no clipped content, on any instrument view at 1440×900, 1366×768, 1366×700, 1366×640, 1280×600, 390×844, 360×740 and 320×568.
-- Black and white. Colour only as the red/yellow/green progress marks, and only to mean progress.
-- No ornament: no gold, foil, leather, stitching, woven labels, paper texture as decoration, book covers, spines, ribbons, page curls, month illustrations, glass effects, gradients, glows, confetti, streaks, scores or badges.
-- The Helvetica Neue stack only. Tabular numerals for every figure. No text below 11px. Every grey at 3:1 contrast or better.
-- Exactly three frameworks, and they are MODES, not skins: Top 3 (three lines, no fourth), Ivy Lee (six in strict order, each locked until the previous one is done), the Urgent/Important Matrix (classify before writing). Today the modes differ in which lines exist, which are locked and where writing happens — but capacity (src/utils/executionModel.js computeCapacity) and closure (DayReport.jsx) are identical in every mode, and the Matrix's default rows can be written without classifying. Make each mode's rule visible and enforced; if you believe capacity or closure should read differently per mode, put it in your plan and wait for the founder. Typography, palette, grid and clock never change between modes.
-- The analogue clock is the only clock and must be right to the second. Every number shown must be correct.
-- Never judge: no red on past days, no failure states; overrun is information. All copy follows VISION.md §11 and BRAND_BOOK.md. Never describe the product as a journal, diary or planner. Never use the trademarked method names in FRAMEWORKS.md §6.3. Never name real people in the interface.
-- Add no features, surfaces, settings or fields. Redesign what exists. Apply the removals UI_BRIEF.md §7 lists as decided; propose any other removal and wait for the founder.
-- Zero console errors in any state. Every state in UI_BRIEF.md §8 designed.
-- Add no dependency that a few lines of code or the platform can replace.
+- No vertical or horizontal scroll and no clipped content on any instrument view or the quick start at 1440×900, 1366×768, 1366×700, 1366×640, 1280×600, 390×844, 360×740 and 320×568.
+- Black and white only. No ornament: no gold, foil, leather, stitching, woven labels, decorative paper texture, covers, spines, ribbons, page curls, illustrations, glass, gradients, glows, confetti, streaks, scores or badges.
+- The Helvetica Neue stack only (Rule 1). Tabular numerals for every figure. No text below 11px. Every grey at 3:1 contrast or better.
+- Exactly three methods, and they are MODES, not skins: Top 3 (three lines, no fourth), Ivy Lee (six in strict order, each locked until the previous is done — `isItemLocked`), the Urgent/Important Matrix (classify before writing). Capacity (`src/utils/executionModel.js` computeCapacity) and closure (DayReport.jsx) are identical in every mode today, and the Matrix's default rows can be written without classifying. Make each mode's rule visible and enforced; if capacity or closure should differ per mode, put it in your plan and wait for the founder. Typography, palette, grid and clock never change between modes.
+- The analogue clock is the only clock and is right to the second. Every number shown is correct.
+- Never judge: no red on past days, no failure states; overrun is information. Copy follows VISION §11 and BRAND_BOOK.md. Never use the method names FRAMEWORKS.md §6.3 restricts. Never name real people in the interface.
+- Zero console errors in any state. Every state in UI_BRIEF §8 designed, including empty and returning-after-a-month.
+- Add no dependency that a few lines or the platform can replace. Add no feature, setting or field beyond the quick start.
+
+STATE OF THE GATES (as of 8b9756e)
+- Green: `npm run build`, `npm run test:qc` (Rule 0 and Rules 1–26 plus content gates), `npm run test:artifact`.
+- `npm run test:visual` will report pixel changes: the baselines in tests/baselines/darwin/ predate the removals (woven tag, chassis shadow, the FAQ's deleted supporter paragraph, the landing demo's removed pickers). Open every `*.changed.png` next to its baseline, confirm each difference is intended, and record with `npm run test:visual -- --update` in the same commit as the change that caused it, naming each surface and why. Baselines are per platform: on Linux the directory is empty and the first run records instead of comparing — then review the recorded images by eye before trusting them.
+- The visual gate renders 16 surfaces in headless Chrome with time frozen at 2026-09-14 09:30 Asia/Kolkata. Its keyboard pass dispatches key events inside the page, because CDP key injection crashes headless Chrome on macOS — keep it that way. `landing-desktop` and `landing-mobile` must become first-visit `/` surfaces showing the quick start; the daily surfaces and the keyboard pass currently dismiss only the morning question ("I already know") and must also skip the quick start. Rules 4, 12, 16 and 20 check for literals in scripts/visual_check.js (`fixed: true`, `unreachable`, `clipped_x`, `320, h: 568`, `dispatchEvent(new KeyboardEvent(type`, `waitForView(expected)`); keep them.
+- Never weaken a gate to make a change pass. If a decision changes, change DECISIONS.md or VISION.md first, then the rule, in one commit. Break every rule you add or change once, on purpose, and watch it fail.
 
 HOW TO WORK
-- Plan first. Write a short plan — the screens, the components, the design system (type scale, spacing scale, colour tokens, motion) and the order of work — and record it with `npm run log "..."`. Then build in small, reviewable steps.
-- Begin with UI_BRIEF.md §7.3: record BR8 as resolved in DECISIONS.md, retire the book chrome, and update Rules 0, 6, 10, 13, 15 and 19 as that section describes, in the same commit.
-- Build the design system as tokens in one place before restyling components, so every surface draws from the same scale.
-- Commit at every working state. Stage files by name — never `git add -A` or `git commit -a`. Run `npm run log "..."` with each commit, saying what changed and why.
-- Never weaken a gate to make a change pass. If a decision changes, change DECISIONS.md or VISION.md first, then the rule, in one commit. Break every rule you add or change once, on purpose, and watch it fail.
-- Extend scripts/visual_check.js with seeded surfaces for the populated states you design (three lines, an Ivy Lee lock, a running timer, overrun, the verso, a past day). Review every tests/baselines/*.changed.png before running `npm run test:visual -- --update`, and name the changed surfaces in the commit.
-- Update the landing page's render and demo so they depict the redesigned product.
-- Publish only with `npm run deploy`. If it reports DIFFERENT, run `npm run verify:live` again before diagnosing anything.
-- Stop and ask the founder only about the items in UI_BRIEF.md §13, or when two governing documents genuinely conflict.
+- Plan first: a short plan (screens, components, tokens, order of work) recorded with `npm run log "..."`. Suggested order: decision records → landing removal and quick start → flat day step → tokens → instrument restyle → secondary surfaces neutral → Rule 3 allow-list and gate fixes → seeded surfaces and baselines → docs → deploy.
+- Commit at every working state; you may be cut off at any time. Stage files by name — never `git add -A` or `git commit -a`. `npm run log "..."` with each commit, saying what changed and why.
+- Before each commit: `npm run build && npm run test:qc` (and `npm run test:artifact` when files are added or removed).
+- Do not merge the branches `claude/great-snyder-b287a3` (it re-adds confetti) or `claude/inspiring-satoshi-f0fb27`; they are the founder's to decide.
+- Publish only with `npm run deploy` (audit, build, artefact check, visual gate, publish, verify). Never run `wrangler deploy` directly. If verify reports DIFFERENT, run `npm run verify:live` again before diagnosing — the edge caches the home page for a few minutes.
+- Update UI_BRIEF.md, DECISIONS.md, WORK_REMAINING.md, ARCHITECTURE_AUDIT.md §7e and LANDING_PROTOTYPE.md (retire it) to match what you shipped. AGENTS.md and CLAUDE.md must stay byte-identical (Rule 0 checks).
+
+ONLY THE FOUNDER DECIDES — ASK, DO NOT ASSUME
+- Everything in UI_BRIEF §13: the Today stream cap (B-23); keeping, demoting or removing the decision log, scratchpad, voice dictation, search and privacy shutter; the support ask — PatronUpgradeModal still advertises "Page & Ink Appearance", a feature that no longer exists; R16; the recto footer wording ("Three choices" vs "Three methods").
+- Any replacement for the deleted FAQ supporter paragraph.
+- The patron-chime and singing-bowl sounds; the score, streak and status code; the Trophy icon; the weekly PDF heading.
+- Changing the Top 3 count from x/3 to x/written.
+- A Turn Over control at 640px and wider, so the verso is reachable on desktop.
+- Whether the owner-name setting survives.
+- Archiving the ~33 legacy root documents.
+- Anything else that adds a surface, setting, field or feature.
 
 DONE MEANS
-Every box in UI_BRIEF.md §12 is ticked, `npm run deploy` is green, and verify:live reports MATCH.
+Every box in UI_BRIEF §12 ticked; Part 1 and Part 2 shipped; `npm run deploy` green; `npm run verify:live` reports MATCH.
 
 REPORT BACK
-A short summary of: the design system you set; every surface and state you changed, with before-and-after screenshots at 1440×900 and 390×844; every rule you rewrote and how you proved it fires; anything UI_BRIEF.md got wrong, with your correction to it; and every open question for the founder.
+The design system you set; every surface and state you changed, with before-and-after screenshots at 1440×900 and 390×844; every rule you rewrote and how you proved it fires; anything UI_BRIEF.md got wrong, with your correction; and every open question for the founder.
 ```
