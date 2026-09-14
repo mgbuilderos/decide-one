@@ -237,13 +237,13 @@ export default function UnifiedMenuModal({
             </div>
           </div>
 
-          {/* Section 2: Stationery, Paper & Fountain Pen Ink (Pixel-Perfect Single Lines) */}
+          {/* Section 2: Stationery (page grid, closure reminder, theme and audio) */}
           <div className="p-3.5 sm:p-4 rounded-2xl border border-black/[0.08] dark:border-white/[0.08] space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
                 <Feather className="w-3.5 h-3.5 text-neutral-800 dark:text-neutral-200" />
                 <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
-                  Stationery & Ink Studio
+                  Stationery
                 </span>
               </div>
             </div>
@@ -275,75 +275,6 @@ export default function UnifiedMenuModal({
                 ))}
               </div>
             </div>
-
-            {/* Row 2: Paper Tone (Vellum / Washi / White) */}
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-xs text-neutral-500 dark:text-neutral-400 whitespace-nowrap">Paper Tone</span>
-              <div className="flex items-center gap-1 bg-black/[0.04] dark:bg-white/[0.06] p-0.5 rounded-xl border border-black/[0.04] dark:border-white/[0.06]">
-                {[
-                  { id: 'white', label: 'White' },
-                  { id: 'cream', label: 'Vellum' },
-                  { id: 'washi', label: 'Washi' }
-                ].map((tone) => {
-                  const isCurrent = (settings.paperTone || 'white') === tone.id;
-                  return (
-                    <button
-                      key={tone.id}
-                      type="button"
-                      onClick={() => {
-                        playSound('click', settings.isMuted);
-                        updateSettings({ paperTone: tone.id });
-                      }}
-                      className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-all cursor-pointer flex items-center gap-1 whitespace-nowrap ${
-                        isCurrent
-                          ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-2xs'
-                          : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'
-                      }`}
-                    >
-                      <span>{tone.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Row 3: Fountain Pen Inks (Single-Line 4-Column Grid, Zero Wrapping) */}
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-xs text-neutral-500 dark:text-neutral-400 whitespace-nowrap">Archival Ink</span>
-              <div className="grid grid-cols-4 gap-1 bg-black/[0.04] dark:bg-white/[0.06] p-0.5 rounded-xl border border-black/[0.04] dark:border-white/[0.06]">
-                {[
-                  { id: 'carbon', label: 'Carbon', color: '#18181B' },
-                  { id: 'oxblood', label: 'Oxblood', color: '#5C1414' },
-                  { id: 'konpeki', label: 'Kon-peki', color: '#0369A1' },
-                  { id: 'sepia', label: 'Sepia', color: '#78350F' }
-                ].map((ink) => {
-                  const isCurrent = (settings.inkColor || 'carbon') === ink.id;
-                  return (
-                    <button
-                      key={ink.id}
-                      type="button"
-                      onClick={() => {
-                        playSound('click', settings.isMuted);
-                        updateSettings({ inkColor: ink.id });
-                      }}
-                      className={`px-2 py-1 rounded-lg text-[10px] font-semibold transition-all cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap ${
-                        isCurrent
-                          ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-2xs'
-                          : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'
-                      }`}
-                      title={ink.label}
-                    >
-                      <span 
-                        className="w-2 h-2 rounded-full shrink-0 shadow-2xs" 
-                        style={{ backgroundColor: ink.color }} 
-                      />
-                      <span className="truncate whitespace-nowrap">{ink.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
 
             {/* Row 5: Ambient Nudges & Evening Closure */}
             <div className="flex items-center justify-between gap-2 pt-2 border-t border-black/[0.06] dark:border-white/[0.06]">

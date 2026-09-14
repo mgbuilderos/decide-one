@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, ArrowUpRight, Lock, Unlock, Target, ListOrdered, Grid2X2, Grip, Square, PenLine } from 'lucide-react';
+import { Check, ArrowUpRight, Lock, Unlock, Target, ListOrdered, Grid2X2, Grip, Square } from 'lucide-react';
 import { FRAMEWORKS } from '../ProductivityFrameworks';
 const EXAMPLES = {
   rule_of_3: ['Make progress on the work that matters', 'Protect an hour for deep thinking', 'Finish the day with a clear mind'],
@@ -14,9 +14,7 @@ export default function JournalDemo({
     text,
     done: key === 'rule_of_3' && i === 0
   }))])));
-  const [tone, setTone] = useState('white');
   const [grid, setGrid] = useState('dots');
-  const [ink, setInk] = useState('carbon');
   const [minutes, setMinutes] = useState([90, 45, 60]);
   const [locked, setLocked] = useState(false);
   const completed = tasks[method].filter(t => t.done).length;
@@ -33,13 +31,11 @@ export default function JournalDemo({
         {FRAMEWORKS.map((f,i) => { const Icon = [Target,ListOrdered,Grid2X2][i]; return <button key={f.id} title={f.name + ' · ' + f.subtitle} aria-label={f.name} aria-pressed={method === f.id} onClick={() => setMethod(f.id)}><Icon size={18} strokeWidth={1.5}/><span>{['Top 3','Sequence','Matrix'][i]}</span></button>; })}
       </div>
       <div className="pm-appearance-pickers">
-        <div role="group" aria-label="Paper Tone">{[['white','White','#ffffff'],['slate','Soft Gray','#eeeeee']].map(([id,label,color]) => <button key={id} title={label + ' Paper'} aria-label={label + ' Paper'} aria-pressed={tone === id} onClick={() => setTone(id)}><span className="pm-paper-swatch" style={{background:color}}/></button>)}</div>
         <div role="group" aria-label="Page Grid">{[['dots','Dots',Grip],['square','Squared',Grid2X2],['plain','Plain',Square]].map(([id,label,Icon]) => <button key={id} title={label + ' Grid'} aria-label={label + ' Grid'} aria-pressed={grid === id} onClick={() => setGrid(id)}><Icon size={17} strokeWidth={1.4}/></button>)}</div>
-        <div role="group" aria-label="Ink Tone">{[['carbon','Black','#111111'],['graphite','Graphite','#555555']].map(([id,label,color]) => <button key={id} title={label + ' Ink'} aria-label={label + ' Ink'} aria-pressed={ink === id} onClick={() => setInk(id)}><PenLine size={17} color={color}/></button>)}</div>
       </div>
     </div>
     <div className="pm-approach-description" aria-live="polite"><strong>{FRAMEWORKS.find(f => f.id === method)?.name}</strong><span>{FRAMEWORKS.find(f => f.id === method)?.subtitle}</span></div>
-    <div className={`pm-demo pm-paper-${tone} pm-grid-${grid} pm-ink-${ink}`}>
+    <div className={`pm-demo pm-grid-${grid}`}>
       <div className={`pm-demo-content ${locked ? 'pm-obscured' : ''}`} inert={locked ? '' : undefined}>
         <div className="pm-demo-page"><div className="pm-demo-masthead"><span>Monday, September 07</span><span>Today&rsquo;s Decision</span></div><h3>What Comes First?</h3><p className="pm-demo-subtitle">List the work competing for your attention. Then put it in order.</p><div className="pm-demo-section-label"><span>{FRAMEWORKS.find(f => f.id === method)?.name}</span><span aria-live="polite">{completed} / {tasks[method].length}</span></div><div className="pm-demo-tasks">{tasks[method].map((task, i) => <div key={method + i} className={`pm-demo-task ${task.done ? 'is-done' : ''}`}><button role="checkbox" aria-checked={task.done} aria-label={`Complete priority ${i + 1}: ${task.text}`} onClick={() => changeTask(i, {
                 done: !task.done

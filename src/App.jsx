@@ -775,20 +775,6 @@ export default function App() {
       ? 'Plain Edition'
       : 'Dot-Grid';
 
-  const paperToneClass = settings.paperTone === 'cream'
-    ? 'paper-tone-cream'
-    : settings.paperTone === 'washi'
-      ? 'paper-tone-washi'
-      : '';
-
-  const inkClass = settings.inkColor === 'oxblood'
-    ? 'ink-oxblood'
-    : settings.inkColor === 'konpeki'
-      ? 'ink-konpeki'
-      : settings.inkColor === 'sepia'
-        ? 'ink-sepia'
-        : '';
-
   const effectiveSettings = { ...settings, paperStyle: effectivePaperStyle };
 
   // Single-Page Marketing Website Route (Natural Window Scrolling)
@@ -898,7 +884,7 @@ export default function App() {
             {/* Authentic Japanese Stationery Paper Block Canvas */}
             <div 
               style={snappedNotebookHeight ? { height: `${snappedNotebookHeight}px`, maxHeight: `${snappedNotebookHeight}px` } : undefined}
-              className={`relative ${paperClass} ${paperToneClass} ${inkClass} rounded-[20px] p-6 [@media(max-height:820px)_and_(min-height:761px)]:p-4 [@media(max-height:760px)]:p-3 embossed-notebook w-full flex-shrink-0 flex flex-col justify-between transition-all`}
+              className={`relative ${paperClass} rounded-[20px] p-6 [@media(max-height:820px)_and_(min-height:761px)]:p-4 [@media(max-height:760px)]:p-3 embossed-notebook w-full flex-shrink-0 flex flex-col justify-between transition-all`}
             >
               {/* Authentic Folded Woven Twill Brand Tag (Tucked under paper edge) */}
               <button

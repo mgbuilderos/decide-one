@@ -86,69 +86,6 @@
   background-image: none !important;
 }
 
-/* =========================================================================
-   ARCHIVAL PAPER TONES & LUXURY FOUNTAIN PEN INKS
-   ========================================================================= */
-.paper-tone-cream.paper-dots,
-.paper-tone-cream.paper-square,
-.paper-tone-cream.paper-plain,
-.paper-tone-cream {
-  background-color: #FAF7EE !important;
-}
-.dark .paper-tone-cream.paper-dots,
-.dark .paper-tone-cream.paper-square,
-.dark .paper-tone-cream.paper-plain,
-.dark .paper-tone-cream {
-  background-color: #1A1815 !important;
-}
-
-.paper-tone-washi.paper-dots,
-.paper-tone-washi.paper-square,
-.paper-tone-washi.paper-plain,
-.paper-tone-washi {
-  background-color: #F2F1ED !important;
-}
-.dark .paper-tone-washi.paper-dots,
-.dark .paper-tone-washi.paper-square,
-.dark .paper-tone-washi.paper-plain,
-.dark .paper-tone-washi {
-  background-color: #161719 !important;
-}
-
-/* Custom Fountain Pen Archival Inks */
-.ink-oxblood input,
-.ink-oxblood textarea,
-.ink-oxblood .stationery-ink-target {
-  color: #5C1414 !important;
-}
-.dark .ink-oxblood input,
-.dark .ink-oxblood textarea,
-.dark .ink-oxblood .stationery-ink-target {
-  color: #F87171 !important;
-}
-
-.ink-konpeki input,
-.ink-konpeki textarea,
-.ink-konpeki .stationery-ink-target {
-  color: #0369A1 !important;
-}
-.dark .ink-konpeki input,
-.dark .ink-konpeki textarea,
-.dark .ink-konpeki .stationery-ink-target {
-  color: #38BDF8 !important;
-}
-
-.ink-sepia input,
-.ink-sepia textarea,
-.ink-sepia .stationery-ink-target {
-  color: #78350F !important;
-}
-.dark .ink-sepia input,
-.dark .ink-sepia textarea,
-.dark .ink-sepia .stationery-ink-target {
-  color: #FBBF24 !important;
-}
-
 @layer utilities {
 
   /* Compact Pocketnote Internal Scrollbar */

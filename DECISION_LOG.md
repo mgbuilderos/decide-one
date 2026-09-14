@@ -1350,3 +1350,9 @@ Corrects the 14 Sep entry that blamed the privacy frost for the blocked deploy o
 ### 2026-09-14 23:37 — unattributed
 
 Removed confetti (UI_BRIEF §7.4, decided part of celebration). Deleted triggerCelebration and its three triggers (Top 3, Matrix, Ivy Lee) in ProductivityFrameworks.jsx; removed the static canvas-confetti import and block from useLicenseAutoActivation.js; npm uninstall canvas-confetti; dropped the unused Award import in ExecutiveClosureRitualModal.jsx. isMuted stays on the licence hook because the patron-chime (founder-only) still uses it. Added Rule 26 (no celebration): fails on a confetti package in package.json, an import under src/, and says when main.jsx reaches it. Negative-tested: pre-removal tree (3 hits), dependency, devDependency, static import, dynamic import, unreachable file; commented import passes. dist has no particleCount. Left for the founder: patron-chime, singing-bowl, score/streak code, Trophy, PDF heading. UI_BRIEF §7.4 past tense left to Docs.
+
+---
+
+### 2026-09-14 23:46 — unattributed
+
+Removed coloured inks and paper tones (UI_BRIEF 7.2). New pure src/utils/appearance.js normaliseAppearance pins inkColor carbon and paperTone white; applied on volume load, importJSON and importEncryptedVault. Deleted paperToneClass/inkClass (App.jsx), .paper-tone-*/.ink-* CSS (index.css), the Paper Tone and Archival Ink menu rows (section label now 'Stationery'), the landing demo tone and ink pickers with their pm-paper-*/pm-ink-* CSS. Removed the faq.md supporter-extras paragraph. check_content.js gains an APPEARANCE list; Rule 3 keeps its eight classes and adds a retired-name ban plus an executed migration check. UI_BRIEF 7.2 and 10 Storage updated. JournalScene.jsx left: its maps are still read.

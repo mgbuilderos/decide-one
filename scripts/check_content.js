@@ -105,6 +105,13 @@ const APP_GATES = appStillGatesFeatures();
 // said — the landing page claimed it once while the SDK was live.
 const TELEMETRY = ['zero telemetry', 'no telemetry', 'zero tracking', 'we collect nothing'];
 
+// UI_BRIEF §7.2, the founder on 13 September: black and white only. The
+// instrument offers no ink or paper colour, so no page may present one as an
+// option. faq.md still promised supporters extra paper tones and ink colours
+// when this list was added, and nothing here could see it.
+const APPEARANCE = ['paper tone', 'ink colour', 'ink color', 'coloured ink', 'colored ink',
+  'fountain pen ink', 'archival ink'];
+
 // FOUNDATIONS.md §5 and VISION.md §11.3: exactly one scientific claim is
 // permitted anywhere, Gollwitzer & Sheeran (2006), if-then planning only.
 // A page reaching for the vocabulary of evidence must be the page that cites it.
@@ -155,6 +162,8 @@ for (const dir of DIRS) {
     }
     check(file, text, TELEMETRY, 'telemetry claim (TELEMETRY_SPEC)',
       'The honest claim is that nothing is sent unless the person turns it on.');
+    check(file, text, APPEARANCE, 'appearance option (UI_BRIEF §7.2)',
+      'Black and white only: the instrument offers no ink or paper colour, so do not present one.');
 
     // Length. A title tag Google truncates is a title tag written for nobody —
     // the template appends " — Decide One", 13 characters, so the front-matter

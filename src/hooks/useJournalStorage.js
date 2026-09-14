@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { encryptVaultData, decryptVaultData, downloadEncryptedVaultFile } from '../utils/cryptoVault';
 import { telemetry } from '../utils/telemetry';
+import { normaliseAppearance } from '../utils/appearance';
 
 const STORAGE_KEY = 'DECIDEONE_STUDIO_V1';
 const LEGACY_STORAGE_KEYS = [
@@ -563,6 +564,8 @@ function loadVolumeDataFromStorage(volumeId) {
       if (!parsed.closureLogs) {
         parsed.closureLogs = {};
       }
+      // Black and white only (UI_BRIEF §7.2): a stored ink or paper tone reads as carbon on white.
+      parsed.settings = normaliseAppearance(parsed.settings);
       return parsed;
     }
   } catch (e) {
@@ -743,7 +746,7 @@ export function useJournalStorage() {
     try {
       const parsed = JSON.parse(jsonString);
       if (parsed && parsed.dailyLogs) {
-        setData(parsed);
+        setData({ ...parsed, settings: normaliseAppearance(parsed.settings) });
         return true;
       }
     } catch (e) {
@@ -835,7 +838,7 @@ export function useJournalStorage() {
   const importEncryptedVault = useCallback(async (envelope, passphrase) => {
     const decrypted = await decryptVaultData(envelope, passphrase);
     if (decrypted && (decrypted.dailyLogs || decrypted.habits)) {
-      setData(decrypted);
+      setData({ ...decrypted, settings: normaliseAppearance(decrypted.settings) });
       return true;
     }
     return false;

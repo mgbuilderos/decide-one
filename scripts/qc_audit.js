@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { pathToFileURL } from 'url';
 
 const SRC_DIR = path.resolve('src');
 let errors = [];
@@ -241,6 +242,88 @@ scanFiles(SRC_DIR, (filePath, content) => {
     }
   }
 });
+
+// Rule 3, continued: the retired inks and paper tones stay retired (UI_BRIEF §7.2).
+//
+// The founder ruled black and white only on 13 September. The eight classes
+// above never named what that ruling removed, so three coloured inks and two
+// paper tones passed this rule while the settings menu still offered them.
+// There are two halves, because either alone can be satisfied by something
+// false. The names must be gone from src/, and a person who picked one before
+// must still get carbon on white. The second half is executed, not grepped:
+// the migration is imported and run here, and each path that brings settings
+// in from outside the running page is checked to call it.
+const RETIRED_APPEARANCE = /(?<![\w-])(?:oxblood|kon-?peki|sepia|washi|paper-tone-[a-z]+|ink-(?:oxblood|konpeki|sepia|blue|burgundy|graphite)|inkClass|paperToneClass|pm-ink-[a-z]+|pm-paper-(?:white|slate|ivory|swatch))\b/i;
+scanFiles(SRC_DIR, (filePath, content) => {
+  content.split('\n').forEach((line, index) => {
+    const retired = line.match(RETIRED_APPEARANCE);
+    if (retired) {
+      errors.push(
+        `[Rule 3 Violation] Retired ink or paper tone "${retired[0]}" at ` +
+        `${path.relative(process.cwd(), filePath)}:${index + 1}. Black and white only ` +
+        '(UI_BRIEF §7.2): carbon on white is the one appearance.'
+      );
+    }
+  });
+});
+
+const appearanceSubjects = requireLiveSubjects(
+  'Rule 3',
+  ['utils/appearance.js', 'hooks/useJournalStorage.js'],
+  'a stored ink or paper tone must be migrated to carbon on white on load and on import'
+);
+if (appearanceSubjects.includes('utils/appearance.js')) {
+  const canonical = (value) => JSON.stringify(Object.keys(value || {}).sort().map(key => [key, value[key]]));
+  try {
+    const { normaliseAppearance } = await import(pathToFileURL(path.join(SRC_DIR, 'utils/appearance.js')).href);
+    const legacy = Object.freeze({ inkColor: 'sepia', paperTone: 'washi', darkMode: true, paperStyle: 'square' });
+    const migrated = normaliseAppearance(legacy);
+    const expected = { inkColor: 'carbon', paperTone: 'white', darkMode: true, paperStyle: 'square' };
+    const fromNothing = normaliseAppearance(undefined);
+    if (migrated === legacy || canonical(migrated) !== canonical(expected)) {
+      errors.push(
+        `[Rule 3 Violation] normaliseAppearance(${JSON.stringify(legacy)}) returned ` +
+        `${JSON.stringify(migrated)}; it must return a new object equal to ${JSON.stringify(expected)}. ` +
+        'Anyone who picked a coloured ink or paper tone would keep it.'
+      );
+    }
+    if (canonical(fromNothing) !== canonical({ inkColor: 'carbon', paperTone: 'white' })) {
+      errors.push(
+        `[Rule 3 Violation] normaliseAppearance(undefined) returned ${JSON.stringify(fromNothing)}; ` +
+        'a backup with no settings must still import as carbon on white.'
+      );
+    }
+  } catch (e) {
+    errors.push(
+      `[Rule 3 Violation] src/utils/appearance.js could not be run (${e.message}). The migration ` +
+      'must stay a pure, dependency-free module that returns a new object, so this audit can execute it.'
+    );
+  }
+}
+if (appearanceSubjects.includes('hooks/useJournalStorage.js')) {
+  const storage = stripComments(fs.readFileSync(path.join(SRC_DIR, 'hooks/useJournalStorage.js'), 'utf8'));
+  const nextDeclaration = /\n(?:export )?(?:function |  const \w+ = useCallback\()/g;
+  for (const [route, start] of [
+    ['loading a volume from localStorage', 'function loadVolumeDataFromStorage('],
+    ['importJSON, restoring a .json backup', 'const importJSON = useCallback('],
+    ['importEncryptedVault, restoring a .vault backup', 'const importEncryptedVault = useCallback(']
+  ]) {
+    const at = storage.indexOf(start);
+    if (at === -1) {
+      errors.push(`[Rule 3 Violation] useJournalStorage.js no longer has "${start}", so Rule 3 cannot see whether ${route} migrates appearance. Point the rule at what does this now.`);
+      continue;
+    }
+    nextDeclaration.lastIndex = at + start.length;
+    const next = nextDeclaration.exec(storage);
+    const body = storage.slice(at, next ? next.index : storage.length);
+    if (!body.includes('normaliseAppearance(')) {
+      errors.push(
+        `[Rule 3 Violation] ${route} in useJournalStorage.js does not call normaliseAppearance(). ` +
+        'Settings arriving that way keep whatever ink and paper tone they carry.'
+      );
+    }
+  }
+}
 
 // Rule 4: The instrument holds one screen — no scroll on either axis.
 //
@@ -914,7 +997,7 @@ if (errors.length === 0) {
   console.log('✅ ALL STRUCTURAL QC CHECKS PASSED (not security or legal certification):');
   console.log('  - Rule 1: Zero font-mono violations (Universal Helvetica)');
   console.log('  - Rule 2: Zero unmanaged overlapping dropdown popovers in the item rows that ship');
-  console.log('  - Rule 3: 3-Color Progress Gate (Red, Yellow, Green progress tracking only; zero random decorative colors)');
+  console.log('  - Rule 3: 3-Color Progress Gate (progress colours only; retired inks and paper tones stay retired; the carbon-on-white migration is run)');
   console.log('  - Rule 4: Zero-scroll viewport lock & slim notepad proportions (max-w-[412px])');
   console.log('  - Rule 5: Consumer-friendly language gate (zero technical jargon in UI labels)');
   console.log('  - Rule 0: Governed surfaces exist AND are reached from main.jsx (a deleted or orphaned file fails rather than skipping its rules)');

@@ -687,12 +687,6 @@
   box-shadow: 0 26px 45px -24px #36363650,0 2px 0 #d0d0d0,0 4px 0 #707070,0 6px 0 #272727;
   position: relative
 }
-.pm-paper-white {
-  --paper: #fcfcfc
-}
-.pm-paper-slate {
-  --paper: #e2e2e2
-}
 .pm-grid-dots {
   background-image: radial-gradient(#72727230 .7px,transparent .8px);
   background-size: 18px 18px
@@ -700,12 +694,6 @@
 .pm-grid-square {
   background-image: linear-gradient(#72727212 1px,transparent 1px),linear-gradient(90deg,#72727212 1px,transparent 1px);
   background-size: 18px 18px
-}
-.pm-ink-blue {
-  --ink: #464646
-}
-.pm-ink-burgundy {
-  --ink: #454545
 }
 .pm-demo-content {
   display: grid;
@@ -2279,7 +2267,6 @@
 .pm-hero-product .pm-scene { height: 500px; }
 .pm-canvas { touch-action: pan-y pinch-zoom; }
 .pm-product-caption { padding-bottom: 28px; }
-.pm-demo-wrap .pm-paper-white { --paper: #ffffff; --ink: #2a2a2a; }
 .pm-design-section { background: #efefef; }
 .pm-demo-section-label { text-transform: none; letter-spacing: .3px; }
 .pm-eyebrow { letter-spacing: 1.1px; text-transform: none; }
@@ -2345,9 +2332,6 @@
 .pm-design-section .pm-eyebrow,.pm-design-section .pm-section-heading>p { color:#666; }
 .pm-focus-preview,.pm-ritual-preview,.pm-calendar-preview { background:#fff; color:#111; }
 .pm-demo { --paper:#fff; --ink:#111; --rule:#0002; border-color:#d5d5d5; box-shadow:0 22px 48px -28px #0005,0 2px 0 #ddd,0 4px 0 #aaa; }
-.pm-demo-wrap .pm-paper-white { --paper:#fff; --ink:#111; }
-.pm-demo.pm-paper-slate { --paper:#eee; }
-.pm-demo.pm-ink-graphite { --ink:#555; }
 .pm-demo-icon-toolbar { display:flex; align-items:center; justify-content:space-between; gap:24px; margin:0 0 14px; }
 .pm-approach-picker { display:flex; gap:5px; }
 .pm-approach-picker button { min-width:65px; padding:11px 9px; display:flex; flex-direction:column; align-items:center; gap:7px; color:#666; background:transparent; border:1px solid transparent; border-radius:10px; transition:background .2s,color .2s; }
@@ -2359,7 +2343,6 @@
 .pm-appearance-pickers button { width:35px; height:38px; display:flex; align-items:center; justify-content:center; background:transparent; border:1px solid transparent; border-radius:8px; color:#555; }
 .pm-appearance-pickers button[aria-pressed=true] { background:#fff; border-color:#b9b9b9; color:#111; }
 .pm-appearance-pickers button:hover { background:#e3e3e3; }
-.pm-paper-swatch { width:17px; height:20px; border:1px solid #999; border-radius:2px; }
 .pm-approach-description { display:flex; align-items:baseline; gap:12px; margin:0 0 24px; color:#777; font-size:12px; min-height:18px; }
 .pm-approach-description strong { color:#222; font-weight:550; }
 .pm-demo-reminder { margin:44px 0 4px; text-align:center; font-size:17px; line-height:1.7; color:#777; }

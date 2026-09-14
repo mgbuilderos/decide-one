@@ -37,8 +37,6 @@ That is partly a privacy position and partly an honest one: scheduling a day opt
 
 No. You can open it and use it without paying and without signing up for anything. Everything the product exists to do — seeing the day's competing work, choosing a method, running the clock, closing the day, and backing your data up as JSON — is free.
 
-A few extras are reserved for supporters: two additional paper tones, three additional ink colours, a weekly PDF review, a Markdown export, and an annual print. None of them are the instrument; they are finishes on it.
-
 ### Do I need an account?
 
 No. There is no sign-up, no email, no password to create, and nothing to verify. You open the page and start.
