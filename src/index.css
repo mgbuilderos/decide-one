@@ -120,49 +120,19 @@
   }
 
   /* ==========================================================================
-     AUTHENTIC JAPANESE STATIONERY PAPER BLOCK (RODA SLIM NOTEPAD CRAFT)
+     THE INSTRUMENT SHEET
      ========================================================================== */
 
-  /* The Paper Block Canvas: Clean Japanese die-cut silhouette, stacked trimmed paper layers, rigid dark backing board */
-  .embossed-notebook {
+  /* Flat: one hairline, no shadow, no depth (Rule 19). This class is also
+     Rule 6's anchor for the 24px padding; rename it only with both rules. */
+  .instrument-sheet {
     position: relative;
     border-radius: 20px;
-    box-shadow: 
-      /* Top sheet specular highlight */
-      inset 0 1px 0 rgba(255, 255, 255, 0.95),
-      /* Crisp paper perimeter outline */
-      0 0 0 1px rgba(0, 0, 0, 0.05),
-      /* Visible 3D trimmed paper stack layers (clean cut paper sheets) */
-      0 1px 0 0 #ECEBE6,
-      0 2px 0 0 #E3E2DD,
-      0 3px 0 0 #DAD8D2,
-      0 4px 0 0 #D0CEC7,
-      /* Rigid dark backing board base peeking under the paper stack */
-      0 5px 0 0 #26262A,
-      0 6px 0 0 #161618,
-      /* Soft natural ambient desk occlusion */
-      0 8px 5px -2px rgba(0, 0, 0, 0.10),
-      0 16px 32px -4px rgba(0, 0, 0, 0.07),
-      0 32px 64px -8px rgba(0, 0, 0, 0.05);
-    transition: box-shadow 0.25s ease;
+    border: 1px solid rgba(0, 0, 0, 0.08);
   }
 
-  .dark .embossed-notebook {
-    border-radius: 20px;
-    box-shadow: 
-      inset 0 1px 0 rgba(255, 255, 255, 0.12),
-      0 0 0 1px rgba(255, 255, 255, 0.08),
-      /* Stacked dark obsidian stationery sheets */
-      0 1px 0 0 #28282C,
-      0 2px 0 0 #222226,
-      0 3px 0 0 #1C1C20,
-      0 4px 0 0 #161618,
-      /* Deep dense backing board base */
-      0 5px 0 0 #101012,
-      0 6px 0 0 #08080A,
-      /* Nocturnal ambient elevation shadow */
-      0 8px 18px -2px rgba(0, 0, 0, 0.60),
-      0 24px 60px -8px rgba(0, 0, 0, 0.85);
+  .dark .instrument-sheet {
+    border-color: rgba(255, 255, 255, 0.08);
   }
 
   /* Micro-Perforated Tear-off Sheet Line */
@@ -173,66 +143,7 @@
     border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
   }
 
-  /* Bi-Fold Journal Center Spine Crease & Soft Gutter (Smyth-Sewn Bookbindery Thread) */
-  .notebook-spine-crease {
-    position: relative;
-  }
   @media (min-width: 768px) {
-    .notebook-spine-crease::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 1px;
-      background: rgba(0, 0, 0, 0.06);
-      box-shadow: -2px 0 6px rgba(0, 0, 0, 0.03), 2px 0 6px rgba(0, 0, 0, 0.03);
-      z-index: 25;
-      pointer-events: none;
-    }
-    .dark .notebook-spine-crease::before {
-      background: rgba(255, 255, 255, 0.06);
-      box-shadow: -2px 0 6px rgba(0, 0, 0, 0.5), 2px 0 6px rgba(0, 0, 0, 0.5);
-    }
-    /* Smyth-Sewn Thread Stitches down the central spine */
-    .notebook-spine-crease::after {
-      content: '';
-      position: absolute;
-      top: 24px;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 2px;
-      background-image: repeating-linear-gradient(
-        180deg,
-        #E4E1D8 0px,
-        #E4E1D8 10px,
-        transparent 10px,
-        transparent 26px,
-        rgba(0, 0, 0, 0.3) 26px,
-        rgba(0, 0, 0, 0.3) 28px,
-        transparent 28px,
-        transparent 48px
-      );
-      opacity: 0.7;
-      z-index: 26;
-      pointer-events: none;
-    }
-    .dark .notebook-spine-crease::after {
-      background-image: repeating-linear-gradient(
-        180deg,
-        #2A2A2E 0px,
-        #2A2A2E 10px,
-        transparent 10px,
-        transparent 26px,
-        rgba(255, 255, 255, 0.2) 26px,
-        rgba(255, 255, 255, 0.2) 28px,
-        transparent 28px,
-        transparent 48px
-      );
-      opacity: 0.8;
-    }
     /* Concave Gutter Valley Shadow Falloff */
     .bifold-left-page {
       background: linear-gradient(to right, transparent 86%, rgba(0, 0, 0, 0.025) 100%) !important;
@@ -393,7 +304,8 @@
     transform-origin: center center;
   }
 
-  /* Minimalist Floating Page-Turn Edge Trigger Tabs */
+  /* Previous and next day, on the sheet's edges. Neutral greys and no blur.
+     Focus is not suppressed: the global :focus-visible ring draws it. */
   .page-turn-edge-btn {
     position: absolute;
     top: 50%;
@@ -406,36 +318,31 @@
     border-radius: 9999px;
     background: rgba(0, 0, 0, 0.03);
     border: 1px solid rgba(0, 0, 0, 0.05);
-    color: #9CA3AF;
+    color: #A2A2A2;
     transition: all 0.2s var(--ease-out);
     cursor: pointer;
     user-select: none;
     z-index: 35;
-    backdrop-filter: blur(4px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    outline: none !important;
-  }
-  .page-turn-edge-btn:focus {
-    outline: none !important;
   }
 
   .dark .page-turn-edge-btn {
     background: rgba(255, 255, 255, 0.04);
     border-color: rgba(255, 255, 255, 0.07);
-    color: #6B7280;
+    color: #727272;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   }
 
   .page-turn-edge-btn:hover {
     background: rgba(0, 0, 0, 0.08);
-    color: #111827;
+    color: #181818;
     transform: translateY(-50%) scale(1.06);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
 
   .dark .page-turn-edge-btn:hover {
     background: rgba(255, 255, 255, 0.10);
-    color: #F9FAFB;
+    color: #FAFAFA;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
   }
 
@@ -751,100 +658,6 @@ body {
     inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
-/* 3D Perspective Diary Spread Hero Container */
-.diary-spread-3d-perspective {
-  perspective: 1200px;
-  transform-style: preserve-3d;
-}
-
-.diary-spread-stage {
-  transform: rotateX(2deg);
-  transition: transform 0.4s var(--ease-out), box-shadow 0.4s ease;
-  position: relative;
-}
-
-.diary-spread-stage:hover {
-  transform: rotateX(0deg) scale(1.006);
-}
-
-/* Hyper-Realistic 3D Physical Stationery Book Depth & Stacked Deckle Pages */
-.real-3d-book-chassis {
-  position: relative;
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.04),
-    0 4px 8px rgba(0, 0, 0, 0.04),
-    0 12px 24px -4px rgba(0, 0, 0, 0.08),
-    0 32px 64px -12px rgba(0, 0, 0, 0.16);
-}
-
-.dark .real-3d-book-chassis {
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.4),
-    0 4px 12px rgba(0, 0, 0, 0.5),
-    0 16px 36px -4px rgba(0, 0, 0, 0.7),
-    0 36px 80px -12px rgba(0, 0, 0, 0.85);
-}
-
-/* Physical Stacked Archival Pages Edge Effect (Right and Bottom Book Thickness) */
-.real-3d-book-chassis::after {
-  content: '';
-  position: absolute;
-  right: -6px;
-  bottom: -6px;
-  left: 6px;
-  top: 6px;
-  border-radius: 20px;
-  background: repeating-linear-gradient(
-    135deg,
-    #E8E6DF 0px,
-    #E8E6DF 1px,
-    #DCD9D0 1px,
-    #DCD9D0 2px
-  );
-  z-index: -1;
-  box-shadow: 
-    1px 1px 2px rgba(0, 0, 0, 0.08),
-    2px 2px 4px rgba(0, 0, 0, 0.05);
-  pointer-events: none;
-}
-
-.dark .real-3d-book-chassis::after {
-  background: repeating-linear-gradient(
-    135deg,
-    #1E1E22 0px,
-    #1E1E22 1px,
-    #141416 1px,
-    #141416 2px
-  );
-  box-shadow: 
-    1px 1px 3px rgba(0, 0, 0, 0.7),
-    2px 2px 6px rgba(0, 0, 0, 0.6);
-}
-
-/* Secondary Outer Book Binding Base Plate */
-.real-3d-book-chassis::before {
-  content: '';
-  position: absolute;
-  right: -10px;
-  bottom: -10px;
-  left: 10px;
-  top: 10px;
-  border-radius: 22px;
-  background: #1A1A1C;
-  z-index: -2;
-  box-shadow: 
-    0 8px 24px rgba(0, 0, 0, 0.2),
-    0 24px 48px -8px rgba(0, 0, 0, 0.25);
-  pointer-events: none;
-}
-
-.dark .real-3d-book-chassis::before {
-  background: #0D0D0F;
-  box-shadow: 
-    0 8px 28px rgba(0, 0, 0, 0.6),
-    0 32px 64px -8px rgba(0, 0, 0, 0.9);
-}
-
 /* Macro Inspection Lens Hover Effect */
 .macro-lens-container {
   overflow: hidden;
@@ -859,47 +672,6 @@ body {
   transform: scale(1.08);
 }
 
-
-/* 2. Gilded Fore-Edge Removed by User Request — Clean Black Embossed Edge */
-.gilded-fore-edge {
-  position: relative;
-}
-.gilded-fore-edge::after {
-  display: none !important;
-}
-
-/* 4. 3D Exploded Anatomy & Craftsmanship Interactive Stage */
-.exploded-anatomy-stage {
-  perspective: 1200px;
-  transform-style: preserve-3d;
-}
-
-.exploded-layer-card {
-  transition: transform 0.4s var(--ease-out), box-shadow 0.4s ease, border-color 0.4s ease;
-  transform-style: preserve-3d;
-}
-
-.exploded-layer-card:hover {
-  transform: translateY(-4px) scale(1.015);
-}
-
-/* =========================================================================
-   PROMOTION 120HZ STRATIFIED AMBIENT SHADOWS
-   ========================================================================= */
-.promotion-calibrated-elevation {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  box-shadow:
-    0 1px 1px rgba(0, 0, 0, 0.16),
-    0 8px 24px -3px rgba(0, 0, 0, 0.12),
-    0 24px 64px -12px rgba(0, 0, 0, 0.08);
-}
-.dark .promotion-calibrated-elevation {
-  box-shadow:
-    0 1px 1.5px rgba(0, 0, 0, 0.55),
-    0 12px 28px -4px rgba(0, 0, 0, 0.45),
-    0 36px 88px -14px rgba(0, 0, 0, 0.7);
-}
 
 /* =========================================================================
    400MS CAPILLARY INK DRYING ANIMATION
@@ -952,19 +724,6 @@ body {
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
-
-
-
-/* Luxury Stationery Tracing Vellum Soft Frost */
-.soft-frost-vellum {
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  background-color: rgba(245, 243, 238, 0.65);
-}
-.dark .soft-frost-vellum {
-  background-color: rgba(14, 14, 16, 0.75);
-}
-
 
 
 

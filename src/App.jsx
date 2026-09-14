@@ -107,7 +107,7 @@ export default function App() {
   const [mobileFlip, setMobileFlip] = useState(false);
   const [closureOfferedFor, setClosureOfferedFor] = useState(null);
 
-  // 24px Universal Grid Cadence Height Snapper for Embossed Notebook Canvas
+  // 24px grid cadence height snapper for the instrument sheet
   const [snappedNotebookHeight, setSnappedNotebookHeight] = useState(null);
   const mainStageRef = useRef(null);
 
@@ -785,10 +785,10 @@ export default function App() {
               <ChevronRight className="w-3.5 h-3.5 stroke-[2.5]" />
             </button>}
 
-            {/* Authentic Japanese Stationery Paper Block Canvas */}
+            {/* The instrument sheet: flat, one hairline, no shadow (Rules 6 and 19) */}
             <div 
               style={snappedNotebookHeight ? { height: `${snappedNotebookHeight}px`, maxHeight: `${snappedNotebookHeight}px` } : undefined}
-              className={`relative ${paperClass} rounded-[20px] p-6 [@media(max-height:820px)_and_(min-height:761px)]:p-4 [@media(max-height:760px)]:p-3 embossed-notebook w-full flex-shrink-0 flex flex-col justify-between transition-all`}
+              className={`relative ${paperClass} rounded-[20px] p-6 [@media(max-height:820px)_and_(min-height:761px)]:p-4 [@media(max-height:760px)]:p-3 instrument-sheet w-full flex-shrink-0 flex flex-col justify-between`}
             >
             <div className="relative z-10 flex-1 min-h-0 flex flex-col overflow-hidden">
               {activeView === 'daily' ? (

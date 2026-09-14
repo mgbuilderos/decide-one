@@ -136,7 +136,7 @@ export default function ExecutivePrivacyOverlay({
 
       {/* Center Stage: Authentic Stationery Locked Notebook */}
       <div className="w-full max-w-[412px] md:max-w-[420px] mx-auto my-auto flex flex-col justify-center items-center relative">
-        <div className="w-full bg-white dark:bg-[#141416] text-neutral-900 dark:text-neutral-100 p-6 sm:p-8 rounded-[26px] flex flex-col justify-between items-center relative shadow-2xl embossed-notebook paper-block-edge border border-black/[0.08] dark:border-white/[0.08] select-none">
+        <div className="w-full bg-white dark:bg-[#141416] text-neutral-900 dark:text-neutral-100 p-6 sm:p-8 rounded-[26px] flex flex-col justify-between items-center relative border border-black/[0.08] dark:border-white/[0.08] select-none">
           
           {/* Subtle Hairline Perimeter Inner Frame */}
           <div className="w-full h-full border border-black/[0.06] dark:border-white/[0.06] rounded-[20px] p-5 sm:p-6 flex flex-col justify-between items-center text-center relative">

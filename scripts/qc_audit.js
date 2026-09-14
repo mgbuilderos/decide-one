@@ -229,8 +229,23 @@ if (fs.existsSync('AGENTS.md') && fs.existsSync('CLAUDE.md')
 // Shared by Rules 6, 19 and others. It used to be declared inside Rule 4's body;
 // rewriting Rule 4 on 13 September removed it and the whole audit crashed with a
 // ReferenceError, which `node --check` cannot see. No rule body may own a variable
-// another rule depends on.
+// another rule depends on. cssPath sat at the top of Rule 6's body for the same
+// reason until 15 September, when Rules 6 and 19 were rewritten together.
 const appPath = path.join(SRC_DIR, 'App.jsx');
+const cssPath = path.join(SRC_DIR, 'index.css');
+
+// The instrument sheet: the one element the day, week, month and year are drawn
+// on. Rules 6 and 19 both grade it, and both find it by this one class on a
+// className attribute, so they cannot disagree about which element is the sheet
+// and a comment naming the class cannot stand in for it. Before 15 September
+// 2026 four plans pointed at it three ways (embossed-notebook, instrument-sheet,
+// data-sheet); this is the one anchor.
+const SHEET_TOKEN = /(?<![\w-])instrument-sheet(?![\w-])/;
+function sheetClassLines(content) {
+  return content.split('\n')
+    .map((text, index) => ({ text: text.replace(/\/\*.*?\*\//g, ''), line: index + 1 }))
+    .filter(({ text }) => /className=/.test(text) && SHEET_TOKEN.test(text));
+}
 
 const visualGate = fs.existsSync('scripts/visual_check.js') ? fs.readFileSync('scripts/visual_check.js', 'utf8') : '';
 
@@ -397,7 +412,6 @@ scanFiles(SRC_DIR, (filePath, content) => {
 });
 
 // Rule 6: 24px Universal Grid Cadence Gate
-const cssPath = path.join(SRC_DIR, 'index.css');
 if (fs.existsSync(cssPath)) {
   const cssContent = fs.readFileSync(cssPath, 'utf8');
   if (!cssContent.includes('background-size: 24px 24px')) {
@@ -413,9 +427,19 @@ if (fs.existsSync(appPath)) {
   // stays reachable — and the rule failed on the adjacency while the 24px
   // full-density padding it exists to protect was untouched. It now asserts
   // the property: the notebook element carries p-6, whatever follows it.
-  const notebookLine = appContent.split('\n').find(l => l.includes('embossed-notebook'));
-  if (!notebookLine || !/\bp-6\b/.test(notebookLine)) {
-    errors.push('[Rule 6 Violation] App.jsx notebook canvas does not use p-6 (24px) padding for exact grid coordinate sync.');
+  //
+  // On 15 September the embossed chassis was flattened and the class renamed
+  // from embossed-notebook to instrument-sheet (UI_BRIEF §7.3). The rule now
+  // finds the sheet by SHEET_TOKEN on a className, shared with Rule 19, and
+  // requires exactly one: with two, it would grade whichever came first.
+  const sheets = sheetClassLines(appContent);
+  if (sheets.length !== 1) {
+    errors.push(
+      `[Rule 6 Violation] App.jsx has ${sheets.length} className attributes carrying instrument-sheet; ` +
+      'there must be exactly one sheet, or the 24px padding cannot be checked on it.'
+    );
+  } else if (!/\bp-6\b/.test(sheets[0].text)) {
+    errors.push(`[Rule 6 Violation] App.jsx:${sheets[0].line} the instrument sheet does not use p-6 (24px) padding for exact grid coordinate sync.`);
   }
 }
 
@@ -545,7 +569,7 @@ scanFiles(SRC_DIR, (filePath, content) => {
       errors.push('[Rule 13 Violation] App.jsx does not mount spine-hinged 3D page leaf (page-leaf-container with leaf-turn-next/prev).');
     }
     if (content.includes('journal-flip-next') || content.includes('journal-flip-prev')) {
-      errors.push('[Rule 13 Violation] App.jsx still applies whole-canvas rotation (journal-flip-next/prev) to embossed-notebook.');
+      errors.push('[Rule 13 Violation] App.jsx still applies whole-canvas rotation (journal-flip-next/prev) to the instrument sheet.');
     }
     if (content.includes('flipping-sheet-next') || content.includes('flipping-sheet-prev')) {
       errors.push('[Rule 13 Violation] App.jsx still attaches truncated page flip animations to inner columns.');
@@ -820,20 +844,91 @@ if (!fs.existsSync(yearlySpreadPath)) {
 // is an open product question — B-36 in DECISIONS.md. If it is wired back in,
 // restore it to governedSurfaces rather than to a bare existsSync here.
 
-// Rule 19: Black Embossed Minimal Neumorphic Chassis Gate (No middle bookmark, no leather side border)
-if (fs.existsSync(appPath)) {
-  const appContent = fs.readFileSync(appPath, 'utf8');
-  if (appContent.includes('silk-ribbon-bookmark')) {
-    errors.push('[Rule 19 Violation] App.jsx still mounts middle silk-ribbon-bookmark (must be removed).');
+// Rule 19: The sheet is flat — no chassis.
+//
+// Until 15 September 2026 this rule required index.css to define
+// .embossed-notebook: eleven stacked box-shadows drawing trimmed paper, a dark
+// backing board and desk occlusion under the sheet, and it banned only two
+// ornaments by name. BR8 was resolved toward the instrument register on 14
+// September (DECISIONS.md BR8, UI_BRIEF §7.3), so the rule is inverted, and it
+// grades the element rather than a list of names:
+//
+//  1. The sheet exists. App.jsx carries instrument-sheet on a className (the
+//     anchor Rule 6 shares), and a stylesheet src/main.jsx reaches gives it a
+//     border. A rule with no sheet to look at would pass by abstaining.
+//  2. Nothing gives the sheet depth. Every CSS rule under src/ whose selector
+//     names .instrument-sheet, pseudo-elements included (the old paper stack was
+//     drawn that way), may not set a box-shadow or text-shadow other than none,
+//     a drop-shadow, a gradient sheen, a 3D transform, perspective, preserve-3d
+//     or backface-visibility. Every className carrying the sheet, in any
+//     component, may not add a Tailwind shadow, a 3D utility or transition-all.
+//  3. The retired chassis classes are gone from src/, in markup or CSS.
+//
+// Comments are stripped before 2 and 3, so a note about the chassis is not the
+// chassis. As in Rule 10, the message says whether src/main.jsx reaches the
+// file, which is the difference between shipping it and being one import away.
+{
+  const SHEET_DEPTH_CSS = [
+    [/(?<![\w-])box-shadow\s*:(?!\s*none\s*(?:!important\s*)?(?:;|$))/, 'a box-shadow'],
+    [/(?<![\w-])text-shadow\s*:(?!\s*none\s*(?:!important\s*)?(?:;|$))/, 'a text-shadow'],
+    [/drop-shadow\s*\(/, 'a drop-shadow'],
+    [/gradient\s*\(/, 'a gradient sheen'],
+    [/(?:rotate[XY]|rotate3d|translateZ|translate3d|scaleZ|scale3d|matrix3d|perspective)\s*\(/, 'a 3D transform'],
+    [/(?<![\w-])perspective\s*:/, 'perspective'],
+    [/preserve-3d/, 'preserve-3d'],
+    [/backface-visibility\s*:/, 'backface-visibility']
+  ];
+  const SHEET_DEPTH_UTILITY = /(?<![\w-])(?:(?:drop-)?shadow(?:-[^\s`'"}]+)?|\[(?:box|text)-shadow:[^\]]*\]|transition-all|perspective-[^\s`'"}]+|transform-3d|preserve-3d|backface-[^\s`'"}]+|rotate-[xy]-[^\s`'"}]+|translate-z-[^\s`'"}]+)(?![\w-])/g;
+  const RETIRED_CHASSIS = /(?<![\w-])(?:embossed-notebook|paper-block-edge|real-3d-book-chassis|notebook-spine-crease|monogram-(?:gold-foil|blind-deboss)|soft-frost-vellum|diary-spread-[\w-]+|exploded-(?:anatomy-stage|layer-card)|promotion-calibrated-elevation|gilded-fore-edge|silk-ribbon-bookmark)(?![\w-])/;
+  const reachNote = file => reachedFiles.has(file)
+    ? 'src/main.jsx reaches this file, so it ships.'
+    : 'Nothing reaches this file from src/main.jsx yet; one import would ship it.';
+
+  if (!fs.existsSync(appPath) || sheetClassLines(fs.readFileSync(appPath, 'utf8')).length === 0) {
+    errors.push('[Rule 19 Violation] No className in App.jsx carries instrument-sheet, so there is no sheet for Rule 19 to '
+      + 'hold flat. Point SHEET_TOKEN at the sheet, and rename the class in Rules 6 and 19 together.');
   }
-  if (appContent.includes('gilded-fore-edge')) {
-    errors.push('[Rule 19 Violation] App.jsx still contains gilded-fore-edge leather side border (must be removed).');
-  }
-}
-if (fs.existsSync(cssPath)) {
-  const cssContent = fs.readFileSync(cssPath, 'utf8');
-  if (!cssContent.includes('.embossed-notebook')) {
-    errors.push('[Rule 19 Violation] index.css must define .embossed-notebook black embossed neumorphic styling.');
+
+  let sheetHasHairline = false;
+  scanFiles(SRC_DIR, (file, content) => {
+    const rel = path.relative(process.cwd(), file);
+    const code = stripComments(content);
+
+    if (file.endsWith('.css')) {
+      for (const [, selector, body] of code.matchAll(/([^{}]*)\{([^{}]*)\}/g)) {
+        if (!SHEET_TOKEN.test(selector.replace(/^\s*\./gm, ' .').replace(/[.:]/g, m => (m === '.' ? ' ' : m)))) continue;
+        if (reachedFiles.has(file) && /(?<![\w-])border(?:-width)?\s*:\s*(?!none|0(?![.\d]))/.test(body)) sheetHasHairline = true;
+        for (const [pattern, what] of SHEET_DEPTH_CSS) {
+          if (!pattern.test(body)) continue;
+          errors.push(
+            `[Rule 19 Violation] ${rel} gives the sheet ${what} in "${selector.trim()}". The sheet is flat: ` +
+            `one hairline, no shadow, no depth (UI_BRIEF §7.3). ${reachNote(file)}`
+          );
+        }
+      }
+    } else {
+      for (const { text, line } of sheetClassLines(content)) {
+        const depth = [...text.matchAll(SHEET_DEPTH_UTILITY)].map(m => m[0]).filter(u => u !== 'shadow-none');
+        if (depth.length > 0) {
+          errors.push(
+            `[Rule 19 Violation] ${rel}:${line} adds ${depth.join(', ')} to the sheet. The sheet is flat, and does ` +
+            `not animate every property (UI_BRIEF §7.3). ${reachNote(file)}`
+          );
+        }
+      }
+    }
+
+    const retired = code.match(RETIRED_CHASSIS);
+    if (retired) {
+      errors.push(
+        `[Rule 19 Violation] ${rel} carries "${retired[0]}", book chassis retired with the embossed sheet ` +
+        `(P11; BR8 resolved toward the instrument register). ${reachNote(file)} Remove it, or reverse the decision in DECISIONS.md first.`
+      );
+    }
+  });
+  if (!sheetHasHairline) {
+    errors.push('[Rule 19 Violation] No stylesheet reached from src/main.jsx gives .instrument-sheet a border. The flat '
+      + 'sheet is drawn by one hairline; without it there is no edge at all.');
   }
 }
 
@@ -1108,7 +1203,7 @@ if (errors.length === 0) {
   console.log('  - Rule 4: Zero-scroll viewport lock & slim notepad proportions (max-w-[412px])');
   console.log('  - Rule 5: Consumer-friendly language gate (zero technical jargon in UI labels)');
   console.log('  - Rule 0: Governed surfaces exist AND are reached from main.jsx (a deleted or orphaned file fails rather than skipping its rules); retired surfaces are neither');
-  console.log('  - Rule 6: Strict 24px universal grid cadence alignment (paper-grid & canvas padding)');
+  console.log('  - Rule 6: Strict 24px universal grid cadence alignment (paper grid, and p-6 on the one instrument-sheet)');
   console.log('  - Rule 7: Single-column full-width monthly spread (no 2-column desktop squishing)');
   console.log('  - Rule 8: 2-Tier header masthead (brand at top, utilities below, zero speaker button)');
   console.log('  - Rule 9: 24px grid cadence in the components that ship it, each asserted reachable');
@@ -1121,7 +1216,7 @@ if (errors.length === 0) {
   console.log('  - Rule 16: Zero Date Overflow & Header Wrapping Gate (whitespace-nowrap & fixed 48px header boundary)');
   console.log('  - Rule 17: Zero "Bullet Journal" / Ryder Carroll Gate (100% Decide One brand purity & right page flex containment)');
   console.log('  - Rule 18: Lifetime Patron & Archival Monetization Gate (100% offline verification, export engine & 12-month annual view)');
-  console.log('  - Rule 19: Black Embossed Minimal Neumorphic Chassis Gate (No middle bookmark, no leather side border)');
+  console.log('  - Rule 19: The sheet is flat (one instrument-sheet with a hairline; no shadow, 3D or transition-all on it; no retired chassis class under src/)');
   console.log('  - Rule 20: Executive Universal Keyboard Navigation Gate (1/2/3/4/T routing, pressed in Chrome)');
   console.log('  - Rule 21: Restricted Naming Token Check (not trademark or copyright clearance)');
   console.log('  - Rule 22: Execution Layer Enforcement Gate (Ivy Lee order lock, breathing state, non-punitive overrun, timing provenance)');
