@@ -651,8 +651,9 @@ if (fs.existsSync(cssPath)) {
 //
 // Was: App.jsx must contain the strings "e.key === '1'" and so on. A handler
 // can contain all five and be attached to nothing. visual_check.js now presses
-// the keys in Chrome and asserts the view actually changes.
-if (!/dispatchKeyEvent/.test(visualGate)) {
+// the keys in Chrome and asserts the view actually changes. It dispatches them
+// inside the page, because CDP's injected keys crash headless Chrome on macOS.
+if (!/dispatchEvent\(new KeyboardEvent\(type/.test(visualGate) || !/waitForView\(expected\)/.test(visualGate)) {
   errors.push('[Rule 20 Violation] scripts/visual_check.js no longer presses keys. '
     + 'A key handler that exists in source is not a key handler that is reached.');
 }

@@ -255,7 +255,7 @@ An unhandled state is a broken instrument, not an edge case (§13.3.6). For each
 - The Top 3 header shows *0/3 done* with the zero in **red** on an untouched morning — the software marking a day as not done, against VISION §11.3's fourth rule.
 - The execution panel's hint, *Write the task first, then enter the minutes on the same line.*, breaks onto a second line holding the single word *line.* at 1440×900.
 - At 320px wide the priority placeholders are cut mid-word (*What deserves your da…* without the ellipsis), because an input clips its own text — which the sideways-clipping check does not see.
-- Switching views is slow. In headless Chrome, returning to Daily from Yearly by keyboard took up to 2.5 seconds. Measure it in a real browser; §5 asks for feedback within 100ms.
+- View-switch speed is unmeasured. A 2.5-second return to Daily was once reported, but it came from a headless Chrome that was crashing and short of CPU, so it proves nothing either way. Measure it in a visible browser; §5 asks for feedback within 100ms.
 
 ---
 
@@ -271,7 +271,7 @@ Every item below shipped, or nearly shipped, in September 2026.
 6. **Count calendar days, not milliseconds.** `Math.floor(ms / 86400000)` put *"Day 181"* on the 182nd day of the year in New York after the clocks changed, and was right in India, which has no daylight saving — which is why nobody saw it. Divide the difference between local midnights, and round.
 7. **Test keyboard routing by pressing keys.** A handler can contain every shortcut and still route wrongly. Weekly had no key, and the legend documented the gap as if it were a design.
 8. **A dialog belongs to the view that opened it.** The morning prompt stayed mounted when the person switched to Weekly by keyboard, covering a surface it has nothing to do with.
-9. **A fixed sleep cannot tell a slow effect from a lost one.** The keyboard pass reported keys as dead that were only late: in headless Chrome, switching back to Daily took up to 2.5 seconds, and a one-second sleep read that as a dropped key. Wait for the effect with a ceiling, test routing in a tab without rendering emulation, and reproduce a failure the way a person would before calling something broken.
+9. **A fixed sleep cannot tell a slow effect from a lost one — and a timeout cannot tell a hung page from a dead browser.** The keyboard pass first reported keys as dead that were only late, then "hung". The hang was headless Chrome crashing on macOS whenever CDP injected a key (a stack overflow in its menu key-equivalent code), and the crash reports sat in `~/Library/Logs/DiagnosticReports` while four theories were tested — the privacy frost, the renderer, audio, CPU. Wait for the effect with a ceiling, look for a crash before diagnosing a stall, and keep only one experiment running at a time: two at once contaminated each other here.
 10. **The service worker's cache name is derived by the build** (`scripts/build_content.js`). A hand-maintained name never changed for months, and visitors were served the first commit's gold icon. Cache-first applies to `/assets/*` only.
 11. **Brand lives in pixels too.** A fallback render carried the old product name, *PRIMACY*, on the notebook. No text rule can see inside an image; review renders by eye.
 12. **Links inside the `#root` prerender reach crawlers only.** The home page linked none of 41 guides for a human until real links were added to the React page.

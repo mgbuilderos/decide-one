@@ -1338,3 +1338,9 @@ The deploy of cc86ee6 was blocked by the visual gate, correctly: all 16 surfaces
 ### 2026-09-14 20:36 — unattributed
 
 UI_BRIEF.md: corrected claims the code does not support — capacity and the verso are identical in every mode (computeCapacity, DayReport read no framework), and the Matrix's default rows accept writing before classification. Kick-off prompt now says so, and warns the visual gate needs Chrome, Node 22+ and ~20 minutes.
+
+---
+
+### 2026-09-14 21:07 — unattributed
+
+Corrects the 14 Sep entry that blamed the privacy frost for the blocked deploy of cc86ee6. Measured cause: headless Chrome 152's browser process crashes on macOS (SIGSEGV, stack-guard overflow in -[NSView performKeyEquivalent:] -> -[NSMenu _enableItems]) when CDP Input.dispatchKeyEvent injects a key the page does not consume; crash reports at 15:45, 20:37 and 20:48. Every later CDP call then timed out and read as a hung page. Refuted along the way: privacy frost, background tab, ResizeObserver/render loop, telemetry intervals, Web Audio, CPU starvation (though two orphaned gate Chromes, one 7h old, were holding load near 13). Fix: the keyboard pass dispatches keydown/keyup inside the page from the focused element (App.jsx listens on window), Rule 20 now requires that and waitForView; the gate kills its Chrome on every exit path and sweeps orphans with parent pid 1 at start. Ceiling: synthetic events prove routing, not the browser's own key delivery. The 2.5s 'slow switch back to Daily' was measured in this broken setup and is unproven in a real browser.

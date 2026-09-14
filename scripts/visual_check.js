@@ -15,7 +15,7 @@
 import fs from 'fs';
 import path from 'path';
 import http from 'http';
-import { spawn } from 'child_process';
+import { spawn, execSync } from 'child_process';
 import sharp from 'sharp';
 
 const UPDATE = process.argv.includes('--update');
@@ -87,6 +87,20 @@ await new Promise(r => server.listen(0, '127.0.0.1', r));
 const ORIGIN = `http://127.0.0.1:${server.address().port}`;
 
 // ── Chrome over CDP ──────────────────────────────────────────────────────────
+// A gate killed from outside leaves its Chrome running, reparented to init, and a
+// headless Chrome rendering in software holds whole cores. On 14 September two of
+// them — one seven hours old — kept the load near 13, and the next run's keyboard
+// pass stalled until Chrome stopped answering. Only orphans (parent pid 1) are
+// swept, so a gate another agent is running at the same moment is left alone.
+if (process.platform !== 'win32') {
+  try {
+    const orphans = execSync('ps -Ao pid=,ppid=,command=', { encoding: 'utf8' }).split('\n')
+      .map(line => line.trim().match(/^(\d+)\s+1\s+.*--user-data-dir=\/tmp\/decideone-visual-/))
+      .filter(Boolean).map(m => Number(m[1]));
+    for (const pid of orphans) { try { process.kill(pid); } catch { /* already gone */ } }
+    if (orphans.length) process.stderr.write(`  swept ${orphans.length} orphaned Chrome(s) left by an earlier run\n`);
+  } catch { /* ps unavailable: nothing to sweep */ }
+}
 const PROFILE = fs.mkdtempSync('/tmp/decideone-visual-');
 const chrome = spawn(CHROME, ['--headless=new', '--remote-debugging-port=0', '--disable-gpu',
   '--no-first-run', '--no-default-browser-check', '--hide-scrollbars',
@@ -100,6 +114,10 @@ const chrome = spawn(CHROME, ['--headless=new', '--remote-debugging-port=0', '--
   '--autoplay-policy=no-user-gesture-required',
   '--force-device-scale-factor=1', '--disable-lcd-text', `--user-data-dir=${PROFILE}`,
   'about:blank'], { stdio: ['ignore', 'ignore', 'pipe'] });
+// Every way out of this process takes Chrome with it. Signals do not fire 'exit'
+// on their own, so they are turned into an exit first.
+process.on('exit', () => { try { chrome.kill(); } catch { /* already gone */ } });
+for (const signal of ['SIGINT', 'SIGTERM', 'SIGHUP']) process.on(signal, () => process.exit(1));
 process.on('unhandledRejection', (e) => {
   console.error(red('\n✗ visual') + `  ${e?.message || e}\n`);
   try { chrome.kill(); } catch { /* already gone */ }
@@ -403,15 +421,21 @@ process.stderr.write('  keyboard pass\n');
 // can contain every shortcut and still route wrongly — Weekly had no key at all.
 //
 // It runs in its own tab with no emulation: it tests routing, not rendering. It
-// waits for each view instead of sleeping a fixed time — a fixed one-second sleep
-// reported keys as dead that were only late (switching back to Daily took up to
-// 2.5s in headless Chrome) — and it fails only when a key never arrives.
+// waits for each view instead of sleeping a fixed time, and fails only when a key
+// never arrives.
+//
+// Keys are dispatched inside the page, not through CDP's Input.dispatchKeyEvent.
+// On macOS an injected key the page does not consume is handed back to Chrome's
+// browser process, which walks AppKit's menu key-equivalents; headless Chrome 152
+// overflows its stack there and dies (SIGSEGV in -[NSMenu _enableItems], crash
+// reports 15:45, 20:37 and 20:48 on 14 September). Every later call then looked
+// like a hung page — which was first blamed on the privacy frost, then on the
+// renderer, then on CPU, and was none of them. App.jsx listens on window and
+// filters by the focused element, so a bubbling keydown from the focused element
+// reaches the same handler, router and render. The ceiling: it is not a trusted
+// event, so it proves routing, not the browser's own key delivery.
 const kbTarget = await send('Target.createTarget', { url: 'about:blank' });
 const { sessionId: kbSession } = await send('Target.attachToTarget', { targetId: kbTarget.targetId, flatten: true });
-// Close the surfaces' tab so this is the only page, in front. Left open, it kept
-// focus and this tab ran in the background — where the privacy shutter frosts a
-// window that has lost focus, and a full-screen blur under software rendering
-// starved the page until Chrome stopped answering (the deploy of 14 September).
 await send('Target.closeTarget', { targetId }).catch(() => {});
 await send('Target.activateTarget', { targetId: kbTarget.targetId }).catch(() => {});
 const kbCall = (method, params) => send(method, params, kbSession);
@@ -440,11 +464,10 @@ listeners.push((msg) => {
   }
 });
 
-const press = async (key, code) => {
-  for (const type of ['keyDown', 'keyUp']) {
-    await kbCall('Input.dispatchKeyEvent', { type, key, text: type === 'keyDown' ? key : undefined,
-      windowsVirtualKeyCode: code, nativeVirtualKeyCode: code });
-  }
+const press = async (key) => {
+  await kbEval(`(() => { const t = document.activeElement || document.body;
+    for (const type of ['keydown', 'keyup']) t.dispatchEvent(new KeyboardEvent(type, { key: ${JSON.stringify(key)}, bubbles: true, cancelable: true }));
+    return 1; })()`);
   await settle(250);
 };
 const viewNow = () => kbEval('new URLSearchParams(location.search).get("view")');
