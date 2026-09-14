@@ -1332,3 +1332,9 @@ Wrote UI_BRIEF.md: a self-contained brief for any agent doing interface work (Ch
 ### 2026-09-14 15:33 — unattributed
 
 The deploy of cc86ee6 was blocked by the visual gate, correctly: all 16 surfaces passed, then Chrome stopped answering Runtime.evaluate for 30 seconds in the keyboard pass and the new timeout failed it loudly, so nothing was published. The pass ran in a second tab while the surfaces tab stayed open, which leaves it in the background; the suspected cause is the privacy shutter frosting a window that has lost focus, with a full-screen blur that is very expensive under software rendering. The keyboard pass now closes the surfaces tab, activates its own and enables focus emulation, and a timeout now names the expression that hung. A standalone diagnostic is testing the frost explanation in parallel; if it is refuted, this entry and the code comment are corrected in the next commit.
+
+---
+
+### 2026-09-14 20:36 — unattributed
+
+UI_BRIEF.md: corrected claims the code does not support — capacity and the verso are identical in every mode (computeCapacity, DayReport read no framework), and the Matrix's default rows accept writing before classification. Kick-off prompt now says so, and warns the visual gate needs Chrome, Node 22+ and ~20 minutes.

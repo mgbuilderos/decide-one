@@ -14,7 +14,7 @@ Written 14 September 2026 from `VISION.md`, `DECISIONS.md`, `FRAMEWORKS.md` and 
 1. **It is a priority instrument — not a journal, a diary or a planner.** One page for today. The person picks a method, writes only what the method allows, gives the first line a real amount of time, and closes the day. Primary line: *"You already know what matters. This helps you choose it."*
 2. **The standard is an instrument panel.** It is trusted because it is right: exact alignment, correct numbers, an accurate clock, type readable at arm's length, every state designed, zero console errors. **Ornament is a defect.**
 3. **Premium means precise, never ornamental.** Craft that makes it more exact, more legible or more durable is on-brand at any level. Gold, foil, leather, stitching, woven labels, paper-texture cosplay, 3D books, spines, ribbons, glows, gradients and celebration are not.
-4. **Frameworks are modes, not skins.** Top 3, Ivy Lee and the Urgent/Important Matrix each change the page's *structure and rules* — how many lines exist, which are locked, where writing may happen, what capacity means, what closure reports. Type, palette, grid and clock are identical in every mode.
+4. **Frameworks are modes, not skins.** Top 3, Ivy Lee and the Urgent/Important Matrix each change the page's *structure and rules* — how many lines exist, which are locked, where writing may happen. (Capacity and closure are the same in every mode today — see §4.) Type, palette, grid and clock are identical in every mode.
 5. **No scroll, on either axis, on any instrument view, from 320×568 to 1440×900.** Measured on every deploy. A container that clips is worse than one that scrolls.
 6. **Black and white.** Colour appears only as the red / yellow / green progress marks, and only to mean progress.
 7. **Nothing is added.** No new features, surfaces or settings — *"This will look the same in ten years. No features will be added."* (VISION §12.2). Redesign what exists. Remove only what §7 lists as decided; propose any other removal and wait.
@@ -94,13 +94,14 @@ When a document and the code disagree: verify in `src/`, then run `npm run why "
 
 Think of a watch's mode button. Same case, same face, same hands — but in stopwatch mode the buttons *do* something different, and the face shows only what that mode needs. That is the model. A framework is a set of **enforced rules** (VISION §10.4, P9: *enforced, not drawn*), and the design exists to make those rules legible at a glance.
 
-**What a mode changes:** which lines exist · which lines accept input · order and locks · where classification happens · the empty state's one sentence · what capacity sums · what the verso reports.
+**What a mode changes:** which lines exist · which lines accept input · order and locks · where classification happens · the empty state's one sentence.
+**What a mode does not change today, verified in code on 14 September:** capacity (`computeCapacity` in `src/utils/executionModel.js` sums every session regardless of mode) and the verso (`DayReport.jsx` reads no framework). Whether they *should* read per mode — Ivy Lee's capacity counting lines in order, the Matrix's verso reporting by quadrant — is a founder decision (§13). Propose it; do not build it unasked.
 **What a mode never changes:** typeface · palette · grid and spacing scale · the clock · header, navigation and chrome · motion language.
 
 | | **Top 3** (`rule_of_3`) | **Ivy Lee** (`ivy_lee`) | **Urgent/Important Matrix** (`eisenhower`) |
 | :-- | :-- | :-- | :-- |
 | The day it is for | *Too much to do.* Overcommitment. | *I keep not finishing things.* Context-switching. | *Everything feels urgent.* Urgency mistaken for importance. |
-| The enforced rule | **Three lines. A fourth does not exist** — absent, not disabled. | **Six lines in strict order. A line cannot start until every earlier line is done** (`isItemLocked`). | **Classification before writing.** A line can only be written *inside* a quadrant, so the sorting happens first. |
+| The enforced rule | **Three lines. A fourth does not exist** — absent, not disabled. | **Six lines in strict order. A line cannot start until every earlier line is done** (`isItemLocked`). | **Classification before writing.** A line can only be written *inside* a quadrant, so the sorting happens first. **Not yet enforced:** the default rows accept writing before any classification — close that gap. |
 | What the design must make obvious | That three is the whole day. Order carries meaning: *01 First · 02 Next · 03 Then*. Planned time against time left. | Which line is live, and why the next is closed — stated plainly, never as a punishment. The accessible label already reads *"Priority 2 is locked until priority 1 is complete"*. | The two questions — *urgent?* *important?* — as legible axes, so a quadrant reads as an answer rather than a bucket. |
 | Credit on the page once chosen (P7, FRAMEWORKS §7) | Rule of 3 — no single author | *Ivy Lee Method · 1918* — devised for Charles Schwab at Bethlehem Steel | *Distinction: Eisenhower, 1954. Matrix: Stephen Covey, 1989.* |
 | Never | a fourth line, subtasks (R13), "add more" | skipping ahead, reordering to dodge the lock, red "blocked" styling | Covey's coined vocabulary — *Quadrant II*, *Big Rocks*, *First Things First* |
@@ -365,7 +366,7 @@ READ BEFORE YOU TOUCH ANYTHING, IN THIS ORDER
 1. Run `npm run brief`.
 2. Read AGENTS.md in full.
 3. Read UI_BRIEF.md in full. It is the source of truth for this task: the vision, the constraints, what the gates do and do not catch, the decisions already made, and every learning so far. Where it points to VISION.md §11–§13, FRAMEWORKS.md §5 and §7, or BRAND_BOOK.md, read those sections too.
-4. Run `npm run build && npm run test:qc && npm run test:artifact && npm run test:visual` and confirm the tree starts green. If it does not, stop and report what fails. Do not build on a red tree.
+4. Run `npm run build && npm run test:qc && npm run test:artifact && npm run test:visual` and confirm the tree starts green. The visual gate needs Google Chrome and Node 22+ and takes about twenty minutes — run it in the background; if Chrome is unavailable where you run, say so instead of skipping it. If any gate fails, stop and report what fails. Do not build on a red tree.
 5. Run the app (`npm run dev`) and open `?view=daily`, `?view=weekly`, `?view=monthly` and `?view=yearly` at 1440×900, 1366×768 and 390×844, in light and dark. List every defect you can see against UI_BRIEF.md §5 and §8 before changing any code.
 
 NON-NEGOTIABLES
@@ -373,7 +374,7 @@ NON-NEGOTIABLES
 - Black and white. Colour only as the red/yellow/green progress marks, and only to mean progress.
 - No ornament: no gold, foil, leather, stitching, woven labels, paper texture as decoration, book covers, spines, ribbons, page curls, month illustrations, glass effects, gradients, glows, confetti, streaks, scores or badges.
 - The Helvetica Neue stack only. Tabular numerals for every figure. No text below 11px. Every grey at 3:1 contrast or better.
-- Exactly three frameworks, and they are MODES, not skins. Each one changes which lines exist, which are locked, where writing happens, what capacity sums and what closure reports: Top 3 (three lines, no fourth), Ivy Lee (six in strict order, each locked until the previous one is done), the Urgent/Important Matrix (classify before writing). Typography, palette, grid and clock never change between modes.
+- Exactly three frameworks, and they are MODES, not skins: Top 3 (three lines, no fourth), Ivy Lee (six in strict order, each locked until the previous one is done), the Urgent/Important Matrix (classify before writing). Today the modes differ in which lines exist, which are locked and where writing happens — but capacity (src/utils/executionModel.js computeCapacity) and closure (DayReport.jsx) are identical in every mode, and the Matrix's default rows can be written without classifying. Make each mode's rule visible and enforced; if you believe capacity or closure should read differently per mode, put it in your plan and wait for the founder. Typography, palette, grid and clock never change between modes.
 - The analogue clock is the only clock and must be right to the second. Every number shown must be correct.
 - Never judge: no red on past days, no failure states; overrun is information. All copy follows VISION.md §11 and BRAND_BOOK.md. Never describe the product as a journal, diary or planner. Never use the trademarked method names in FRAMEWORKS.md §6.3. Never name real people in the interface.
 - Add no features, surfaces, settings or fields. Redesign what exists. Apply the removals UI_BRIEF.md §7 lists as decided; propose any other removal and wait for the founder.
