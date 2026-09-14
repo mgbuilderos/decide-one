@@ -564,43 +564,26 @@ if (!/clipped_x/.test(visualGate)) {
 }
 
 
-// Rule 13: FlippingBook 3D Page Leaf Flip Integration Gate (Stationary flat notebook canvas with 3D spine-hinged turning leaf)
-scanFiles(SRC_DIR, (filePath, content) => {
-  if (filePath.includes('App.jsx')) {
-    if (!content.includes('page-leaf-container') || (!content.includes('leaf-turn-next') && !content.includes('leaf-turn-prev'))) {
-      errors.push('[Rule 13 Violation] App.jsx does not mount spine-hinged 3D page leaf (page-leaf-container with leaf-turn-next/prev).');
-    }
-    if (content.includes('journal-flip-next') || content.includes('journal-flip-prev')) {
-      errors.push('[Rule 13 Violation] App.jsx still applies whole-canvas rotation (journal-flip-next/prev) to the instrument sheet.');
-    }
-    if (content.includes('flipping-sheet-next') || content.includes('flipping-sheet-prev')) {
-      errors.push('[Rule 13 Violation] App.jsx still attaches truncated page flip animations to inner columns.');
-    }
+// Rules 13/14: flat day movement; date and closure never depend on animation.
+{
+  const { stepDate, shouldOfferClosure } = await import('../src/utils/dayNavigation.js');
+  for (const [start, delta, expected] of [['2026-01-31T12:00:00', 1, 1], ['2026-03-01T12:00:00', -1, 28], ['2028-02-28T12:00:00', 1, 29]]) {
+    if (stepDate(new Date(start), delta).getDate() !== expected) errors.push('[Rule 13 Violation] day step fails a calendar boundary');
   }
-});
-
-// Rule 14: Seamless Friction-Free 3D Page Turn Gate (Flush spine crease & zero layout shift)
-scanFiles(SRC_DIR, (filePath, content) => {
-  if (filePath.endsWith('index.css')) {
-    const nextBackMatch = content.match(/\.leaf-turn-next\s+\.leaf-face-back\s*\{([^}]+)\}/);
-    if (nextBackMatch && nextBackMatch[1].includes('border-top-left-radius: 26px')) {
-      errors.push('[Rule 14 Violation] index.css applies 26px radius to spine edge on leaf-face-back, creating a friction gap.');
-    }
+  scanFiles(SRC_DIR, (file, content) => {
+    if (/PageTurnLeaf|flipState|pendingTurnRef|flippingbook-stage|mobile-fold-turn|preserve-3d|rotateY|kindle-turn|bifold/.test(stripComments(content))) errors.push('[Rule 13 Violation] retired 3D day chrome in ' + file);
+  });
+  const app = stripComments(fs.readFileSync(path.join(SRC_DIR, 'App.jsx'), 'utf8'));
+  if (!app.includes('setCurrentDate(current => stepDate(current, delta, directTargetDate))')) errors.push('[Rule 13 Violation] date must update immediately from current state');
+  const css = stripComments(fs.readFileSync(path.join(SRC_DIR, 'index.css'), 'utf8'));
+  if (!/@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{\s*\.flat-day-step\s*\{\s*animation:\s*none/.test(css)) errors.push('[Rule 13 Violation] flat step needs a still reduced-motion equivalent');
+  const yes = { turningToVerso: true, hasSomethingToClose: true, alreadyClosedToday: false, somethingRunning: false, dateKey: '2026-09-15', todayKey: '2026-09-15' };
+  if (!shouldOfferClosure(yes)) errors.push('[Rule 14 Violation] eligible turn must offer closure');
+  for (const patch of [{turningToVerso:false},{hasSomethingToClose:false},{alreadyClosedToday:true},{somethingRunning:true},{dateKey:'2026-09-14'}]) {
+    if (shouldOfferClosure({...yes,...patch})) errors.push('[Rule 14 Violation] closure offered for ' + JSON.stringify(patch));
   }
-  if (filePath.endsWith('SpreadPages.jsx')) {
-    if (content.includes('leaf-face-front') && content.includes('md:pl-6')) {
-      errors.push('[Rule 14 Violation] SpreadPages.jsx duplicates md:pl-6 inside leaf-face-front, causing horizontal text shift.');
-    }
-    if (content.includes('leaf-face-back') && content.includes('md:pr-6')) {
-      errors.push('[Rule 14 Violation] SpreadPages.jsx duplicates md:pr-6 inside leaf-face-back, causing horizontal text shift.');
-    }
-  }
-  if (filePath.endsWith('App.jsx')) {
-    if (!content.includes('pendingTurnRef')) {
-      errors.push('[Rule 14 Violation] App.jsx must use pendingTurnRef to protect against stale React closure unmount freeze.');
-    }
-  }
-});
+  if (!app.includes('if (shouldOfferClosure({ turningToVerso, hasSomethingToClose, alreadyClosedToday, somethingRunning, dateKey, todayKey }))') || !app.includes("x.state === 'RUNNING' || x.state === 'BREATHING'")) errors.push('[Rule 14 Violation] actual turn must use the guarded closure predicate');
+}
 
 // Rule 15: No notebook cover, and an old ?view=cover link opens the instrument.
 //
@@ -1228,8 +1211,8 @@ if (errors.length === 0) {
   console.log('  - Rule 10: Zero 3-dot menus, zero black tie cord, and no woven tag anywhere under src/ (retired with the book chrome)');
   console.log('  - Rule 11: Framework Roster Gate (exactly 3 methods ship; MoSCoW, 1-3-5 and Pareto stay cut)');
   console.log('  - Rule 12: Framework Grid Alignment & Wrapping Safety Gate (fixed header heights & whitespace-nowrap)');
-  console.log('  - Rule 13: FlippingBook 3D Page Leaf Flip Integration Gate (Stationary flat notebook canvas with 3D spine-hinged turning leaf)');
-  console.log('  - Rule 14: Seamless Friction-Free 3D Page Turn Gate (Flush spine crease, closure immunity & zero layout shift)');
+  console.log('  - Rule 13: Flat immediate day step, calendar boundaries and reduced motion');
+  console.log('  - Rule 14: Closure turn conditions executed: today, written work, once, no running/breathing session');
   console.log('  - Rule 15: Direct instrument arrival: actual App initializer executed for first, retired and information links; no marketing or cover modules');
   console.log('  - Rule 16: Zero Date Overflow & Header Wrapping Gate (whitespace-nowrap & fixed 48px header boundary)');
   console.log('  - Rule 17: Zero "Bullet Journal" / Ryder Carroll Gate (100% Decide One brand purity & right page flex containment)');

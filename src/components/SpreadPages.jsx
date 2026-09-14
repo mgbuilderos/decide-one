@@ -6,7 +6,6 @@ import DayReport from './DayReport';
 import RapidLogSection from './RapidLogSection';
 import { getSession, pauseSession, completeSession, extendSession } from '../utils/executionModel';
 import { playSound } from '../utils/audio';
-import { formatDateKey } from '../hooks/useJournalStorage';
 
 /**
  * LeftPage: the selection layer — the date, the method, the time each decided
@@ -62,7 +61,7 @@ export function LeftPage({
       </header>
 
       {/* Main Page Body: the method, then the time it will take. One column,
-          because a leaf has one side at a time and it scrolls (P11). */}
+          one side at a time, fully contained in the viewport (P11). */}
       <div className="flex-1 min-h-0 flex flex-col overflow-y-auto pocket-scroll">
         <ProductivityFrameworks
           activeFramework={activeFramework}
@@ -185,130 +184,3 @@ export function RightPage({
   );
 }
 
-/**
- * PageTurnLeaf: FlippingBook-Grade 3D Physical Turning Page Sheet.
- * Anchored to the central spine and curls 180 degrees in 3D perspective space.
- */
-export function PageTurnLeaf({
-  direction, // 'next' | 'prev' | 'leaf-turn-next' | 'leaf-turn-prev'
-  currentDate,
-  targetDate,
-  currentDailyLog,
-  targetDailyLog,
-  currentFramework,
-  targetFramework,
-  onSelectFramework,
-  onUpdateHardTasks,
-  onUpdateFrameworkData,
-  onUpdateRapidLog,
-  onUpdateExecution,
-  activeFilter,
-  setActiveFilter,
-  paperClass,
-  paperLabel,
-  settings,
-  updateSettings,
-  onStepDay,
-  setCurrentDate,
-  todayKey,
-}) {
-  const currentKey = formatDateKey(currentDate);
-  const targetKey = formatDateKey(targetDate);
-  const currentIsPast = currentKey < todayKey;
-  const targetIsPast = targetKey < todayKey;
-
-  if (direction === 'next' || direction === 'leaf-turn-next') {
-    return (
-      <>
-        {/* Front Face: Outgoing Right Page (lifts from right fore-edge) */}
-        <div className={`leaf-face leaf-face-front ${paperClass} bg-white dark:bg-[#141416]`}>
-          <div className="flex-1 w-full min-w-0 min-h-0 flex flex-col bifold-right-page overflow-hidden">
-            <RightPage
-              date={currentDate}
-              dailyLog={currentDailyLog}
-              paperLabel={paperLabel}
-              settings={settings}
-              updateSettings={updateSettings}
-              onStepDay={onStepDay}
-              setCurrentDate={setCurrentDate}
-              isInteractive={false}
-            />
-          </div>
-        </div>
-
-        {/* Back Face: Incoming Left Page (lands flat onto left page at -180deg) */}
-        <div className={`leaf-face leaf-face-back ${paperClass} bg-white dark:bg-[#141416]`}>
-          <div className="flex-1 w-full min-w-0 min-h-0 flex flex-col bifold-left-page overflow-hidden">
-            <LeftPage
-              date={targetDate}
-              dailyLog={targetDailyLog}
-              activeFramework={targetFramework}
-              onSelectFramework={onSelectFramework}
-              hardTasks={targetDailyLog?.hardTasks}
-              onUpdateHardTasks={onUpdateHardTasks}
-              frameworkData={targetDailyLog?.frameworkData || {}}
-              onUpdateFrameworkData={onUpdateFrameworkData}
-              rapidLog={targetDailyLog?.rapidLog}
-              onUpdateRapidLog={onUpdateRapidLog}
-              activeFilter={activeFilter}
-              setActiveFilter={setActiveFilter}
-              settings={settings}
-              updateSettings={updateSettings}
-              isPastDay={targetIsPast}
-              onStepDay={onStepDay}
-              setCurrentDate={setCurrentDate}
-              isInteractive={false}
-            />
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  // direction === 'prev' || direction === 'leaf-turn-prev'
-  return (
-    <>
-      {/* Front Face: Outgoing Left Page (lifts from left fore-edge) */}
-      <div className={`leaf-face leaf-face-front ${paperClass} bg-white dark:bg-[#141416]`}>
-        <div className="flex-1 w-full min-w-0 min-h-0 flex flex-col bifold-left-page overflow-hidden">
-          <LeftPage
-            date={currentDate}
-            dailyLog={currentDailyLog}
-            activeFramework={currentFramework}
-            onSelectFramework={onSelectFramework}
-            hardTasks={currentDailyLog?.hardTasks}
-            onUpdateHardTasks={onUpdateHardTasks}
-            frameworkData={currentDailyLog?.frameworkData || {}}
-            onUpdateFrameworkData={onUpdateFrameworkData}
-            rapidLog={currentDailyLog?.rapidLog}
-            onUpdateRapidLog={onUpdateRapidLog}
-            activeFilter={activeFilter}
-            setActiveFilter={setActiveFilter}
-            settings={settings}
-            updateSettings={updateSettings}
-            isPastDay={currentIsPast}
-            onStepDay={onStepDay}
-            setCurrentDate={setCurrentDate}
-            isInteractive={false}
-          />
-        </div>
-      </div>
-
-      {/* Back Face: Incoming Right Page (lands flat onto right page at +180deg) */}
-      <div className={`leaf-face leaf-face-back ${paperClass} bg-white dark:bg-[#141416]`}>
-        <div className="flex-1 w-full min-w-0 min-h-0 flex flex-col bifold-right-page overflow-hidden">
-          <RightPage
-            date={targetDate}
-            dailyLog={targetDailyLog}
-            paperLabel={paperLabel}
-            settings={settings}
-            updateSettings={updateSettings}
-            onStepDay={onStepDay}
-            setCurrentDate={setCurrentDate}
-            isInteractive={false}
-          />
-        </div>
-      </div>
-    </>
-  );
-}

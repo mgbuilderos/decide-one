@@ -61,13 +61,6 @@
   background-position: 0px 0px !important;
 }
 
-/* Bifold Spread Pages: Transparent surfaces inheriting the continuous parent notebook canvas */
-.bifold-left-page,
-.bifold-right-page {
-  background-color: transparent !important;
-  background-image: none !important;
-}
-
 @layer utilities {
 
   /* Compact Pocketnote Internal Scrollbar */
@@ -115,175 +108,6 @@
 
   .dark .instrument-sheet {
     border-color: rgba(255, 255, 255, 0.08);
-  }
-
-  /* Micro-Perforated Tear-off Sheet Line */
-  .tear-off-perforation {
-    border-bottom: 1px dashed rgba(0, 0, 0, 0.12);
-  }
-  .dark .tear-off-perforation {
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
-  }
-
-  @media (min-width: 768px) {
-    /* Concave Gutter Valley Shadow Falloff */
-    .bifold-left-page {
-      background: linear-gradient(to right, transparent 86%, rgba(0, 0, 0, 0.025) 100%) !important;
-    }
-    .dark .bifold-left-page {
-      background: linear-gradient(to right, transparent 86%, rgba(0, 0, 0, 0.35) 100%) !important;
-    }
-    .bifold-right-page {
-      background: linear-gradient(to left, transparent 86%, rgba(0, 0, 0, 0.025) 100%) !important;
-    }
-    .dark .bifold-right-page {
-      background: linear-gradient(to left, transparent 86%, rgba(0, 0, 0, 0.35) 100%) !important;
-    }
-  }
-
-  /* Extension Booklet Subtle Paper Edge Depth (Precision 10mm Die-Cut Corner) */
-  .extension-booklet-paper {
-    position: relative;
-    border-radius: 0.625rem;
-  }
-
-  /* 3D Page Leaf Container: Spans exact content height and column width inside 24px padding */
-  .page-leaf-container {
-    position: absolute;
-    top: 24px;
-    bottom: 24px;
-    transform-style: preserve-3d;
-    -webkit-transform-style: preserve-3d;
-    pointer-events: none;
-    z-index: 40;
-    will-change: transform;
-  }
-
-  /* Turning Forward (Next Day): Anchored at Center Spine (50%), spans to right content edge (24px) */
-  .leaf-turn-next {
-    left: 50%;
-    right: 24px;
-    transform-origin: 0% 50%;
-    animation: seamlessPageFlipNext 0.72s var(--ease-out) forwards;
-  }
-
-  /* Turning Backward (Previous Day): Anchored at Center Spine (50%), spans to left content edge (24px) */
-  .leaf-turn-prev {
-    left: 24px;
-    right: 50%;
-    transform-origin: 100% 50%;
-    animation: seamlessPageFlipPrev 0.72s var(--ease-out) forwards;
-  }
-
-  /* Front and Back Faces of the Turning Sheet */
-  .leaf-face {
-    position: absolute;
-    inset: 0;
-    backface-visibility: hidden !important;
-    -webkit-backface-visibility: hidden !important;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    transform-style: preserve-3d;
-    -webkit-transform-style: preserve-3d;
-    border: none;
-    background-origin: padding-box !important;
-  }
-
-  /* Next Turn: Front Face (Outgoing Right Page) - Outer edge is Right (14px); Spine is Left (0px) */
-  .leaf-turn-next .leaf-face-front {
-    padding-left: 24px;
-    transform: rotateY(0deg);
-    border-top-right-radius: 14px;
-    border-bottom-right-radius: 14px;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-
-  /* Next Turn: Back Face (Incoming Left Page) - Outer edge is Left (14px); Spine is Right (0px) */
-  .leaf-turn-next .leaf-face-back {
-    padding-right: 24px;
-    border-right: 1px solid rgba(0, 0, 0, 0.08);
-    transform: rotateY(180deg);
-    border-top-left-radius: 14px;
-    border-bottom-left-radius: 14px;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-  .dark .leaf-turn-next .leaf-face-back {
-    border-right-color: rgba(255, 255, 255, 0.08);
-  }
-
-  /* Prev Turn: Front Face (Outgoing Left Page) - Outer edge is Left (14px); Spine is Right (0px) */
-  .leaf-turn-prev .leaf-face-front {
-    padding-right: 24px;
-    border-right: 1px solid rgba(0, 0, 0, 0.08);
-    transform: rotateY(0deg);
-    border-top-left-radius: 14px;
-    border-bottom-left-radius: 14px;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-  .dark .leaf-turn-prev .leaf-face-front {
-    border-right-color: rgba(255, 255, 255, 0.08);
-  }
-
-  /* Prev Turn: Back Face (Incoming Right Page) - Outer edge is Right (14px); Spine is Left (0px) */
-  .leaf-turn-prev .leaf-face-back {
-    padding-left: 24px;
-    transform: rotateY(-180deg);
-    border-top-right-radius: 14px;
-    border-bottom-right-radius: 14px;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-
-  /* GPU-Accelerated Shading Overlays for Physical Lighting Depth */
-  .leaf-face-front::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    border-radius: inherit;
-    background: linear-gradient(to right, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.02) 30%, transparent 70%);
-    animation: frontFaceShading 0.72s var(--ease-in-out) forwards;
-  }
-  .dark .leaf-face-front::after {
-    background: linear-gradient(to right, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.06) 30%, transparent 70%);
-  }
-
-  .leaf-turn-prev .leaf-face-front::after {
-    background: linear-gradient(to left, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.02) 30%, transparent 70%);
-  }
-  .dark .leaf-turn-prev .leaf-face-front::after {
-    background: linear-gradient(to left, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.06) 30%, transparent 70%);
-  }
-
-  .leaf-face-back::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    border-radius: inherit;
-    background: linear-gradient(to left, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.02) 30%, transparent 70%);
-    animation: backFaceShading 0.72s var(--ease-in-out) forwards;
-  }
-  .dark .leaf-face-back::after {
-    background: linear-gradient(to left, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.06) 30%, transparent 70%);
-  }
-
-  .leaf-turn-prev .leaf-face-back::after {
-    background: linear-gradient(to right, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.02) 30%, transparent 70%);
-  }
-  .dark .leaf-turn-prev .leaf-face-back::after {
-    background: linear-gradient(to right, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.06) 30%, transparent 70%);
-  }
-
-  /* Mobile 3D Fold Transition */
-  .mobile-fold-turn {
-    animation: mobileFoldFlip 0.56s var(--ease-out) forwards;
-    transform-origin: center center;
   }
 
   /* Previous and next day, on the sheet's edges. Neutral greys and no blur.
@@ -347,75 +171,6 @@
     .page-turn-edge-right {
       right: -20px;
     }
-  }
-}
-
-/* --- 3D FLIPPINGBOOK PHYSICAL PERSPECTIVE STAGE --- */
-.flippingbook-stage {
-  perspective: 3200px;
-  -webkit-perspective: 3200px;
-}
-
-/* --- KEYFRAME DEFINITIONS: FLIPPINGBOOK 3D LEAF PHYSICAL DYNAMICS --- */
-@keyframes seamlessPageFlipNext {
-  0% {
-    transform: rotateY(0deg);
-  }
-  50% {
-    transform: rotateY(-90deg) scale(0.97);
-  }
-  100% {
-    transform: rotateY(-180deg);
-  }
-}
-
-@keyframes seamlessPageFlipPrev {
-  0% {
-    transform: rotateY(0deg);
-  }
-  50% {
-    transform: rotateY(90deg) scale(0.97);
-  }
-  100% {
-    transform: rotateY(180deg);
-  }
-}
-
-@keyframes frontFaceShading {
-  0% {
-    opacity: 0;
-  }
-  35% {
-    opacity: 0.18;
-  }
-  50%, 100% {
-    opacity: 0;
-  }
-}
-
-@keyframes backFaceShading {
-  0%, 50% {
-    opacity: 0;
-  }
-  60% {
-    opacity: 0.15;
-  }
-  75% {
-    opacity: 0.04;
-  }
-  85%, 100% {
-    opacity: 0;
-  }
-}
-
-@keyframes mobileFoldFlip {
-  0% {
-    opacity: 0.65;
-    transform: rotateY(16deg) scale(0.98);
-  }
-  100% {
-    opacity: 1;
-    transform: rotateY(0deg) scale(1);
   }
 }
 
@@ -833,7 +588,6 @@ select:focus-visible {
 
   /* The page turn is a 3D transform, so neutralising duration is
      not enough — the element must not be left mid-rotation. */
-  .mobile-fold-turn,
   .page-turn-leaf {
     transform: none !important;
     animation: none !important;
@@ -864,3 +618,7 @@ select:focus-visible {
   .quick-start h1 { font-size: 20px; margin-bottom: 12px; }
   .quick-start dd { margin-bottom: 6px; }
 }
+
+.flat-day-step { animation: day-step var(--motion-step) var(--ease-out); }
+@keyframes day-step { from { opacity: .72; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .flat-day-step { animation: none; } }

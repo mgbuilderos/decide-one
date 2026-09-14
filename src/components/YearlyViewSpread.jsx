@@ -116,7 +116,7 @@ export default function YearlyViewSpread({
     <div className="flex-1 min-h-0 w-full flex flex-col md:flex-row gap-0 overflow-hidden select-none">
       
       {/* Left Page: H1 (January to June) */}
-      <div className="flex-1 min-w-0 min-h-0 flex flex-col md:pr-6 md:border-r border-black/[0.08] dark:border-white/[0.08] bifold-left-page overflow-hidden">
+      <div className="flex-1 min-w-0 min-h-0 flex flex-col md:pr-6 md:border-r border-black/[0.08] dark:border-white/[0.08] year-half overflow-hidden">
         
         {/* Left Masthead (48px Cadence) */}
         <div className="h-[48px] border-b border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between shrink-0 mb-3">
@@ -143,7 +143,7 @@ export default function YearlyViewSpread({
       </div>
 
       {/* Right Page: H2 (July to December) */}
-      <div className="flex-1 min-w-0 min-h-0 flex flex-col md:pl-6 bifold-right-page extension-booklet-paper overflow-hidden mt-3 md:mt-0">
+      <div className="flex-1 min-w-0 min-h-0 flex flex-col md:pl-6 year-half overflow-hidden mt-3 md:mt-0">
         
         {/* Right Masthead (48px Cadence) */}
         <div className="h-[48px] border-b border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between shrink-0 mb-3">

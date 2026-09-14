@@ -299,3 +299,7 @@ There is also a documentation hazard. Roughly twenty legacy files — `README.md
 Steps 1–3 are cheap today and expensive after launch. Step 7 is worth more than steps 1–6 combined.
 
 **Then, in build order for the new shape:** port the Focus model (types, state machine, planned-vs-actual accounting) against `localStorage`; wire the timer as the enforcement mechanism per method (R6); bring `AnalogueClock` across as the clock (R11); write the Methods & Attributions page (M-A7).
+
+## Design implementation — 15 September 2026
+
+Flat day steps apply the existing BR8/P11 decision. The selected day updates immediately using a functional state update; a 160ms opacity transition conveys the change and is disabled under reduced motion. There is no pending target date or animation-completion commit to go stale. Turning recto to verso remains closure only for today, with written work, once, and with no running or breathing session (B-19/P12). Rules 13 and 14 now execute day stepping and closure conditions and reject 3D chrome. The height observer continues to depend on activeView because legal/methods remove its stage from the DOM; entering the instrument mounts a new node to observe.

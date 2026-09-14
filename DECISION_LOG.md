@@ -1392,3 +1392,9 @@ Codex design plan, 15 September: baseline build, QC and artifact pass at 3431d7c
 ### 2026-09-15 00:45 — unattributed
 
 Direct arrival implemented: removed marketing page/scene/demo/styles, studio WebP renders and Three.js. First visits open the daily instrument with three-step QuickStart; existing written history and its completion marker bypass it. Legal/methods routes and static content links remain reachable; header landing links corrected too. Fixed Settings hook order. Rule 15 executes the actual activeView initializer and fails a deliberately broken initializer despite a decoy resolver comment. Build, QC, artifact and 16-surface Chrome visual update passed; keyboard 1/2/3/4/T passed. Reviewed quick-start desktop/mobile and step 2 at 320x568 (439px tall, no scroll); Escape, focus wrapping and persisted dismissal exercised. Baselines: landing desktop/mobile now show quick start; daily desktop/laptop/mobile/small/tiny, morning tiny, weekly desktop/tiny, monthly and yearly accept the previously reviewed tag/chassis removals. Guide and FAQ baseline pixels unchanged. This is the arrival checkpoint; instrument redesign, static tokens, social image and remaining gates still pending.
+
+---
+
+### 2026-09-15 00:48 — unattributed
+
+Flat day step replaces the 3D leaf, face clones, gutter shading and mobile curl. Date state updates immediately with a functional updater; opacity motion is 160ms and reduced motion is still. Recto/verso and B-19/P12 closure conditions preserved through an executed predicate. Observer keeps activeView dependency: legal/methods unmount the stage and returning must observe the new node. Rule 13 failed deliberately for a zero-day step; Rule 14 failed for running-session closure. Headed Chrome date paint measured 10.1ms. Build, QC, artifact and all 16 visual surfaces plus keyboard routing pass. Baselines reviewed for removal of gutter shading, no content removal. Full visual redesign still pending.

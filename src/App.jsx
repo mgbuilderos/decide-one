@@ -2,7 +2,7 @@ import React, { lazy, Suspense, useState, useEffect, useRef, useCallback } from 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import HeaderToolbar from './components/HeaderToolbar';
 import DateHeader from './components/DateHeader';
-import { LeftPage, RightPage, PageTurnLeaf } from './components/SpreadPages';
+import { LeftPage, RightPage } from './components/SpreadPages';
 import QuickStart from './components/QuickStart';
 
 import { useJournalStorage, formatDateKey } from './hooks/useJournalStorage';
@@ -21,6 +21,7 @@ import { useAmbientReminders } from './hooks/useAmbientReminders';
 import { telemetry, getHistoryDepthDays, lengthBucket, wordBucket } from './utils/telemetry';
 import { shouldOfferCarryForward, applyCarryForward, markOffered } from './utils/carryForward';
 import { observeWebVitals } from './utils/webVitals';
+import { stepDate, shouldOfferClosure } from './utils/dayNavigation';
 import { initialView } from './utils/viewParam';
 import { needsQuickStart, finishQuickStart } from './utils/quickStart';
 
@@ -83,16 +84,8 @@ export default function App() {
   useEffect(() => {
     revalidateStoredLicense().then(setLicense);
   }, []);
-  // FlippingBook-Grade 3D Physical Spine-Hinged Page Turn State ('idle' | 'flipping-next' | 'flipping-prev')
-  const [flipState, setFlipState] = useState('idle');
-  const [targetDate, setTargetDate] = useState(null);
-  const pendingTurnRef = useRef(null);
-  const flipTimerRef = useRef(null);
-
-  // Two-Fold Mobile Switcher State ('side1' | 'side2')
-  // P11 — one sheet, two sides. Only ever one is visible; you turn it over.
+  // P11: one side at a time. Motion never owns the selected date.
   const [mobileFold, setMobileFold] = useState('side1');
-  const [mobileFlip, setMobileFlip] = useState(false);
   const [closureOfferedFor, setClosureOfferedFor] = useState(null);
 
   // 24px grid cadence height snapper for the instrument sheet
@@ -243,53 +236,9 @@ export default function App() {
     telemetry.setCurrentView(activeView);
   }, [activeView]);
 
-  // Frame-Accurate Page Turn Completion (Immune to React closure stales)
-  const completeFlip = (target) => {
-    if (flipTimerRef.current) {
-      clearTimeout(flipTimerRef.current);
-      flipTimerRef.current = null;
-    }
-    const dateToSet = target || pendingTurnRef.current;
-    if (dateToSet) {
-      setCurrentDate(dateToSet);
-      pendingTurnRef.current = null;
-    }
-    setFlipState('idle');
-    setTargetDate(null);
-  };
-
-  // FlippingBook-Grade 3D Physical Page Turn Handler (Spine-Hinged 50% Page Sheet)
   const handleStepDay = (delta, directTargetDate = null) => {
-    if (flipState !== 'idle') return; // Prevent double trigger during turn
-
-    const newDate = directTargetDate ? new Date(directTargetDate) : new Date(currentDate);
-    if (!directTargetDate) {
-      newDate.setDate(newDate.getDate() + delta);
-    }
-
     playSound('page', settings.isMuted);
-
-    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-    if (isMobile) {
-      setMobileFlip(true);
-      setCurrentDate(newDate);
-      setTimeout(() => setMobileFlip(false), 560);
-      return;
-    }
-
-    // Desktop: Spine-hinged 3D turning leaf across center spine
-    if (flipTimerRef.current) {
-      clearTimeout(flipTimerRef.current);
-    }
-    const state = delta >= 0 ? 'flipping-next' : 'flipping-prev';
-    pendingTurnRef.current = newDate;
-    setTargetDate(newDate);
-    setFlipState(state);
-
-    // Reliable fallback cleanup at 750ms (CSS animation is 0.72s = 720ms)
-    flipTimerRef.current = setTimeout(() => {
-      completeFlip(newDate);
-    }, 750);
+    setCurrentDate(current => stepDate(current, delta, directTargetDate));
   };
 
   /**
@@ -302,9 +251,7 @@ export default function App() {
   const handleMobileFoldSwitch = (fold) => {
     if (mobileFold === fold) return;
     playSound('page', settings.isMuted);
-    setMobileFlip(true);
     setMobileFold(fold);
-    setTimeout(() => setMobileFlip(false), 560);
 
     const turningToVerso = fold === 'side2';
     const hasSomethingToClose = getFrameworkItems(dailyLog).length > 0;
@@ -315,9 +262,9 @@ export default function App() {
     const somethingRunning = Object.values(dailyLog.execution || {}).some(
       (x) => x.state === 'RUNNING' || x.state === 'BREATHING'
     );
-    if (turningToVerso && hasSomethingToClose && !alreadyClosedToday && !somethingRunning && dateKey === todayKey) {
+    if (shouldOfferClosure({ turningToVerso, hasSomethingToClose, alreadyClosedToday, somethingRunning, dateKey, todayKey })) {
       setClosureOfferedFor(dateKey);
-      setTimeout(() => setIsClosureModalOpen(true), 620);
+      setIsClosureModalOpen(true);
     }
   };
 
@@ -380,7 +327,7 @@ export default function App() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeView, currentDate, flipState, settings.isMuted, toggleDictation, isQuickStartOpen]);
+  }, [activeView, currentDate, settings.isMuted, toggleDictation, isQuickStartOpen]);
 
   // Teleportation to specific page from Omnisearch
   const handleTeleportToPage = (dateObj) => {
@@ -518,11 +465,6 @@ export default function App() {
     markOffered(todayKey);
     setCarryCandidate(null);
   }, [carryCandidate, todayKey, getDailyLog, saveDailyLog]);
-
-  // Target date calculations (for turning leaf and underlying spread during transition)
-  const targetDateKey = targetDate ? formatDateKey(targetDate) : null;
-  const targetDailyLog = targetDateKey ? getDailyLog(targetDateKey) : null;
-  const targetFramework = targetDailyLog?.activeFramework || settings.activeFramework || 'rule_of_3';
 
   // Current Logs
   const dailyLog = getDailyLog(dateKey);
@@ -679,7 +621,7 @@ export default function App() {
   }
 
   return (
-    <div className={`h-screen max-h-screen overflow-hidden bg-[#EAEAE7] dark:bg-[#0B0B0D] text-neutral-900 dark:text-neutral-100 p-2 sm:p-3 flex flex-col kindle-turn-container font-sans`}>
+    <div className={`h-screen max-h-screen overflow-hidden bg-[#EAEAE7] dark:bg-[#0B0B0D] text-neutral-900 dark:text-neutral-100 p-2 sm:p-3 flex flex-col instrument-app font-sans`}>
       
       {/* Floating Header Toolbar: Minimalist Single Bar with Framework Selector & Settings */}
       <HeaderToolbar
@@ -704,7 +646,7 @@ export default function App() {
       />
 
       {/* Open Notebook 2-Page Spread (Bi-Fold Desktop / Two-Fold Mobile) */}
-        <main ref={mainStageRef} className={`w-full max-w-[412px] md:max-w-[960px] mx-auto flex-1 min-h-0 flex flex-col justify-center print-page transition-all pb-12 sm:pb-0 relative flippingbook-stage`}>
+        <main ref={mainStageRef} className={`w-full max-w-[412px] md:max-w-[960px] mx-auto flex-1 min-h-0 flex flex-col justify-center print-page pb-12 sm:pb-0 relative instrument-stage`}>
             
             {/* Floating day controls only belong to the daily instrument. */}
             {activeView === 'daily' && <button
@@ -735,25 +677,25 @@ export default function App() {
             >
             <div className="relative z-10 flex-1 min-h-0 flex flex-col overflow-hidden">
               {activeView === 'daily' ? (
-                <div className="flex-1 min-h-0 flex flex-col">
+                <div key={`${dateKey}-${mobileFold}`} className="flat-day-step flex-1 min-h-0 flex flex-col">
 
                   {/* One sheet, one side at a time (P11). No spread at any width. */}
                   <div className="flex-1 min-h-0 w-full flex flex-col gap-0 overflow-hidden">
 
                     {/* Left Page: Productivity Framework & Execution */}
-                    <div className={`flex-1 min-w-0 min-h-0 flex flex-col border-white/[0.08] bifold-left-page overflow-hidden ${
+                    <div className={`flex-1 min-w-0 min-h-0 flex flex-col border-white/[0.08] instrument-recto overflow-hidden ${
                       mobileFold === 'side1' ? 'flex' : 'hidden'
-                    } ${mobileFlip && mobileFold === 'side1' ? 'mobile-fold-turn' : ''}`}>
+                    }`}>
                       <LeftPage
-                        date={flipState === 'flipping-prev' && targetDate ? targetDate : currentDate}
-                        dailyLog={flipState === 'flipping-prev' && targetDailyLog ? targetDailyLog : dailyLog}
-                        activeFramework={flipState === 'flipping-prev' && targetFramework ? targetFramework : activeFramework}
+                        date={currentDate}
+                        dailyLog={dailyLog}
+                        activeFramework={activeFramework}
                         onSelectFramework={handleSelectFramework}
-                        hardTasks={flipState === 'flipping-prev' && targetDailyLog ? targetDailyLog.hardTasks : dailyLog.hardTasks}
+                        hardTasks={dailyLog.hardTasks}
                         onUpdateHardTasks={handleUpdateHardTasks}
-                        frameworkData={flipState === 'flipping-prev' && targetDailyLog ? targetDailyLog.frameworkData : dailyLog.frameworkData}
+                        frameworkData={dailyLog.frameworkData}
                         onUpdateFrameworkData={handleUpdateFrameworkData}
-                        rapidLog={flipState === 'flipping-prev' && targetDailyLog ? targetDailyLog.rapidLog : dailyLog.rapidLog}
+                        rapidLog={dailyLog.rapidLog}
                         onUpdateRapidLog={handleUpdateRapidLog}
                         onUpdateExecution={handleUpdateExecution}
                         hasEntry={hasEntry}
@@ -761,20 +703,20 @@ export default function App() {
                         setActiveFilter={setActiveFilter}
                         settings={settings}
                         updateSettings={updateSettings}
-                        isPastDay={flipState === 'flipping-prev' ? targetDateKey < todayKey : isPastDay}
+                        isPastDay={isPastDay}
                         onStepDay={handleStepDay}
                         setCurrentDate={setCurrentDate}
-                        isInteractive={flipState === 'idle'}
+                        isInteractive={true}
                       />
                     </div>
 
                     {/* Right Page: the execution layer (R2) */}
-                    <div className={`flex-1 min-w-0 min-h-0 flex flex-col bifold-right-page extension-booklet-paper overflow-hidden ${
+                    <div className={`flex-1 min-w-0 min-h-0 flex flex-col instrument-verso overflow-hidden ${
                       mobileFold === 'side2' ? 'flex' : 'hidden'
-                    } ${mobileFlip && mobileFold === 'side2' ? 'mobile-fold-turn' : ''}`}>
+                    }`}>
                       <RightPage
-                        date={flipState === 'flipping-next' && targetDate ? targetDate : currentDate}
-                        dailyLog={flipState === 'flipping-next' && targetDailyLog ? targetDailyLog : dailyLog}
+                        date={currentDate}
+                        dailyLog={dailyLog}
                         onCloseDay={() => setIsClosureModalOpen(true)}
                         onUpdateExecution={handleUpdateExecution}
                         paperLabel={paperLabel}
@@ -782,7 +724,7 @@ export default function App() {
                         updateSettings={updateSettings}
                         onStepDay={handleStepDay}
                         setCurrentDate={setCurrentDate}
-                        isInteractive={flipState === 'idle'}
+                        isInteractive={true}
                       />
                     </div>
 
@@ -833,40 +775,6 @@ export default function App() {
               )}
             </div>
 
-            {/* FlippingBook-Grade 3D Spine-Hinged Turning Page Sheet (Mounted exclusively on desktop during flip) */}
-            {activeView === 'daily' && flipState !== 'idle' && targetDate && (
-              <div 
-                className={`page-leaf-container ${flipState === 'flipping-next' ? 'leaf-turn-next' : 'leaf-turn-prev'}`}
-                onAnimationEnd={(e) => {
-                  if (e.target === e.currentTarget) {
-                    completeFlip(targetDate);
-                  }
-                }}
-              >
-                <PageTurnLeaf
-                  direction={flipState === 'flipping-next' ? 'leaf-turn-next' : 'leaf-turn-prev'}
-                  currentDate={currentDate}
-                  targetDate={targetDate}
-                  currentDailyLog={dailyLog}
-                  targetDailyLog={targetDailyLog}
-                  currentFramework={activeFramework}
-                  targetFramework={targetFramework}
-                  onSelectFramework={handleSelectFramework}
-                  onUpdateHardTasks={handleUpdateHardTasks}
-                  onUpdateFrameworkData={handleUpdateFrameworkData}
-                  onUpdateRapidLog={handleUpdateRapidLog}
-                  activeFilter={activeFilter}
-                  setActiveFilter={setActiveFilter}
-                  paperClass={paperClass}
-                  paperLabel={paperLabel}
-                  settings={settings}
-                  updateSettings={updateSettings}
-                  onStepDay={handleStepDay}
-                  setCurrentDate={setCurrentDate}
-                  todayKey={todayKey}
-                />
-              </div>
-            )}
 
           </div>
         </main>
