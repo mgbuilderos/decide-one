@@ -1380,3 +1380,9 @@ Flatten the sheet (critic step 5c), finishing a cut-off implementer's diff after
 ### 2026-09-15 00:33 — unattributed
 
 Codex hand-off prompt rewritten against 8b9756e and placed in UI_BRIEF Appendix A, in two parts: Part 1 the landing (no marketing page; / opens the instrument for everyone with a short first-visit quick start, per the founder's 12 September instruction, reconfirmed 15 September), Part 2 the journal redesign. UI_BRIEF 7.5 corrected: it said first visits get the landing page. Founder confirmed no ?giftFrom= links are in circulation. The removals workflow was stopped after 8b9756e at the founder's direction; the flat day step, colour neutralisation, Rule 3 allow-list, gate fixes and visual baselines are handed to Codex. Nothing deployed since 8bed386.
+
+---
+
+### 2026-09-15 00:39 — unattributed
+
+Codex design plan, 15 September: baseline build, QC and artifact pass at 3431d7c. Chrome visual audit has ten expected pixel diffs; reviewed baseline/current pairs: daily desktop/laptop/mobile/small/tiny, weekly desktop/tiny, monthly, yearly and morning tiny reflect removed woven tag and chassis. Inspected arrival and four views at 1440x900, 1366x768 and 390x844 in both instrument themes; captured output/playwright/before-*. Defects: sub-11px labels and calendar figures, faint text, red empty 0/3, execution-hint widow, clipped mobile placeholders, olive dark header, inaccessible desktop verso control, ornamental landing and 3D turns; populated timing/method states need audit. Order: record B-39 arrival decision first; remove marketing and build three-step quick start; flat day step; shared Helvetica/type/24px-space/neutral/motion tokens; recto, verso and review layouts; secondary surfaces; strengthen and mutation-test gates; seeded visuals; docs and guarded deploy. Keep capacity and closure semantics shared and leave reserved founder decisions pending. No source code changed yet.
