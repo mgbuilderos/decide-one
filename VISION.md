@@ -26,6 +26,18 @@ artifact and visual gates, inspect both themes and narrow/populated states, and
 preserve the approved geometry. Green checks are evidence only for covered states.
 Do not claim that untested or failing states are complete.
 
+## Founder correction — 16 September 2026
+
+The selected framework is the whole daily input surface; there is no separate
+Today list beneath it. Time means **actual elapsed focus on a framework task**.
+A stopwatch starts at `00:00`, advances clockwise, pauses/resumes and records
+what the person spent. The product shows no local wall clock, countdown,
+planned-minutes field, capacity arithmetic or overtime message. The privacy
+shutter has one truthful action and makes no security or biometric claim. The
+header uses the fixed book width with `DECIDE ONE` centred in capitals, and the
+chosen 24px paper pattern remains visible across the complete sheet. These
+newer decisions supersede older wording below wherever it conflicts.
+
 
 > Stated by the founder, September 9, 2026, in their own framing. This is the root document. Where any other document in this repository conflicts with it, this one wins.
 
@@ -218,10 +230,10 @@ It does three things the previous line did not. It **begins by trusting the read
 | *You don't need another list. You need to know which three.* | The enemy. |
 | *Three methods. One clear order.* | The mechanism. |
 
-**Quick-start control guidance — approved 15 September 2026 for the direct arrival.**
-“Pick the method that fits the day.” “Choose at the top of the page. Set minutes beside the first line. Turn Over to close the day.” Navigation: “Next”, “Back”, “Skip”, “Start”. Method descriptions may excerpt the existing crawlable one-liners: “Three things for today and no fourth.” “Six tasks in strict order.” “Sorting on two axes before deciding what to do.” These locate existing controls and explain the three-step arrival without adding a promise, field or method. The primary statement and privacy/free promise above supply the other two steps.
+**Quick-start control guidance — amended 16 September 2026 for the direct arrival.**
+“Pick the method that fits the day.” “Choose at the top of the page. Write the first priority. Start its stopwatch when you begin. Turn Over to close the day.” Navigation: “Next”, “Back”, “Skip”, “Start”. Method descriptions may excerpt the existing crawlable one-liners: “Three things for today and no fourth.” “Six tasks in strict order.” “Sorting on two axes before deciding what to do.” These locate existing controls and explain the arrival without adding a promise, field or method. The primary statement and privacy/free promise above supply the other two steps.
 
-**Instrument labels, 15 September 2026.** “First”, “Next”, “Then” may label the three existing lines; short placeholders prevent narrow-screen clipping. “In order. One at a time.” makes the Ivy Lee rule visible. Matrix axes use “Urgent / Important”, “Not urgent / Important”, “Urgent / Not important”, “Not urgent / Not important”. “Classify first” labels its existing input gate. “Day closed” states a persisted closure. “Write first. Set minutes beside the line.” locates the existing time fields. These replace clipped, ambiguous or stale text without adding a field. Empty owner details are omitted rather than substituting a real person. The idle analogue face shows local time, labelled “Local time”; once a duration is set it shows that duration. Existing duration figures remain timing information.
+**Instrument labels, amended 16 September 2026.** “First”, “Next”, “Then” may label the three existing lines; short placeholders prevent narrow-screen clipping. “In order. One at a time.” makes the Ivy Lee rule visible. Matrix axes use “Urgent / Important”, “Not urgent / Important”, “Urgent / Not important”, “Not urgent / Not important”. “Classify first” labels its existing input gate. “Day closed” states a persisted closure. “Start beside a priority.” locates the stopwatch control. “Focus Time”, “Elapsed” and “Where the time went” describe measured time without judgement. Empty owner details are omitted rather than substituting a real person.
 
 **Review and entry labels, 15 September 2026.** “This Week” and “Review” name the two existing phone pages without management jargon. When no priorities were entered, the weekly count has no completion percentage and the carry-forward message says so; zero entered is not zero completed. “Open Decide One” may appear at the top of an educational page to bring the reader directly to the free instrument. These labels make the current record and entry point clearer without adding a product promise.
 
@@ -231,8 +243,8 @@ It does three things the previous line did not. It **begins by trusting the read
 
 1. **It makes the competing work visible.** A bounded page turns a crowded mental list into a choice the person can see.
 2. **It gives the choice a method.** Overcommitment → Top 3. Context-switching → Ivy Lee, 1918. Urgency confusion → the Urgent/Important Matrix. All are time-tested; all are named and credited honestly.
-3. **The method is enforced, not drawn.** Three lines and no fourth. Ivy Lee's second line will not open until the first is closed. Urgent/important requires classification before writing. **A clock is what makes this real** — a page can be ignored, a running timer cannot. Each line takes a duration; optionally a when and where.
-4. **It closes, and it counts.** Done, partial, blocked. Over weeks, planned against actual — where the time went, whether the estimates hold. **It never scolds.** Overrun adds time and says nothing.
+3. **The method is enforced, not drawn.** Three lines and no fourth. Ivy Lee's second line will not open until the first is closed. Urgent/important requires classification before writing. **A stopwatch makes the work measurable** — each written line can start, pause and resume its own elapsed focus session.
+4. **It closes, and it counts.** Done, partial, blocked. Over weeks, actual focus shows where the time went. **It never scolds.** Elapsed time is information and carries no verdict.
 
 The shape has a name, from medicine: **a regimen for a day** — assess, route, dose, review. Use the structure; never the vocabulary (§11.3).
 
@@ -284,7 +296,7 @@ Everything above says what the product is. This says **what kind of company make
 
 The founder named the model directly: *"there are so many watches out there but this is built for simplicity and durability. Other tools have so many features, and the F-91W still rules. We want the tool to rule even if it is simple and has fewer features, as it genuinely solves the problem."*
 
-**It is a brand model, not a form factor.** The analogue clock (§1.40, R11) is a settled component and was never in question here.
+**It is a brand model, not a form factor.** The time instrument is a settled function; its corrected form is the elapsed stopwatch recorded on 16 September 2026.
 
 ### 12.1a It is a belief system, not a design language — 11 September 2026
 

@@ -26,6 +26,18 @@ artifact and visual gates, inspect both themes and narrow/populated states, and
 preserve the approved geometry. Green checks are evidence only for covered states.
 Do not claim that untested or failing states are complete.
 
+## Founder correction — 16 September 2026
+
+Preserve the approved open-book geometry. Replace every wall-clock, analogue
+countdown, planned-minutes and capacity treatment with an elapsed stopwatch that
+starts at `00:00` and advances clockwise. Remove the separate Today stream; the
+active framework is the complete input surface. Reduce the privacy shutter to
+`DECIDE ONE`, “Your page is hidden,” and one `Show My Page` action. Keep the two
+header rows at the same fixed 960px width as the book, with `DECIDE ONE` centred
+in capitals. Restore Dot Grid and Square Grid as full-sheet 24px patterns beneath
+the content. This section supersedes every conflicting clock, Today-stream,
+privacy-copy or pattern instruction later in this brief.
+
 
 **For any agent doing interface work on Decide One — ChatGPT Codex, Antigravity, Claude Code — and for the founder.**
 Written 14 September 2026 from `VISION.md`, `DECISIONS.md`, `FRAMEWORKS.md` and `BRAND_BOOK.md`, and from what the code and the live site actually do, checked the same day.
@@ -41,7 +53,7 @@ Written 14 September 2026 from `VISION.md`, `DECISIONS.md`, `FRAMEWORKS.md` and 
 1. **It is a priority instrument — not a journal, a diary or a planner.** One page for today. The person picks a method, writes only what the method allows, gives the first line a real amount of time, and closes the day. Primary line: *"You already know what matters. This helps you choose it."*
 2. **The standard is an instrument panel.** It is trusted because it is right: exact alignment, correct numbers, an accurate clock, type readable at arm's length, every state designed, zero console errors. **Ornament is a defect.**
 3. **Premium means precise, never ornamental.** Craft that makes it more exact, more legible or more durable is on-brand at any level. Gold, foil, leather, stitching, woven labels, paper-texture cosplay, 3D books, spines, ribbons, glows, gradients and celebration are not.
-4. **Frameworks are modes, not skins.** Top 3, Ivy Lee and the Urgent/Important Matrix each change the page's *structure and rules* — how many lines exist, which are locked, where writing may happen. (Capacity and closure are the same in every mode today — see §4.) Type, palette, grid and clock are identical in every mode.
+4. **Frameworks are modes, not skins.** Top 3, Ivy Lee and the Urgent/Important Matrix each change the page's *structure and rules* — how many lines exist, which are locked, where writing may happen. The selected framework is the whole daily input surface. Closure is shared; each written row has the same elapsed stopwatch.
 5. **No scroll, on either axis, on any instrument view, from 320×568 to 1440×900.** Measured on every deploy. A container that clips is worse than one that scrolls.
 6. **Black and white.** Colour appears only as the red / yellow / green progress marks, and only to mean progress.
 7. **Nothing is added.** No new features, surfaces or settings — *"This will look the same in ten years. No features will be added."* (VISION §12.2). Redesign what exists. Remove only what §7 lists as decided; propose any other removal and wait.
@@ -439,7 +451,7 @@ NON-NEGOTIABLES
 - Black and white only. No ornament: no gold, foil, leather, stitching, woven labels, decorative paper texture, covers, spines, ribbons, page curls, illustrations, glass, gradients, glows, confetti, streaks, scores or badges.
 - The self-hosted Inter Variable stack only (Rule 1). Tabular numerals for every figure. No text below 11px. Every grey at 3:1 contrast or better.
 - Exactly three methods, and they are MODES, not skins: Top 3 (three lines, no fourth), Ivy Lee (six in strict order, each locked until the previous is done — `isItemLocked`), the Urgent/Important Matrix (classify before writing). Capacity (`src/utils/executionModel.js` computeCapacity) and closure (DayReport.jsx) are identical in every mode today, and the Matrix's default rows can be written without classifying. Make each mode's rule visible and enforced; if capacity or closure should differ per mode, put it in your plan and wait for the founder. Typography, palette, grid and clock never change between modes.
-- The analogue clock is the only clock and is right to the second. Every number shown is correct.
+- The elapsed stopwatch is the only clock and is right to the second. Its hand advances clockwise. Every number shown is correct.
 - Never judge: no red on past days, no failure states; overrun is information. Copy follows VISION §11 and BRAND_BOOK.md. Never use the method names FRAMEWORKS.md §6.3 restricts. Never name real people in the interface.
 - Zero console errors in any state. Every state in UI_BRIEF §8 designed, including empty and returning-after-a-month.
 - Add no dependency that a few lines or the platform can replace. Add no feature, setting or field beyond the quick start.
@@ -486,10 +498,9 @@ Daily reserves the mobile side-switch bar. The small yearly cards place their
 open action beside the month; a small-card overflow check covers the previously
 missed clipped actions. Minute fields and start/pause controls have 36px height.
 
-The idle face reads labelled local time; a paused session keeps its own clock
-and elapsed figure. With no planned time the page uses one empty-clock instruction,
-including after priorities have been written. Empty Today retains its count and
-Add line control without a duplicate empty-state sentence.
+The stopwatch reads `00:00` before a session starts and shows actual elapsed focus
+while running or paused. It never shows local time, planned time or remaining
+time. The separate Today stream is removed; only framework rows accept work.
 
 **Not a completed redesign or a release.** The Matrix's 16 possible tasks and the
 unbounded Today/carry-forward lists cannot fit together at readable sizes on the

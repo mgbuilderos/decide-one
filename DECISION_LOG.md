@@ -1434,3 +1434,9 @@ Unified the header into one sectioned menu, changed the interface and privacy co
 ### 2026-09-16 00:21 — unattributed
 
 Deployed commit ee74534 to Cloudflare after all QC, content, artifact and 27-surface visual gates passed; decideone.app verified against assets/index-CHXqVb3O.js (Worker version b287eca8-135b-4cbc-a7d5-f9198cf72710).
+
+---
+
+### 2026-09-16 00:38 — unattributed
+
+Locked founder correction before code: framework-only daily input; elapsed clockwise stopwatch with no wall time, countdown or planned minutes; one-action truthful privacy shutter; fixed 960px uppercase DECIDE ONE header; full-sheet 24px paper patterns. Preserve approved open-book geometry.
