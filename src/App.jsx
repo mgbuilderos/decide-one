@@ -626,8 +626,6 @@ export default function App() {
         settings={effectiveSettings}
         onOpenMenu={() => setIsMenuOpen(true)}
         menuOpen={isMenuOpen}
-        activeFramework={activeFramework}
-        onSelectFramework={handleSelectFramework}
         onOpenSearch={() => setIsSearchOpen(true)}
       />
 
@@ -796,7 +794,10 @@ export default function App() {
         settings={settings}
         updateSettings={updateSettings}
         activeFramework={activeFramework}
-        onSelectFramework={handleSelectFramework}
+        onSelectFramework={(frameworkId) => {
+          setActiveView('daily');
+          handleSelectFramework(frameworkId);
+        }}
         onExport={exportJSON}
         onOpenGuide={() => setIsHelpOpen(true)}
         onExportMarkdown={() => downloadMarkdownVault(data, settings)}

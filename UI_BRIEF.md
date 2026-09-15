@@ -38,6 +38,14 @@ in capitals. Restore Dot Grid and Square Grid as full-sheet 24px patterns beneat
 the content. This section supersedes every conflicting clock, Today-stream,
 privacy-copy or pattern instruction later in this brief.
 
+**Menu refinement, 16 September:** Search, DECIDE ONE and Menu are the measured
+first header row; the four time perspectives fill the second. Menu remains
+one dialog and is now a compact single panel: three labelled method choices
+and three paper-grid choices first, then disclosures for work actions,
+preferences, backup and informational links. The four category tabs are
+retired; the framework picker lives in Menu rather than being duplicated in
+the header. No control or export is silently removed.
+
 
 **For any agent doing interface work on Decide One — ChatGPT Codex, Antigravity, Claude Code — and for the founder.**
 Written 14 September 2026 from `VISION.md`, `DECISIONS.md`, `FRAMEWORKS.md` and `BRAND_BOOK.md`, and from what the code and the live site actually do, checked the same day.

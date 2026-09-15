@@ -59,9 +59,6 @@
 .instrument-app .instrument-sheet.paper-square { background-image: linear-gradient(var(--rule) 1px, transparent 1px), linear-gradient(90deg, var(--rule) 1px, transparent 1px) !important; background-size: 24px 24px; }
 .instrument-app .instrument-sheet.paper-plain { background-image: none !important; }
 
-.book-sheet footer { height: 24px !important; }
-
-
 /* Rows must not extend outside the page's scroll/focus boundary. */
 .instrument-app .priority-row, .instrument-app .ivy-row, .instrument-app .matrix-row { margin-inline: 0; }
 .instrument-app .priority-row > span:first-child { flex-shrink: 0; }

@@ -1,62 +1,28 @@
-import React, { useEffect, useRef } from 'react';
-import { 
-  X, 
-  Moon, 
-  Sun, 
-  Download, 
-  Sparkles, 
-  BookOpen, 
-  Volume2, 
-  VolumeX, 
-  FileText, 
-  Feather, 
-  Printer, 
-  Target,
-  Flame,
-  ListOrdered,
-  Shield,
-  Upload,
-  Scale,
-  BarChart3,
-  Sunset,
-  Mic,
-  Lock
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  BarChart3, BookOpen, ChevronDown, Download, FileText, Grid2X2,
+  ListOrdered, Lock, Mic, Moon, Printer, Scale, Shield, Sun, Sunset,
+  Target, Upload, Volume2, VolumeX, X
 } from 'lucide-react';
 import { playSound } from '../utils/audio';
 import { hasTelemetryConsent, setTelemetryConsent } from '../utils/telemetry';
 import { FRAMEWORKS } from './ProductivityFrameworks';
 
 export default function UnifiedMenuModal({
-  isOpen,
-  onClose,
-  settings,
-  updateSettings,
-  activeFramework = 'rule_of_3',
-  onSelectFramework,
-  onExport,
-  onOpenGuide,
-  onExportMarkdown,
-  onPrintAnnual,
-  onPrintWeeklyBriefing,
-  onExportEncryptedVault,
-  onImportEncryptedVault,
-  onOpenDecisions,
-  onOpenAnalytics,
-  onOpenClosure,
-  onToggleDictation,
-  isListening = false,
-  onLockVault,
-  onOpenMethods,
-  onOpenLegal,
+  isOpen, onClose, settings, updateSettings, activeFramework,
+  onSelectFramework, onExport, onOpenGuide,
+  onExportMarkdown, onPrintAnnual, onPrintWeeklyBriefing,
+  onExportEncryptedVault, onImportEncryptedVault, onOpenDecisions, onOpenAnalytics,
+  onOpenClosure, onToggleDictation, isListening = false,
+  onLockVault, onOpenMethods, onOpenLegal
 }) {
   const closeButtonRef = useRef(null);
   const restoreMenuTriggerRef = useRef(true);
-  const [menuSection, setMenuSection] = React.useState('work');
+  const [analyticsOn, setAnalyticsOn] = useState(() => hasTelemetryConsent());
 
   useEffect(() => {
     if (!isOpen) return undefined;
     restoreMenuTriggerRef.current = true;
-    setMenuSection('work');
     closeButtonRef.current?.focus();
     return () => {
       if (restoreMenuTriggerRef.current) {
@@ -65,43 +31,33 @@ export default function UnifiedMenuModal({
     };
   }, [isOpen]);
 
-  // Close on Escape key
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape' && isOpen) {
+    if (!isOpen) return undefined;
+    const handleDialogKeys = (event) => {
+      if (event.key === 'Escape') {
         onClose();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+      const dialog = document.getElementById('unified-menu');
+      const focusable = [...(dialog?.querySelectorAll('button, a[href], input, summary') || [])]
+        .filter((element) => !element.disabled
+          && element.getClientRects().length > 0
+          && (element.tagName === 'SUMMARY' || !element.closest('details:not([open])')));
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', handleDialogKeys);
+    return () => window.removeEventListener('keydown', handleDialogKeys);
   }, [isOpen, onClose]);
-
-
-  const toggleDarkMode = () => {
-    playSound('click', settings.isMuted);
-    const newDark = !settings.darkMode;
-    updateSettings({ darkMode: newDark });
-    if (newDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  };
-
-  // B3 — the person decides, and can change their mind. Default is off, and
-  // an unanswered question counts as no.
-  const [analyticsOn, setAnalyticsOn] = React.useState(() => hasTelemetryConsent());
-  const toggleAnalytics = () => {
-    const next = !analyticsOn;
-    playSound('click', settings.isMuted);
-    setTelemetryConsent(next);
-    setAnalyticsOn(next);
-  };
-
-  const toggleSound = () => {
-    playSound('click', false);
-    updateSettings({ isMuted: !settings.isMuted });
-  };
 
   const runAndClose = (action) => {
     playSound('click', settings.isMuted);
@@ -110,454 +66,197 @@ export default function UnifiedMenuModal({
     action?.();
   };
 
+  const toggleDarkMode = () => {
+    playSound('click', settings.isMuted);
+    const darkMode = !settings.darkMode;
+    updateSettings({ darkMode });
+    document.documentElement.classList.toggle('dark', darkMode);
+  };
+
+  const toggleSound = () => {
+    playSound('click', false);
+    updateSettings({ isMuted: !settings.isMuted });
+  };
+
+  const toggleAnalytics = () => {
+    const next = !analyticsOn;
+    playSound('click', settings.isMuted);
+    setTelemetryConsent(next);
+    setAnalyticsOn(next);
+  };
+
   if (!isOpen) return null;
 
-  const currentFw = FRAMEWORKS.find(f => f.id === activeFramework) || FRAMEWORKS[0];
+  const quickActions = [
+    ['DECISION SPACE', Scale, onOpenDecisions],
+    ['Review Progress', BarChart3, onOpenAnalytics],
+    ['Close Day', Sunset, onOpenClosure],
+    [isListening ? 'Stop Dictation' : 'Dictate', Mic, onToggleDictation],
+    ['Privacy Shutter', Lock, onLockVault]
+  ];
+  const methodIcons = { rule_of_3: Target, ivy_lee: ListOrdered, eisenhower: Grid2X2 };
+  const methodLabels = { rule_of_3: 'Top 3', ivy_lee: 'Ivy Lee', eisenhower: 'Matrix' };
+  const exports = [
+    ['JSON Backup', Download, onExport],
+    ['Weekly Review', Printer, onPrintWeeklyBriefing],
+    ['Markdown Vault', FileText, onExportMarkdown],
+    ['Annual Archive', BookOpen, onPrintAnnual],
+    ['Export .vault', Shield, onExportEncryptedVault]
+  ];
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-black/45 dark:bg-black/75  animate-in fade-in select-none">
-      
-      {/* Backdrop Dismissal */}
-      <div className="fixed inset-0" onClick={onClose} />
-
-      {/* Main Modal Card */}
-      <div
-        id="unified-menu"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="unified-menu-title"
-        className="relative z-10 w-full max-w-lg max-h-[calc(100dvh-24px)] bg-white dark:bg-[#151515] text-neutral-900 dark:text-neutral-100 rounded-3xl shadow-2xl border border-black/[0.10] dark:border-white/[0.12] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150"
-        onClick={(e) => e.stopPropagation()}
-      >
-        
-        {/* Clean Minimalist Header */}
-        <div className="h-12 px-5 sm:px-6 flex items-center justify-between border-b border-black/[0.06] dark:border-white/[0.08] shrink-0 bg-black/[0.01] dark:bg-white/[0.015]">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-neutral-900 dark:bg-white" />
-            <h1 id="unified-menu-title" className="type-label">
-              Menu
-            </h1>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              ref={closeButtonRef}
-              type="button"
-              onClick={() => {
-                playSound('click', settings.isMuted);
-                onClose();
-              }}
-              className="w-9 h-9 inline-flex items-center justify-center rounded-full text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer"
-              aria-label="Close Menu"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 bg-black/45 dark:bg-black/75 select-none">
+      <div className="fixed inset-0" onClick={onClose} aria-hidden="true" />
+      <div id="unified-menu" role="dialog" aria-modal="true" aria-labelledby="unified-menu-title"
+        className="relative z-10 w-full max-w-[440px] max-h-[calc(100dvh-24px)] bg-white dark:bg-[#151515] text-neutral-900 dark:text-neutral-100 border border-black/[0.12] dark:border-white/[0.15] rounded-xl flex flex-col overflow-hidden"
+        onClick={(event) => event.stopPropagation()}>
+        <div className="min-h-12 px-4 flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.10] shrink-0">
+          <h1 id="unified-menu-title" className="type-section-title">Menu</h1>
+          <button ref={closeButtonRef} type="button" onClick={onClose}
+            className="w-10 h-10 inline-flex items-center justify-center" aria-label="Close Menu"><X size={17} /></button>
         </div>
 
-        <nav className="grid grid-cols-4 border-b border-black/[0.08] dark:border-white/[0.08] px-3 sm:px-4 shrink-0" aria-label="Menu Sections">
-          {[
-            ['work', 'Work'],
-            ['settings', 'Settings'],
-            ['export', 'Export'],
-            ['about', 'About']
-          ].map(([id, label]) => (
-            <button
-              key={id}
-              type="button"
-              onClick={() => setMenuSection(id)}
-              aria-current={menuSection === id ? 'page' : undefined}
-              className={`type-control min-h-11 border-b-2 px-1 transition-colors ${
-                menuSection === id
-                  ? 'border-neutral-900 text-neutral-900 dark:border-white dark:text-white'
-                  : 'border-transparent text-neutral-500 hover:text-neutral-900 dark:hover:text-white'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </nav>
+        <div className="flex-1 min-h-0 overflow-y-auto pocket-scroll p-4 space-y-3">
+          <section aria-labelledby="menu-methods-heading">
+            <h2 id="menu-methods-heading" className="type-label mb-2">Choose Method</h2>
+            <div className="grid grid-cols-3 gap-2" role="group" aria-label="Prioritization Methods">
+              {FRAMEWORKS.map((method) => {
+                const Icon = methodIcons[method.id];
+                return (
+                  <button key={method.id} type="button"
+                    aria-label={method.name} title={`${method.name} — ${method.subtitle}`}
+                    aria-pressed={activeFramework === method.id}
+                    onClick={() => {
+                      restoreMenuTriggerRef.current = false;
+                      onClose();
+                      onSelectFramework?.(method.id);
+                    }}
+                    className="menu-method-choice type-control min-h-14 px-2 py-2 flex flex-col items-center justify-center gap-1 text-center">
+                    <Icon size={17} aria-hidden="true" /><span>{methodLabels[method.id]}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
 
-        {/* Modal Scrollable Body */}
-        <div className="flex-1 min-h-0 overflow-y-auto pocket-scroll p-4 sm:p-5 space-y-4">
-
-          {/* Every secondary work surface begins here; the header opens no
-              competing popover and the menu never sends people to a second menu. */}
-          {menuSection === 'work' && <>
-          <section className="p-3.5 sm:p-4 rounded-2xl border border-black/[0.08] dark:border-white/[0.08] space-y-2.5" aria-labelledby="work-menu-heading">
-            <h2 id="work-menu-heading" className="type-label">
-              Your Work
-            </h2>
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                ['DECISION SPACE', Scale, onOpenDecisions],
-                ['Review Progress', BarChart3, onOpenAnalytics],
-                ['Close Day', Sunset, onOpenClosure],
-                [isListening ? 'Stop Dictation' : 'Dictate', Mic, onToggleDictation],
-                ['Privacy Shutter', Lock, onLockVault]
-              ].map(([label, Icon, action]) => (
-                <button
-                  key={label}
-                  type="button"
-                  onClick={() => runAndClose(action)}
-                  className="type-control min-h-11 px-3 py-2 border border-black/[0.08] dark:border-white/[0.10] text-left flex items-center gap-2.5 hover:bg-black/[0.03] dark:hover:bg-white/[0.05] transition-colors"
-                >
-                  <Icon className="w-4 h-4 shrink-0 text-neutral-500" />
+          <section className="border-t border-black/[0.08] dark:border-white/[0.10] pt-3" aria-labelledby="menu-paper-heading">
+            <h2 id="menu-paper-heading" className="type-label mb-2">Paper Grid</h2>
+            <div className="grid grid-cols-3 gap-2" role="group" aria-label="Paper Style">
+              {[['dots', 'Dot Grid'], ['square', 'Square Grid'], ['plain', 'Plain']].map(([id, label]) => (
+                <button key={id} type="button" aria-label={`${label} Paper`} aria-pressed={settings.paperStyle === id}
+                  onClick={() => { playSound('click', settings.isMuted); updateSettings({ paperStyle: id }); }}
+                  className="menu-paper-choice type-control min-h-14 px-2 py-2 flex flex-col items-center justify-center gap-1 text-center">
+                  <span className={`paper-style-swatch paper-style-${id}`} aria-hidden="true" />
                   <span>{label}</span>
                 </button>
               ))}
             </div>
           </section>
 
-          {/* Workspace library */}
-          {/* Direct method selection */}
-          <div className="p-3.5 sm:p-4 rounded-2xl border border-black/[0.08] dark:border-white/[0.08] bg-black/[0.015] dark:bg-white/[0.02] space-y-2.5">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-neutral-800 dark:text-neutral-200" />
-                <h2 className="type-label">
-                  Choose Method
-                </h2>
-              </div>
-              <div className="type-metadata whitespace-nowrap">
-                Active: <span className="text-neutral-900 dark:text-white font-bold">{currentFw.name}</span>
-              </div>
+          <details className="menu-disclosure border-t border-black/[0.08] dark:border-white/[0.10] pt-1">
+            <summary className="type-control min-h-11 flex items-center justify-between cursor-pointer">
+              <span>Work Actions</span><ChevronDown size={16} aria-hidden="true" />
+            </summary>
+            <div className="grid grid-cols-3 gap-2 pb-2">
+              {quickActions.map(([label, Icon, action]) => (
+                <button key={label} type="button" onClick={() => runAndClose(action)}
+                  className="type-control min-h-14 px-2 py-2 border border-black/[0.10] dark:border-white/[0.12] flex flex-col items-center justify-center gap-1 text-center hover:bg-black/[0.04] dark:hover:bg-white/[0.06]">
+                  <Icon size={17} aria-hidden="true" /><span>{label}</span>
+                </button>
+              ))}
             </div>
+          </details>
 
-            {/* Three direct method controls */}
-            <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
-              {[
-                {
-                  id: 'rule_of_3',
-                  label: 'Top 3',
-                  sub: 'Choose three',
-                  icon: Target
-                },
-                {
-                  id: 'eisenhower',
-                  label: 'Matrix',
-                  sub: 'Urgent / Important',
-                  icon: Flame
-                },
-                {
-                  id: 'ivy_lee',
-                  label: 'Ivy Lee',
-                  sub: 'Work in order',
-                  icon: ListOrdered
-                }
-              ].map((m) => {
-                const Icon = m.icon;
-                const isSelected = activeFramework === m.id;
-                return (
-                  <button
-                    key={m.id}
-                    type="button"
-                    onClick={() => {
-                      playSound('check', settings.isMuted);
-                      onSelectFramework?.(m.id);
-                    }}
-                    className={`p-2 sm:p-2.5 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center min-h-[56px] ${
-                      isSelected
-                        ? 'border-neutral-900 bg-neutral-900 text-white dark:border-white dark:bg-white dark:text-neutral-900 shadow-xs'
-                        : 'border-black/[0.08] dark:border-white/[0.08] hover:bg-black/[0.04] dark:hover:bg-white/[0.06] text-neutral-800 dark:text-neutral-200'
-                    }`}
-                  >
-                    <Icon className="w-3.5 h-3.5 mb-0.5 shrink-0" />
-                    <span className="type-control whitespace-nowrap">
-                      {m.label}
-                    </span>
-                    <span className={`type-metadata hidden sm:block whitespace-nowrap mt-0.5 ${
-                      isSelected ? 'text-white/80 dark:text-neutral-700' : 'text-neutral-400 dark:text-neutral-500'
-                    }`}>
-                      {m.sub}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-
-          </div>
-          </>}
-
-          {/* Section 2: Stationery (page grid, closure reminder, theme and audio) */}
-          {menuSection === 'settings' && <>
-          <div className="p-3.5 sm:p-4 rounded-2xl border border-black/[0.08] dark:border-white/[0.08] space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <Feather className="w-3.5 h-3.5 text-neutral-800 dark:text-neutral-200" />
-                <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
-                  Stationery
-                </span>
-              </div>
-            </div>
-
-            {/* Row 1: Paper Texture */}
-            <div className="flex items-center justify-between gap-2">
-              <span className="type-control text-neutral-500 dark:text-neutral-400 whitespace-nowrap">Paper</span>
-              <div className="paper-style-controls" role="group" aria-label="Paper Style">
-                {[
-                  { id: 'dots', label: 'Dot-Grid' },
-                  { id: 'square', label: 'Square' },
-                  { id: 'plain', label: 'Plain' }
-                ].map((p) => (
-                  <button
-                    key={p.id}
-                    type="button"
-                    onClick={() => {
-                      playSound('click', settings.isMuted);
-                      updateSettings({ paperStyle: p.id });
-                    }}
-                    aria-label={`${p.label} Paper`}
-                    title={`${p.label} Paper`}
-                    aria-pressed={settings.paperStyle === p.id}
-                    className={`paper-style-button ${
-                      settings.paperStyle === p.id
-                        ? 'is-selected'
-                        : ''
-                    }`}
-                  >
-                    <span className={`paper-style-swatch paper-style-${p.id}`} aria-hidden="true" />
-                    <span className="sr-only">{p.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Row 5: Ambient Nudges & Evening Closure */}
-            <div className="flex items-center justify-between gap-2 pt-2 border-t border-black/[0.06] dark:border-white/[0.06]">
-              <div>
-                <div className="text-xs font-semibold text-neutral-900 dark:text-white">Evening Closure Reminder</div>
-                <div className="text-[11px] text-neutral-500">Local notification</div>
+          <details className="menu-disclosure border-t border-black/[0.08] dark:border-white/[0.10] pt-1">
+            <summary className="type-control min-h-11 flex items-center justify-between cursor-pointer">
+              <span>Preferences</span><ChevronDown size={16} aria-hidden="true" />
+            </summary>
+            <div className="space-y-4 pb-2">
+              <div className="grid grid-cols-2 gap-2">
+                <button type="button" onClick={toggleDarkMode}
+                  className="type-control min-h-10 border border-black/[0.10] dark:border-white/[0.12] flex items-center justify-center gap-2">
+                  {settings.darkMode ? <Sun size={16} /> : <Moon size={16} />}
+                  <span>{settings.darkMode ? 'Light Theme' : 'Dark Theme'}</span>
+                </button>
+                <button type="button" onClick={toggleSound}
+                  className="type-control min-h-10 border border-black/[0.10] dark:border-white/[0.12] flex items-center justify-center gap-2">
+                  {settings.isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+                  <span>{settings.isMuted ? 'Sound Off' : 'Sound On'}</span>
+                </button>
               </div>
               <div className="flex items-center gap-2">
-                <input
-                  type="time"
-                  value={settings.closureReminderTime || '20:30'}
-                  onChange={(e) => updateSettings({ closureReminderTime: e.target.value })}
-                  className="px-2 py-0.5 text-xs font-semibold rounded-lg border border-black/[0.1] dark:border-white/[0.15] bg-transparent text-neutral-900 dark:text-white focus:outline-none"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    playSound('click', settings.isMuted);
-                    updateSettings({ ambientRemindersEnabled: settings.ambientRemindersEnabled !== false ? false : true });
-                  }}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer ${
-                    settings.ambientRemindersEnabled !== false
-                      ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-2xs'
-                      : 'border border-black/[0.1] dark:border-white/[0.15] text-neutral-400'
-                  }`}
-                >
-                  {settings.ambientRemindersEnabled !== false ? 'Enabled' : 'Off'}
+                <label htmlFor="menu-owner" className="type-control shrink-0">Name</label>
+                <input id="menu-owner" type="text" value={settings.ownerName || ''}
+                  onChange={(event) => updateSettings({ ownerName: event.target.value })} placeholder="Optional"
+                  className="type-control min-w-0 w-full min-h-9 px-2 bg-transparent border border-black/[0.12] dark:border-white/[0.15]" />
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <div className="min-w-0">
+                  <label htmlFor="menu-reminder-time" className="type-control block">Evening Closure Reminder</label>
+                  <span className="type-metadata text-neutral-500 dark:text-neutral-400">Local notification</span>
+                </div>
+                <input id="menu-reminder-time" type="time" value={settings.closureReminderTime || '20:30'}
+                  onChange={(event) => updateSettings({ closureReminderTime: event.target.value })}
+                  className="type-control w-[92px] min-h-9 px-1 bg-transparent border border-black/[0.12] dark:border-white/[0.15]" />
+                <button type="button" aria-label="Toggle Evening Closure Reminder"
+                  aria-pressed={settings.ambientRemindersEnabled !== false}
+                  onClick={() => updateSettings({ ambientRemindersEnabled: settings.ambientRemindersEnabled === false })}
+                  className="type-control min-h-9 px-2 border border-black/[0.12] dark:border-white/[0.15]">
+                  {settings.ambientRemindersEnabled !== false ? 'On' : 'Off'}
+                </button>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <span className="type-control block">Anonymous Usage</span>
+                  <p className="type-metadata text-neutral-500 dark:text-neutral-400">
+                    {analyticsOn
+                      ? 'Sharing which features get used. No task text is ever sent — only that something happened, never what you wrote.'
+                      : 'Off. Nothing about how you use this leaves the device.'}
+                  </p>
+                </div>
+                <button type="button" onClick={toggleAnalytics} aria-pressed={analyticsOn}
+                  className="type-control shrink-0 min-h-9 px-3 border border-black/[0.12] dark:border-white/[0.15]">
+                  {analyticsOn ? 'On' : 'Off'}
                 </button>
               </div>
             </div>
+          </details>
 
-            {/* Row 6: Controls (Theme & Audio) */}
-            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-black/[0.06] dark:border-white/[0.06]">
-              <button
-                type="button"
-                onClick={toggleDarkMode}
-                className="py-1.5 px-2 rounded-xl border border-black/[0.08] dark:border-white/[0.1] hover:bg-black/[0.03] dark:hover:bg-white/[0.05] text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap"
-              >
-                {settings.darkMode ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-                <span>{settings.darkMode ? 'Light Theme' : 'Dark Theme'}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={toggleSound}
-                className="py-1.5 px-2 rounded-xl border border-black/[0.08] dark:border-white/[0.1] hover:bg-black/[0.03] dark:hover:bg-white/[0.05] text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap"
-              >
-                {settings.isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
-                <span>{settings.isMuted ? 'Muted' : 'Audio On'}</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Anonymous usage — off unless asked for (B3) */}
-          <div className="p-3.5 sm:p-4 rounded-2xl border border-black/[0.08] dark:border-white/[0.08] space-y-2">
-            <div className="flex items-center justify-between gap-3">
-              <div className="min-w-0">
-                <div className="text-[11px] font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
-                  Anonymous usage
-                </div>
-                <p className="mt-1 text-[11px] leading-[16px] text-neutral-500 dark:text-neutral-400">
-                  {analyticsOn
-                    ? 'Sharing which features get used. No task text is ever sent — only that something happened, never what you wrote.'
-                    : 'Off. Nothing about how you use this leaves the device.'}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={toggleAnalytics}
-                aria-pressed={analyticsOn}
-                className="shrink-0 py-1.5 px-2.5 rounded-xl border border-black/[0.08] dark:border-white/[0.1] hover:bg-black/[0.03] dark:hover:bg-white/[0.06] text-[11px] font-semibold transition-colors cursor-pointer"
-              >
-                {analyticsOn ? 'On' : 'Off'}
-              </button>
-            </div>
-          </div>
-          </>}
-
-          {/* Section 3: Archival Vault Export & Print (Single Clean Row) */}
-          {menuSection === 'export' && <>
-          <div className="p-3.5 sm:p-4 rounded-2xl border border-black/[0.08] dark:border-white/[0.08] space-y-2.5">
-            <div className="flex items-center justify-between">
-              <div className="text-[11px] font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
-                Backup & Export
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              {/* Free JSON Backup */}
-              <button
-                type="button"
-                onClick={() => {
-                  playSound('click', settings.isMuted);
-                  onExport();
-                }}
-                className="py-2 px-1.5 rounded-xl border border-black/[0.08] dark:border-white/[0.1] hover:bg-black/[0.03] dark:hover:bg-white/[0.05] text-xs font-medium flex flex-col items-center justify-center gap-1 transition-colors cursor-pointer text-center whitespace-nowrap"
-              >
-                <Download className="w-3.5 h-3.5 text-neutral-500" />
-                <span className="text-[11px] font-bold whitespace-nowrap">JSON Backup</span>
-                <span className="text-[11px] text-neutral-500 whitespace-nowrap">Full JSON</span>
-              </button>
-
-              {/* Weekly Briefing PDF */}
-              <button
-                type="button"
-                onClick={() => {
-                  playSound('click', settings.isMuted);
-                  onPrintWeeklyBriefing?.();
-                }}
-                className="py-2 px-1.5 rounded-xl border border-black/[0.08] dark:border-white/[0.1] hover:bg-black/[0.03] dark:hover:bg-white/[0.05] text-xs font-medium flex flex-col items-center justify-center gap-1 transition-colors cursor-pointer text-center whitespace-nowrap"
-              >
-                <div className="flex items-center gap-1">
-                  <Printer className="w-3.5 h-3.5 text-neutral-700 dark:text-neutral-300" />
-                </div>
-                <span className="text-[11px] font-bold whitespace-nowrap">Weekly Review</span>
-                <span className="text-[11px] text-neutral-500 whitespace-nowrap">Weekly PDF</span>
-              </button>
-
-              {/* Patron Markdown Export */}
-              <button
-                type="button"
-                onClick={() => {
-                  playSound('click', settings.isMuted);
-                  onExportMarkdown?.();
-                }}
-                className="py-2 px-1.5 rounded-xl border border-black/[0.08] dark:border-white/[0.1] hover:bg-black/[0.03] dark:hover:bg-white/[0.05] text-xs font-medium flex flex-col items-center justify-center gap-1 transition-colors cursor-pointer text-center whitespace-nowrap"
-              >
-                <div className="flex items-center gap-1">
-                  <FileText className="w-3.5 h-3.5 text-neutral-700 dark:text-neutral-300" />
-                </div>
-                <span className="text-[11px] font-bold whitespace-nowrap">Markdown Vault</span>
-                <span className="text-[11px] text-neutral-500 whitespace-nowrap">Obsidian / Notion</span>
-              </button>
-
-              {/* Patron Print Engine */}
-              <button
-                type="button"
-                onClick={() => {
-                  playSound('click', settings.isMuted);
-                  onPrintAnnual?.();
-                }}
-                className="py-2 px-1.5 rounded-xl border border-black/[0.08] dark:border-white/[0.1] hover:bg-black/[0.03] dark:hover:bg-white/[0.05] text-xs font-medium flex flex-col items-center justify-center gap-1 transition-colors cursor-pointer text-center whitespace-nowrap"
-              >
-                <div className="flex items-center gap-1">
-                  <BookOpen className="w-3.5 h-3.5 text-neutral-700 dark:text-neutral-300" />
-                </div>
-                <span className="text-[11px] font-bold whitespace-nowrap">Annual Archive</span>
-                <span className="text-[11px] text-neutral-500 whitespace-nowrap">Full Year PDF</span>
-              </button>
-            </div>
-
-            {/* Air-Gapped Encrypted Vault (.vault) */}
-            <div className="pt-2.5 border-t border-black/[0.06] dark:border-white/[0.06] flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2 min-w-0">
-                <div className="w-6 h-6 rounded-lg bg-black/[0.04] dark:bg-white/[0.06] border border-black/[0.06] dark:border-white/[0.08] flex items-center justify-center shrink-0">
-                  <Shield className="w-3.5 h-3.5 text-neutral-600 dark:text-neutral-400" />
-                </div>
-                <div className="truncate">
-                  <div className="text-[11px] font-bold text-neutral-900 dark:text-white truncate">
-                    Air-Gapped Encrypted Vault (.vault)
-                  </div>
-                  <div className="text-[11px] text-neutral-500 truncate">
-                    AES-GCM-256 • PBKDF2 100K Iterations • Zero Cloud
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-1.5 shrink-0">
-                <label className="py-1 px-2 rounded-lg border border-black/[0.08] dark:border-white/[0.1] hover:bg-black/[0.03] dark:hover:bg-white/[0.05] text-[11px] font-semibold text-neutral-600 dark:text-neutral-400 transition-colors cursor-pointer flex items-center gap-1">
-                  <Upload className="w-2.5 h-2.5" />
-                  <span>Restore</span>
-                  <input
-                    type="file"
-                    accept=".vault"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        onImportEncryptedVault?.(file);
-                        e.target.value = '';
-                      }
-                    }}
-                  />
-                </label>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    playSound('clasp-lock', settings.isMuted);
-                    onExportEncryptedVault?.();
-                  }}
-                  className="py-1 px-2.5 rounded-lg text-[11px] font-bold bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-2xs hover:opacity-90 transition-all cursor-pointer whitespace-nowrap"
-                >
-                  Export .vault
+          <details className="menu-disclosure border-t border-black/[0.08] dark:border-white/[0.10] pt-1">
+            <summary className="type-control min-h-11 flex items-center justify-between cursor-pointer">
+              <span>Backup &amp; Export</span><ChevronDown size={16} aria-hidden="true" />
+            </summary>
+            <div className="grid grid-cols-2 gap-2 pb-3">
+              {exports.map(([label, Icon, action]) => (
+                <button key={label} type="button" onClick={() => runAndClose(action)}
+                  className="type-control min-h-11 px-2 border border-black/[0.10] dark:border-white/[0.12] flex items-center gap-2 text-left hover:bg-black/[0.04] dark:hover:bg-white/[0.06]">
+                  <Icon size={16} className="shrink-0" aria-hidden="true" /><span>{label}</span>
                 </button>
-              </div>
+              ))}
+              <label className="type-control min-h-11 px-2 border border-black/[0.10] dark:border-white/[0.12] flex items-center gap-2 cursor-pointer hover:bg-black/[0.04] dark:hover:bg-white/[0.06]">
+                <Upload size={16} className="shrink-0" aria-hidden="true" /><span>Restore .vault</span>
+                <input type="file" accept=".vault" className="sr-only"
+                  onChange={(event) => {
+                    const file = event.target.files?.[0];
+                    if (file) { onImportEncryptedVault?.(file); event.target.value = ''; }
+                  }} />
+              </label>
             </div>
-          </div>
-          </>}
+          </details>
 
-          {menuSection === 'about' &&
-          <nav className="grid grid-cols-2 gap-x-4 gap-y-1 border-t border-black/[0.08] dark:border-white/[0.08] pt-3 text-[13px] font-semibold" aria-label="Learn And Legal">
-            <button type="button" className="min-h-9 text-left" onClick={() => runAndClose(onOpenGuide)}>Quick Guide</button>
-            <a className="min-h-9 inline-flex items-center" href="/guides/">Guides</a>
-            <a className="min-h-9 inline-flex items-center" href="/faq/">Questions</a>
-            <button type="button" className="min-h-9 text-left" onClick={() => runAndClose(onOpenMethods)}>Methods &amp; Attributions</button>
-            <button type="button" className="min-h-9 text-left" onClick={() => runAndClose(onOpenLegal)}>Terms, Privacy &amp; Refunds</button>
-          </nav>
-          }
-
+          <details className="menu-disclosure border-t border-black/[0.08] dark:border-white/[0.10] pt-1">
+            <summary className="type-control min-h-11 flex items-center justify-between cursor-pointer">
+              <span>Guides &amp; Legal</span><ChevronDown size={16} aria-hidden="true" />
+            </summary>
+            <nav className="grid grid-cols-2 gap-x-3 pb-2" aria-label="Guides And Legal">
+              <button type="button" className="type-control min-h-10 text-left" onClick={() => runAndClose(onOpenGuide)}>Quick Guide</button>
+              <a className="type-control min-h-10 inline-flex items-center" href="/guides/">Guides</a>
+              <a className="type-control min-h-10 inline-flex items-center" href="/faq/">Questions</a>
+              <button type="button" className="type-control min-h-10 text-left" onClick={() => runAndClose(onOpenMethods)}>Methods &amp; Attributions</button>
+              <button type="button" className="type-control min-h-10 text-left" onClick={() => runAndClose(onOpenLegal)}>Terms, Privacy &amp; Refunds</button>
+            </nav>
+          </details>
         </div>
-
-        {/* Modal Bottom Bar (Nameplate + Done Action) */}
-        <div className="h-12 px-5 sm:px-6 bg-black/[0.015] dark:bg-white/[0.02] border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] font-semibold text-neutral-500 whitespace-nowrap">Owner:</span>
-            <input
-              type="text"
-              value={settings.ownerName || ''}
-              onChange={(e) => updateSettings({ ownerName: e.target.value })}
-              placeholder="Name..."
-              className="px-2 py-0.5 text-xs font-bold rounded-lg border border-black/[0.12] dark:border-white/[0.15] bg-transparent text-neutral-900 dark:text-white focus:outline-none focus:border-neutral-900 dark:focus:border-white w-28 sm:w-36"
-            />
-          </div>
-
-          <button
-            onClick={() => {
-              playSound('click', settings.isMuted);
-              onClose();
-            }}
-            className="px-4 py-1.5 rounded-xl bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 text-xs font-bold hover:opacity-90 transition-opacity cursor-pointer whitespace-nowrap shadow-2xs"
-          >
-            Done
-          </button>
-        </div>
-
       </div>
     </div>
   );

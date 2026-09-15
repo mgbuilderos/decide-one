@@ -59,6 +59,9 @@ const SURFACES = [
   { id: 'daily-mobile', url: '/?view=daily', vp: MOBILE, fixed: true },
   { id: 'daily-dots', url: '/?view=daily&paper=dots', vp: DESKTOP, fixed: true },
   { id: 'daily-square', url: '/?view=daily&paper=square', vp: DESKTOP, fixed: true },
+  { id: 'menu-desktop', url: '/?view=daily', vp: DESKTOP, fixed: true, seed: 'written', open: 'tools' },
+  { id: 'menu-tiny', url: '/?view=daily', vp: { w: 320, h: 568 }, fixed: true, seed: 'written', open: 'tools' },
+  { id: 'menu-dark-tiny', url: '/?view=daily', vp: { w: 320, h: 568 }, fixed: true, dark: true, seed: 'written', open: 'tools' },
   { id: 'privacy-mobile', url: '/?view=daily', vp: MOBILE, fixed: true, seed: 'written', open: 'privacy' },
   { id: 'weekly-desktop', url: '/?view=weekly', vp: DESKTOP, fixed: true },
   { id: 'weekly-mobile', url: '/?view=weekly', vp: MOBILE, fixed: true },
@@ -424,6 +427,7 @@ const PROBE = `(() => {
   const wordmark = document.querySelector('.instrument-wordmark');
   const stopwatch = document.querySelector('.focus-stopwatch');
   const privacy = document.querySelector('.privacy-card');
+  const report = document.querySelector('.day-report');
   const sheetPattern = sheet ? getComputedStyle(sheet).backgroundImage : 'none';
   const contract = {
     headerWidth: header?.getBoundingClientRect().width || 0,
@@ -437,6 +441,21 @@ const PROBE = `(() => {
     privacyText: privacy
       ? [...privacy.querySelectorAll('h1,p,button')].map(el => el.textContent.trim()).join(' ')
       : '',
+    menuMethods: document.querySelectorAll('#unified-menu .menu-method-choice').length,
+    menuPapers: document.querySelectorAll('#unified-menu .menu-paper-choice').length,
+    menuPaperVisible: [...document.querySelectorAll('#unified-menu .menu-paper-choice')].every(el => {
+      const box = el.getBoundingClientRect();
+      return box.top >= 0 && box.bottom <= innerHeight;
+    }),
+    reportMetrics: report ? {
+      client: report.clientHeight, scroll: report.scrollHeight,
+      children: [...report.children].map(el => ({
+        tag: el.tagName, client: el.clientHeight, scroll: el.scrollHeight,
+        shrink: getComputedStyle(el).flexShrink, basis: getComputedStyle(el).flexBasis,
+        height: getComputedStyle(el).height, maxHeight: getComputedStyle(el).maxHeight,
+        overflow: getComputedStyle(el).overflow, childHeights: [...el.children].map(child => child.clientHeight)
+      }))
+    } : null,
     forbiddenTimeCopy: /planned|remaining|local time|until 18|overtime/i.test(document.body.innerText)
   };
   const monthEditor = document.querySelector('#monthly-event');
@@ -488,9 +507,11 @@ for (const s of SURFACES) {
   if (s.open) {
     if (s.open === 'tools') await evaluate(`document.querySelector('.instrument-tools-trigger').click(); 1`);
     else if (s.open === 'privacy') {
-      await evaluate(`document.querySelector('.instrument-tools-trigger').click(); 1`);
+      await evaluate(`document.querySelector('.instrument-tools-trigger')?.click(); 1`);
       await settle(100);
-      await evaluate(`[...document.querySelectorAll('button')].find(b => b.textContent.trim() === 'Privacy Shutter')?.click(); 1`);
+      await evaluate(`[...document.querySelectorAll('#unified-menu summary')].find(s => s.textContent.includes('Work Actions'))?.click(); 1`);
+      await settle(100);
+      await evaluate(`[...document.querySelectorAll('#unified-menu button')].find(b => b.textContent.trim() === 'Privacy Shutter')?.click(); 1`);
     }
     else {
       const key = {settings:'m',search:'k',decisions:'d',scratchpad:'n',closure:'c'}[s.open];
@@ -532,6 +553,29 @@ for (const s of SURFACES) {
     if (m.contract.privacyButtons !== 1) errors.push(`${at}: privacy shutter must have exactly one action`);
     if (m.contract.privacyText !== 'DECIDE ONE Your page is hidden. Show My Page') errors.push(`${at}: privacy shutter copy changed (${JSON.stringify(m.contract.privacyText)})`);
   }
+  if (s.open === 'tools') {
+    if (m.contract.menuMethods !== 3 || m.contract.menuPapers !== 3) errors.push(`${at}: methods and paper grid must each offer three direct choices`);
+    if (!m.contract.menuPaperVisible) errors.push(`${at}: paper grid is below the first menu screen`);
+    const tabWraps = await evaluate(`(() => {
+      const dialog = document.querySelector('#unified-menu');
+      const last = [...dialog.querySelectorAll('summary')].at(-1);
+      last.focus();
+      window.dispatchEvent(new KeyboardEvent('keydown', {key:'Tab',bubbles:true,cancelable:true}));
+      const forward = document.activeElement?.getAttribute('aria-label') === 'Close Menu';
+      const forwardActive = document.activeElement?.outerHTML.slice(0, 100);
+      window.dispatchEvent(new KeyboardEvent('keydown', {key:'Tab',shiftKey:true,bubbles:true,cancelable:true}));
+      return {pass: forward && document.activeElement === last, forwardActive, backwardActive: document.activeElement?.outerHTML.slice(0, 100)};
+    })()`);
+    if (!tabWraps.pass) errors.push(`${at}: keyboard Tab leaves the menu dialog (${JSON.stringify(tabWraps)})`);
+    await evaluate(`document.querySelector('#unified-menu [aria-label="Dot Grid Paper"]')?.click(); 1`);
+    await settle(150);
+    const paperChanged = await evaluate(`document.querySelector('.instrument-sheet')?.classList.contains('paper-dots') || false`);
+    if (!paperChanged) errors.push(`${at}: choosing Dot Grid in Menu did not change the page`);
+    await evaluate(`[...document.querySelectorAll('#unified-menu .menu-method-choice')].find(b => b.textContent.trim() === 'Ivy Lee')?.click(); 1`);
+    await settle(250);
+    const methodChanged = await evaluate(`!document.querySelector('#unified-menu') && document.body.innerText.includes('Ivy Lee Method')`);
+    if (!methodChanged) errors.push(`${at}: choosing Ivy Lee in Menu did not open the method's daily page`);
+  }
   const shortMonth = s.url.includes('view=monthly') && s.vp.h <= 620;
   if (shortMonth && !m.monthEditorVisible) errors.push(`${at}: the selected day's event field is out of reach`);
   for (const el of m.smallType) errors.push(`${at}: ${el} renders below 11px`);
@@ -548,7 +592,8 @@ for (const s of SURFACES) {
     // scrolls inside its page; the selected-day field stays visible above it.
     if (shortMonth && u.kind === 'scrolls' && u.el.startsWith('section.flex.min-h-0')) continue;
     errors.push(`${at}: ${u.el} ${u.kind === 'clipped' ? 'clips' : 'scrolls'} ${u.hidden}px of content `
-      + `out of a ${m.vpH}px viewport — the instrument must hold the day on one surface`);
+      + `out of a ${m.vpH}px viewport — the instrument must hold the day on one surface`
+      + (u.el.startsWith('section.day-report') ? `; report ${JSON.stringify(m.contract.reportMetrics)}` : ''));
   }
   if (m.hScroll) errors.push(`${at}: the page scrolls horizontally (${m.overflow[0]?.el || 'unknown'})`);
   for (const c of m.clipped_x) {

@@ -1,6 +1,5 @@
 import React from 'react';
-import { Grid2X2, ListOrdered, Menu, Search, Target } from 'lucide-react';
-import { FRAMEWORKS } from './ProductivityFrameworks';
+import { Menu, Search } from 'lucide-react';
 import { playSound } from '../utils/audio';
 
 export default function HeaderToolbar({
@@ -9,12 +8,8 @@ export default function HeaderToolbar({
   settings,
   onOpenMenu,
   menuOpen = false,
-  activeFramework = 'rule_of_3',
-  onSelectFramework,
   onOpenSearch
 }) {
-  const methodIcons = { rule_of_3: Target, ivy_lee: ListOrdered, eisenhower: Grid2X2 };
-
   return (
     <header className="instrument-header no-print">
       <div className="instrument-masthead">
@@ -65,27 +60,6 @@ export default function HeaderToolbar({
           ))}
         </nav>
 
-        <div className="instrument-method-slot">
-        {activeView === 'daily' && (
-          <div className="instrument-method-icons" role="group" aria-label="Choose A Prioritization Method">
-            {FRAMEWORKS.map((method) => {
-              const MethodIcon = methodIcons[method.id];
-              return (
-                <button
-                  key={method.id}
-                  type="button"
-                  aria-label={`${method.name}: ${method.subtitle}`}
-                  aria-pressed={method.id === activeFramework}
-                  title={`${method.name} — ${method.subtitle}`}
-                  onClick={() => onSelectFramework?.(method.id)}
-                >
-                  <MethodIcon size={16} />
-                </button>
-              );
-            })}
-          </div>
-        )}
-        </div>
       </div>
     </header>
   );

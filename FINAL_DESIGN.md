@@ -59,6 +59,13 @@ countdown, planned-minutes field, capacity panel, or unbounded Today stream:
    whole sheet on the 24px cadence beneath content; Plain is white without a
    pattern. No later surface rule may erase the selected pattern.
 
+**Menu refinement, 16 September 2026:** keep the same measured two-row header
+geometry. The first row has Search, the centred name and Menu; the second has
+four time perspectives. The menu is one compact panel: the three direct method
+choices and three labelled paper-grid choices appear first. Work Actions,
+preferences, backup and information are lower disclosures. The old
+four category tabs are retired, and methods are not duplicated in the header.
+
 Acceptance is behavioral and visual: stopwatch direction and elapsed figures
 are checked in a real browser; the privacy shutter has exactly one action; the
 Today section is absent; the header and sheet widths are measured; and all three

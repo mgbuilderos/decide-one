@@ -237,7 +237,7 @@ It does three things the previous line did not. It **begins by trusting the read
 
 **Review and entry labels, 15 September 2026.** “This Week” and “Review” name the two existing phone pages without management jargon. When no priorities were entered, the weekly count has no completion percentage and the carry-forward message says so; zero entered is not zero completed. “Open Decide One” may appear at the top of an educational page to bring the reader directly to the free instrument. These labels make the current record and entry point clearer without adding a product promise.
 
-**Navigation and privacy labels, 15 September 2026.** The header exposes one “Menu”; it does not open a second menu from inside the first. “DECISION SPACE” names the existing decision record wherever that surface is presented. The privacy screen uses the same Inter controls as the rest of the instrument.
+**Navigation and privacy labels, amended 16 September 2026.** The header exposes Search, the centred name and one “Menu”; it does not open a second menu from inside the first. The compact menu places the three Methods and three Paper Grid choices first, followed by direct work actions. “DECISION SPACE” names the existing decision record wherever that surface is presented. Preferences, Backup & Export, and Guides & Legal remain lower in the same menu. The privacy screen uses the same Inter controls as the rest of the instrument.
 
 ### 11.2 What the product does — the four movements
 

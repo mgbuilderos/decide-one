@@ -477,10 +477,14 @@ if (fs.existsSync(headerPath)) {
   }
   const unifiedMenuPath = path.join(SRC_DIR, 'components/UnifiedMenuModal.jsx');
   const unifiedMenuContent = fs.readFileSync(unifiedMenuPath, 'utf8');
-  for (const requiredLabel of ['DECISION SPACE', "['work', 'Work']", "['settings', 'Settings']", "['export', 'Export']", "['about', 'About']"]) {
-    if (!unifiedMenuContent.includes(requiredLabel)) {
-      errors.push(`[Rule 8 Violation] Unified menu is missing ${requiredLabel}.`);
-    }
+  for (const requiredLabel of ['DECISION SPACE', 'Choose Method', 'Paper Grid', 'Work Actions', 'Preferences', 'Backup &amp; Export', 'Guides &amp; Legal']) {
+    if (!unifiedMenuContent.includes(requiredLabel)) errors.push(`[Rule 8 Violation] Unified menu is missing ${requiredLabel}.`);
+  }
+  if (!unifiedMenuContent.includes('FRAMEWORKS.map') || !unifiedMenuContent.includes('paper-style-swatch')) {
+    errors.push('[Rule 8 Violation] Methods and paper grid must be direct choices in the unified menu.');
+  }
+  if (headerContent.includes('instrument-method-icons') || unifiedMenuContent.includes('Menu Sections')) {
+    errors.push('[Rule 8 Violation] The framework picker is duplicated or the menu has nested category tabs.');
   }
   if (unifiedMenuContent.includes('Lifetime Access')) {
     errors.push('[Rule 8 Violation] The free instrument menu must not advertise a paid access tier.');
@@ -1127,7 +1131,7 @@ if (errors.length === 0) {
   console.log('  - Rule 0: Governed surfaces exist AND are reached from main.jsx (a deleted or orphaned file fails rather than skipping its rules); retired surfaces are neither');
   console.log('  - Rule 6: Strict 24px universal grid cadence alignment (paper grid, and p-6 on the one instrument-sheet)');
   console.log('  - Rule 7: Single-column full-width monthly spread (no 2-column desktop squishing)');
-  console.log('  - Rule 8: One header menu with four complete sections; no nested settings menu');
+  console.log('  - Rule 8: Direct methods and paper grids in one compact menu; no duplicate header picker or category tabs');
   console.log('  - Rule 9: 24px grid cadence in the components that ship it, each asserted reachable');
   console.log('  - Rule 10: Zero 3-dot menus, zero black tie cord, and no woven tag anywhere under src/ (retired with the book chrome)');
   console.log('  - Rule 11: Framework Roster Gate (exactly 3 methods ship; MoSCoW, 1-3-5 and Pareto stay cut)');

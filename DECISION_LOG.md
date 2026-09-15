@@ -1446,3 +1446,15 @@ Locked founder correction before code: framework-only daily input; elapsed clock
 ### 2026-09-16 01:40 — unattributed
 
 Unified the Inter type hierarchy across the instrument, replaced planned and wall-clock time with a clockwise elapsed stopwatch attached to priorities, removed the duplicate Today stream, simplified the privacy shutter, fixed compact navigation and first-use prompt clipping, and verified 30 Chrome surfaces plus build/QC/artifact gates.
+
+---
+
+### 2026-09-16 02:22 — unattributed
+
+Compact the unified menu: direct labelled method and paper-grid controls on the first screen; move work, preferences, backup and information into clear disclosures; remove duplicate header method icons; preserve all actions. Chrome verified 33 views, both phone themes, menu choices and privacy. The new populated desktop view exposed a broad 24px footer rule clipping DayReport; scoped it away so the report footer fits.
+
+---
+
+### 2026-09-16 02:25 — unattributed
+
+Closed details no longer enter the menu Tab sequence; the visible first and last controls wrap correctly. Added browser checks for direct grid/method selection and menu focus, and restored the report footer's natural height without changing the 24px page footer.
