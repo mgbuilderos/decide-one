@@ -1,5 +1,8 @@
 # Working on Decide One
 
+Read `FINAL_DESIGN.md` before any interface work. The founder-approved book layout
+supersedes older flat-sheet instructions; preserve it unless the founder changes it.
+
 Read this before changing anything. It applies to **every** agent — Claude Code,
 ChatGPT Codex, Antigravity — and to the founder.
 
