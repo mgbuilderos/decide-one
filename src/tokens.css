@@ -17,10 +17,21 @@
 }
 :root {
   --font-instrument: "Inter Variable", Inter, sans-serif;
-  --type-label: 11px;
-  --type-body: 13px;
-  --type-control: 14px;
-  --type-title: 24px;
+  --type-display-size: 40px;
+  --type-display-line: 44px;
+  --type-page-title-size: 20px;
+  --type-page-title-line: 24px;
+  --type-section-title-size: 15px;
+  --type-section-title-line: 24px;
+  --type-body-size: 14px;
+  --type-body-line: 24px;
+  --type-control-size: 13px;
+  --type-control-line: 18px;
+  --type-label-size: 11px;
+  --type-label-line: 16px;
+  --type-meta-size: 11px;
+  --type-meta-line: 16px;
+  --instrument-width: 960px;
   --space-half: 12px;
   --space-unit: 24px;
   --space-double: 48px;

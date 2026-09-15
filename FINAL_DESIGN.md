@@ -1,5 +1,10 @@
 # Decide One — governing visual design
 
+> **Typography correction, 16 September 2026:** one semantic Inter hierarchy
+> governs the whole instrument: display, page title, section title, body,
+> control, label and metadata. `DECIDE ONE` is always uppercase. Local one-off
+> font sizes, casing or tracking may not create a competing hierarchy.
+
 ## Approved final design — 15 September 2026
 
 The founder approved the recovered open-book layout from the Primacy-era design

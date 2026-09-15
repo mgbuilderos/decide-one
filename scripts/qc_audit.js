@@ -66,7 +66,8 @@ const governedSurfaces = [
   ['utils/archivalExport.js', 'Rule 18 — the export engine the Patron tier promises'],
   ['components/PatronUpgradeModal.jsx', 'Rule 18 — the upgrade surface'],
   ['components/YearlyViewSpread.jsx', 'Rule 18 — the twelve-month annual view'],
-  ['components/ExecutionLayer.jsx', 'Rule 22 — capacity and the active clock'],
+  ['components/ExecutionLayer.jsx', 'Rule 22 — the active elapsed stopwatch'],
+  ['components/FocusStopwatch.jsx', 'Rule 22 — the clockwise elapsed-time face'],
   ['components/DayReport.jsx', 'Rule 22 — closure without a verdict'],
   ['components/ExecutiveClosureRitualModal.jsx', 'Rule 22 — the closure ritual'],
   ['components/InlineTimeControl.jsx', 'Rule 22 and B-35 — per-line time control']
@@ -288,7 +289,7 @@ if (!/sans:\s*\['"Inter Variable"', 'Inter', 'sans-serif'\]/.test(tailwindConfig
 // Repointed at the components that actually draw a row today.
 const rowSurfaces = requireLiveSubjects(
   'Rule 2',
-  ['components/BulletItem.jsx', 'components/ProductivityFrameworks.jsx', 'components/InlineTimeControl.jsx'],
+  ['components/ProductivityFrameworks.jsx', 'components/InlineTimeControl.jsx'],
   'these are the item rows a person clicks, and a floating menu opened from one of them is the thing this forbids'
 );
 scanFiles(SRC_DIR, (filePath, content) => {
@@ -499,8 +500,6 @@ const cadenceSurfaces = requireLiveSubjects(
     'components/ProductivityFrameworks.jsx',
     'components/ExecutionLayer.jsx',
     'components/InlineTimeControl.jsx',
-    'components/RapidLogSection.jsx',
-    'components/BulletItem.jsx',
     'components/DayReport.jsx'
   ],
   'the 24px line cadence is what makes the page read as ruled paper rather than a form'
@@ -760,8 +759,8 @@ if (!fs.existsSync(execModelPath)) {
     'export function isItemLocked': 'Ivy Lee order enforcement missing — without it the method is a numbered list (R6).',
     BREATHING: 'BREATHING state missing (R9).',
     timingAccuracy: 'timingAccuracy provenance missing — inferred figures must never read as measured (R7, R17).',
-    'export function extendSession': 'extendSession missing — overrun must add time as information, never punish (R8).',
-    'export function computeCapacity': 'computeCapacity missing — setting a duration is the capacity check (P14).'
+    'export function elapsedSeconds': 'elapsedSeconds missing — the stopwatch must record measured focus (P14).',
+    runStartedAt: 'runStartedAt missing — elapsed time must remain correct when the page is in the background (R7).'
   };
   for (const [token, message] of Object.entries(required)) {
     if (!execModel.includes(token)) errors.push(`[Rule 22 Violation] ${message}`);
@@ -842,8 +841,8 @@ for (const [rel, names] of [['utils/licenseManager.js',['verifyLicenseKey','acti
 }
 
 // Rule 19: founder-approved book geometry, measured in Chrome.
-const approvedQuickStart = '8d3d0d6ac631cddb3f2aba452f34ec143ce3688354e5380f4b36f2c2259d9282';
-if (createHash('sha256').update(fs.readFileSync('src/components/QuickStart.jsx')).digest('hex') !== approvedQuickStart) errors.push('[Rule 19 Violation] the founder requested the initial popup remain unchanged');
+const approvedQuickStart = 'ac577b3ec342ae9b35d731badb4ce0f446dae73d6dbaf253f777af4f0b138b94';
+if (createHash('sha256').update(fs.readFileSync('src/components/QuickStart.jsx')).digest('hex') !== approvedQuickStart) errors.push('[Rule 19 Violation] the founder-approved three-step quick start changed without updating its governed copy');
 for (const anchor of ['const bookGeometry =', 'm.bookGeometry', 'borderRadius', 'sheetStyle.boxShadow', 'bulletSize']) {
   if (!visualGate.includes(anchor)) errors.push(`[Rule 19 Violation] approved book measurement missing ${anchor}`);
 }
@@ -993,7 +992,9 @@ if (!fs.existsSync(visionPath)) {
 
   // Dormant on purpose. Each needs a reason, so removing one is a decision.
   const DORMANT = {
-    experiment_impression: 'No assignment layer yet - TELEMETRY_SPEC §3.4 lists it as work, not a defect.'
+    experiment_impression: 'No assignment layer yet - TELEMETRY_SPEC §3.4 lists it as work, not a defect.',
+    rapid_log_created: 'The separate Today stream was removed on 16 September 2026; historical events remain readable.',
+    rapid_log_status_toggled: 'The separate Today stream was removed on 16 September 2026; historical events remain readable.'
   };
 
   if (fs.existsSync(analyticsFile) && fs.existsSync(telemetryFile)) {
@@ -1140,7 +1141,7 @@ if (errors.length === 0) {
   console.log('  - Rule 19: Approved book geometry measured in Chrome; agent design contract preserved');
   console.log('  - Rule 20: Executive Universal Keyboard Navigation Gate (1/2/3/4/T routing, pressed in Chrome)');
   console.log('  - Rule 21: Restricted Naming Token Check (not trademark or copyright clearance)');
-  console.log('  - Rule 22: Execution Layer Enforcement Gate (Ivy Lee order lock, breathing state, non-punitive overrun, timing provenance)');
+  console.log('  - Rule 22: Execution Layer Enforcement Gate (Ivy Lee order lock, breathing state, elapsed stopwatch, timing provenance)');
   console.log('  - Rule 23: Licence Integrity Gate (signed per-buyer keys; no shared secret, no private key in source)');
   console.log('  - Rule 24: Price Consistency Gate (VISION §11.1 is the price - including when that price is free)');
   console.log('  - Rule 25: Telemetry Contract Gate (analysed events are emitted; emitted events are in the TELEMETRY_SPEC §2 registry)');

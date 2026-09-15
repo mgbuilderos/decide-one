@@ -3,18 +3,12 @@ import { DateDisplay, DateNavControls } from './DateHeader';
 import ProductivityFrameworks from './ProductivityFrameworks';
 import ExecutionLayer from './ExecutionLayer';
 import DayReport from './DayReport';
-import RapidLogSection from './RapidLogSection';
-import { getSession, pauseSession, completeSession, extendSession } from '../utils/executionModel';
+import { getSession, pauseSession, completeSession } from '../utils/executionModel';
 import { playSound } from '../utils/audio';
 
 /**
- * LeftPage: the selection layer — the date, the method, the time each decided
- * line will take, and below them the day's other lines.
- *
- * That last part is not decoration. Some mornings hold eleven things; the Ivy
- * Lee lock only works if the other eight have somewhere to sit, and a thought
- * with nowhere to go is held in the head, which is the problem the instrument
- * exists to remove.
+ * LeftPage is the framework and nothing else. The selected method supplies
+ * every input line; a second task stream would undo the prioritisation.
  */
 export function LeftPage({
   date,
@@ -26,12 +20,8 @@ export function LeftPage({
   onUpdateHardTasks,
   frameworkData,
   onUpdateFrameworkData,
-  rapidLog,
-  onUpdateRapidLog,
   onUpdateExecution,
   hasEntry,
-  activeFilter,
-  setActiveFilter,
   settings,
   updateSettings,
   isPastDay,
@@ -76,9 +66,7 @@ export function LeftPage({
           isInteractive={isInteractive}
         />
 
-        {/* Timeboxes — P11: durations attach per line, on the recto, beside the
-            decision. Three tasks at three hours is nine hours, and the day has
-            not got nine hours; that is found out here, not on the verso. */}
+        {/* Phones show the same elapsed stopwatch as the desktop verso. */}
         {!bookSpread && <div className="shrink-0 flex flex-col border-t border-black/[0.08] dark:border-white/[0.08] mt-3 pt-1 [@media(max-height:760px)]:mt-1 [@media(max-height:760px)]:pt-0">
           <ExecutionLayer
             dailyLog={dailyLog}
@@ -88,27 +76,11 @@ export function LeftPage({
           />
         </div>}
 
-        {/* The day's other lines. Everything that is not one of today's three
-            still has to be written down somewhere it can be seen — B-23 has
-            yet to settle what this stream is for, and until it does, the
-            answer cannot be "nowhere". */}
-        <div className="shrink-0 flex flex-col border-t border-black/[0.08] dark:border-white/[0.08] mt-3 pt-1 [@media(max-height:760px)]:mt-1 [@media(max-height:760px)]:pt-0">
-          <RapidLogSection
-            rapidLog={rapidLog}
-            onUpdateRapidLog={onUpdateRapidLog}
-            activeFilter={activeFilter}
-            setActiveFilter={setActiveFilter}
-            isMuted={settings?.isMuted}
-            isPastDay={isPastDay}
-            isInteractive={isInteractive}
-          />
-        </div>
-
         <div className="min-h-[36px] [@media(max-height:820px)_and_(min-height:761px)]:min-h-0 [@media(max-height:760px)]:min-h-0 flex-1" aria-hidden="true" />
       </div>
 
-      <footer className="shrink-0 h-[28px] border-t border-black/[0.08] dark:border-white/[0.08] flex items-center text-[11px] text-neutral-500 dark:text-neutral-400 select-none px-1">
-        <span className="font-semibold tracking-[0.08em]">Three choices. One clear order.</span>
+      <footer className="instrument-page-footer">
+        <span>Three Choices. One Clear Order.</span>
       </footer>
 
     </div>
@@ -160,12 +132,11 @@ export function RightPage({
         onCloseDay={bookSpread ? onTurnOver : onCloseDay}
         onPause={(id) => onUpdateExecution?.(id, pauseSession(getSession(dailyLog, id)))}
         onComplete={(id) => onUpdateExecution?.(id, completeSession(getSession(dailyLog, id)))}
-        onExtend={(id, sec) => onUpdateExecution?.(id, extendSession(getSession(dailyLog, id), sec))}
         isInteractive={isInteractive}
       />
 
       {/* Bottom Footer: Paper Edition (Exact 24px Baseline, Zero Clutter) */}
-      <footer className="shrink-0 h-[24px] border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-[11px] text-neutral-500 dark:text-neutral-400 select-none whitespace-nowrap px-1 overflow-hidden">
+      <footer className="instrument-page-footer">
         {/* Paper Edition Indicator */}
         <div className="flex items-center gap-1.5 font-semibold uppercase tracking-[0.14em] shrink-0">
           <button
@@ -179,7 +150,7 @@ export function RightPage({
             className="hover:text-neutral-900 dark:hover:text-neutral-200 transition-colors cursor-pointer"
             title="Click to cycle paper style (Dots, Square, Plain)"
           >
-            {paperLabel} • Decide One
+            {paperLabel} • DECIDE ONE
           </button>
         </div>
       </footer>
@@ -187,4 +158,3 @@ export function RightPage({
     </div>
   );
 }
-

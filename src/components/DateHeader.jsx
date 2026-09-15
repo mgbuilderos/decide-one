@@ -25,19 +25,19 @@ export function DateDisplay({ currentDate }) {
 
   return (
     <div className="flex items-baseline gap-2 sm:gap-2.5 min-w-0 whitespace-nowrap overflow-hidden text-ellipsis tabular-nums">
-      <h1 className="text-lg max-[400px]:text-[15px] sm:text-xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 leading-none flex items-baseline gap-1.5 sm:gap-2 whitespace-nowrap shrink-0">
+      <h1 className="type-page-title flex items-baseline gap-1.5 sm:gap-2 whitespace-nowrap shrink-0">
         <span className="whitespace-nowrap">{formattedMonth} {dayOfMonth}</span>
-        <span className="text-neutral-600 dark:text-neutral-400 font-normal text-sm sm:text-base whitespace-nowrap tabular-nums">
+        <span className="date-year">
           {year}
         </span>
       </h1>
 
-      <div className="flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 whitespace-nowrap shrink-0">
-        <span className="hidden sm:inline px-1.5 sm:px-2 py-0.5 bg-black/[0.04] dark:bg-white/[0.06] rounded-full text-[11px] text-neutral-700 dark:text-neutral-300 font-bold tracking-wide whitespace-nowrap">
+      <div className="date-meta type-metadata">
+        <span className="date-weekday">
           {formattedWeekday}
         </span>
         <span className="opacity-30 hidden xs:inline">•</span>
-        <span className="text-[11px] tracking-wider uppercase hidden xs:inline whitespace-nowrap tabular-nums">
+        <span className="date-day-number">
           Day {dayOfYear}
         </span>
       </div>

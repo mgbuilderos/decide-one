@@ -59,16 +59,13 @@ export default function WeeklyReviewSpread({
     totalPriorities, 
     completedPriorities, 
     priorityRate,
-    weekPlannedSec,
     weekActualSec,
-    daysWithPlans,
+    daysWithFocus,
     dayTimeStrip,
-    timeboxAccuracy,
     pendingTasks
   } = useMemo(() => {
     let totalP = 0;
     let compP = 0;
-    let plannedSec = 0;
     let actualSec = 0;
     const strip = [];
     const uncompleted = [];
@@ -94,29 +91,9 @@ export default function WeeklyReviewSpread({
         }
       });
 
-      // Stream items
-      const rapid = log.rapidLog || [];
-      rapid.forEach(r => {
-        if ((r.type === 'task' || r.type === 'completed') && r.text?.trim()) {
-          totalP++;
-          if (r.type === 'completed') {
-            compP++;
-          } else {
-            uncompleted.push({
-              ...r,
-              sourceDateKey: dateKey,
-              sourceDayLabel: `${dayName} ${monthDay}`,
-              itemType: 'stream'
-            });
-          }
-        }
-      });
-
-      // R7 — the week's planned-versus-actual, the question no competitor asks.
+      // The week adds up measured focus from framework priorities only.
       const sessions = Object.values(log.execution || {});
-      const dayPlanned = sessions.reduce((sum, x) => sum + (x.plannedDurationSec || 0), 0);
       const dayActual = sessions.reduce((sum, x) => sum + (x.actualFocusSec || 0), 0);
-      plannedSec += dayPlanned;
       actualSec += dayActual;
       // The loop yields dateKey, not a Date; parse at local midnight to avoid
       // a timezone shift dropping the strip onto the wrong weekday.
@@ -125,26 +102,18 @@ export default function WeeklyReviewSpread({
         key: dateKey,
         dayLetter: dayDate.toLocaleDateString(undefined, { weekday: 'narrow' }),
         label: dayDate.toLocaleDateString(undefined, { weekday: 'long' }),
-        plannedSec: dayPlanned,
         actualSec: dayActual
       });
     });
 
     const pRate = totalP > 0 ? Math.round((compP / totalP) * 100) : null;
-    // Honesty, not performance: how close the estimates were, in either direction.
-    const accuracy = plannedSec > 0
-      ? Math.max(0, Math.round(100 - (Math.abs(actualSec - plannedSec) / plannedSec) * 100))
-      : null;
-
     return {
       totalPriorities: totalP,
       completedPriorities: compP,
       priorityRate: pRate,
-      weekPlannedSec: plannedSec,
       weekActualSec: actualSec,
-      daysWithPlans: strip.filter(x => x.plannedSec > 0).length,
+      daysWithFocus: strip.filter(x => x.actualSec > 0).length,
       dayTimeStrip: strip,
-      timeboxAccuracy: accuracy,
       pendingTasks: uncompleted
     };
   }, [weekDates, data.dailyLogs]);
@@ -190,21 +159,17 @@ export default function WeeklyReviewSpread({
         reflection: ''
       };
 
-      const existingRapid = targetLog.rapidLog || [];
-      const isAlreadyAdded = existingRapid.some(item => item.text === task.text);
+      const existingTasks = targetLog.hardTasks || Array.from({ length: 3 }, (_, index) => ({
+        id: `r3_${index}`, text: '', completed: false
+      }));
+      const isAlreadyAdded = existingTasks.some(item => item.text === task.text);
+      const emptyIndex = existingTasks.findIndex(item => !item.text?.trim());
       if (!isAlreadyAdded) {
-        saveDailyLog(targetDateKey, {
-          rapidLog: [
-            ...existingRapid,
-            {
-              id: `mig_${Date.now()}`,
-              type: 'task',
-              text: task.text,
-              category: task.category || 'professional',
-              timestamp: '09:00'
-            }
-          ]
-        });
+        if (emptyIndex >= 0) {
+          const nextTasks = [...existingTasks];
+          nextTasks[emptyIndex] = { ...nextTasks[emptyIndex], text: task.text, completed: false };
+          saveDailyLog(targetDateKey, { activeFramework: 'rule_of_3', hardTasks: nextTasks });
+        }
       }
     }
   };
@@ -249,9 +214,9 @@ export default function WeeklyReviewSpread({
           </div>
 
           <div className="flex items-baseline gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
+            <h1 className="type-section-title text-neutral-900 dark:text-white">
               Week {weekNum}
-            </span>
+            </h1>
             <span className="text-[11px] text-neutral-500 dark:text-neutral-400 hidden sm:inline">
               {weekStart.monthDay} – {weekEnd.monthDay}, {year}
             </span>
@@ -338,53 +303,51 @@ export default function WeeklyReviewSpread({
 
             <div>
               <div className="text-[11px] uppercase tracking-wider font-bold text-neutral-500 dark:text-neutral-500">
-                Time
+                Focus Time
               </div>
               <div className="text-sm font-bold text-neutral-900 dark:text-white mt-0.5">
                 {formatDuration(weekActualSec)}
               </div>
               <div className="text-[11px] text-neutral-500">
-                of {formatDuration(weekPlannedSec)} planned
+                Measured total
               </div>
             </div>
 
             <div>
               <div className="text-[11px] uppercase tracking-wider font-bold text-neutral-500 dark:text-neutral-500">
-                Estimate accuracy
+                Active Days
               </div>
               <div className="text-sm font-bold text-neutral-900 dark:text-white mt-0.5">
-                {timeboxAccuracy === null ? '—' : `${timeboxAccuracy}%`}
+                {daysWithFocus} / 7
               </div>
               <div className="text-[11px] text-neutral-500">
-                {timeboxAccuracy === null ? 'No timeboxes yet' : 'How close the guesses were'}
+                Days with recorded focus
               </div>
             </div>
           </div>
 
-          {/* Where the week's time went — planned against actual (R7). */}
+          {/* Where the week's measured focus went. */}
           <div className="mb-3 [@media(max-height:620px)]:mb-0.5 shrink-0">
             <div className="flex items-center justify-between mb-1.5 px-0.5">
-              <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400">
-                Planned vs Actual
-              </span>
+              <h2 className="type-label text-neutral-500 dark:text-neutral-400">
+                Focus Time
+              </h2>
               <span className="text-[11px] text-neutral-500">
-                {daysWithPlans} of 7 days planned
+                {daysWithFocus} of 7 days
               </span>
             </div>
             <div className="grid grid-cols-7 gap-1">
               {dayTimeStrip.map(day => {
-                const ratio = day.plannedSec > 0 ? day.actualSec / day.plannedSec : 0;
+                const peak = Math.max(...dayTimeStrip.map(entry => entry.actualSec), 1);
+                const ratio = day.actualSec / peak;
                 return (
                   <div key={day.key} className="flex flex-col items-center gap-1">
                     <div className="w-full h-10 rounded bg-black/[0.04] dark:bg-white/[0.06] relative overflow-hidden" title={day.label}>
-                      {day.plannedSec > 0 && (
+                      {day.actualSec > 0 && (
                         <div
                           className="absolute bottom-0 left-0 right-0 bg-neutral-800 dark:bg-neutral-200"
                           style={{ height: `${Math.min(ratio, 1) * 100}%` }}
                         />
-                      )}
-                      {ratio > 1 && (
-                        <div className="absolute top-0 left-0 right-0 h-[3px] bg-neutral-400 dark:bg-neutral-500" title="Ran over" />
                       )}
                     </div>
                     <span className="text-[11px] text-neutral-500">{day.dayLetter}</span>
@@ -393,9 +356,9 @@ export default function WeeklyReviewSpread({
               })}
             </div>
             <p className="weekly-time-summary mt-1.5 text-[11px] text-neutral-500 leading-[16px]">
-              {weekPlannedSec > 0
-                ? `${formatDuration(weekActualSec)} spent against ${formatDuration(weekPlannedSec)} planned.`
-                : 'No time was set this week, so there is nothing to compare.'}
+              {weekActualSec > 0
+                ? `${formatDuration(weekActualSec)} of focus recorded this week.`
+                : 'No focus time recorded this week.'}
             </p>
           </div>
 
@@ -403,9 +366,9 @@ export default function WeeklyReviewSpread({
           {/* Weekly Carryover Triage */}
           <div className="flex-1 min-h-0 flex flex-col">
             <div className="flex items-center justify-between mb-1.5 px-0.5 shrink-0">
-              <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400">
+              <h2 className="type-label text-neutral-500 dark:text-neutral-400">
                 Carry Forward ({pendingTasks.length})
-              </span>
+              </h2>
               <span className="text-[11px] text-neutral-500">
                 Uncompleted from Mon–Sun
               </span>
@@ -501,9 +464,9 @@ export default function WeeklyReviewSpread({
           <div className="mb-4 shrink-0">
             <div className="flex items-center gap-1.5 mb-2 px-0.5">
               <Trophy className="w-3.5 h-3.5 text-neutral-500" />
-              <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400">
+              <h2 className="type-label text-neutral-500 dark:text-neutral-400">
                 What Moved
-              </span>
+              </h2>
             </div>
 
             <div className="space-y-1.5">
@@ -532,9 +495,9 @@ export default function WeeklyReviewSpread({
           <div className="mb-4 shrink-0">
             <div className="flex items-center gap-1.5 mb-2 px-0.5">
               <AlertCircle className="w-3.5 h-3.5 text-neutral-500" />
-              <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400">
+              <h2 className="type-label text-neutral-500 dark:text-neutral-400">
                 What Got In The Way
-              </span>
+              </h2>
             </div>
 
             <textarea
@@ -550,9 +513,9 @@ export default function WeeklyReviewSpread({
           <div className="flex-1 min-h-0 flex flex-col mb-3">
             <div className="flex items-center gap-1.5 mb-2 px-0.5 shrink-0">
               <Sparkles className="w-3.5 h-3.5 text-neutral-500" />
-              <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400">
+              <h2 className="type-label text-neutral-500 dark:text-neutral-400">
                 What Comes First Next Week
-              </span>
+              </h2>
             </div>
 
             <div className="space-y-1.5 flex-1 min-h-0">

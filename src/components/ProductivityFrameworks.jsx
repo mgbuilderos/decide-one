@@ -217,18 +217,18 @@ export default function ProductivityFrameworks({
       {/* Universal 24px Grid Cadence Header Bar */}
       <div className="h-[36px] leading-[36px] [@media(max-height:760px)]:h-[28px] [@media(max-height:760px)]:leading-[28px] flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] shrink-0">
         <div className="flex items-baseline gap-2 min-w-0">
-          <h2 className="text-sm sm:text-base font-semibold tracking-wide text-neutral-900 dark:text-neutral-100">
+          <h2 className="type-section-title">
             {currentMeta.name}
           </h2>
-          <span className="text-[11px] text-neutral-500 dark:text-neutral-500 italic hidden xs:inline truncate">
+          <span className="type-metadata hidden xs:inline truncate">
             {currentMeta.subtitle}
           </span>
         </div>
 
         {/* Quiet progress only; method selection lives in the icon group above. */}
         <div className="flex items-center gap-2 select-none no-print">
-          <span className="hidden sm:inline text-[11px] font-semibold uppercase tracking-[0.12em] text-neutral-500">Time</span>
-          <div className="text-[11px] font-semibold">
+          <span className="hidden sm:inline type-label">Elapsed</span>
+          <div className="type-metadata">
             <span className={`font-bold ${
               doneCount === 0
                 ? 'text-neutral-500'
@@ -261,7 +261,7 @@ export default function ProductivityFrameworks({
                   task.completed ? '' : 'hover:bg-black/[0.02] dark:hover:bg-white/[0.03]'
                 }`}
               >
-                <span className={`font-bold select-none text-[11px] w-3.5 ${
+                <span className={`type-label select-none w-3.5 ${
                   isMissed ? 'progress-ink-red' : 'text-neutral-400 dark:text-neutral-500'
                 }`}>
                   {meta.num}
@@ -293,7 +293,7 @@ export default function ProductivityFrameworks({
                     value={task.text || ''}
                     onChange={(e) => handleHardTaskTextChange(idx, e.target.value)}
                     placeholder={meta.placeholder || `Priority ${idx + 1}...`}
-                    className={`w-full bg-transparent font-normal focus:outline-none transition-all placeholder-neutral-500 text-[14px] sm:text-[15px] h-[48px] leading-[48px] [@media(max-height:760px)]:h-[36px] [@media(max-height:760px)]:leading-[36px] ${
+                    className={`type-body w-full bg-transparent focus:outline-none transition-all placeholder-neutral-500 h-[48px] [@media(max-height:760px)]:h-[36px] ${
                       task.completed
                         ? 'line-through text-neutral-400 dark:text-neutral-500'
                         : isMissed
@@ -468,7 +468,7 @@ export default function ProductivityFrameworks({
                   isDone ? '' : isLocked ? '' : 'hover:bg-black/[0.02] dark:hover:bg-white/[0.03]'
                 }`}
               >
-                <span className="font-bold text-xs sm:text-sm w-5 text-neutral-500 dark:text-neutral-500 select-none">
+                <span className="type-label w-5 text-neutral-500 dark:text-neutral-500 select-none">
                   0{idx + 1}
                 </span>
 
@@ -493,7 +493,7 @@ export default function ProductivityFrameworks({
                   onChange={(e) => handleTextIvy(idx, e.target.value)}
                   placeholder={isLocked ? `After ${idx}` : `Priority ${idx + 1}`}
                   aria-label={isLocked ? `Priority ${idx + 1}, available after priority ${idx}` : `Priority ${idx + 1}`}
-                  className={`flex-1 min-w-0 bg-transparent text-[14px] sm:text-[15px] focus:outline-none placeholder-neutral-500 ${
+                  className={`type-body flex-1 min-w-0 bg-transparent focus:outline-none placeholder-neutral-500 ${
                     isDone ? 'line-through text-neutral-400 dark:text-neutral-500' : 'text-neutral-900 dark:text-neutral-100'
                   }`}
                 />

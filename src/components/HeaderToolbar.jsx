@@ -23,8 +23,8 @@ export default function HeaderToolbar({
           <span>Search</span>
         </button>
 
-        <button type="button" className="instrument-wordmark" onClick={() => setActiveView('daily')} aria-label="Open Today">
-          Decide One
+        <button type="button" className="instrument-wordmark" onClick={() => setActiveView('daily')} aria-label="Open Daily">
+          DECIDE ONE
         </button>
 
         <button
@@ -44,25 +44,28 @@ export default function HeaderToolbar({
       <div className="instrument-navigation">
         <nav aria-label="Time Perspective">
           {[
-            ['daily', 'Daily'],
-            ['weekly', 'Weekly'],
-            ['monthly', 'Monthly'],
-            ['yearly', 'Yearly']
-          ].map(([id, label]) => (
+            ['daily', 'Daily', 'Day'],
+            ['weekly', 'Weekly', 'Week'],
+            ['monthly', 'Monthly', 'Month'],
+            ['yearly', 'Yearly', 'Year']
+          ].map(([id, label, compactLabel]) => (
             <button
               key={id}
               type="button"
+              aria-label={label}
               aria-current={activeView === id ? 'page' : undefined}
               onClick={() => {
                 playSound('page', settings?.isMuted);
                 setActiveView(id);
               }}
             >
-              {label}
+              <span className="perspective-label-full">{label}</span>
+              <span className="perspective-label-compact" aria-hidden="true">{compactLabel}</span>
             </button>
           ))}
         </nav>
 
+        <div className="instrument-method-slot">
         {activeView === 'daily' && (
           <div className="instrument-method-icons" role="group" aria-label="Choose A Prioritization Method">
             {FRAMEWORKS.map((method) => {
@@ -82,6 +85,7 @@ export default function HeaderToolbar({
             })}
           </div>
         )}
+        </div>
       </div>
     </header>
   );

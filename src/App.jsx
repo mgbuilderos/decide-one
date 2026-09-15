@@ -14,7 +14,7 @@ import ExecutivePrivacyOverlay from './components/ExecutivePrivacyOverlay';
 import { usePrivacyShutter } from './hooks/usePrivacyShutter';
 import { useLicenseAutoActivation } from './hooks/useLicenseAutoActivation';
 import { generateExecutiveWeeklyBriefingPDF } from './utils/weeklyBriefingPDF';
-import { getFrameworkItems } from './utils/executionModel';
+import { getFrameworkItems, STATES, pauseSession } from './utils/executionModel';
 import DayConditionPrompt from './components/DayConditionPrompt';
 import { useExecutiveDictation } from './hooks/useExecutiveDictation';
 import { useAmbientReminders } from './hooks/useAmbientReminders';
@@ -48,7 +48,6 @@ export default function App() {
   const [isQuickStartOpen, setIsQuickStartOpen] = useState(() => initialView(window.location.search) === 'daily' && needsQuickStart());
   const closeQuickStart = useCallback(() => { finishQuickStart(); setIsQuickStartOpen(false); }, []);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [activeFilter, setActiveFilter] = useState('all');
   const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -405,7 +404,7 @@ export default function App() {
     const log = data?.dailyLogs?.[k];
     if (!log) return false;
     const written = (arr) => (arr || []).some(t => t && typeof t.text === 'string' && t.text.trim());
-    return written(log.hardTasks) || written(log.rapidLog) ||
+    return written(log.hardTasks) ||
       Object.keys(log.execution || {}).length > 0 ||
       Object.keys(log.frameworkData || {}).length > 0;
   }, [data]);
@@ -534,10 +533,19 @@ export default function App() {
     setIsDayConditionOpen(true);
   }, [isQuickStartOpen, activeView, dateKey, todayKey, dailyLog.dayCondition, dailyLog.activeFramework, dayConditionDismissedFor]);
 
-  // R7 — planned-versus-actual accounting, stored per decided item.
+  // Only one priority can receive focus time at once. Starting another banks
+  // the current stopwatch before the new one begins.
   const handleUpdateExecution = (itemId, session) => {
+    const nextExecution = { ...(dailyLog.execution || {}) };
+    if ([STATES.BREATHING, STATES.RUNNING].includes(session.state)) {
+      Object.entries(nextExecution).forEach(([id, existing]) => {
+        if (id !== itemId && [STATES.BREATHING, STATES.RUNNING].includes(existing?.state)) {
+          nextExecution[id] = pauseSession(existing);
+        }
+      });
+    }
     saveDailyLog(dateKey, {
-      execution: { ...(dailyLog.execution || {}), [itemId]: session }
+      execution: { ...nextExecution, [itemId]: session }
     });
   };
 
@@ -549,26 +557,6 @@ export default function App() {
   const handleUpdateFrameworkData = (updatedData) => {
     telemetry.track('framework_task_added', { type: 'custom' });
     saveDailyLog(dateKey, { frameworkData: updatedData });
-  };
-
-  const handleUpdateRapidLog = (updatedRapidLog) => {
-    // One handler serves creation, completion and deletion, and it used to
-    // report all three as rapid_log_created - so "created" counted every
-    // keystroke-level save, and rapid_log_status_toggled was never emitted at
-    // all, which is why the completion ratio sat at 0% with tasks on screen.
-    const previous = dailyLog?.rapidLog || [];
-    if (updatedRapidLog.length > previous.length) {
-      telemetry.track('rapid_log_created', { count: updatedRapidLog.length });
-    } else if (updatedRapidLog.length === previous.length) {
-      const before = new Map(previous.map(item => [item.id, item]));
-      const toggled = updatedRapidLog.find(
-        item => before.has(item.id) && before.get(item.id).completed !== item.completed
-      );
-      if (toggled) {
-        telemetry.track('rapid_log_status_toggled', { to_status: toggled.completed ? 'done' : 'open' });
-      }
-    }
-    saveDailyLog(dateKey, { rapidLog: updatedRapidLog });
   };
 
   const handleUpdateReflection = (newReflection) => {
@@ -694,12 +682,8 @@ export default function App() {
                         onUpdateHardTasks={handleUpdateHardTasks}
                         frameworkData={dailyLog.frameworkData}
                         onUpdateFrameworkData={handleUpdateFrameworkData}
-                        rapidLog={dailyLog.rapidLog}
-                        onUpdateRapidLog={handleUpdateRapidLog}
                         onUpdateExecution={handleUpdateExecution}
                         hasEntry={hasEntry}
-                        activeFilter={activeFilter}
-                        setActiveFilter={setActiveFilter}
                         settings={settings}
                         updateSettings={updateSettings}
                         isPastDay={isPastDay}
@@ -847,13 +831,9 @@ export default function App() {
       {/* Executive Biometric / Privacy Shutter Overlay */}
       <ExecutivePrivacyOverlay
         shutterState={shutterState}
-        ownerName={settings.ownerName}
         onResumeFromSoftFrost={resumeActive}
         onUnlockVault={unlockVaultManually}
         isMuted={settings.isMuted}
-        currentDate={currentDate}
-        settings={settings}
-        updateSettings={updateSettings}
       />
 
       {/* Payment UI loads only when requested; checkout remains intentionally separate. */}

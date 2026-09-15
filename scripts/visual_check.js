@@ -57,6 +57,9 @@ const SURFACES = [
   { id: 'daily-desktop', url: '/?view=daily', vp: DESKTOP, fixed: true },
   { id: 'daily-laptop', url: '/?view=daily', vp: LAPTOP, fixed: true },
   { id: 'daily-mobile', url: '/?view=daily', vp: MOBILE, fixed: true },
+  { id: 'daily-dots', url: '/?view=daily&paper=dots', vp: DESKTOP, fixed: true },
+  { id: 'daily-square', url: '/?view=daily&paper=square', vp: DESKTOP, fixed: true },
+  { id: 'privacy-mobile', url: '/?view=daily', vp: MOBILE, fixed: true, seed: 'written', open: 'privacy' },
   { id: 'weekly-desktop', url: '/?view=weekly', vp: DESKTOP, fixed: true },
   { id: 'weekly-mobile', url: '/?view=weekly', vp: MOBILE, fixed: true },
   { id: 'monthly-desktop', url: '/?view=monthly', vp: DESKTOP, fixed: true },
@@ -79,7 +82,7 @@ const SURFACES = [
 
 // Populated modes use the real persisted schema, not alternate components.
 function journalSeed(kind = 'empty', dark = false) {
-  const stamp = '2026-09-14T09:30:00+05:30';
+  const stamp = '2026-09-14T09:29:53+05:30';
   const tasks = ['Write the proposal', 'Review the budget', 'Call the supplier'].map((text, i) => ({id: `qa${i}`, text, completed: false}));
   const day = {dateString: '2026-09-14', dayCondition: 'known', activeFramework: 'rule_of_3', hardTasks: kind === 'empty' ? tasks.map(t => ({...t,text:''})) : tasks, rapidLog: [], execution: {}};
   if (kind === 'empty') { delete day.activeFramework; delete day.dayCondition; }
@@ -92,7 +95,7 @@ function journalSeed(kind = 'empty', dark = false) {
     day.frameworkData = {eisenhower: {quadrants: Object.fromEntries(['q1','q2','q3','q4'].map((q,i)=>[q,[{id:q,text:tasks[i%3].text,completed:false,classified:true}]]))}};
   }
   if (['running','overrun','paused','closed'].includes(kind)) {
-    day.execution.qa0 = {plannedDurationSec: 1500, accumulatedSec: kind === 'overrun' ? 1800 : 300, actualFocusSec: 300, pausedDurationSec: 0, state: kind === 'closed' ? 'DONE' : kind === 'paused' ? 'PAUSED' : 'RUNNING', timingAccuracy:'measured', runStartedAt:stamp, lastTickAt:stamp};
+    day.execution.qa0 = {plannedDurationSec: 0, accumulatedSec: 300, actualFocusSec: 300, pausedDurationSec: 0, state: kind === 'closed' ? 'DONE' : kind === 'paused' ? 'PAUSED' : 'RUNNING', timingAccuracy:'measured', runStartedAt:stamp, lastTickAt:stamp};
     if (kind === 'closed') day.closedAt = stamp;
   }
   return {dailyLogs: {'2026-09-14': day}, monthlyLogs:{}, weeklyReviews:{}, decisions:[], closureLogs:{}, habits:[], settings:{darkMode:dark,isMuted:true,paperStyle:'plain'}};
@@ -115,7 +118,7 @@ if (LAYOUT) {
 
 if (REVIEW) {
   SURFACES.length = 0;
-  for (const dark of [false,true]) for (const open of ['tools','settings','search','decisions','scratchpad','closure']) {
+  for (const dark of [false,true]) for (const open of ['tools','settings','search','decisions','scratchpad','closure','privacy']) {
     SURFACES.push({id:`review-${open}-${dark?'dark':'light'}`,url:'/?view=daily',vp:{w:320,h:568},fixed:true,dark,seed:'written',open});
   }
 }
@@ -313,6 +316,12 @@ const PROBE = `(() => {
 
   const all = [...document.querySelectorAll('body *')].filter(vis);
   const texty = all.filter(el => [...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim().length > 2));
+  const approvedTypeSizes = new Set([11, 13, 14, 15, 18, 20, 40]);
+  const offScaleType = texty
+    .filter(el => el.closest('.instrument-app'))
+    .map(el => ({ el: name(el), size: Math.round(parseFloat(getComputedStyle(el).fontSize) * 100) / 100 }))
+    .filter(item => !approvedTypeSizes.has(item.size))
+    .slice(0, 4);
 
   // Rule 10 measures the retired badge's appearance, independently of its name.
   // The wordmark button is navigation; a plain quick-start label is information.
@@ -410,13 +419,33 @@ const PROBE = `(() => {
     .sort((a, b) => b.over - a.over).slice(0, 2);
 
   const d = document.documentElement;
+  const header = document.querySelector('.instrument-header');
+  const stage = document.querySelector('.instrument-stage');
+  const wordmark = document.querySelector('.instrument-wordmark');
+  const stopwatch = document.querySelector('.focus-stopwatch');
+  const privacy = document.querySelector('.privacy-card');
+  const sheetPattern = sheet ? getComputedStyle(sheet).backgroundImage : 'none';
+  const contract = {
+    headerWidth: header?.getBoundingClientRect().width || 0,
+    stageWidth: stage?.getBoundingClientRect().width || 0,
+    wordmark: wordmark?.textContent.trim() || '',
+    hasTodayStream: !!document.querySelector('.today-stream'),
+    stopwatchElapsed: Number(stopwatch?.dataset.elapsedSeconds || 0),
+    stopwatchAngle: Number(stopwatch?.dataset.secondHandAngle || 0),
+    paperPattern: sheetPattern,
+    privacyButtons: privacy ? privacy.querySelectorAll('button').length : 0,
+    privacyText: privacy
+      ? [...privacy.querySelectorAll('h1,p,button')].map(el => el.textContent.trim()).join(' ')
+      : '',
+    forbiddenTimeCopy: /planned|remaining|local time|until 18|overtime/i.test(document.body.innerText)
+  };
   const monthEditor = document.querySelector('#monthly-event');
   const monthEditorVisible = !monthEditor || (() => {
     const r = monthEditor.getBoundingClientRect();
     return r.top >= 0 && r.bottom <= innerHeight && r.width >= 100;
   })();
   return {
-    brandChrome, bookGeometry,
+    brandChrome, bookGeometry, contract, offScaleType,
     monthEditorVisible,
     smallType: [...texty, ...all.filter(el => el.matches("input,textarea"))].filter(el => parseFloat(getComputedStyle(el).fontSize)<11).map(el => name(el)),
     clipped_x,
@@ -458,6 +487,11 @@ for (const s of SURFACES) {
 
   if (s.open) {
     if (s.open === 'tools') await evaluate(`document.querySelector('.instrument-tools-trigger').click(); 1`);
+    else if (s.open === 'privacy') {
+      await evaluate(`document.querySelector('.instrument-tools-trigger').click(); 1`);
+      await settle(100);
+      await evaluate(`[...document.querySelectorAll('button')].find(b => b.textContent.trim() === 'Privacy Shutter')?.click(); 1`);
+    }
     else {
       const key = {settings:'m',search:'k',decisions:'d',scratchpad:'n',closure:'c'}[s.open];
       await evaluate(`window.dispatchEvent(new KeyboardEvent('keydown',{key:'${key}',metaKey:${s.open !== 'settings'},shiftKey:${s.open === 'closure'},bubbles:true})); 1`);
@@ -482,9 +516,26 @@ for (const s of SURFACES) {
   }
 
   const at = `${s.id} (${s.vp.w}×${s.vp.h})`;
+  if (s.url.includes('view=daily') && !s.open) {
+    if (m.contract.wordmark !== 'DECIDE ONE') errors.push(`${at}: the centred brand must read DECIDE ONE`);
+    if (Math.abs(m.contract.headerWidth - m.contract.stageWidth) > 1) errors.push(`${at}: header and book widths differ`);
+    if (m.contract.hasTodayStream) errors.push(`${at}: a second Today stream is present beside the framework`);
+    if (!m.contract.stopwatchElapsed && s.seed === 'running') errors.push(`${at}: running stopwatch does not expose elapsed time`);
+    if (m.contract.forbiddenTimeCopy) errors.push(`${at}: planned, remaining or wall-clock copy is still visible`);
+  }
+  if (s.seed === 'running' && Math.abs(m.contract.stopwatchAngle - 42) > .25) {
+    errors.push(`${at}: elapsed second hand is not advancing clockwise from 300s to 307s`);
+  }
+  if (s.url.includes('paper=dots') && m.contract.paperPattern === 'none') errors.push(`${at}: Dot Grid paper pattern is missing`);
+  if (s.url.includes('paper=square') && m.contract.paperPattern === 'none') errors.push(`${at}: Square Grid paper pattern is missing`);
+  if (s.open === 'privacy') {
+    if (m.contract.privacyButtons !== 1) errors.push(`${at}: privacy shutter must have exactly one action`);
+    if (m.contract.privacyText !== 'DECIDE ONE Your page is hidden. Show My Page') errors.push(`${at}: privacy shutter copy changed (${JSON.stringify(m.contract.privacyText)})`);
+  }
   const shortMonth = s.url.includes('view=monthly') && s.vp.h <= 620;
   if (shortMonth && !m.monthEditorVisible) errors.push(`${at}: the selected day's event field is out of reach`);
   for (const el of m.smallType) errors.push(`${at}: ${el} renders below 11px`);
+  for (const item of m.offScaleType) errors.push(`${at}: ${item.el} renders at ${item.size}px outside the instrument type scale`);
   if (s.fixed) for (const issue of m.bookGeometry) errors.push(`${at}: Rule 19 — ${issue}`);
   if (s.fixed) for (const badge of m.brandChrome) errors.push(`${at}: Rule 10 — ${badge.el}: ${badge.reason}`);
   for (const c of consoleErrors.slice(0, 2)) errors.push(`${at}: console error — ${c.slice(0, 140)}`);

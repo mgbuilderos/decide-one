@@ -16,7 +16,7 @@ usable invisible hit areas, and a restrained page-turn transition with reduced
 motion support. At phone widths show one readable page at a time. Adapt existing
 selection/time/report content to that structure; do not restore habits, reflection,
 old payment claims, old branding or retired methods from the historical snapshot.
-Keep QuickStart.jsx and its three-step popup content and behavior unchanged. Keep
+Keep QuickStart.jsx as a three-step popup; its instruction names the elapsed stopwatch. Keep
 black/white neutral colours, exactly three methods, current storage and timing,
 and closure eligibility. The historical server on 5180 is a reference only; the
 current source and its normal development/build commands are authoritative.
@@ -171,6 +171,9 @@ Think of a watch's mode button. Same case, same face, same hands — but in stop
 
 **Typography.**
 - Inter Variable everywhere, self-hosted from `public/fonts/` so the interface makes no third-party font request. `tailwind.config.js` maps every family to it; `font-mono` fails the build (Rule 1). Founder-approved 15 September 2026; this supersedes the Helvetica direction below and in older working history.
+- **Semantic type roles, 16 September 2026.** Every instrument surface uses the same seven roles: display 40/44, page title 20/24, section title 15/24, body 14/24, control 13/18 semibold, label 11/16 semibold uppercase with .12em tracking, metadata 11/16 regular. These roles are CSS classes backed by tokens; components must not invent a visual hierarchy with isolated font utilities. On narrow phones the page title may reduce to 18/24, but no role falls below 11px.
+- **Heading structure.** A time view owns one `h1` page title; its major sections use `h2`, with the visual role chosen by its actual job. The unified menu and privacy shutter own their own `h1` when open. A heading tag supplies document structure; `type-page-title`, `type-section-title`, and `type-label` supply the measured appearance. Plain sentences use `type-body`, action text uses `type-control`, small contextual information uses `type-metadata`, and elapsed figures use tabular numerals. A heading does not acquire an arbitrary font size merely because it is an `h1` or `h2`.
+- **Compact morning question.** At 320×568 all six named day conditions stay on one view. Their effect sentences are visually suppressed on screens 620px high or less but remain attached to each option with `aria-describedby`; the person can still skip the question. A clipped sixth choice is a broken entry surface.
 - **Every figure uses tabular numerals** — times, durations, dates, counts.
 - **Readable at real size, at arm's length** (§13.3.4). Today the instrument uses 9–10px text in many places. The standard for this work: **no text below 11px**, and 11px only for tracked uppercase labels; body and input text at 13px or above. Where a dense calendar grid cannot hold 11px at 320px wide, show less in the cell — never make the type smaller.
 - Negative tracking belongs to display sizes only. Tighter than −0.12em collapses glyphs, and the visual gate fails it.

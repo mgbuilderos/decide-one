@@ -734,3 +734,434 @@ body { font-family: var(--font-instrument) !important; font-variant-numeric: tab
  .year-month-full { display: none; }
  .year-month-short { display: inline; }
 }
+
+/* ---------------------------------------------------------------------------
+   Semantic instrument type scale.
+
+   Components choose a role; the role owns size, line height, weight, tracking
+   and casing. Inter remains the only face across the instrument.
+   --------------------------------------------------------------------------- */
+.type-display,
+.type-page-title,
+.type-section-title,
+.type-body,
+.type-control,
+.type-label,
+.type-metadata,
+.type-numeric-display {
+  margin: 0;
+  font-family: var(--font-instrument);
+}
+.type-display {
+  font-size: var(--type-display-size);
+  line-height: var(--type-display-line);
+  font-weight: 450;
+  letter-spacing: -.025em;
+}
+.type-page-title {
+  font-size: var(--type-page-title-size);
+  line-height: var(--type-page-title-line);
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+.type-section-title {
+  font-size: var(--type-section-title-size);
+  line-height: var(--type-section-title-line);
+  font-weight: 650;
+  letter-spacing: -.01em;
+}
+.type-body {
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.type-control {
+  font-size: var(--type-control-size);
+  line-height: var(--type-control-line);
+  font-weight: 650;
+  letter-spacing: 0;
+}
+.type-label {
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.type-metadata {
+  font-size: var(--type-meta-size);
+  line-height: var(--type-meta-line);
+  font-weight: 450;
+  letter-spacing: 0;
+  color: var(--ink-muted);
+}
+.type-numeric-display {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Secondary views still carrying old utility names resolve through this same
+   measured scale. Every rendered label therefore follows the instrument's
+   hierarchy while those components move to explicit semantic role classes. */
+.instrument-app { font-size: var(--type-body-size); line-height: var(--type-body-line); }
+.instrument-app .text-\[11px\] { font-size: var(--type-meta-size); line-height: var(--type-meta-line); }
+.instrument-app .text-\[12px\],
+.instrument-app .text-xs,
+.instrument-app .text-\[13px\] { font-size: var(--type-control-size); line-height: var(--type-control-line); }
+.instrument-app .text-\[14px\],
+.instrument-app .text-sm,
+.instrument-app .text-base { font-size: var(--type-body-size); line-height: var(--type-body-line); }
+.instrument-app .text-\[15px\],
+.instrument-app .text-lg { font-size: var(--type-section-title-size); line-height: var(--type-section-title-line); }
+.instrument-app .text-xl,
+.instrument-app .text-2xl { font-size: var(--type-page-title-size); line-height: var(--type-page-title-line); }
+.instrument-app .text-4xl { font-size: var(--type-display-size); line-height: var(--type-display-line); }
+.date-year {
+  font-size: var(--type-section-title-size);
+  line-height: var(--type-page-title-line);
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--ink-muted);
+}
+.date-meta { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.date-weekday { padding: 2px 8px; border-radius: 999px; background: rgb(0 0 0 / .04); color: var(--ink); font-weight: 650; }
+.date-day-number { text-transform: uppercase; letter-spacing: .08em; }
+
+/* One measured top instrument, aligned exactly to the paper below it. */
+.instrument-app .instrument-header,
+.instrument-app .instrument-stage {
+  width: min(100%, var(--instrument-width));
+  max-width: var(--instrument-width);
+  box-sizing: border-box;
+  min-width: 0;
+}
+.instrument-app .instrument-header {
+  display: grid;
+  grid-template-rows: 48px 48px;
+  margin: 0 auto 24px;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+}
+.instrument-app .instrument-masthead,
+.instrument-app .instrument-navigation {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  min-height: 48px;
+  height: 48px;
+  padding: 0 12px;
+}
+.instrument-app .instrument-masthead { border-bottom: 1px solid var(--rule); }
+.instrument-app .instrument-navigation { border: 0; gap: 12px; overflow: hidden; }
+.instrument-app .instrument-navigation nav {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.perspective-label-compact { display: none; }
+.instrument-app .instrument-wordmark {
+  font: 700 var(--type-control-size)/var(--type-control-line) var(--font-instrument);
+  letter-spacing: .16em;
+  text-indent: .16em;
+}
+.instrument-app .instrument-quiet-action,
+.instrument-app .instrument-navigation button {
+  font: 600 var(--type-control-size)/var(--type-control-line) var(--font-instrument);
+}
+.instrument-method-slot {
+  width: 116px;
+  min-width: 116px;
+  display: flex;
+  justify-content: flex-end;
+}
+.instrument-page-footer {
+  flex-shrink: 0;
+  height: 24px !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: 4px;
+  overflow: hidden;
+  border-top: 1px solid var(--rule);
+  color: var(--ink-muted);
+  font: 600 var(--type-meta-size)/var(--type-meta-line) var(--font-instrument);
+  letter-spacing: .08em;
+  white-space: nowrap;
+}
+
+/* Paper patterns are full-sheet materials on the exact 24px cadence. */
+.instrument-app .instrument-sheet.paper-dots {
+  background-color: var(--paper) !important;
+  background-image: radial-gradient(circle, var(--rule) .7px, transparent .8px) !important;
+  background-size: 24px 24px !important;
+  background-position: 12px 12px !important;
+}
+.instrument-app .instrument-sheet.paper-square {
+  background-color: var(--paper) !important;
+  background-image:
+    linear-gradient(var(--rule) .65px, transparent .65px),
+    linear-gradient(90deg, var(--rule) .65px, transparent .65px) !important;
+  background-size: 24px 24px !important;
+  background-position: 0 0 !important;
+}
+.instrument-app .instrument-sheet.paper-plain { background-image: none !important; }
+
+/* Elapsed focus stopwatch. */
+.focus-stopwatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.stopwatch-face { fill: var(--paper); stroke: var(--rule); stroke-width: .7; }
+.stopwatch-tick { stroke: var(--ink-muted); stroke-width: .35; opacity: .55; }
+.stopwatch-tick-major { stroke: var(--ink); stroke-width: .8; opacity: .75; }
+.stopwatch-minute-hand { stroke: var(--ink); }
+.stopwatch-second-hand { stroke: var(--ink); }
+.stopwatch-pin { fill: var(--paper); stroke: var(--ink); stroke-width: .7; }
+.inline-time-control {
+  width: 92px;
+  min-width: 92px;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.inline-time-control-empty { visibility: hidden; }
+.inline-stopwatch-readout {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.instrument-app .inline-time-control button {
+  width: 36px;
+  height: 36px;
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  color: var(--ink);
+  background: var(--paper);
+}
+.instrument-app .inline-time-control button:hover { border-color: var(--ink-muted); }
+
+.instrument-app .execution-panel {
+  width: 100%;
+  min-height: 132px !important;
+  display: flex;
+  flex-direction: column;
+}
+.execution-panel-header,
+.day-report > header {
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--rule);
+}
+.instrument-app .execution-clock {
+  min-height: 104px !important;
+  padding: 8px 0 !important;
+  display: grid !important;
+  grid-template-columns: 96px minmax(0, 1fr);
+  align-items: center;
+  justify-content: start !important;
+  column-gap: 16px;
+  text-align: left !important;
+}
+.instrument-app .execution-clock > .focus-stopwatch { grid-row: auto; width: 88px !important; }
+.execution-clock-copy { min-width: 0; grid-row: auto !important; }
+.execution-task-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); }
+.execution-return-questions { padding: 8px 0; border-bottom: 1px solid var(--rule); }
+.execution-return-question { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.execution-return-question > div:last-child { display: flex; gap: 6px; }
+.execution-return-question button { min-height: 36px; padding: 0 10px; border: 1px solid var(--rule); }
+
+.day-report { min-height: 0; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.day-report-list { flex: 1; min-height: 0; overflow-y: auto; }
+.day-report-row { padding: 10px 0; border-bottom: 1px solid var(--rule); }
+.day-report-row .is-complete { color: var(--ink-muted); text-decoration: line-through; }
+.day-report > footer { padding-top: 8px; border-top: 1px solid var(--rule); }
+.day-close-button {
+  width: 100%;
+  min-height: 36px;
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid var(--rule);
+}
+.day-close-button svg,
+.focus-stage-actions svg { width: 14px; height: 14px; }
+.report-empty,
+.focus-stage {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  text-align: center;
+}
+.focus-stage-task { max-width: 280px; }
+.focus-stage-actions { display: flex; gap: 8px; }
+.focus-stage-actions button {
+  min-height: 36px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--rule);
+}
+
+/* Privacy shutter: one statement and one return action. */
+.privacy-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-instrument);
+}
+.privacy-card {
+  width: min(100%, 360px);
+  min-height: 264px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 36px;
+  border: 1px solid var(--rule);
+  border-radius: var(--paper-radius);
+  background: var(--paper);
+  text-align: center;
+}
+.privacy-lock { width: 20px; height: 20px; color: var(--ink-muted); }
+.privacy-show-button {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 12px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* The unified menu uses the same roles as the pages it controls. */
+#unified-menu { font-family: var(--font-instrument); }
+#unified-menu button { font-family: inherit; }
+#unified-menu section h2,
+#unified-menu .type-label { font-size: var(--type-label-size); line-height: var(--type-label-line); }
+#unified-menu .type-control { font-size: var(--type-control-size); line-height: var(--type-control-line); }
+#unified-menu .type-metadata { font-size: var(--type-meta-size); line-height: var(--type-meta-line); }
+.paper-style-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.paper-style-button {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--paper);
+}
+.paper-style-button.is-selected { border-color: var(--ink); outline: 1px solid var(--ink); outline-offset: -4px; }
+.paper-style-swatch { width: 20px; height: 20px; display: block; border: 1px solid var(--rule); background-color: var(--paper); }
+.paper-style-dots { background-image: radial-gradient(circle, var(--ink-muted) .7px, transparent .8px); background-size: 6px 6px; }
+.paper-style-square { background-image: linear-gradient(var(--rule) .7px, transparent .7px), linear-gradient(90deg, var(--rule) .7px, transparent .7px); background-size: 6px 6px; }
+.paper-style-plain { background-image: none; }
+
+@media (max-width: 600px) {
+  .instrument-app .instrument-header {
+    grid-template-rows: 48px 48px;
+    margin-bottom: 12px;
+  }
+  .instrument-app .instrument-masthead,
+  .instrument-app .instrument-navigation { padding-inline: 6px; }
+  .instrument-method-slot { width: 108px; min-width: 108px; }
+  .type-page-title { font-size: 18px; }
+}
+@media (max-width: 400px) {
+  .instrument-app .instrument-navigation { flex-wrap: nowrap; gap: 4px; }
+  .instrument-method-slot { width: 96px; min-width: 96px; }
+  .inline-time-control { width: 84px; min-width: 84px; gap: 5px; }
+  .date-day-number { display: none; }
+}
+@media (max-width: 340px) {
+  .instrument-app .instrument-navigation nav button {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-inline: 3px;
+  }
+  .instrument-method-slot { width: 88px; min-width: 88px; }
+  .instrument-app .instrument-method-icons button { width: 28px; height: 30px; }
+  .perspective-label-full { display: none; }
+  .perspective-label-compact { display: inline; }
+  .instrument-app .instrument-quiet-action {
+    width: 36px;
+    justify-content: center;
+    gap: 0;
+  }
+  .instrument-app .instrument-quiet-action span { display: none; }
+  .instrument-app .instrument-wordmark {
+    font-size: var(--type-control-size);
+    letter-spacing: .12em;
+    text-indent: .12em;
+  }
+}
+@media (max-height: 620px) {
+  /* Six named conditions remain visible on the shortest phones. Their effect
+     sentences stay available to assistive technology via aria-describedby. */
+  .day-condition-effect {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .instrument-app .instrument-header {
+    grid-template-rows: 36px 42px;
+    margin-bottom: 6px;
+  }
+  .instrument-app .instrument-masthead {
+    min-height: 36px;
+    height: 36px;
+  }
+  .instrument-app .instrument-navigation {
+    min-height: 42px;
+    height: 42px;
+  }
+  .instrument-app .execution-panel { min-height: 84px !important; }
+  .instrument-app .execution-clock {
+    min-height: 56px !important;
+    grid-template-columns: 60px minmax(0, 1fr);
+    padding: 2px 0 !important;
+  }
+  .instrument-app .execution-clock > .focus-stopwatch { width: 54px !important; }
+  .instrument-app .execution-clock .focus-stopwatch svg { width: 54px; height: 54px; }
+  .instrument-app .execution-clock > .execution-clock-copy { width: auto !important; }
+  .instrument-app .execution-clock .type-numeric-display { display: none; }
+}

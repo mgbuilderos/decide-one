@@ -132,11 +132,11 @@ export default function UnifiedMenuModal({
         
         {/* Clean Minimalist Header */}
         <div className="h-12 px-5 sm:px-6 flex items-center justify-between border-b border-black/[0.06] dark:border-white/[0.08] shrink-0 bg-black/[0.01] dark:bg-white/[0.015]">
-          <div className="flex items-center gap-2" id="unified-menu-title">
+          <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-neutral-900 dark:bg-white" />
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-900 dark:text-white">
+            <h1 id="unified-menu-title" className="type-label">
               Menu
-            </span>
+            </h1>
           </div>
 
           <div className="flex items-center gap-2">
@@ -167,7 +167,7 @@ export default function UnifiedMenuModal({
               type="button"
               onClick={() => setMenuSection(id)}
               aria-current={menuSection === id ? 'page' : undefined}
-              className={`min-h-11 border-b-2 px-1 text-xs font-semibold transition-colors ${
+              className={`type-control min-h-11 border-b-2 px-1 transition-colors ${
                 menuSection === id
                   ? 'border-neutral-900 text-neutral-900 dark:border-white dark:text-white'
                   : 'border-transparent text-neutral-500 hover:text-neutral-900 dark:hover:text-white'
@@ -185,9 +185,9 @@ export default function UnifiedMenuModal({
               competing popover and the menu never sends people to a second menu. */}
           {menuSection === 'work' && <>
           <section className="p-3.5 sm:p-4 rounded-2xl border border-black/[0.08] dark:border-white/[0.08] space-y-2.5" aria-labelledby="work-menu-heading">
-            <div id="work-menu-heading" className="text-[11px] font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
+            <h2 id="work-menu-heading" className="type-label">
               Your Work
-            </div>
+            </h2>
             <div className="grid grid-cols-2 gap-2">
               {[
                 ['DECISION SPACE', Scale, onOpenDecisions],
@@ -200,10 +200,10 @@ export default function UnifiedMenuModal({
                   key={label}
                   type="button"
                   onClick={() => runAndClose(action)}
-                  className="min-h-11 px-3 py-2 border border-black/[0.08] dark:border-white/[0.10] text-[13px] font-semibold text-left flex items-center gap-2.5 hover:bg-black/[0.03] dark:hover:bg-white/[0.05] transition-colors"
+                  className="type-control min-h-11 px-3 py-2 border border-black/[0.08] dark:border-white/[0.10] text-left flex items-center gap-2.5 hover:bg-black/[0.03] dark:hover:bg-white/[0.05] transition-colors"
                 >
                   <Icon className="w-4 h-4 shrink-0 text-neutral-500" />
-                  <span className={label === 'DECISION SPACE' ? 'text-[11px] leading-[14px] tracking-[0.05em]' : ''}>{label}</span>
+                  <span>{label}</span>
                 </button>
               ))}
             </div>
@@ -215,11 +215,11 @@ export default function UnifiedMenuModal({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-neutral-800 dark:text-neutral-200" />
-                <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
+                <h2 className="type-label">
                   Choose Method
-                </span>
+                </h2>
               </div>
-              <div className="text-[11px] font-semibold text-neutral-500 dark:text-neutral-500 whitespace-nowrap">
+              <div className="type-metadata whitespace-nowrap">
                 Active: <span className="text-neutral-900 dark:text-white font-bold">{currentFw.name}</span>
               </div>
             </div>
@@ -263,10 +263,10 @@ export default function UnifiedMenuModal({
                     }`}
                   >
                     <Icon className="w-3.5 h-3.5 mb-0.5 shrink-0" />
-                    <span className="text-[11px] font-bold leading-tight whitespace-nowrap">
+                    <span className="type-control whitespace-nowrap">
                       {m.label}
                     </span>
-                    <span className={`hidden sm:block text-[11px] whitespace-nowrap mt-0.5 ${
+                    <span className={`type-metadata hidden sm:block whitespace-nowrap mt-0.5 ${
                       isSelected ? 'text-white/80 dark:text-neutral-700' : 'text-neutral-400 dark:text-neutral-500'
                     }`}>
                       {m.sub}
@@ -293,8 +293,8 @@ export default function UnifiedMenuModal({
 
             {/* Row 1: Paper Texture */}
             <div className="flex items-center justify-between gap-2">
-              <span className="text-xs text-neutral-500 dark:text-neutral-400 whitespace-nowrap">Paper Grid</span>
-              <div className="flex items-center gap-1 bg-black/[0.04] dark:bg-white/[0.06] p-0.5 rounded-xl border border-black/[0.04] dark:border-white/[0.06]">
+              <span className="type-control text-neutral-500 dark:text-neutral-400 whitespace-nowrap">Paper</span>
+              <div className="paper-style-controls" role="group" aria-label="Paper Style">
                 {[
                   { id: 'dots', label: 'Dot-Grid' },
                   { id: 'square', label: 'Square' },
@@ -307,13 +307,17 @@ export default function UnifiedMenuModal({
                       playSound('click', settings.isMuted);
                       updateSettings({ paperStyle: p.id });
                     }}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer whitespace-nowrap ${
+                    aria-label={`${p.label} Paper`}
+                    title={`${p.label} Paper`}
+                    aria-pressed={settings.paperStyle === p.id}
+                    className={`paper-style-button ${
                       settings.paperStyle === p.id
-                        ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-2xs'
-                        : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'
+                        ? 'is-selected'
+                        : ''
                     }`}
                   >
-                    {p.label}
+                    <span className={`paper-style-swatch paper-style-${p.id}`} aria-hidden="true" />
+                    <span className="sr-only">{p.label}</span>
                   </button>
                 ))}
               </div>

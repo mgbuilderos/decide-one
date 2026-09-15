@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { Pause, Play } from 'lucide-react';
 import { playSound } from '../utils/audio';
+import { formatStopwatch } from './FocusStopwatch';
 import {
   STATES,
   BREATHING_SECONDS,
   getSession,
-  emptySession,
   startSession,
   beginRunning,
-  pauseSession
+  pauseSession,
+  elapsedSeconds
 } from '../utils/executionModel';
 
 /**
- * Time belongs to the priority it constrains. This compact control therefore
- * lives in the task row instead of repeating the task in a second section.
+ * Elapsed focus belongs to the priority that received it. The stopwatch lives
+ * on that row and starts without asking the person to predict a duration.
  */
 export default function InlineTimeControl({
   item,
@@ -25,18 +26,17 @@ export default function InlineTimeControl({
 }) {
   const itemId = item?.id;
   const session = getSession(dailyLog, itemId);
-  const plannedMinutes = session.plannedDurationSec
-    ? Math.round(session.plannedDurationSec / 60)
-    : '';
-  const [draft, setDraft] = useState(plannedMinutes === '' ? '' : String(plannedMinutes));
+  const [beat, setBeat] = useState(() => Date.now());
   const hasTask = Boolean(item?.text?.trim());
   const running = session.state === STATES.RUNNING;
   const breathing = session.state === STATES.BREATHING;
   const done = item?.completed || session.state === STATES.DONE;
 
   useEffect(() => {
-    setDraft(plannedMinutes === '' ? '' : String(plannedMinutes));
-  }, [plannedMinutes]);
+    if (!running) return undefined;
+    const id = window.setInterval(() => setBeat(Date.now()), 1000);
+    return () => window.clearInterval(id);
+  }, [running]);
 
   useEffect(() => {
     if (!breathing || !itemId) return undefined;
@@ -48,26 +48,15 @@ export default function InlineTimeControl({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [breathing, itemId]);
 
-  const commitDuration = () => {
-    if (!itemId || !hasTask) return;
-    const parsed = Number(draft);
-    const minutes = draft === '' || !Number.isFinite(parsed)
-      ? 0
-      : Math.min(720, Math.max(1, Math.round(parsed)));
-    setDraft(minutes ? String(minutes) : '');
-    if (minutes === plannedMinutes) return;
-    playSound('click', isMuted);
-    onUpdateExecution?.(itemId, {
-      ...emptySession(minutes * 60),
-      ...session,
-      plannedDurationSec: minutes * 60
-    });
-  };
-
   const handleStart = () => {
-    if (!itemId || !hasTask || !session.plannedDurationSec) return;
+    if (!itemId || !hasTask) return;
     playSound('check', isMuted);
-    onUpdateExecution?.(itemId, startSession(session));
+    onUpdateExecution?.(itemId, startSession({
+      ...session,
+      plannedDurationSec: 0,
+      overtimeSec: 0,
+      reachedEnd: false
+    }));
   };
 
   const handlePause = () => {
@@ -75,55 +64,23 @@ export default function InlineTimeControl({
     onUpdateExecution?.(itemId, pauseSession(session));
   };
 
-  const inputDisabled = !isInteractive || !hasTask || locked || done || running || breathing;
-  const actionDisabled = !isInteractive || locked || done;
+  const actionDisabled = !isInteractive || !hasTask || locked || done;
   const taskLabel = item?.text?.trim() || 'this priority';
+  const elapsed = elapsedSeconds(session, beat);
 
   return (
-    <div className="inline-time-control inline-flex shrink-0 items-center gap-1.5">
-      <label
-        className={`inline-flex h-7 items-center rounded-md border px-1.5 transition-colors ${
-          inputDisabled
-            ? 'border-black/[0.06] dark:border-white/[0.08] text-neutral-500 dark:text-neutral-500'
-            : 'border-black/[0.12] dark:border-white/[0.14] text-neutral-700 dark:text-neutral-300 focus-within:border-black/35 dark:focus-within:border-white/35'
-        }`}
-        title={hasTask ? `Planned minutes for ${taskLabel}` : 'Write the priority before setting its time'}
-      >
-        <input
-          type="number"
-          inputMode="numeric"
-          min="1"
-          max="720"
-          step="5"
-          value={draft}
-          disabled={inputDisabled}
-          onChange={(event) => setDraft(event.target.value)}
-          onBlur={commitDuration}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') event.currentTarget.blur();
-            if (event.key === 'Escape') {
-              setDraft(plannedMinutes === '' ? '' : String(plannedMinutes));
-              event.currentTarget.blur();
-            }
-          }}
-          placeholder="—"
-          aria-label={`Minutes planned for ${taskLabel}`}
-          className="w-8 bg-transparent text-right text-[11px] font-semibold tabular-nums outline-none placeholder:text-neutral-300 dark:placeholder:text-neutral-600 disabled:cursor-default"
-        />
-        <span className="ml-0.5 text-[11px] uppercase tracking-[0.08em]">min</span>
-      </label>
-
-      {session.plannedDurationSec > 0 && !done && (
-        breathing ? (
-          <span className="w-7 text-center text-[11px] text-neutral-500" aria-live="polite">Ready</span>
-        ) : (
+    <div className={`inline-time-control ${hasTask ? '' : 'inline-time-control-empty'}`}>
+      {hasTask && <span className="inline-stopwatch-readout type-metadata" aria-label={`${formatStopwatch(elapsed)} elapsed`}>
+        {formatStopwatch(elapsed)}
+      </span>}
+      {hasTask && !done && (
+        breathing ? <span className="type-metadata" aria-live="polite">Ready</span> : (
           <button
             type="button"
             disabled={actionDisabled}
             onClick={running ? handlePause : handleStart}
-            aria-label={`${running ? 'Pause' : 'Start'} ${taskLabel}`}
-            title={running ? 'Pause' : 'Start'}
-            className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-black/[0.1] dark:border-white/[0.12] text-neutral-700 dark:text-neutral-300 hover:border-black/30 hover:text-black dark:hover:border-white/35 dark:hover:text-white disabled:cursor-default disabled:opacity-40 transition-colors"
+            aria-label={`${running ? 'Pause focus timer for' : 'Start focus timer for'} ${taskLabel}`}
+            title={running ? 'Pause Focus Timer' : 'Start Focus Timer'}
           >
             {running ? <Pause className="h-3 w-3" /> : <Play className="h-3 w-3 translate-x-px" />}
           </button>

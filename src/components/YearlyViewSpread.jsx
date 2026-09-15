@@ -123,17 +123,17 @@ export default function YearlyViewSpread({
         {/* Left Masthead (48px Cadence) */}
         <div className="h-[48px] border-b border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between shrink-0 mb-3">
           <div>
-            <div className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-900 dark:text-neutral-100 flex items-center gap-1.5">
+            <h1 className="type-section-title text-neutral-900 dark:text-neutral-100 flex items-center gap-1.5">
               <span>Annual Index</span>
               <span className="opacity-40">•</span>
               <span className="opacity-70">{currentYear}</span>
-            </div>
+            </h1>
             <div className="text-[11px] text-neutral-500 dark:text-neutral-500">
               H1 • January — June
             </div>
           </div>
-          <div className="text-[11px] font-semibold text-neutral-500 dark:text-neutral-500 uppercase tracking-widest hidden sm:block">
-            Decide One
+          <div className="type-label text-neutral-500 dark:text-neutral-500 hidden sm:block">
+            DECIDE ONE
           </div>
         </div>
 
@@ -150,9 +150,9 @@ export default function YearlyViewSpread({
         {/* Right Masthead (48px Cadence) */}
         <div className="h-[48px] border-b border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between shrink-0 mb-3">
           <div>
-            <div className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-900 dark:text-neutral-100">
+            <h2 className="type-label text-neutral-900 dark:text-neutral-100">
               H2 • July — December
-            </div>
+            </h2>
             <div className="text-[11px] text-neutral-500 dark:text-neutral-500">
               Select a month to review its priorities
             </div>

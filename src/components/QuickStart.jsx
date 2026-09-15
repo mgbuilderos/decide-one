@@ -25,7 +25,7 @@ export default function QuickStart({ isOpen, onClose }) {
   const titles = ['You already know what matters. This helps you choose it.', 'Three methods. One clear order.', 'One page. Nothing leaves your device.'];
   return <div className="quick-start-backdrop">
     <section ref={panel} className="quick-start" role="dialog" aria-modal="true" aria-labelledby="quick-start-title">
-      <header><span>Decide One</span><span aria-label={`Step ${step + 1} of 3`}>{step + 1}/3</span></header>
+      <header><span>DECIDE ONE</span><span aria-label={`Step ${step + 1} of 3`}>{step + 1}/3</span></header>
       <div className="quick-start-body">
         <h1 id="quick-start-title" ref={heading} tabIndex={-1}>{titles[step]}</h1>
         {step === 0 && <p>Some mornings hold eleven things and no obvious first one.</p>}
@@ -36,7 +36,7 @@ export default function QuickStart({ isOpen, onClose }) {
             <div><dt>Ivy Lee</dt><dd>Six tasks in strict order.</dd></div>
             <div><dt>Urgent/Important Matrix</dt><dd>Sorting on two axes before deciding what to do.</dd></div>
           </dl>
-          <p>Choose at the top of the page. Set minutes beside the first line. Turn Over to close the day.</p>
+          <p>Choose at the top of the page. Start the stopwatch beside the first line. Turn Over to close the day.</p>
         </>}
         {step === 2 && <><p>Free, for everyone, with nothing held back.</p><p>No account. No subscription.</p><nav aria-label="Read more"><a href="/guides/">Guides</a><a href="/methods/">Methods</a><a href="/faq/">Questions</a></nav></>}
       </div>

@@ -1440,3 +1440,9 @@ Deployed commit ee74534 to Cloudflare after all QC, content, artifact and 27-sur
 ### 2026-09-16 00:38 — unattributed
 
 Locked founder correction before code: framework-only daily input; elapsed clockwise stopwatch with no wall time, countdown or planned minutes; one-action truthful privacy shutter; fixed 960px uppercase DECIDE ONE header; full-sheet 24px paper patterns. Preserve approved open-book geometry.
+
+---
+
+### 2026-09-16 01:40 — unattributed
+
+Unified the Inter type hierarchy across the instrument, replaced planned and wall-clock time with a clockwise elapsed stopwatch attached to priorities, removed the duplicate Today stream, simplified the privacy shutter, fixed compact navigation and first-use prompt clipping, and verified 30 Chrome surfaces plus build/QC/artifact gates.

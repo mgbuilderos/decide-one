@@ -114,7 +114,7 @@ export default function MonthlyLogSpread({
           <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.18em] text-neutral-500">
             Monthly View
           </p>
-          <h1 className="text-xl font-bold tracking-tight text-neutral-900 dark:text-white sm:text-2xl">
+          <h1 className="type-page-title text-neutral-900 dark:text-white">
             {monthName} <span className="font-normal text-neutral-500">{year}</span>
           </h1>
         </div>
@@ -226,7 +226,7 @@ export default function MonthlyLogSpread({
         <div className="mx-auto flex min-h-0 w-full max-w-3xl flex-1 flex-col pt-5">
           <div className="mb-4">
             <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-neutral-500">What Matters This Month</p>
-            <h2 className="mt-1 text-lg font-bold tracking-tight text-neutral-900 dark:text-white">Keep the important work visible.</h2>
+            <h2 className="type-section-title mt-1 text-neutral-900 dark:text-white">Keep the important work visible.</h2>
           </div>
 
           <form

@@ -1,10 +1,9 @@
 /**
  * Decide One — the execution model (§1B).
  *
- * Selection answers "which things". Execution answers "when and how long".
- * This file is the second half: durations, the timer state machine, and the
- * planned-versus-actual accounting that makes the question *are your timeboxes
- * honest?* answerable.
+ * Selection answers "which things". Execution records how much focused time
+ * the person gives one of those things. This file owns the stopwatch state
+ * machine and its measured elapsed time.
  *
  * Ported as a model, not as code (R15): Focus was Next.js + Zustand, this is
  * Vite + localStorage, so the types and the state machine cross and nothing else.
@@ -24,8 +23,6 @@ export const BREATHING_SECONDS = 3;
 
 /** A session left running past this without a tick is no longer trustworthy (R17). */
 export const STALE_SESSION_SECONDS = 15 * 60;
-
-export const DURATION_CHOICES = [15, 25, 45, 60, 90, 120];
 
 export function emptySession(plannedDurationSec = 0) {
   return {
@@ -61,11 +58,6 @@ export function elapsedSeconds(session, now = Date.now()) {
   return banked + live;
 }
 
-/** Seconds left in the box; negative once it is spent. */
-export function remainingSeconds(session, now = Date.now()) {
-  return (session?.plannedDurationSec || 0) - elapsedSeconds(session, now);
-}
-
 export function getSession(dailyLog, itemId) {
   return dailyLog?.execution?.[itemId] || emptySession();
 }
@@ -77,36 +69,6 @@ export function formatDuration(totalSec) {
   if (h && m) return `${h}h ${m}m`;
   if (h) return `${h}h`;
   return `${m}m`;
-}
-
-/**
- * P14 — the capacity check, which is the clock's main job and happens before
- * it ever runs. Three tasks at three hours is nine hours, and the day has not
- * got nine hours. Little's Law made visible: the cap is only real if it caps
- * time rather than line count.
- */
-export function computeCapacity(sessions, now = new Date()) {
-  const plannedSec = sessions.reduce((sum, s) => sum + (s.plannedDurationSec || 0), 0);
-  const endOfWorkingDay = new Date(now);
-  endOfWorkingDay.setHours(18, 0, 0, 0);
-  const remainingSec = Math.max(0, (endOfWorkingDay - now) / 1000);
-
-  return {
-    plannedSec,
-    remainingSec,
-    endHour: 18,
-    // Literally impossible: more planned time than clock left.
-    overcommitted: plannedSec > remainingSec && remainingSec > 0,
-    overBySec: Math.max(0, plannedSec - remainingSec),
-    /**
-     * Descriptive, not a verdict. Planning nine hours into nine remaining hours
-     * is arithmetically fine and practically a fiction — it leaves no gap for
-     * lunch, travel, or a single interruption. We state that fact and let the
-     * person judge (Rule 5). We deliberately assert no focus-hours ceiling:
-     * FOUNDATIONS.md §5 forbids claiming research this product does not have.
-     */
-    noSlack: remainingSec > 0 && plannedSec > remainingSec * 0.8 && plannedSec <= remainingSec
-  };
 }
 
 /**
@@ -154,30 +116,13 @@ export function pauseSession(session, now = Date.now()) {
  */
 export function syncSession(session, now = Date.now()) {
   const elapsed = elapsedSeconds(session, now);
-  const planned = session.plannedDurationSec || 0;
-  const overtime = planned > 0 ? Math.max(0, elapsed - planned) : 0;
-  const reachedEnd = planned > 0 && elapsed >= planned;
   return {
     ...session,
     actualFocusSec: elapsed,
-    overtimeSec: overtime,
-    // FINISHED marks the box as spent. It is not a failure state: the session
-    // keeps running into overtime, because R8 says overrun is information.
-    state: reachedEnd && session.state === STATES.RUNNING ? STATES.RUNNING : session.state,
-    reachedEnd,
+    overtimeSec: 0,
+    reachedEnd: false,
     lastTickAt: new Date(now).toISOString()
   };
-}
-
-/** R8 — overrun is never punitive. More time is added as information. */
-export function extendSession(session, extraSec) {
-  return { ...session, plannedDurationSec: (session.plannedDurationSec || 0) + extraSec, overtimeSec: 0 };
-}
-
-/** True when a running session has spent its box and is into overtime. */
-export function isOvertime(session, now = Date.now()) {
-  const planned = session?.plannedDurationSec || 0;
-  return planned > 0 && elapsedSeconds(session, now) > planned;
 }
 
 export function completeSession(session, now = Date.now()) {
