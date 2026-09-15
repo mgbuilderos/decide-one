@@ -392,7 +392,7 @@ export default function WeeklyReviewSpread({
                 );
               })}
             </div>
-            <p className="mt-1.5 text-[11px] text-neutral-500 leading-[16px]">
+            <p className="weekly-time-summary mt-1.5 text-[11px] text-neutral-500 leading-[16px]">
               {weekPlannedSec > 0
                 ? `${formatDuration(weekActualSec)} spent against ${formatDuration(weekPlannedSec)} planned.`
                 : 'No time was set this week, so there is nothing to compare.'}

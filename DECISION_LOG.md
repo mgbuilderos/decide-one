@@ -1422,3 +1422,9 @@ Founder approved the recovered open-book layout and authorized refinement in cur
 ### 2026-09-15 18:22 — unattributed
 
 Recovered the founder-approved two-page book work left uncommitted by another agent after reviewing its diffs and passing build, source, asset and 27-surface Chrome gates. This restart made Monthly a familiar variable-week calendar with 44px controls and a readable internally scrolling 320px view whose event field remains visible; corrected the Weekly empty record, enlarged its phone controls, added a guide-top Open Decide One link, and replaced the retired-feature share image with a truthful screenshot. Price remains free and no gateway or live deploy was touched. Added mobile audit captures and the short-month visual exception, limited to its inner scroll while the daily no-scroll gate stays enforced.
+
+---
+
+### 2026-09-15 18:55 — unattributed
+
+Unified the header into one sectioned menu, changed the interface and privacy controls to self-hosted Inter, set DECISION SPACE in caps, removed stale lock-screen copy, and recorded 27 green visual baselines including the 320px weekly fit.

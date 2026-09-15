@@ -61,18 +61,6 @@
 
 .book-sheet footer { height: 24px !important; }
 
-/* Existing tools retain their order and stay reachable on short screens. */
-.instrument-app .instrument-popover { border-radius: 12px; }
-.instrument-app .instrument-popover > p { color: var(--ink-muted); }
-@media (max-height: 760px) {
-  .instrument-app .instrument-tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; max-height: calc(100dvh - 120px); }
-  .instrument-app .instrument-tools > p, .instrument-app .instrument-tools .instrument-paper-options { grid-column: 1 / -1; }
-  .instrument-app .instrument-tools > p { padding: 4px; }
-  .instrument-app .instrument-tools > button { padding: 6px; gap: 6px; font-size: 12px; line-height: 16px; }
-  .instrument-app .instrument-tools > a { padding: 6px; min-height: 36px; align-items: center; }
-  .instrument-app .instrument-tools .instrument-paper-options { padding: 4px; margin: 0; }
-  .instrument-app .instrument-tools > button svg { flex-shrink: 0; }
-}
 
 /* Rows must not extend outside the page's scroll/focus boundary. */
 .instrument-app .priority-row, .instrument-app .ivy-row, .instrument-app .matrix-row { margin-inline: 0; }

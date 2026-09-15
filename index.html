@@ -84,7 +84,9 @@
     <meta name="apple-mobile-web-app-title" content="Decide One" />
     <link rel="apple-touch-icon" href="/icon.svg?v=2" />
     
-    <!-- Clean Helvetica / Inter Typography Stack -->
+    <!-- Self-hosted Inter typography -->
+    <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="license" href="/fonts/INTER-LICENSE.txt" />
     <style>
       /* Critical first paint — scoped to #prerender ONLY.
          It was scoped to #root on 13 September 2026 and that broke the whole
@@ -97,7 +99,7 @@
          only ever apply to the crawlable summary they were written for. */
       html { background: #e9e9e9; }
       body { margin: 0; background: #e9e9e9; color: #191919; -webkit-font-smoothing: antialiased;
-             font-family: "Helvetica Neue", Helvetica, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+             font-family: "Inter Variable", Inter, sans-serif; }
       #prerender { max-width: 680px; margin: 0 auto; padding: 56px 24px; }
       #prerender h1 { font-size: 34px; line-height: 1.12; letter-spacing: -.02em; font-weight: 600; margin: 0 0 22px; }
       #prerender h2 { font-size: 18px; font-weight: 600; margin: 44px 0 14px; }

@@ -59,6 +59,7 @@ const governedSurfaces = [
   ['index.css', 'Rules 6 and 9 — the 24px grid cadence'],
   ['components/MonthlyLogSpread.jsx', 'Rule 7 — single-column monthly spread'],
   ['components/HeaderToolbar.jsx', 'Rule 8 — two-tier masthead, no speaker button'],
+  ['components/UnifiedMenuModal.jsx', 'Rule 8 — one menu, complete secondary navigation'],
   ['utils/executionModel.js', 'Rule 22 — the methods are enforced here, not suggested'],
   ['utils/licenseManager.js', 'Rules 18 and 23 — offline verification, signed keys'],
   ['utils/licenseKeys.js', 'Rule 23 — signed per-buyer licences replaced shared keys'],
@@ -253,12 +254,29 @@ function sheetClassLines(content) {
 
 const visualGate = fs.existsSync('scripts/visual_check.js') ? fs.readFileSync('scripts/visual_check.js', 'utf8') : '';
 
-// Rule 1: Zero font-mono classes (Strict Helvetica Rule)
+// Rule 1: One self-hosted Inter system, with no font-mono escape hatch.
 scanFiles(SRC_DIR, (filePath, content) => {
   if (content.includes('font-mono')) {
     errors.push(`[Rule 1 Violation] font-mono found in: ${path.relative(process.cwd(), filePath)}`);
   }
 });
+const typeTokens = fs.readFileSync(path.join(SRC_DIR, 'tokens.css'), 'utf8');
+const tailwindConfig = fs.readFileSync(path.join(process.cwd(), 'tailwind.config.js'), 'utf8');
+for (const asset of [
+  'public/fonts/inter-latin-variable-normal.woff2',
+  'public/fonts/inter-latin-variable-italic.woff2',
+  'public/fonts/INTER-LICENSE.txt'
+]) {
+  if (!fs.existsSync(path.join(process.cwd(), asset))) {
+    errors.push(`[Rule 1 Violation] Missing self-hosted Inter asset: ${asset}`);
+  }
+}
+if (!/--font-instrument:\s*"Inter Variable", Inter, sans-serif/.test(typeTokens)) {
+  errors.push('[Rule 1 Violation] --font-instrument must use the self-hosted Inter Variable face.');
+}
+if (!/sans:\s*\['"Inter Variable"', 'Inter', 'sans-serif'\]/.test(tailwindConfig)) {
+  errors.push('[Rule 1 Violation] Tailwind sans utilities must resolve to Inter Variable.');
+}
 
 // Rule 2: No unmanaged overlapping dropdown popovers in item rows.
 //
@@ -443,12 +461,28 @@ if (fs.existsSync(monthlyPath)) {
   }
 }
 
-// Rule 8: Minimalist Header Gate (No Volume/Speaker icon in header toolbar)
+// Rule 8: One clear header and one complete secondary menu.
 const headerPath = path.join(SRC_DIR, 'components/HeaderToolbar.jsx');
 if (fs.existsSync(headerPath)) {
   const headerContent = fs.readFileSync(headerPath, 'utf8');
   if (headerContent.includes('Volume2') || headerContent.includes('VolumeX')) {
     errors.push('[Rule 8 Violation] HeaderToolbar.jsx still renders Volume/Speaker controls.');
+  }
+  if (headerContent.includes('instrument-popover') || headerContent.includes('All Settings')) {
+    errors.push('[Rule 8 Violation] The header has restored the old menu-inside-a-menu pattern.');
+  }
+  if (!headerContent.includes('aria-haspopup="dialog"') || !headerContent.includes('<span>Menu</span>')) {
+    errors.push('[Rule 8 Violation] The header must expose one Menu control that opens the unified dialog.');
+  }
+  const unifiedMenuPath = path.join(SRC_DIR, 'components/UnifiedMenuModal.jsx');
+  const unifiedMenuContent = fs.readFileSync(unifiedMenuPath, 'utf8');
+  for (const requiredLabel of ['DECISION SPACE', "['work', 'Work']", "['settings', 'Settings']", "['export', 'Export']", "['about', 'About']"]) {
+    if (!unifiedMenuContent.includes(requiredLabel)) {
+      errors.push(`[Rule 8 Violation] Unified menu is missing ${requiredLabel}.`);
+    }
+  }
+  if (unifiedMenuContent.includes('Lifetime Access')) {
+    errors.push('[Rule 8 Violation] The free instrument menu must not advertise a paid access tier.');
   }
 }
 
@@ -1084,7 +1118,7 @@ if (!fs.existsSync(visionPath)) {
 // Summary Report
 if (errors.length === 0) {
   console.log('✅ ALL STRUCTURAL QC CHECKS PASSED (not security or legal certification):');
-  console.log('  - Rule 1: Zero font-mono violations (Universal Helvetica)');
+  console.log('  - Rule 1: Self-hosted Inter everywhere; zero font-mono escapes');
   console.log('  - Rule 2: Zero unmanaged overlapping dropdown popovers in the item rows that ship');
   console.log('  - Rule 3: Neutral palette allow-list, achromatic literals and parsed appearance migration calls');
   console.log('  - Rule 4: Zero-scroll viewport lock & slim notepad proportions (max-w-[412px])');
@@ -1092,7 +1126,7 @@ if (errors.length === 0) {
   console.log('  - Rule 0: Governed surfaces exist AND are reached from main.jsx (a deleted or orphaned file fails rather than skipping its rules); retired surfaces are neither');
   console.log('  - Rule 6: Strict 24px universal grid cadence alignment (paper grid, and p-6 on the one instrument-sheet)');
   console.log('  - Rule 7: Single-column full-width monthly spread (no 2-column desktop squishing)');
-  console.log('  - Rule 8: 2-Tier header masthead (brand at top, utilities below, zero speaker button)');
+  console.log('  - Rule 8: One header menu with four complete sections; no nested settings menu');
   console.log('  - Rule 9: 24px grid cadence in the components that ship it, each asserted reachable');
   console.log('  - Rule 10: Zero 3-dot menus, zero black tie cord, and no woven tag anywhere under src/ (retired with the book chrome)');
   console.log('  - Rule 11: Framework Roster Gate (exactly 3 methods ship; MoSCoW, 1-3-5 and Pareto stay cut)');

@@ -14,11 +14,12 @@ export default {
         }
       },
       fontFamily: {
-        // Enforce Single Universal Helvetica / SF Pro Typography Stack
-        sans: ['"Helvetica Neue"', 'Helvetica', '-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'Inter', 'sans-serif'],
-        mono: ['"Helvetica Neue"', 'Helvetica', '-apple-system', 'sans-serif'],
-        serif: ['"Helvetica Neue"', 'Helvetica', '-apple-system', 'sans-serif'],
-        handwriting: ['"Helvetica Neue"', 'Helvetica', '-apple-system', 'sans-serif']
+        // One interface face. Alternate utility names resolve to the same type
+        // so an old class cannot quietly introduce a second visual voice.
+        sans: ['"Inter Variable"', 'Inter', 'sans-serif'],
+        mono: ['"Inter Variable"', 'Inter', 'sans-serif'],
+        serif: ['"Inter Variable"', 'Inter', 'sans-serif'],
+        handwriting: ['"Inter Variable"', 'Inter', 'sans-serif']
       }
     },
   },

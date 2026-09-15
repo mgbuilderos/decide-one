@@ -631,26 +631,16 @@ export default function App() {
   return (
     <div className={`h-screen max-h-screen overflow-hidden bg-[#e9e9e9] dark:bg-[#0c0c0c] text-neutral-900 dark:text-neutral-100 p-2 sm:p-3 flex flex-col instrument-app font-sans`}>
       
-      {/* Floating Header Toolbar: Minimalist Single Bar with Framework Selector & Settings */}
+      {/* Header: direct view controls and one unified menu. */}
       <HeaderToolbar
         activeView={activeView}
         setActiveView={setActiveView}
         settings={effectiveSettings}
-        updateSettings={updateSettings}
-        onOpenAnalytics={() => setIsAnalyticsOpen(true)}
         onOpenMenu={() => setIsMenuOpen(true)}
+        menuOpen={isMenuOpen}
         activeFramework={activeFramework}
         onSelectFramework={handleSelectFramework}
-        score={dailyMetrics.score}
-        isPatron={license.isPatron}
-        onOpenUpgrade={() => setIsUpgradeModalOpen(true)}
         onOpenSearch={() => setIsSearchOpen(true)}
-        onLockVault={triggerHardLock}
-        onOpenDecisions={() => setIsDecisionLogOpen(true)}
-        decisionsCount={decisions?.length || 0}
-        onOpenClosure={() => setIsClosureModalOpen(true)}
-        onToggleDictation={toggleDictation}
-        isListening={isListening}
       />
 
       {/* Open Notebook 2-Page Spread (Bi-Fold Desktop / Two-Fold Mobile) */}
@@ -825,13 +815,19 @@ export default function App() {
         onSelectFramework={handleSelectFramework}
         onExport={exportJSON}
         onOpenGuide={() => setIsHelpOpen(true)}
-        isPatron={license.isPatron}
-        onOpenUpgrade={() => setIsUpgradeModalOpen(true)}
         onExportMarkdown={() => downloadMarkdownVault(data, settings)}
         onPrintAnnual={() => printAnnualBook(data, settings, currentDate.getFullYear())}
         onPrintWeeklyBriefing={handlePrintWeeklyBriefing}
         onExportEncryptedVault={handleExportEncryptedVault}
         onImportEncryptedVault={handleImportEncryptedVault}
+        onOpenDecisions={() => setIsDecisionLogOpen(true)}
+        onOpenAnalytics={() => setIsAnalyticsOpen(true)}
+        onOpenClosure={() => setIsClosureModalOpen(true)}
+        onToggleDictation={toggleDictation}
+        isListening={isListening}
+        onLockVault={triggerHardLock}
+        onOpenMethods={() => setActiveView('methods')}
+        onOpenLegal={() => setActiveView('legal')}
       /></Suspense>}
 
       {/* Sub-Millisecond Omnisearch & Command Palette Modal (Cmd+K) */}

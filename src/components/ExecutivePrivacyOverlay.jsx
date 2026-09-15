@@ -143,8 +143,8 @@ export default function ExecutivePrivacyOverlay({
             
             {/* Top Monogram Header */}
             <div className="flex flex-col items-center pt-1 sm:pt-2 gap-1.5">
-              <span className="text-[11px] uppercase font-bold tracking-[0.28em] text-neutral-500 dark:text-neutral-500">
-                Confidential Sanctuary
+              <span className="text-[11px] uppercase font-bold tracking-[0.2em] text-neutral-500 dark:text-neutral-500">
+                DECISION SPACE
               </span>
             </div>
 
@@ -161,13 +161,8 @@ export default function ExecutivePrivacyOverlay({
                 {formattedDateStr}
               </div>
 
-              {/* Aspirational Apple Kicker */}
-              <div className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400 mb-3">
-                One priority. Zero noise.
-              </div>
-
               {/* Owner Personalized Monogram & Name */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] mb-3.5">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] mb-3.5 mt-2">
                 <div className="w-5 h-5 rounded-full bg-neutral-500/[0.12] border border-neutral-500/30 flex items-center justify-center shadow-2xs">
                   <span className="text-[11px] font-bold text-neutral-700 dark:text-neutral-300">
                     {ownerName ? ownerName.charAt(0).toUpperCase() : 'D1'}
@@ -182,10 +177,10 @@ export default function ExecutivePrivacyOverlay({
               <button
                 type="button"
                 onClick={handleBiometricUnlock}
-                className="w-full py-3 px-4 rounded-xl bg-neutral-900 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-100 text-white dark:text-neutral-900 font-bold text-xs tracking-wider uppercase flex items-center justify-center gap-2 active:scale-[0.99] transition-all shadow-md cursor-pointer mb-2.5"
+                className="privacy-unlock-control w-full py-3 px-4 rounded-xl bg-neutral-900 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-100 text-white dark:text-neutral-900 font-semibold text-[13px] flex items-center justify-center gap-2 active:scale-[0.99] transition-all shadow-md cursor-pointer mb-2.5"
               >
                 <Fingerprint className="w-4 h-4 text-neutral-400 dark:text-neutral-500" />
-                <span>Unlock with Touch ID / Face ID</span>
+                <span>Unlock with Touch ID or Face ID</span>
               </button>
 
               {/* Inline PIN Passcode Form */}
@@ -193,17 +188,17 @@ export default function ExecutivePrivacyOverlay({
                 <div className="flex gap-2">
                   <input
                     type="password"
-                    placeholder="Press enter to reopen"
+                    placeholder="Press Enter to reopen"
                     value={passphrase}
                     onChange={(e) => {
                       setPassphrase(e.target.value);
                     }}
-                    className="flex-1 h-10 px-4 rounded-xl bg-black/[0.04] dark:bg-white/[0.06] border border-black/10 dark:border-white/15 text-center text-xs tracking-widest font-semibold text-neutral-900 dark:text-white placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none focus:border-neutral-900 dark:focus:border-white transition-colors"
+                    className="privacy-unlock-control flex-1 h-10 px-4 rounded-xl bg-black/[0.04] dark:bg-white/[0.06] border border-black/10 dark:border-white/15 text-center text-[13px] font-medium text-neutral-900 dark:text-white placeholder:text-neutral-500 dark:placeholder:text-neutral-400 focus:outline-none focus:border-neutral-900 dark:focus:border-white transition-colors"
                     autoFocus
                   />
                   <button
                     type="submit"
-                    className="h-10 px-4 rounded-xl border border-black/15 dark:border-white/20 bg-black/[0.05] dark:bg-white/[0.1] hover:bg-black/[0.1] dark:hover:bg-white/[0.15] text-neutral-900 dark:text-white font-bold text-xs tracking-wider uppercase transition-colors cursor-pointer"
+                    className="privacy-unlock-control h-10 px-4 rounded-xl border border-black/15 dark:border-white/20 bg-black/[0.05] dark:bg-white/[0.1] hover:bg-black/[0.1] dark:hover:bg-white/[0.15] text-neutral-900 dark:text-white font-semibold text-[13px] transition-colors cursor-pointer"
                   >
                     Unlock
                   </button>

@@ -158,7 +158,7 @@ Think of a watch's mode button. Same case, same face, same hands — but in stop
 - Sharp at 1× and 2×. Icons from one set (`lucide-react`) at one stroke weight.
 
 **Typography.**
-- The Helvetica Neue stack everywhere. `tailwind.config.js` maps every family to it; `font-mono` fails the build (Rule 1).
+- Inter Variable everywhere, self-hosted from `public/fonts/` so the interface makes no third-party font request. `tailwind.config.js` maps every family to it; `font-mono` fails the build (Rule 1). Founder-approved 15 September 2026; this supersedes the Helvetica direction below and in older working history.
 - **Every figure uses tabular numerals** — times, durations, dates, counts.
 - **Readable at real size, at arm's length** (§13.3.4). Today the instrument uses 9–10px text in many places. The standard for this work: **no text below 11px**, and 11px only for tracked uppercase labels; body and input text at 13px or above. Where a dense calendar grid cannot hold 11px at 320px wide, show less in the cell — never make the type smaller.
 - Negative tracking belongs to display sizes only. Tighter than −0.12em collapses glyphs, and the visual gate fails it.
@@ -437,7 +437,7 @@ PART 2 — THE JOURNAL: THE INSTRUMENT ITSELF
 NON-NEGOTIABLES
 - No vertical or horizontal scroll and no clipped content on any instrument view or the quick start at 1440×900, 1366×768, 1366×700, 1366×640, 1280×600, 390×844, 360×740 and 320×568.
 - Black and white only. No ornament: no gold, foil, leather, stitching, woven labels, decorative paper texture, covers, spines, ribbons, page curls, illustrations, glass, gradients, glows, confetti, streaks, scores or badges.
-- The Helvetica Neue stack only (Rule 1). Tabular numerals for every figure. No text below 11px. Every grey at 3:1 contrast or better.
+- The self-hosted Inter Variable stack only (Rule 1). Tabular numerals for every figure. No text below 11px. Every grey at 3:1 contrast or better.
 - Exactly three methods, and they are MODES, not skins: Top 3 (three lines, no fourth), Ivy Lee (six in strict order, each locked until the previous is done — `isItemLocked`), the Urgent/Important Matrix (classify before writing). Capacity (`src/utils/executionModel.js` computeCapacity) and closure (DayReport.jsx) are identical in every mode today, and the Matrix's default rows can be written without classifying. Make each mode's rule visible and enforced; if capacity or closure should differ per mode, put it in your plan and wait for the founder. Typography, palette, grid and clock never change between modes.
 - The analogue clock is the only clock and is right to the second. Every number shown is correct.
 - Never judge: no red on past days, no failure states; overrun is information. Copy follows VISION §11 and BRAND_BOOK.md. Never use the method names FRAMEWORKS.md §6.3 restricts. Never name real people in the interface.

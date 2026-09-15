@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { 
   X, 
-  Check, 
   Moon, 
   Sun, 
   Download, 
@@ -15,9 +14,13 @@ import {
   Target,
   Flame,
   ListOrdered,
-  Compass,
   Shield,
-  Upload
+  Upload,
+  Scale,
+  BarChart3,
+  Sunset,
+  Mic,
+  Lock
 } from 'lucide-react';
 import { playSound } from '../utils/audio';
 import { hasTelemetryConsent, setTelemetryConsent } from '../utils/telemetry';
@@ -32,14 +35,36 @@ export default function UnifiedMenuModal({
   onSelectFramework,
   onExport,
   onOpenGuide,
-  isPatron = false,
-  onOpenUpgrade,
   onExportMarkdown,
   onPrintAnnual,
   onPrintWeeklyBriefing,
   onExportEncryptedVault,
   onImportEncryptedVault,
+  onOpenDecisions,
+  onOpenAnalytics,
+  onOpenClosure,
+  onToggleDictation,
+  isListening = false,
+  onLockVault,
+  onOpenMethods,
+  onOpenLegal,
 }) {
+  const closeButtonRef = useRef(null);
+  const restoreMenuTriggerRef = useRef(true);
+  const [menuSection, setMenuSection] = React.useState('work');
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    restoreMenuTriggerRef.current = true;
+    setMenuSection('work');
+    closeButtonRef.current?.focus();
+    return () => {
+      if (restoreMenuTriggerRef.current) {
+        requestAnimationFrame(() => document.getElementById('instrument-menu-trigger')?.focus());
+      }
+    };
+  }, [isOpen]);
+
   // Close on Escape key
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -78,6 +103,13 @@ export default function UnifiedMenuModal({
     updateSettings({ isMuted: !settings.isMuted });
   };
 
+  const runAndClose = (action) => {
+    playSound('click', settings.isMuted);
+    restoreMenuTriggerRef.current = false;
+    onClose();
+    action?.();
+  };
+
   if (!isOpen) return null;
 
   const currentFw = FRAMEWORKS.find(f => f.id === activeFramework) || FRAMEWORKS[0];
@@ -89,55 +121,93 @@ export default function UnifiedMenuModal({
       <div className="fixed inset-0" onClick={onClose} />
 
       {/* Main Modal Card */}
-      <div 
-        className="relative z-10 w-full max-w-lg bg-white dark:bg-[#151515] text-neutral-900 dark:text-neutral-100 rounded-3xl shadow-2xl border border-black/[0.10] dark:border-white/[0.12] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150"
+      <div
+        id="unified-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="unified-menu-title"
+        className="relative z-10 w-full max-w-lg max-h-[calc(100dvh-24px)] bg-white dark:bg-[#151515] text-neutral-900 dark:text-neutral-100 rounded-3xl shadow-2xl border border-black/[0.10] dark:border-white/[0.12] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         
         {/* Clean Minimalist Header */}
         <div className="h-12 px-5 sm:px-6 flex items-center justify-between border-b border-black/[0.06] dark:border-white/[0.08] shrink-0 bg-black/[0.01] dark:bg-white/[0.015]">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" id="unified-menu-title">
             <span className="w-2 h-2 rounded-full bg-neutral-900 dark:bg-white" />
             <span className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-900 dark:text-white">
-              Decide One Dashboard
+              Menu
             </span>
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Subtle Patron Pill */}
-            {isPatron ? (
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-2xs whitespace-nowrap">
-                Lifetime Access
-              </span>
-            ) : (
-              <button
-                type="button"
-                onClick={() => {
-                  playSound('click', settings.isMuted);
-                  onClose();
-                  onOpenUpgrade?.();
-                }}
-                className="px-2.5 py-0.5 rounded-full text-[11px] font-bold border border-black/15 dark:border-white/20 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer whitespace-nowrap"
-              >
-                Lifetime Access
-              </button>
-            )}
-
             <button
+              ref={closeButtonRef}
+              type="button"
               onClick={() => {
                 playSound('click', settings.isMuted);
                 onClose();
               }}
-              className="p-1 rounded-full text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer ml-1"
-              title="Close"
+              className="w-9 h-9 inline-flex items-center justify-center rounded-full text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer"
+              aria-label="Close Menu"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
         </div>
 
+        <nav className="grid grid-cols-4 border-b border-black/[0.08] dark:border-white/[0.08] px-3 sm:px-4 shrink-0" aria-label="Menu Sections">
+          {[
+            ['work', 'Work'],
+            ['settings', 'Settings'],
+            ['export', 'Export'],
+            ['about', 'About']
+          ].map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => setMenuSection(id)}
+              aria-current={menuSection === id ? 'page' : undefined}
+              className={`min-h-11 border-b-2 px-1 text-xs font-semibold transition-colors ${
+                menuSection === id
+                  ? 'border-neutral-900 text-neutral-900 dark:border-white dark:text-white'
+                  : 'border-transparent text-neutral-500 hover:text-neutral-900 dark:hover:text-white'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
+
         {/* Modal Scrollable Body */}
         <div className="flex-1 min-h-0 overflow-y-auto pocket-scroll p-4 sm:p-5 space-y-4">
+
+          {/* Every secondary work surface begins here; the header opens no
+              competing popover and the menu never sends people to a second menu. */}
+          {menuSection === 'work' && <>
+          <section className="p-3.5 sm:p-4 rounded-2xl border border-black/[0.08] dark:border-white/[0.08] space-y-2.5" aria-labelledby="work-menu-heading">
+            <div id="work-menu-heading" className="text-[11px] font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
+              Your Work
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                ['DECISION SPACE', Scale, onOpenDecisions],
+                ['Review Progress', BarChart3, onOpenAnalytics],
+                ['Close Day', Sunset, onOpenClosure],
+                [isListening ? 'Stop Dictation' : 'Dictate', Mic, onToggleDictation],
+                ['Privacy Shutter', Lock, onLockVault]
+              ].map(([label, Icon, action]) => (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => runAndClose(action)}
+                  className="min-h-11 px-3 py-2 border border-black/[0.08] dark:border-white/[0.10] text-[13px] font-semibold text-left flex items-center gap-2.5 hover:bg-black/[0.03] dark:hover:bg-white/[0.05] transition-colors"
+                >
+                  <Icon className="w-4 h-4 shrink-0 text-neutral-500" />
+                  <span className={label === 'DECISION SPACE' ? 'text-[11px] leading-[14px] tracking-[0.05em]' : ''}>{label}</span>
+                </button>
+              ))}
+            </div>
+          </section>
 
           {/* Workspace library */}
           {/* Direct method selection */}
@@ -196,7 +266,7 @@ export default function UnifiedMenuModal({
                     <span className="text-[11px] font-bold leading-tight whitespace-nowrap">
                       {m.label}
                     </span>
-                    <span className={`text-[11px] whitespace-nowrap mt-0.5 ${
+                    <span className={`hidden sm:block text-[11px] whitespace-nowrap mt-0.5 ${
                       isSelected ? 'text-white/80 dark:text-neutral-700' : 'text-neutral-400 dark:text-neutral-500'
                     }`}>
                       {m.sub}
@@ -206,23 +276,11 @@ export default function UnifiedMenuModal({
               })}
             </div>
 
-            <div className="pt-1 flex items-center justify-end gap-3 text-[11px]">
-                <button
-                  type="button"
-                  onClick={() => {
-                    playSound('click', settings.isMuted);
-                    onClose();
-                    onOpenGuide?.();
-                  }}
-                  className="font-semibold text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
-                >
-                  <FileText className="w-3 h-3" />
-                  <span>Guide</span>
-                </button>
-            </div>
           </div>
+          </>}
 
           {/* Section 2: Stationery (page grid, closure reminder, theme and audio) */}
+          {menuSection === 'settings' && <>
           <div className="p-3.5 sm:p-4 rounded-2xl border border-black/[0.08] dark:border-white/[0.08] space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
@@ -336,8 +394,10 @@ export default function UnifiedMenuModal({
               </button>
             </div>
           </div>
+          </>}
 
           {/* Section 3: Archival Vault Export & Print (Single Clean Row) */}
+          {menuSection === 'export' && <>
           <div className="p-3.5 sm:p-4 rounded-2xl border border-black/[0.08] dark:border-white/[0.08] space-y-2.5">
             <div className="flex items-center justify-between">
               <div className="text-[11px] font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
@@ -456,6 +516,17 @@ export default function UnifiedMenuModal({
               </div>
             </div>
           </div>
+          </>}
+
+          {menuSection === 'about' &&
+          <nav className="grid grid-cols-2 gap-x-4 gap-y-1 border-t border-black/[0.08] dark:border-white/[0.08] pt-3 text-[13px] font-semibold" aria-label="Learn And Legal">
+            <button type="button" className="min-h-9 text-left" onClick={() => runAndClose(onOpenGuide)}>Quick Guide</button>
+            <a className="min-h-9 inline-flex items-center" href="/guides/">Guides</a>
+            <a className="min-h-9 inline-flex items-center" href="/faq/">Questions</a>
+            <button type="button" className="min-h-9 text-left" onClick={() => runAndClose(onOpenMethods)}>Methods &amp; Attributions</button>
+            <button type="button" className="min-h-9 text-left" onClick={() => runAndClose(onOpenLegal)}>Terms, Privacy &amp; Refunds</button>
+          </nav>
+          }
 
         </div>
 

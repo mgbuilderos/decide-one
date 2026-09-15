@@ -1,6 +1,22 @@
-/* One vocabulary for the instrument and its information pages. */
+/* One vocabulary for the instrument and its information pages.
+   The font is served with the app so the private, local-first promise does not
+   depend on a third-party font request. */
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("/fonts/inter-latin-variable-normal.woff2") format("woff2-variations");
+}
+@font-face {
+  font-family: "Inter Variable";
+  font-style: italic;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("/fonts/inter-latin-variable-italic.woff2") format("woff2-variations");
+}
 :root {
-  --font-instrument: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-instrument: "Inter Variable", Inter, sans-serif;
   --type-label: 11px;
   --type-body: 13px;
   --type-control: 14px;

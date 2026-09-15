@@ -184,8 +184,10 @@ is on-brand at any level. Decoration that signals expense while adding nothing
 is not.
 
 In practice: typographic, monochrome, paper-adjacent. Colour carries meaning
-only — red, yellow, green for progress (Rule 3) — never decoration. Helvetica
-throughout; `font-mono` fails the build (Rule 1).
+only — red, yellow, green for progress (Rule 3) — never decoration. The
+self-hosted Inter Variable face is used throughout; `font-mono` fails the
+build (Rule 1). This replaces Helvetica by founder direction, 15 September
+2026.
 
 **Open conflict, BR8 / `VISION.md` §12.4.** The Three.js scene, studio renders,
 spine curvature and woven twill tag are **Leica register — the opposite of an
