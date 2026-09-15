@@ -97,7 +97,7 @@ export default function WeeklyReviewSpread({
       // Stream items
       const rapid = log.rapidLog || [];
       rapid.forEach(r => {
-        if (r.type === 'task' || r.type === 'completed') {
+        if ((r.type === 'task' || r.type === 'completed') && r.text?.trim()) {
           totalP++;
           if (r.type === 'completed') {
             compP++;
@@ -130,7 +130,7 @@ export default function WeeklyReviewSpread({
       });
     });
 
-    const pRate = totalP > 0 ? Math.round((compP / totalP) * 100) : 0;
+    const pRate = totalP > 0 ? Math.round((compP / totalP) * 100) : null;
     // Honesty, not performance: how close the estimates were, in either direction.
     const accuracy = plannedSec > 0
       ? Math.max(0, Math.round(100 - (Math.abs(actualSec - plannedSec) / plannedSec) * 100))
@@ -228,20 +228,20 @@ export default function WeeklyReviewSpread({
     <div className="weekly-review flex-1 min-h-0 flex flex-col overflow-hidden text-neutral-900 dark:text-neutral-100">
       
       {/* Top Header Strip: Week Navigation & Actions */}
-      <div className="h-10 border-b border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between px-1 mb-2 shrink-0 no-print">
+      <div className="min-h-10 border-b border-black/[0.08] dark:border-white/[0.08] flex flex-wrap items-center justify-between gap-1 px-1 py-1 mb-2 shrink-0 no-print">
         {/* Week Navigator */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           <div className="flex items-center gap-0.5">
             <button
               onClick={() => handleStepWeek(-1)}
-              className="p-1 rounded-full hover:bg-black/[0.05] dark:hover:bg-white/[0.08] text-neutral-600 dark:text-neutral-400 transition-colors cursor-pointer"
+              className="grid h-9 w-9 place-items-center rounded-full hover:bg-black/[0.05] dark:hover:bg-white/[0.08] text-neutral-600 dark:text-neutral-400 transition-colors cursor-pointer"
               title="Previous Week"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => handleStepWeek(1)}
-              className="p-1 rounded-full hover:bg-black/[0.05] dark:hover:bg-white/[0.08] text-neutral-600 dark:text-neutral-400 transition-colors cursor-pointer"
+              className="grid h-9 w-9 place-items-center rounded-full hover:bg-black/[0.05] dark:hover:bg-white/[0.08] text-neutral-600 dark:text-neutral-400 transition-colors cursor-pointer"
               title="Next Week"
             >
               <ChevronRight className="w-3.5 h-3.5" />
@@ -259,7 +259,7 @@ export default function WeeklyReviewSpread({
 
           <button
             onClick={handleJumpToday}
-            className="text-[11px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full border border-black/10 dark:border-white/15 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white cursor-pointer ml-1"
+            className="min-h-9 text-[11px] uppercase font-bold tracking-wider px-2 rounded-full border border-black/10 dark:border-white/15 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white cursor-pointer ml-1"
           >
             Today
           </button>
@@ -269,7 +269,7 @@ export default function WeeklyReviewSpread({
         <div className="flex items-center gap-2">
           <button
             onClick={handleExportPDF}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 text-xs font-semibold hover:opacity-90 transition-opacity cursor-pointer shadow-xs"
+            className="flex min-h-9 min-w-9 items-center justify-center gap-1 px-2.5 rounded-full bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 text-xs font-semibold hover:opacity-90 transition-opacity cursor-pointer shadow-xs"
             title="Export 2-Page Weekly Review PDF"
           >
             <Printer className="w-3 h-3" />
@@ -281,35 +281,35 @@ export default function WeeklyReviewSpread({
               playSound('page', isMuted);
               onBackToDaily?.();
             }}
-            className="text-xs font-medium text-neutral-500 hover:text-neutral-900 dark:hover:text-white underline cursor-pointer"
+            className="min-h-9 px-1 text-xs font-medium text-neutral-500 hover:text-neutral-900 dark:hover:text-white underline cursor-pointer"
           >
-            Back to Today
+            <span className="sm:hidden">Daily</span><span className="hidden sm:inline">Back to Today</span>
           </button>
         </div>
       </div>
 
       {/* Mobile Tab Switcher (< md screens) */}
-      <div className="md:hidden flex items-center justify-between h-[28px] border-b border-black/[0.08] dark:border-white/[0.08] mb-2 shrink-0 no-print">
+      <div className="md:hidden flex items-center justify-between min-h-11 border-b border-black/[0.08] dark:border-white/[0.08] mb-2 shrink-0 no-print">
         <div className="flex items-center gap-1 bg-black/[0.04] dark:bg-white/[0.06] p-0.5 rounded-full w-full text-xs">
           <button
             onClick={() => setMobileTab('alignment')}
-            className={`flex-1 py-0.5 rounded-full text-[11px] font-semibold transition-all cursor-pointer ${
+            className={`flex-1 min-h-9 rounded-full text-[11px] font-semibold transition-all cursor-pointer ${
               mobileTab === 'alignment'
                 ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-xs'
                 : 'text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200'
             }`}
           >
-            Alignment & Compounding
+            This Week
           </button>
           <button
             onClick={() => setMobileTab('retrospective')}
-            className={`flex-1 py-0.5 rounded-full text-[11px] font-semibold transition-all cursor-pointer ${
+            className={`flex-1 min-h-9 rounded-full text-[11px] font-semibold transition-all cursor-pointer ${
               mobileTab === 'retrospective'
                 ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-xs'
                 : 'text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200'
             }`}
           >
-            Weekly Review
+            Review
           </button>
         </div>
       </div>
@@ -332,7 +332,7 @@ export default function WeeklyReviewSpread({
                 {completedPriorities} / {totalPriorities}
               </div>
               <div className="text-[11px] text-neutral-500">
-                {priorityRate}% Completed
+                {priorityRate === null ? 'No priorities yet' : `${priorityRate}% Completed`}
               </div>
             </div>
 
@@ -413,7 +413,9 @@ export default function WeeklyReviewSpread({
 
             {pendingTasks.length === 0 ? (
               <div className="p-3 text-center rounded-xl bg-black/[0.01] dark:bg-white/[0.02] border border-dashed border-black/10 dark:border-white/10 text-neutral-500 text-xs italic">
-                Zero carryover tasks. Every strategic commitment of the week was completed.
+                {totalPriorities === 0
+                  ? 'No priorities were entered this week. There is nothing to carry forward.'
+                  : 'Nothing to carry forward from this week.'}
               </div>
             ) : (
               <div className="space-y-1.5 overflow-y-auto pocket-scroll pr-1 flex-1 min-h-0">
@@ -442,7 +444,7 @@ export default function WeeklyReviewSpread({
                         <button
                           type="button"
                           onClick={() => handleTriageAction(task, 'migrate')}
-                          className={`px-2 py-0.5 rounded-full text-[11px] font-semibold flex items-center gap-1 transition-all cursor-pointer ${
+                          className={`min-h-8 px-2 rounded-full text-[11px] font-semibold flex items-center gap-1 transition-all cursor-pointer ${
                             currentAction === 'migrate'
                               ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900'
                               : 'border border-black/10 dark:border-white/15 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'
@@ -456,7 +458,7 @@ export default function WeeklyReviewSpread({
                         <button
                           type="button"
                           onClick={() => handleTriageAction(task, 'delegate')}
-                          className={`px-2 py-0.5 rounded-full text-[11px] font-semibold flex items-center gap-1 transition-all cursor-pointer ${
+                          className={`min-h-8 px-2 rounded-full text-[11px] font-semibold flex items-center gap-1 transition-all cursor-pointer ${
                             currentAction === 'delegate'
                               ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900'
                               : 'border border-black/10 dark:border-white/15 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'
@@ -470,7 +472,7 @@ export default function WeeklyReviewSpread({
                         <button
                           type="button"
                           onClick={() => handleTriageAction(task, 'drop')}
-                          className={`px-2 py-0.5 rounded-full text-[11px] font-semibold flex items-center gap-1 transition-all cursor-pointer ${
+                          className={`min-h-8 px-2 rounded-full text-[11px] font-semibold flex items-center gap-1 transition-all cursor-pointer ${
                             currentAction === 'drop'
                               ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900'
                               : 'border border-black/10 dark:border-white/15 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'

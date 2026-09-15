@@ -84,8 +84,15 @@ export default function App() {
   useEffect(() => {
     revalidateStoredLicense().then(setLicense);
   }, []);
-  // P11: one side at a time. Motion never owns the selected date.
+  // FINAL_DESIGN: two desktop pages, one phone page. Motion never owns the date.
   const [mobileFold, setMobileFold] = useState('side1');
+  const [bookSpread, setBookSpread] = useState(() => window.matchMedia('(min-width: 768px)').matches);
+  useEffect(() => {
+    const media = window.matchMedia('(min-width: 768px)');
+    const update = () => setBookSpread(media.matches);
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
   const [closureOfferedFor, setClosureOfferedFor] = useState(null);
 
   // 24px grid cadence height snapper for the instrument sheet
@@ -250,7 +257,7 @@ export default function App() {
    * when there is something to close, so the ritual never nags an empty page.
    */
   const handleMobileFoldSwitch = (fold) => {
-    if (mobileFold === fold) return;
+    if (mobileFold === fold && !bookSpread) return;
     playSound('page', settings.isMuted);
     setMobileFold(fold);
 
@@ -647,7 +654,7 @@ export default function App() {
       />
 
       {/* Open Notebook 2-Page Spread (Bi-Fold Desktop / Two-Fold Mobile) */}
-        <main ref={mainStageRef} className={`w-full max-w-[412px] md:max-w-[960px] mx-auto flex-1 min-h-0 flex flex-col justify-center print-page ${activeView === 'daily' ? 'pb-10 sm:pb-0' : 'pb-0'} relative instrument-stage`}>
+        <main ref={mainStageRef} className={`w-full max-w-[412px] md:max-w-[960px] mx-auto flex-1 min-h-0 flex flex-col justify-center print-page ${activeView === 'daily' ? 'pb-10 md:pb-0' : 'pb-0'} relative instrument-stage`}>
             
             {/* Floating day controls only belong to the daily instrument. */}
             {activeView === 'daily' && <button
@@ -671,23 +678,24 @@ export default function App() {
               <ChevronRight className="w-3.5 h-3.5 stroke-[2.5]" />
             </button>}
 
-            {/* The instrument sheet: flat, one hairline, no shadow (Rules 6 and 19) */}
+            {/* Founder-approved paper depth, with one governed sheet anchor. */}
             <div 
               style={snappedNotebookHeight ? { height: `${snappedNotebookHeight}px`, maxHeight: `${snappedNotebookHeight}px` } : undefined}
-              className={`relative ${paperClass} rounded-[20px] p-6 [@media(max-height:820px)_and_(min-height:761px)]:p-4 [@media(max-height:760px)]:p-3 instrument-sheet w-full flex-shrink-0 flex flex-col justify-between`}
+              className={`relative ${paperClass} rounded-[20px] p-6 [@media(max-height:820px)_and_(min-height:761px)]:p-4 [@media(max-height:760px)]:p-3 instrument-sheet ${activeView === 'daily' ? 'book-sheet' : ''} w-full flex-shrink-0 flex flex-col justify-between`}
             >
             <div className="relative z-10 flex-1 min-h-0 flex flex-col overflow-hidden">
               {activeView === 'daily' ? (
-                <div key={`${dateKey}-${mobileFold}`} className="flat-day-step flex-1 min-h-0 flex flex-col">
+                <div key={`${dateKey}-${mobileFold}`} className="book-day-step flex-1 min-h-0 flex flex-col">
 
-                  {/* One sheet, one side at a time (P11). No spread at any width. */}
-                  <div className="flex-1 min-h-0 w-full flex flex-col gap-0 overflow-hidden">
+                  {/* Approved open spread on desktop; the same pages alternate on phones. */}
+                  <div className="book-spread flex-1 min-h-0 w-full flex flex-col gap-0">
 
                     {/* Left Page: Productivity Framework & Execution */}
                     <div className={`flex-1 min-w-0 min-h-0 flex flex-col border-white/[0.08] instrument-recto overflow-hidden ${
-                      mobileFold === 'side1' ? 'flex' : 'hidden'
+                      bookSpread || mobileFold === 'side1' ? 'flex' : 'hidden'
                     }`}>
                       <LeftPage
+                        bookSpread={bookSpread}
                         date={currentDate}
                         dailyLog={dailyLog}
                         activeFramework={activeFramework}
@@ -713,9 +721,12 @@ export default function App() {
 
                     {/* Right Page: the execution layer (R2) */}
                     <div className={`flex-1 min-w-0 min-h-0 flex flex-col instrument-verso overflow-hidden ${
-                      mobileFold === 'side2' ? 'flex' : 'hidden'
+                      bookSpread || mobileFold === 'side2' ? 'flex' : 'hidden'
                     }`}>
                       <RightPage
+                        hasEntry={hasEntry}
+                        bookSpread={bookSpread}
+                        onTurnOver={() => handleMobileFoldSwitch('side2')}
                         date={currentDate}
                         dailyLog={dailyLog}
                         onCloseDay={() => setIsClosureModalOpen(true)}
@@ -782,7 +793,7 @@ export default function App() {
 
       {/* Mobile Ergonomic Bottom Thumb-Zone Navigation Bar */}
       {activeView === 'daily' && (
-        <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#151515]/95  border-t border-black/[0.08] dark:border-white/[0.1] px-4 py-2 flex items-center justify-around no-print" aria-label="Daily Page Sides">
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#151515]/95  border-t border-black/[0.08] dark:border-white/[0.1] px-4 py-2 flex items-center justify-around no-print" aria-label="Daily Page Sides">
           {[
             { id: 'side1', label: 'Decide' },
             { id: 'side2', label: 'Turn Over' }

@@ -107,13 +107,14 @@ export default function ExecutiveDecisionLogModal({
 
       {/* Modal Stage */}
       <div 
-        className="relative z-10 w-full max-w-2xl bg-white dark:bg-[#151515] text-neutral-900 dark:text-neutral-100 rounded-3xl shadow-2xl border border-black/[0.12] dark:border-white/[0.12] flex flex-col max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-150"
+        role="dialog" aria-modal="true" aria-label="Decision Log"
+        className="decision-dialog relative z-10 w-full max-w-2xl bg-white dark:bg-[#151515] text-neutral-900 dark:text-neutral-100 rounded-3xl shadow-2xl border border-black/[0.12] dark:border-white/[0.12] flex flex-col max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-150"
         onClick={e => e.stopPropagation()}
       >
         {/* Header Bar */}
-        <div className="h-14 px-5 sm:px-6 flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] shrink-0 bg-black/[0.015] dark:bg-white/[0.02]">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 flex items-center justify-center shadow-xs">
+        <div className="decision-dialog-header min-h-14 px-4 py-3 sm:px-6 flex flex-wrap items-center justify-between gap-3 border-b border-black/[0.08] dark:border-white/[0.08] shrink-0 bg-black/[0.015] dark:bg-white/[0.02]">
+          <div className="flex items-center gap-2.5 min-w-0 flex-1 basis-full sm:basis-auto">
+            <div className="w-8 h-8 shrink-0 rounded-xl bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 flex items-center justify-center shadow-xs">
               <Scale className="w-4 h-4" />
             </div>
             <div>
@@ -129,7 +130,7 @@ export default function ExecutiveDecisionLogModal({
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0 ml-auto">
             <button
               type="button"
               onClick={() => {
@@ -343,8 +344,8 @@ export default function ExecutiveDecisionLogModal({
             /* Tab: Decision List */
             <div className="space-y-4">
               {/* Filter Pills */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5 bg-black/[0.04] dark:bg-white/[0.06] p-1 rounded-xl">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex flex-wrap items-center gap-1.5 bg-black/[0.04] dark:bg-white/[0.06] p-1 rounded-xl">
                   {[
                     { id: 'all', label: 'All Decisions' },
                     { id: 'pending', label: 'Active & Pending' },
@@ -524,7 +525,7 @@ export default function ExecutiveDecisionLogModal({
         </div>
 
         {/* Modal Bottom Bar */}
-        <div className="h-10 px-6 bg-black/[0.015] dark:bg-white/[0.02] border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between text-[11px] text-neutral-500 shrink-0">
+        <div className="min-h-10 px-4 py-2 gap-2 flex-wrap bg-black/[0.015] dark:bg-white/[0.02] border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between text-[11px] text-neutral-500 shrink-0">
           <span>Keyboard Shortcut: Cmd+D</span>
           <span>100% On-Device Cryptographic Ledger</span>
         </div>

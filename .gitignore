@@ -17,6 +17,9 @@ server/data/
 # Browser profiles from local QC runs (may contain session data)
 .chrome-temp/
 .chrome_headless/
+.playwright-cli/
+output/
+screenshot_v3_overview.png
 
 # Session scratch — conversation capsules and receipts
 .claude/context-receipt/

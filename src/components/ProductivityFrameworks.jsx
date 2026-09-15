@@ -270,8 +270,9 @@ export default function ProductivityFrameworks({
                 <button
                   type="button"
                   onClick={() => handleToggleHardTask(idx)}
+                  disabled={!isInteractive || !task.text?.trim()}
                   aria-label={`${task.completed ? 'Mark incomplete' : 'Complete'} priority ${idx + 1}`}
-                  className={`w-6 h-6 rounded-full border transition-all flex items-center justify-center shrink-0 cursor-pointer ${
+                  className={`priority-bullet w-6 h-6 rounded-full border transition-all flex items-center justify-center shrink-0 cursor-pointer ${
                     task.completed
                       ? 'progress-bg-green progress-border-green text-white'
                       : isMissed
@@ -408,7 +409,7 @@ export default function ProductivityFrameworks({
                           type="button"
                           onClick={() => handleToggleEisenhower(quad.key, idx)}
                           aria-label={`${isDone ? 'Mark incomplete' : 'Complete'} ${quad.title.toLowerCase()} item ${idx + 1}`}
-                          className={`w-3.5 h-3.5 rounded-full border relative before:absolute before:-inset-[5px] before:content-[''] transition-all flex items-center justify-center shrink-0 cursor-pointer ${
+                          className={`priority-bullet w-3.5 h-3.5 rounded-full border transition-all flex items-center justify-center shrink-0 cursor-pointer ${
                             isDone
                               ? 'progress-bg-green progress-border-green text-white'
                               : 'border-neutral-400 dark:border-neutral-500 hover:border-neutral-700 bg-transparent'
@@ -473,10 +474,10 @@ export default function ProductivityFrameworks({
 
                 <button
                   type="button"
-                  disabled={isLocked}
+                  disabled={isLocked || !isInteractive}
                   onClick={() => handleToggleIvy(idx)}
                   aria-label={isLocked ? `Priority ${idx + 1} is locked until priority ${idx} is complete` : `${isDone ? 'Mark incomplete' : 'Complete'} priority ${idx + 1}`}
-                  className={`w-6 h-6 rounded-full border transition-all flex items-center justify-center shrink-0 cursor-pointer ${
+                  className={`priority-bullet w-6 h-6 rounded-full border transition-all flex items-center justify-center shrink-0 cursor-pointer ${
                     isDone
                       ? 'progress-bg-green progress-border-green text-white'
                       : 'border-neutral-400 dark:border-neutral-500 hover:border-neutral-700 bg-transparent'
@@ -487,7 +488,7 @@ export default function ProductivityFrameworks({
 
                 <input
                   type="text"
-                  disabled={isLocked}
+                  disabled={isLocked || !isInteractive}
                   value={task.text || ''}
                   onChange={(e) => handleTextIvy(idx, e.target.value)}
                   placeholder={isLocked ? `After ${idx}` : `Priority ${idx + 1}`}

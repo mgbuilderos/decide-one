@@ -223,6 +223,8 @@ It does three things the previous line did not. It **begins by trusting the read
 
 **Instrument labels, 15 September 2026.** “First”, “Next”, “Then” may label the three existing lines; short placeholders prevent narrow-screen clipping. “In order. One at a time.” makes the Ivy Lee rule visible. Matrix axes use “Urgent / Important”, “Not urgent / Important”, “Urgent / Not important”, “Not urgent / Not important”. “Classify first” labels its existing input gate. “Day closed” states a persisted closure. “Write first. Set minutes beside the line.” locates the existing time fields. These replace clipped, ambiguous or stale text without adding a field. Empty owner details are omitted rather than substituting a real person. The idle analogue face shows local time, labelled “Local time”; once a duration is set it shows that duration. Existing duration figures remain timing information.
 
+**Review and entry labels, 15 September 2026.** “This Week” and “Review” name the two existing phone pages without management jargon. When no priorities were entered, the weekly count has no completion percentage and the carry-forward message says so; zero entered is not zero completed. “Open Decide One” may appear at the top of an educational page to bring the reader directly to the free instrument. These labels make the current record and entry point clearer without adding a product promise.
+
 ### 11.2 What the product does — the four movements
 
 1. **It makes the competing work visible.** A bounded page turns a crowded mental list into a choice the person can see.

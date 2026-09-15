@@ -1,0 +1,82 @@
+/* FINAL_DESIGN.md — approved book geometry. Scoped to the working surface. */
+.instrument-app .instrument-sheet {
+  border-radius: var(--paper-radius) !important;
+  box-shadow: var(--paper-depth) !important;
+  border: 1px solid var(--rule);
+  background-color: var(--paper) !important;
+}
+.instrument-app .instrument-stage { padding-top: 12px; margin-bottom: 8px; }
+.instrument-app .instrument-navigation nav button { border-radius: 6px; }
+.instrument-app .instrument-navigation nav button[aria-current] {
+  background: var(--paper) !important; color: var(--ink) !important;
+  outline: 1px solid var(--rule); outline-offset: -1px;
+}
+.instrument-app .instrument-method-icons button { border-radius: 6px; }
+.instrument-app .priority-bullet {
+  width: 16px; height: 16px; min-width: 16px; min-height: 16px;
+  border-radius: 50%; position: relative; margin-inline: 6px;
+}
+.instrument-app .priority-bullet::before { content: ''; position: absolute; inset: -10px; }
+.instrument-app .priority-bullet svg { width: 10px; height: 10px; }
+.instrument-app .priority-bullet:focus-visible { outline-offset: 5px; }
+.instrument-app .priority-row, .instrument-app .ivy-row { gap: 6px !important; }
+.instrument-app .inline-time-control label { border-radius: 4px; }
+.instrument-app .inline-time-control button { border-radius: 50%; }
+.instrument-app .page-turn-edge-btn { border-radius: 18px; width: 28px; min-width: 28px; }
+.book-day-step { animation: book-page-step var(--motion-step) var(--ease-out); transform-origin: left center; }
+@keyframes book-page-step {
+  from { transform: perspective(1600px) rotateY(-12deg); opacity: .65; }
+  to { transform: perspective(1600px) rotateY(0deg); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .book-day-step { animation: none; transform: none; } }
+@media (min-width: 768px) {
+  .instrument-app .book-spread { display: grid !important; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; }
+  .book-sheet::after {
+    content: ''; position: absolute; top: 12px; bottom: 12px; left: 50%; width: 1px;
+    background: var(--rule); box-shadow: -3px 0 6px rgb(0 0 0 / .04), 3px 0 6px rgb(0 0 0 / .04);
+    pointer-events: none;
+  }
+  .book-sheet .instrument-recto, .book-sheet .instrument-verso { display: flex !important; }
+  .book-sheet .instrument-verso .execution-empty { min-height: 144px !important; }
+  .book-sheet .instrument-verso .execution-clock { min-height: 132px !important; }
+  .book-sheet .instrument-verso > div { min-height: 0; }
+  .book-sheet .instrument-verso > div > header { flex-shrink: 0; }
+  .book-sheet .instrument-verso .execution-panel { flex-shrink: 0; }
+  .book-sheet .instrument-recto .method-section { flex-shrink: 0; }
+  .book-sheet .matrix-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (min-width: 768px) and (max-height: 760px) {
+  .instrument-app .book-spread { gap: 24px; }
+  .book-sheet .instrument-verso .execution-empty { min-height: 72px !important; }
+  .book-sheet .instrument-verso .execution-clock { min-height: 72px !important; }
+}
+@media (max-width: 767px) {
+  .instrument-app .instrument-stage { padding-top: 6px; }
+  .instrument-app .instrument-sheet { border-radius: 12px !important; }
+}
+
+.instrument-app .instrument-sheet.paper-dots { background-image: radial-gradient(var(--rule) .6px, transparent .6px) !important; background-size: 24px 24px; }
+.instrument-app .instrument-sheet.paper-square { background-image: linear-gradient(var(--rule) 1px, transparent 1px), linear-gradient(90deg, var(--rule) 1px, transparent 1px) !important; background-size: 24px 24px; }
+.instrument-app .instrument-sheet.paper-plain { background-image: none !important; }
+
+.book-sheet footer { height: 24px !important; }
+
+/* Existing tools retain their order and stay reachable on short screens. */
+.instrument-app .instrument-popover { border-radius: 12px; }
+.instrument-app .instrument-popover > p { color: var(--ink-muted); }
+@media (max-height: 760px) {
+  .instrument-app .instrument-tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; max-height: calc(100dvh - 120px); }
+  .instrument-app .instrument-tools > p, .instrument-app .instrument-tools .instrument-paper-options { grid-column: 1 / -1; }
+  .instrument-app .instrument-tools > p { padding: 4px; }
+  .instrument-app .instrument-tools > button { padding: 6px; gap: 6px; font-size: 12px; line-height: 16px; }
+  .instrument-app .instrument-tools > a { padding: 6px; min-height: 36px; align-items: center; }
+  .instrument-app .instrument-tools .instrument-paper-options { padding: 4px; margin: 0; }
+  .instrument-app .instrument-tools > button svg { flex-shrink: 0; }
+}
+
+/* Rows must not extend outside the page's scroll/focus boundary. */
+.instrument-app .priority-row, .instrument-app .ivy-row, .instrument-app .matrix-row { margin-inline: 0; }
+.instrument-app .priority-row > span:first-child { flex-shrink: 0; }
+.instrument-app .inline-time-control input { width: 3ch; font-size: 13px; text-overflow: clip; appearance: textfield; -moz-appearance: textfield; }
+.instrument-app .inline-time-control input::-webkit-inner-spin-button,
+.instrument-app .inline-time-control input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }

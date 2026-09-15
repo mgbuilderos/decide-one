@@ -35,8 +35,8 @@ const ORIGIN = 'https://decideone.app';
 // and is not worth a rendering pipeline yet; what is NOT acceptable is
 // declaring twitter:card=summary_large_image with no image at all, which is
 // how every share of these pages rendered as a bare link until now.
-const SOCIAL_IMAGE = { url: ORIGIN + '/renders/decideone-social.jpg', w: 1536, h: 1024,
-  alt: 'Decide One priority instrument with crisp white pages and a black cover' };
+const SOCIAL_IMAGE = { url: ORIGIN + '/renders/decideone-social.png', w: 1440, h: 900,
+  alt: 'Decide One open priority instrument with a task and its planned time on white pages' };
 const ROOT = process.cwd();
 const OUT = path.join(ROOT, 'dist');
 
@@ -199,8 +199,10 @@ body{margin:0;background:var(--canvas);color:var(--ink);
   -webkit-font-smoothing:antialiased}
 main{max-width:680px;margin:0 auto;padding:calc(var(--line)*2) var(--line) calc(var(--line)*4);
   background:var(--paper);min-height:100vh}
-nav{font-size:13px;line-height:var(--line);color:var(--muted);margin-bottom:var(--line)}
+nav{font-size:13px;line-height:var(--line);color:var(--muted);margin-bottom:var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
 nav a{color:var(--muted)}
+nav .content-open{display:inline-flex;align-items:center;justify-content:center;min-height:44px;white-space:nowrap;color:var(--ink);font-weight:700;text-decoration:none;border:1px solid var(--rule);border-radius:6px;padding:0 12px}
+nav .content-open:hover,nav .content-open:focus-visible{border-color:var(--ink);outline-offset:2px}
 h1{font-size:32px;line-height:calc(var(--line)*1.5);margin:0 0 var(--line);letter-spacing:-.02em;font-weight:700}
 h2{font-size:21px;line-height:calc(var(--line)*1.25);margin:calc(var(--line)*2) 0 var(--line);letter-spacing:-.01em;font-weight:700}
 h3{font-size:17px;line-height:var(--line);margin:calc(var(--line)*1.5) 0 0;font-weight:700}
@@ -358,7 +360,7 @@ function render(p) {
 </head>
 <body>
 <main>
-<nav><a href="/">Decide One</a>${p.section.flat ? '' : ` › <a href="/${p.section.base}/">${esc(p.section.label)}</a>`}</nav>
+<nav><span><a href="/">Decide One</a>${p.section.flat ? '' : ` › <a href="/${p.section.base}/">${esc(p.section.label)}</a>`}</span><a class="content-open" href="/?view=daily">Open Decide One</a></nav>
 <h1>${esc(p.meta.title)}</h1>
 <p class="meta">Updated ${esc(p.meta.updated || p.meta.published)}${p.meta.reading ? ' · ' + esc(p.meta.reading) : ''}</p>
 ${withDiagrams(marked.parse(p.body))}
@@ -456,7 +458,7 @@ for (const section of SECTIONS) {
 <style>${STYLE}</style>
 </head>
 <body><main>
-<nav><a href="/">Decide One</a> › ${esc(section.label)}</nav>
+<nav><span><a href="/">Decide One</a> › ${esc(section.label)}</span><a class="content-open" href="/?view=daily">Open Decide One</a></nav>
 <h1>${esc(section.label)}</h1>
 <p>${esc(intro)}</p>
 <ul>${own.map(p => `<li><a href="${p.url}">${esc(p.meta.title)}</a> — ${esc(p.meta.description)}</li>`).join('')}</ul>

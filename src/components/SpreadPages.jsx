@@ -18,6 +18,7 @@ import { playSound } from '../utils/audio';
  */
 export function LeftPage({
   date,
+  bookSpread = false,
   dailyLog,
   activeFramework,
   onSelectFramework,
@@ -46,10 +47,8 @@ export function LeftPage({
       <header className="w-full h-[48px] flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] select-none shrink-0">
         <DateDisplay currentDate={date} />
 
-        {/* Day navigation lives on the recto at every width. It was mobile-only
-            when the two pages sat side by side and the verso carried it; the
-            leaflet shows one side at a time, which stranded it out of reach. */}
-        <div>
+        {/* On phones each visible page carries date navigation. Desktop uses the right header. */}
+        <div className={bookSpread ? 'hidden' : ''}>
           <DateNavControls
             currentDate={date}
             setCurrentDate={setCurrentDate}
@@ -60,8 +59,7 @@ export function LeftPage({
         </div>
       </header>
 
-      {/* Main Page Body: the method, then the time it will take. One column,
-          one side at a time, fully contained in the viewport (P11). */}
+      {/* Selection stays on the left; the clock moves here on phones. */}
       <div className="flex-1 min-h-0 flex flex-col overflow-y-auto pocket-scroll">
         <ProductivityFrameworks
           activeFramework={activeFramework}
@@ -81,14 +79,14 @@ export function LeftPage({
         {/* Timeboxes — P11: durations attach per line, on the recto, beside the
             decision. Three tasks at three hours is nine hours, and the day has
             not got nine hours; that is found out here, not on the verso. */}
-        <div className="shrink-0 flex flex-col border-t border-black/[0.08] dark:border-white/[0.08] mt-3 pt-1 [@media(max-height:760px)]:mt-1 [@media(max-height:760px)]:pt-0">
+        {!bookSpread && <div className="shrink-0 flex flex-col border-t border-black/[0.08] dark:border-white/[0.08] mt-3 pt-1 [@media(max-height:760px)]:mt-1 [@media(max-height:760px)]:pt-0">
           <ExecutionLayer
             dailyLog={dailyLog}
             onUpdateExecution={onUpdateExecution}
             isMuted={settings?.isMuted}
             isInteractive={isInteractive}
           />
-        </div>
+        </div>}
 
         {/* The day's other lines. Everything that is not one of today's three
             still has to be written down somewhere it can be seen — B-23 has
@@ -125,8 +123,11 @@ export function LeftPage({
  */
 export function RightPage({
   date,
+  hasEntry,
+  bookSpread = false,
   dailyLog,
   onCloseDay,
+  onTurnOver,
   onUpdateExecution,
   paperLabel,
   settings,
@@ -143,17 +144,20 @@ export function RightPage({
       <header className="w-full min-w-0 h-[48px] flex items-center justify-end border-b border-black/[0.08] dark:border-white/[0.08] select-none shrink-0 overflow-hidden">
         <DateNavControls
           currentDate={date}
+          hasEntry={hasEntry}
           setCurrentDate={setCurrentDate}
           onStepDay={onStepDay}
           isMuted={settings?.isMuted}
         />
       </header>
 
-      {/* Main Page Body: the execution layer for the left page's items */}
+      {bookSpread && <ExecutionLayer dailyLog={dailyLog} onUpdateExecution={onUpdateExecution} isMuted={settings?.isMuted} isInteractive={isInteractive} />}
+      {/* The same report follows the single execution clock on desktop. */}
       <DayReport
+        reportOnly={bookSpread}
         dailyLog={dailyLog}
         dateLabel={date?.toLocaleDateString(undefined, { weekday: 'long' }) || ''}
-        onCloseDay={onCloseDay}
+        onCloseDay={bookSpread ? onTurnOver : onCloseDay}
         onPause={(id) => onUpdateExecution?.(id, pauseSession(getSession(dailyLog, id)))}
         onComplete={(id) => onUpdateExecution?.(id, completeSession(getSession(dailyLog, id)))}
         onExtend={(id, sec) => onUpdateExecution?.(id, extendSession(getSession(dailyLog, id), sec))}

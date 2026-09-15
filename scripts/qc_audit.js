@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import fs from 'fs';
 import path from 'path';
 import { pathToFileURL } from 'url';
@@ -563,12 +564,12 @@ if (!/clipped_x/.test(visualGate)) {
     if (stepDate(new Date(start), delta).getDate() !== expected) errors.push('[Rule 13 Violation] day step fails a calendar boundary');
   }
   scanFiles(SRC_DIR, (file, content) => {
-    if (/PageTurnLeaf|flipState|pendingTurnRef|flippingbook-stage|mobile-fold-turn|preserve-3d|rotateY|kindle-turn|bifold/.test(stripComments(content))) errors.push('[Rule 13 Violation] retired 3D day chrome in ' + file);
+    if (/PageTurnLeaf|flipState|pendingTurnRef|flippingbook-stage|mobile-fold-turn|preserve-3d|kindle-turn|bifold/.test(stripComments(content))) errors.push('[Rule 13 Violation] retired 3D day chrome in ' + file);
   });
   const app = stripComments(fs.readFileSync(path.join(SRC_DIR, 'App.jsx'), 'utf8'));
   if (!app.includes('setCurrentDate(current => stepDate(current, delta, directTargetDate))')) errors.push('[Rule 13 Violation] date must update immediately from current state');
-  const css = stripComments(fs.readFileSync(path.join(SRC_DIR, 'index.css'), 'utf8'));
-  if (!/@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{\s*\.flat-day-step\s*\{\s*animation:\s*none/.test(css)) errors.push('[Rule 13 Violation] flat step needs a still reduced-motion equivalent');
+  const css = stripComments(fs.readFileSync(path.join(SRC_DIR, 'book.css'), 'utf8'));
+  if (!/@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{\s*\.book-day-step\s*\{\s*animation:\s*none/.test(css)) errors.push('[Rule 13 Violation] book step needs a still reduced-motion equivalent');
   const yes = { turningToVerso: true, hasSomethingToClose: true, alreadyClosedToday: false, somethingRunning: false, dateKey: '2026-09-15', todayKey: '2026-09-15' };
   if (!shouldOfferClosure(yes)) errors.push('[Rule 14 Violation] eligible turn must offer closure');
   for (const patch of [{turningToVerso:false},{hasSomethingToClose:false},{alreadyClosedToday:true},{somethingRunning:true},{dateKey:'2026-09-14'}]) {
@@ -806,93 +807,17 @@ for (const [rel, names] of [['utils/licenseManager.js',['verifyLicenseKey','acti
   for (const name of names) if (!exports.includes(name)) errors.push(`[Rule 18 Violation] ${rel} must export ${name}`);
 }
 
-// Rule 19: The sheet is flat — no chassis.
-//
-// Until 15 September 2026 this rule required index.css to define
-// .embossed-notebook: eleven stacked box-shadows drawing trimmed paper, a dark
-// backing board and desk occlusion under the sheet, and it banned only two
-// ornaments by name. BR8 was resolved toward the instrument register on 14
-// September (DECISIONS.md BR8, UI_BRIEF §7.3), so the rule is inverted, and it
-// grades the element rather than a list of names:
-//
-//  1. The sheet exists. App.jsx carries instrument-sheet on a className (the
-//     anchor Rule 6 shares), and a stylesheet src/main.jsx reaches gives it a
-//     border. A rule with no sheet to look at would pass by abstaining.
-//  2. Nothing gives the sheet depth. Every CSS rule under src/ whose selector
-//     names .instrument-sheet, pseudo-elements included (the old paper stack was
-//     drawn that way), may not set a box-shadow or text-shadow other than none,
-//     a drop-shadow, a gradient sheen, a 3D transform, perspective, preserve-3d
-//     or backface-visibility. Every className carrying the sheet, in any
-//     component, may not add a Tailwind shadow, a 3D utility or transition-all.
-//  3. The retired chassis classes are gone from src/, in markup or CSS.
-//
-// Comments are stripped before 2 and 3, so a note about the chassis is not the
-// chassis. As in Rule 10, the message says whether src/main.jsx reaches the
-// file, which is the difference between shipping it and being one import away.
-{
-  const SHEET_DEPTH_CSS = [
-    [/(?<![\w-])box-shadow\s*:(?!\s*none\s*(?:!important\s*)?(?:;|$))/, 'a box-shadow'],
-    [/(?<![\w-])text-shadow\s*:(?!\s*none\s*(?:!important\s*)?(?:;|$))/, 'a text-shadow'],
-    [/drop-shadow\s*\(/, 'a drop-shadow'],
-    [/gradient\s*\(/, 'a gradient sheen'],
-    [/(?:rotate[XY]|rotate3d|translateZ|translate3d|scaleZ|scale3d|matrix3d|perspective)\s*\(/, 'a 3D transform'],
-    [/(?<![\w-])perspective\s*:/, 'perspective'],
-    [/preserve-3d/, 'preserve-3d'],
-    [/backface-visibility\s*:/, 'backface-visibility']
-  ];
-  const SHEET_DEPTH_UTILITY = /(?<![\w-])(?:(?:drop-)?shadow(?:-[^\s`'"}]+)?|\[(?:box|text)-shadow:[^\]]*\]|transition-all|perspective-[^\s`'"}]+|transform-3d|preserve-3d|backface-[^\s`'"}]+|rotate-[xy]-[^\s`'"}]+|translate-z-[^\s`'"}]+)(?![\w-])/g;
-  const RETIRED_CHASSIS = /(?<![\w-])(?:embossed-notebook|paper-block-edge|real-3d-book-chassis|notebook-spine-crease|monogram-(?:gold-foil|blind-deboss)|soft-frost-vellum|diary-spread-[\w-]+|exploded-(?:anatomy-stage|layer-card)|promotion-calibrated-elevation|gilded-fore-edge|silk-ribbon-bookmark)(?![\w-])/;
-  const reachNote = file => reachedFiles.has(file)
-    ? 'src/main.jsx reaches this file, so it ships.'
-    : 'Nothing reaches this file from src/main.jsx yet; one import would ship it.';
-
-  if (!fs.existsSync(appPath) || sheetClassLines(fs.readFileSync(appPath, 'utf8')).length === 0) {
-    errors.push('[Rule 19 Violation] No className in App.jsx carries instrument-sheet, so there is no sheet for Rule 19 to '
-      + 'hold flat. Point SHEET_TOKEN at the sheet, and rename the class in Rules 6 and 19 together.');
-  }
-
-  let sheetHasHairline = false;
-  scanFiles(SRC_DIR, (file, content) => {
-    const rel = path.relative(process.cwd(), file);
-    const code = stripComments(content);
-
-    if (file.endsWith('.css')) {
-      for (const [, selector, body] of code.matchAll(/([^{}]*)\{([^{}]*)\}/g)) {
-        if (!SHEET_TOKEN.test(selector.replace(/^\s*\./gm, ' .').replace(/[.:]/g, m => (m === '.' ? ' ' : m)))) continue;
-        if (reachedFiles.has(file) && /(?<![\w-])border(?:-width)?\s*:\s*(?!none|0(?![.\d]))/.test(body)) sheetHasHairline = true;
-        for (const [pattern, what] of SHEET_DEPTH_CSS) {
-          if (!pattern.test(body)) continue;
-          errors.push(
-            `[Rule 19 Violation] ${rel} gives the sheet ${what} in "${selector.trim()}". The sheet is flat: ` +
-            `one hairline, no shadow, no depth (UI_BRIEF §7.3). ${reachNote(file)}`
-          );
-        }
-      }
-    } else {
-      for (const { text, line } of sheetClassLines(content)) {
-        const depth = [...text.matchAll(SHEET_DEPTH_UTILITY)].map(m => m[0]).filter(u => u !== 'shadow-none');
-        if (depth.length > 0) {
-          errors.push(
-            `[Rule 19 Violation] ${rel}:${line} adds ${depth.join(', ')} to the sheet. The sheet is flat, and does ` +
-            `not animate every property (UI_BRIEF §7.3). ${reachNote(file)}`
-          );
-        }
-      }
-    }
-
-    const retired = code.match(RETIRED_CHASSIS);
-    if (retired) {
-      errors.push(
-        `[Rule 19 Violation] ${rel} carries "${retired[0]}", book chassis retired with the embossed sheet ` +
-        `(P11; BR8 resolved toward the instrument register). ${reachNote(file)} Remove it, or reverse the decision in DECISIONS.md first.`
-      );
-    }
-  });
-  if (!sheetHasHairline) {
-    errors.push('[Rule 19 Violation] No stylesheet reached from src/main.jsx gives .instrument-sheet a border. The flat '
-      + 'sheet is drawn by one hairline; without it there is no edge at all.');
-  }
+// Rule 19: founder-approved book geometry, measured in Chrome.
+const approvedQuickStart = '8d3d0d6ac631cddb3f2aba452f34ec143ce3688354e5380f4b36f2c2259d9282';
+if (createHash('sha256').update(fs.readFileSync('src/components/QuickStart.jsx')).digest('hex') !== approvedQuickStart) errors.push('[Rule 19 Violation] the founder requested the initial popup remain unchanged');
+for (const anchor of ['const bookGeometry =', 'm.bookGeometry', 'borderRadius', 'sheetStyle.boxShadow', 'bulletSize']) {
+  if (!visualGate.includes(anchor)) errors.push(`[Rule 19 Violation] approved book measurement missing ${anchor}`);
 }
+const finalDesign = fs.readFileSync('FINAL_DESIGN.md', 'utf8');
+for (const doc of ['AGENTS.md', 'CLAUDE.md']) {
+  if (!fs.readFileSync(doc, 'utf8').includes('FINAL_DESIGN.md')) errors.push(`[Rule 19 Violation] ${doc} must point agents to FINAL_DESIGN.md`);
+}
+if (!finalDesign.includes('open two-page spread')) errors.push('[Rule 19 Violation] final design contract missing');
 
 // Rule 20: Executive keyboard navigation — 1/2/3/4/T routing.
 //
@@ -1172,13 +1097,13 @@ if (errors.length === 0) {
   console.log('  - Rule 10: Zero 3-dot menus, zero black tie cord, and no woven tag anywhere under src/ (retired with the book chrome)');
   console.log('  - Rule 11: Framework Roster Gate (exactly 3 methods ship; MoSCoW, 1-3-5 and Pareto stay cut)');
   console.log('  - Rule 12: Framework Grid Alignment & Wrapping Safety Gate (fixed header heights & whitespace-nowrap)');
-  console.log('  - Rule 13: Flat immediate day step, calendar boundaries and reduced motion');
+  console.log('  - Rule 13: Immediate day selection, book transition and reduced motion');
   console.log('  - Rule 14: Closure turn conditions executed: today, written work, once, no running/breathing session');
   console.log('  - Rule 15: Direct instrument arrival: actual App initializer executed for first, retired and information links; no marketing or cover modules');
   console.log('  - Rule 16: Zero Date Overflow & Header Wrapping Gate (whitespace-nowrap & fixed 48px header boundary)');
   console.log('  - Rule 17: Zero "Bullet Journal" / Ryder Carroll Gate (100% Decide One brand purity & right page flex containment)');
   console.log('  - Rule 18: Archive and licence public exports (Rule 0 owns reachability)');
-  console.log('  - Rule 19: The sheet is flat (one instrument-sheet with a hairline; no shadow, 3D or transition-all on it; no retired chassis class under src/)');
+  console.log('  - Rule 19: Approved book geometry measured in Chrome; agent design contract preserved');
   console.log('  - Rule 20: Executive Universal Keyboard Navigation Gate (1/2/3/4/T routing, pressed in Chrome)');
   console.log('  - Rule 21: Restricted Naming Token Check (not trademark or copyright clearance)');
   console.log('  - Rule 22: Execution Layer Enforcement Gate (Ivy Lee order lock, breathing state, non-punitive overrun, timing provenance)');

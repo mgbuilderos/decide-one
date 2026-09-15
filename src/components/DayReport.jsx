@@ -9,15 +9,15 @@ import {
 /**
  * The verso — where the time went (P11).
  *
- * Not part of deciding. A report, read once, at closure. That is exactly why it
- * does not deserve permanent half-screen residency, and why reaching it is a
- * turn of the sheet rather than a glance across a spread.
+ * The approved desktop spread places this below the execution clock. Phones
+ * turn to this same report when the person wants to review the day.
  *
  * R3 holds absolutely here: a verso cannot introduce objects of its own. Every
  * line is a line the recto already decided.
  */
 export default function DayReport({
   dailyLog,
+  reportOnly = false,
   dateLabel = '',
   onCloseDay,
   onPause,
@@ -47,7 +47,7 @@ export default function DayReport({
    * the success case is the person leaving to do the work — but if the window
    * is open, what it shows should be the one thing that matters.
    */
-  if (running) {
+  if (running && !reportOnly) {
     const { item, session } = running;
     const breathing = session.state === STATES.BREATHING;
     const over = isOvertime(session);
@@ -106,10 +106,10 @@ export default function DayReport({
   if (items.length === 0) {
     return (
       <div className="w-full min-w-0 flex-1 min-h-0 flex flex-col items-center justify-center text-center px-6 py-8 select-none">
-        <AnalogueClock size={96} />
+        {!reportOnly && <AnalogueClock size={96} />}
         <p className="mt-4 text-sm font-semibold text-neutral-700 dark:text-neutral-300">Nothing decided yet.</p>
         <p className="mt-1 text-[11px] leading-[18px] text-neutral-500 max-w-[220px]">
-          Turn back and write what deserves today. This side records how it went.
+          {reportOnly ? 'This page records how the day went.' : 'Turn back and write what deserves today. This side records how it went.'}
         </p>
       </div>
     );
@@ -145,7 +145,7 @@ export default function DayReport({
                   {session.timingAccuracy === 'inferred' && <span className="italic"> · estimated</span>}
                 </p>
               </div>
-              {p > 0 && <AnalogueClock session={session} size={36} />}
+
             </div>
           );
         })}
@@ -162,14 +162,14 @@ export default function DayReport({
             Some figures are estimated — a session was left running rather than measured.
           </p>
         )}
-        {onCloseDay && !dailyLog.closedAt && (
+        {onCloseDay && !dailyLog.closedAt && !running && (
           <button
             type="button"
             disabled={!isInteractive}
             onClick={onCloseDay}
             className="mt-2 mb-1 w-full inline-flex items-center justify-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider py-2 rounded-xl bg-black/[0.05] dark:bg-white/[0.08] text-neutral-700 dark:text-neutral-200 hover:bg-black/10 dark:hover:bg-white/15 transition-colors cursor-pointer"
           >
-            <Check className="w-3.5 h-3.5" /> The day is done
+            <Check className="w-3.5 h-3.5" /> {reportOnly ? 'Turn Over' : 'The day is done'}
           </button>
         )}
       </div>

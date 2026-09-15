@@ -20,7 +20,8 @@ import sharp from 'sharp';
 
 const UPDATE = process.argv.includes('--update');
 const DIST = 'dist';
-const LAYOUT = process.argv.includes('--layout');
+const REVIEW = process.argv.includes('--review');
+const LAYOUT = process.argv.includes('--layout') || REVIEW;
 // Baselines are per platform. Fonts rasterise differently on macOS and Linux, so
 // a baseline recorded on one can never match the other, and each machine records
 // its own on first run. The measurements (contrast, scroll, tracking, console,
@@ -57,8 +58,11 @@ const SURFACES = [
   { id: 'daily-laptop', url: '/?view=daily', vp: LAPTOP, fixed: true },
   { id: 'daily-mobile', url: '/?view=daily', vp: MOBILE, fixed: true },
   { id: 'weekly-desktop', url: '/?view=weekly', vp: DESKTOP, fixed: true },
+  { id: 'weekly-mobile', url: '/?view=weekly', vp: MOBILE, fixed: true },
   { id: 'monthly-desktop', url: '/?view=monthly', vp: DESKTOP, fixed: true },
+  { id: 'monthly-mobile', url: '/?view=monthly', vp: MOBILE, fixed: true },
   { id: 'yearly-desktop', url: '/?view=yearly', vp: DESKTOP, fixed: true },
+  { id: 'yearly-mobile', url: '/?view=yearly', vp: MOBILE, fixed: true },
   { id: 'guide-desktop', url: '/guides/why-to-do-lists-stop-working/', vp: DESKTOP },
   { id: 'guide-mobile', url: '/guides/why-to-do-lists-stop-working/', vp: MOBILE },
   { id: 'guide-dark', url: '/guides/why-to-do-lists-stop-working/', vp: DESKTOP, dark: true },
@@ -68,6 +72,7 @@ const SURFACES = [
   { id: 'daily-tiny', url: '/?view=daily', vp: { w: 320, h: 568 }, fixed: true },
   { id: 'yearly-tiny', url: '/?view=yearly', vp: { w: 320, h: 568 }, fixed: true },
   { id: 'weekly-tiny', url: '/?view=weekly', vp: { w: 320, h: 568 }, fixed: true },
+  { id: 'monthly-tiny', url: '/?view=monthly', vp: { w: 320, h: 568 }, fixed: true },
   // The morning question, held open on purpose, at the size it was hardest to fit.
   { id: 'daily-prompt-tiny', url: '/?view=daily', vp: { w: 320, h: 568 }, fixed: true, prompt: true }
 ];
@@ -105,6 +110,13 @@ if (LAYOUT) {
   }
   for (const kind of ['written','ivy','matrix','running','overrun','paused','closed']) for (const dark of [false,true]) {
     SURFACES.push({id:`layout-${kind}-${dark?'dark':'light'}`,url:'/?view=daily',vp:{w:320,h:568},fixed:true,seed:kind,dark});
+  }
+}
+
+if (REVIEW) {
+  SURFACES.length = 0;
+  for (const dark of [false,true]) for (const open of ['tools','settings','search','decisions','scratchpad','closure']) {
+    SURFACES.push({id:`review-${open}-${dark?'dark':'light'}`,url:'/?view=daily',vp:{w:320,h:568},fixed:true,dark,seed:'written',open});
   }
 }
 
@@ -320,6 +332,31 @@ const PROBE = `(() => {
       return decorated;
     });
 
+  // Rule 19: measure the approved surface, not a class name standing in for it.
+  const bookGeometry = [];
+  const sheet = document.querySelector('.instrument-sheet');
+  if (sheet) {
+    const sheetStyle = getComputedStyle(sheet);
+    if (parseFloat(sheetStyle.borderRadius) < 10) bookGeometry.push('paper corners were flattened');
+    if (sheetStyle.boxShadow === 'none') bookGeometry.push('paper depth is missing');
+    const spread = sheet.querySelector('.book-spread');
+    if (spread && innerWidth >= 768) {
+      const left = spread.querySelector('.instrument-recto').getBoundingClientRect();
+      const right = spread.querySelector('.instrument-verso').getBoundingClientRect();
+      if (left.width < 100 || right.width < 100 || right.left - left.right < 23 || Math.abs(left.top-right.top)>1)
+        bookGeometry.push('desktop must show two aligned pages with a readable gutter');
+      if (getComputedStyle(sheet, '::after').content === 'none') bookGeometry.push('central fold is missing');
+    }
+    for (const bullet of all.filter(el => el.matches('.priority-bullet'))) {
+      const st = getComputedStyle(bullet), rect = bullet.getBoundingClientRect();
+      const bulletSize = rect.width;
+      if (bulletSize > 18 || bulletSize < 12 || Math.abs(rect.width-rect.height)>1 || parseFloat(st.borderRadius)<bulletSize/2)
+        bookGeometry.push('priority mark must be a small circle');
+      const hit = getComputedStyle(bullet, '::before');
+      if (rect.width-parseFloat(hit.left)-parseFloat(hit.right)<36) bookGeometry.push('bullet hit area is below 36px');
+    }
+  }
+
   // 1. Tracking so tight the glyphs collide. -4px is right at 86px and ruinous
   //    at 18px, which is exactly how a display heading collapsed into mush.
   const tracking = texty.map(el => {
@@ -373,8 +410,15 @@ const PROBE = `(() => {
     .sort((a, b) => b.over - a.over).slice(0, 2);
 
   const d = document.documentElement;
+  const monthEditor = document.querySelector('#monthly-event');
+  const monthEditorVisible = !monthEditor || (() => {
+    const r = monthEditor.getBoundingClientRect();
+    return r.top >= 0 && r.bottom <= innerHeight && r.width >= 100;
+  })();
   return {
-    brandChrome,
+    brandChrome, bookGeometry,
+    monthEditorVisible,
+    smallType: [...texty, ...all.filter(el => el.matches("input,textarea"))].filter(el => parseFloat(getComputedStyle(el).fontSize)<11).map(el => name(el)),
     clipped_x,
     vpH: innerHeight, docH: d.scrollHeight,
     scrolls: d.scrollHeight > innerHeight + 2,
@@ -412,6 +456,18 @@ for (const s of SURFACES) {
     await settle(700);
   }
 
+  if (s.open) {
+    if (s.open === 'tools') await evaluate(`document.querySelector('.instrument-tools-trigger').click(); 1`);
+    else {
+      const key = {settings:'m',search:'k',decisions:'d',scratchpad:'n',closure:'c'}[s.open];
+      await evaluate(`window.dispatchEvent(new KeyboardEvent('keydown',{key:'${key}',metaKey:${s.open !== 'settings'},shiftKey:${s.open === 'closure'},bubbles:true})); 1`);
+    }
+    await settle(500);
+    const shot = await call('Page.captureScreenshot', {format:'png',captureBeyondViewport:false});
+    fs.mkdirSync('output/playwright',{recursive:true});
+    fs.writeFileSync(`output/playwright/${s.id}.png`,Buffer.from(shot.data,'base64'));
+  }
+
   if (s.seed === 'closed') {
     await evaluate('[...document.querySelectorAll("button")].find(b => b.textContent.trim() === "Turn Over")?.click(); 1');
     await settle(200);
@@ -426,6 +482,10 @@ for (const s of SURFACES) {
   }
 
   const at = `${s.id} (${s.vp.w}×${s.vp.h})`;
+  const shortMonth = s.url.includes('view=monthly') && s.vp.h <= 620;
+  if (shortMonth && !m.monthEditorVisible) errors.push(`${at}: the selected day's event field is out of reach`);
+  for (const el of m.smallType) errors.push(`${at}: ${el} renders below 11px`);
+  if (s.fixed) for (const issue of m.bookGeometry) errors.push(`${at}: Rule 19 — ${issue}`);
   if (s.fixed) for (const badge of m.brandChrome) errors.push(`${at}: Rule 10 — ${badge.el}: ${badge.reason}`);
   for (const c of consoleErrors.slice(0, 2)) errors.push(`${at}: console error — ${c.slice(0, 140)}`);
   if (s.fixed && m.scrolls) {
@@ -433,6 +493,9 @@ for (const s of SURFACES) {
       + 'VISION §12.1a: it does three things and completes them on one surface.');
   }
   if (s.fixed) for (const u of m.unreachable) {
+    // A full month cannot fit five or six readable rows into 568px. The month
+    // scrolls inside its page; the selected-day field stays visible above it.
+    if (shortMonth && u.kind === 'scrolls' && u.el.startsWith('section.flex.min-h-0')) continue;
     errors.push(`${at}: ${u.el} ${u.kind === 'clipped' ? 'clips' : 'scrolls'} ${u.hidden}px of content `
       + `out of a ${m.vpH}px viewport — the instrument must hold the day on one surface`);
   }

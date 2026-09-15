@@ -1416,3 +1416,9 @@ Founder rejected the flat visual result and large square bullets and asked to fi
 ### 2026-09-15 09:49 — codex
 
 Founder approved the recovered open-book layout and authorized refinement in current structure. Recorded FINAL_DESIGN.md and a prominent precedence note in AGENTS/CLAUDE, VISION, DECISIONS and UI_BRIEF: desktop spread, central fold, neutral paper depth, round bullet marks with proper hit areas, responsive single page and restrained page turn; preserve the initial quick-start popup, three current methods and data/timing/closure. Plan: adapt structure and shared surface tokens, remove square bullet override, measure desktop/phone light/dark and populated modes, repair gaps and update gates/baselines. Long-list paging versus scrolling question remains pending.
+
+---
+
+### 2026-09-15 18:22 — unattributed
+
+Recovered the founder-approved two-page book work left uncommitted by another agent after reviewing its diffs and passing build, source, asset and 27-surface Chrome gates. This restart made Monthly a familiar variable-week calendar with 44px controls and a readable internally scrolling 320px view whose event field remains visible; corrected the Weekly empty record, enlarged its phone controls, added a guide-top Open Decide One link, and replaced the retired-feature share image with a truthful screenshot. Price remains free and no gateway or live deploy was touched. Added mobile audit captures and the short-month visual exception, limited to its inner scroll while the daily no-scroll gate stays enforced.

@@ -58,13 +58,14 @@ export default function MonthlyLogSpread({
     setSelectedDay(isCurrentMonth ? today.getDate() : 1);
   }, [isCurrentMonth, month, year]);
 
+  const mondayOffset = (new Date(year, monthIndex, 1).getDay() + 6) % 7;
+  const calendarWeeks = Math.ceil((mondayOffset + daysInMonth) / 7);
   const calendarDays = useMemo(() => {
-    const mondayOffset = (new Date(year, monthIndex, 1).getDay() + 6) % 7;
-    return Array.from({ length: 42 }, (_, index) => {
+    return Array.from({ length: calendarWeeks * 7 }, (_, index) => {
       const day = index - mondayOffset + 1;
       return day > 0 && day <= daysInMonth ? day : null;
     });
-  }, [daysInMonth, monthIndex, year]);
+  }, [calendarWeeks, daysInMonth, mondayOffset]);
 
   const monthName = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(
     new Date(year, monthIndex, 1),
@@ -107,8 +108,8 @@ export default function MonthlyLogSpread({
   };
 
   return (
-    <section className="flex min-h-0 flex-1 flex-col select-none" aria-label={`${monthName} ${year}`}>
-      <header className="flex flex-wrap items-end justify-between gap-3 border-b border-black/10 pb-3 dark:border-white/10">
+    <section className="flex min-h-0 flex-1 flex-col select-none overflow-y-auto pocket-scroll" aria-label={`${monthName} ${year}`}>
+      <header className="flex shrink-0 flex-wrap items-end justify-between gap-3 border-b border-black/10 pb-3 dark:border-white/10">
         <div>
           <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.18em] text-neutral-500">
             Monthly View
@@ -122,7 +123,7 @@ export default function MonthlyLogSpread({
           <div className="flex rounded-full border border-black/10 bg-black/[0.025] p-1 dark:border-white/10 dark:bg-white/[0.04]" role="group" aria-label="Monthly View">
             <button
               type="button"
-              className={`flex min-h-9 items-center gap-1.5 rounded-full px-2.5 sm:px-3 text-[11px] font-semibold transition-colors ${view === 'calendar' ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
+              className={`flex min-h-11 items-center gap-1.5 rounded-full px-2.5 sm:px-3 text-[11px] font-semibold transition-colors ${view === 'calendar' ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
               aria-pressed={view === 'calendar'}
               onClick={() => setView('calendar')}
             >
@@ -130,7 +131,7 @@ export default function MonthlyLogSpread({
             </button>
             <button
               type="button"
-              className={`flex min-h-9 items-center gap-1.5 rounded-full px-2.5 sm:px-3 text-[11px] font-semibold transition-colors ${view === 'priorities' ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
+              className={`flex min-h-11 items-center gap-1.5 rounded-full px-2.5 sm:px-3 text-[11px] font-semibold transition-colors ${view === 'priorities' ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
               aria-pressed={view === 'priorities'}
               onClick={() => setView('priorities')}
             >
@@ -141,7 +142,7 @@ export default function MonthlyLogSpread({
           <div className="flex shrink-0 items-center rounded-full border border-black/10 bg-white dark:border-white/10 dark:bg-neutral-900">
             <button
               type="button"
-              className="grid h-9 w-9 place-items-center rounded-full text-neutral-500 hover:bg-black/[0.04] hover:text-neutral-900 dark:hover:bg-white/[0.06] dark:hover:text-white"
+              className="grid h-11 w-11 place-items-center rounded-full text-neutral-500 hover:bg-black/[0.04] hover:text-neutral-900 dark:hover:bg-white/[0.06] dark:hover:text-white"
               aria-label="Previous Month"
               onClick={() => onNavigate(-1)}
             >
@@ -152,7 +153,7 @@ export default function MonthlyLogSpread({
             </span>
             <button
               type="button"
-              className="grid h-9 w-9 place-items-center rounded-full text-neutral-500 hover:bg-black/[0.04] hover:text-neutral-900 dark:hover:bg-white/[0.06] dark:hover:text-white"
+              className="grid h-11 w-11 place-items-center rounded-full text-neutral-500 hover:bg-black/[0.04] hover:text-neutral-900 dark:hover:bg-white/[0.06] dark:hover:text-white"
               aria-label="Next Month"
               onClick={() => onNavigate(1)}
             >
@@ -163,7 +164,7 @@ export default function MonthlyLogSpread({
       </header>
 
       {view === 'calendar' ? (
-        <div className="flex min-h-0 flex-1 flex-col pt-3">
+        <div className="flex min-h-0 flex-1 flex-col pt-3 [@media(max-height:620px)]:flex-none">
           <div className="grid grid-cols-7 border-b border-black/10 pb-2 dark:border-white/10" aria-hidden="true">
             {WEEKDAYS.map((day) => (
               <span key={day} className="text-center text-[11px] font-bold uppercase tracking-[0.12em] text-neutral-500 sm:text-[11px]">
@@ -172,7 +173,7 @@ export default function MonthlyLogSpread({
             ))}
           </div>
 
-          <div className="grid min-h-0 flex-1 grid-cols-7 grid-rows-6 overflow-hidden rounded-b-xl border-x border-b border-black/[0.08] dark:border-white/[0.08]">
+          <div className="grid min-h-[240px] flex-1 grid-cols-7 overflow-hidden rounded-b-xl border-x border-b border-black/[0.08] dark:border-white/[0.08] [@media(max-height:620px)]:flex-none" style={{ gridTemplateRows: `repeat(${calendarWeeks}, minmax(0, 1fr))` }}>
             {calendarDays.map((day, index) => {
               if (!day) return <div key={`empty_${index}`} className="border-r border-t border-black/[0.06] bg-black/[0.012] dark:border-white/[0.06] dark:bg-white/[0.01]" />;
               const event = events[String(day)] || '';
@@ -204,7 +205,7 @@ export default function MonthlyLogSpread({
             })}
           </div>
 
-          <div className="mt-3 flex min-h-11 items-center gap-3 border-t border-black/10 pt-3 dark:border-white/10">
+          <div className="mt-3 flex min-h-11 shrink-0 items-center gap-3 border-t border-black/10 pt-3 dark:border-white/10 [@media(max-height:620px)]:order-first [@media(max-height:620px)]:mt-0 [@media(max-height:620px)]:mb-3 [@media(max-height:620px)]:border-t-0 [@media(max-height:620px)]:border-b [@media(max-height:620px)]:pt-0 [@media(max-height:620px)]:pb-2">
             <label htmlFor="monthly-event" className="hidden min-w-36 text-[11px] font-bold uppercase tracking-[0.12em] text-neutral-500 sm:block">
               {formatSelectedDate(year, monthIndex, selectedDay)}
             </label>
@@ -289,7 +290,7 @@ export default function MonthlyLogSpread({
         </div>
       )}
 
-      <footer className="mt-3 flex items-center justify-between border-t border-black/10 pt-2 text-[11px] font-semibold tracking-wide text-neutral-500 dark:border-white/10">
+      <footer className="mt-3 flex shrink-0 items-center justify-between border-t border-black/10 pt-2 text-[11px] font-semibold tracking-wide text-neutral-500 dark:border-white/10">
         <span>{view === 'calendar' ? 'A familiar month. One important line per day.' : 'The work that should shape this month.'}</span>
         <span>{masterTasks.filter((task) => !task.completed).length} Priorities</span>
       </footer>
