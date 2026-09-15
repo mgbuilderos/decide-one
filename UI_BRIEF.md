@@ -405,6 +405,8 @@ npm run deploy                 # the only way to publish; runs every gate, then 
 
 ## Appendix A — the kick-off prompt
 
+> **History, not instructions — superseded 16 September 2026.** This prompt was written on 15 September against `8b9756e`. Part 1 shipped, and the design then moved on: the founder approved the open-book layout, Inter, an elapsed stopwatch in place of the analogue clock, and removal of the Today stream. Read `FINAL_DESIGN.md` for the design as built.
+
 Paste this as the first message to the agent doing the design work (ChatGPT Codex). Written 15 September 2026 against commit 8b9756e; where it and older sections of this brief disagree, this prompt is newer.
 
 ```text

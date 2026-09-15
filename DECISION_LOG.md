@@ -1458,3 +1458,9 @@ Compact the unified menu: direct labelled method and paper-grid controls on the 
 ### 2026-09-16 02:25 — unattributed
 
 Closed details no longer enter the menu Tab sequence; the visible first and last controls wrap correctly. Added browser checks for direct grid/method selection and menu focus, and restored the report footer's natural height without changing the 24px page footer.
+
+---
+
+### 2026-09-16 04:20 — unattributed
+
+Documented the 15-16 September design changes. FINAL_DESIGN.md now carries the design as built at 0912ed8 (live, MATCH): direct arrival and the hash-pinned three-step quick start; the 960px two-row header and compact menu; the open-book spread, fold, paper depth, round marks and 280ms reduced-motion-safe day step; framework-only input; the clockwise elapsed FocusStopwatch replacing the analogue clock, planned minutes and capacity; the one-action privacy shutter; self-hosted Inter hierarchy and zero-chroma neutral tokens; review views and information pages; plus a commit-by-commit history including the rejected flat pass, the gates that hold the design, what is still open, and which older text it supersedes. Dated superseded notes added to DECISIONS P11, B-6, B-7, B-8, B-12, B-13, B-35, B-15 and BR8; UI_BRIEF Appendix A marked as history; FINAL_DESIGN.md registered in npm run brief and in the AGENTS/CLAUDE table; the stale '23 rules' count removed.

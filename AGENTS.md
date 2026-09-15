@@ -16,7 +16,7 @@ came from that, not from the code.
 ```bash
 npm run brief     # what is true right now. ALWAYS FIRST.
 npm run tree      # is another agent editing? (brief shows this too)
-npm run test:qc   # 23 rules + Rule 0. Before every commit.
+npm run test:qc   # Rule 0 and every numbered rule. Before every commit.
 npm run log "…"   # what you did, appended to DECISION_LOG.md. Before you stop.
 ```
 
@@ -106,7 +106,7 @@ to the wrong change.
 npm run build && npm run test:qc
 ```
 
-23 rules fail the build if a decision is quietly reversed — a cut framework
+The rules fail the build if a decision is quietly reversed — a cut framework
 returning, gamified language creeping back, a shared licence key reappearing,
 the Ivy Lee lock going missing. **The audit is the contract between agents.**
 It is faster and more reliable than asking another agent to review.
@@ -129,6 +129,7 @@ and say why.** Silently diverging creates a conflict nobody notices for weeks.
 | How the site is published | `DEPLOY.md` |
 | Why the methods are sound | `FOUNDATIONS.md` |
 | Which methods ship, and their attribution | `FRAMEWORKS.md` |
+| The approved design — outranks older design text | `FINAL_DESIGN.md` |
 | How the instrument must look and behave | `UI_BRIEF.md` |
 
 `UI_BRIEF.md` is the brief for any interface work — the vision, the
