@@ -189,11 +189,13 @@ if (errors.length) {
 // --------------------------------------------------------------- render
 marked.setOptions({ mangle: false, headerIds: true, gfm: true });
 
-const STYLE = `
-:root{--ink:#0B0B0D;--paper:#FFFFFF;--rule:#E4E4E7;--muted:#52525B;--line:24px}
-*{box-sizing:border-box}
-body{margin:0;background:#E1E1E6;color:var(--ink);
-  font:16px/var(--line) -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+const sharedTokens = fs.readFileSync('src/tokens.css', 'utf8');
+const autoTokens = sharedTokens.replace(/\.dark\s*\{([^}]+)\}/g, '@media(prefers-color-scheme:dark){:root{$1}}');
+const STYLE = autoTokens + `
+:root{--muted:var(--ink-muted);--line:var(--space-unit)}
+*{box-sizing:border-box;font-variant-numeric:tabular-nums}
+body{margin:0;background:var(--canvas);color:var(--ink);
+  font:16px/var(--line) var(--font-instrument);
   -webkit-font-smoothing:antialiased}
 main{max-width:680px;margin:0 auto;padding:calc(var(--line)*2) var(--line) calc(var(--line)*4);
   background:var(--paper);min-height:100vh}
@@ -210,7 +212,7 @@ blockquote{border-left:2px solid var(--ink);padding-left:var(--line);margin-left
 img{max-width:100%;height:auto;display:block;margin:0 0 var(--line)}
 table{border-collapse:collapse;width:100%;font-size:14px}
 th,td{text-align:left;padding:8px 12px 8px 0;border-bottom:1px solid var(--rule);vertical-align:top}
-code{font:13px/1 ui-monospace,SFMono-Regular,Menlo,monospace;background:#F4F4F5;padding:2px 5px}
+code{font:13px/1 var(--font-instrument);background:var(--canvas);padding:2px 5px}
 hr{border:0;border-top:1px solid var(--rule);margin:calc(var(--line)*2) 0}
 .meta{font-size:13px;color:var(--muted);margin:0 0 calc(var(--line)*2);padding-bottom:var(--line);border-bottom:1px solid var(--rule)}
 .related{margin-top:calc(var(--line)*2);padding-top:var(--line);border-top:1px solid var(--rule);font-size:14px}
@@ -223,9 +225,9 @@ hr{border:0;border-top:1px solid var(--rule);margin:calc(var(--line)*2) 0}
 .dgm figcaption{font-size:13px;line-height:var(--line);color:var(--muted);margin-top:calc(var(--line)/2);padding-top:calc(var(--line)/2);border-top:1px solid var(--rule)}
 footer{margin-top:calc(var(--line)*2);padding-top:var(--line);border-top:1px solid var(--rule);font-size:13px;color:var(--muted)}
 @media(prefers-color-scheme:dark){
-  :root{--ink:#FAFAFA;--paper:#0B0B0D;--rule:#27272A;--muted:#A1A1AA}
-  body{background:#000}
-  code{background:#18181B}
+
+
+  code{background:var(--canvas)}
 }
 `.replace(/\n\s*/g, '');
 

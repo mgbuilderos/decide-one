@@ -39,12 +39,12 @@ export default function DayConditionPrompt({
   };
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-6 bg-black/60 dark:bg-black/80 backdrop-blur-[3px] animate-in fade-in select-none">
+    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-6 bg-black/60 dark:bg-black/80  animate-in fade-in select-none">
 
       <div className="fixed inset-0" onClick={handleSkip} />
 
       <div
-        className="relative z-10 w-full max-w-[620px] bg-white dark:bg-[#111113] text-neutral-950 dark:text-neutral-100 rounded-[18px] shadow-[0_40px_120px_rgba(0,0,0,0.34)] border border-black/[0.12] dark:border-white/[0.14] flex flex-col max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-150 font-sans"
+        className="relative z-10 w-full max-w-[620px] bg-white dark:bg-[#121212] text-neutral-950 dark:text-neutral-100 rounded-[18px] shadow-[0_40px_120px_rgba(0,0,0,0.34)] border border-black/[0.12] dark:border-white/[0.14] flex flex-col max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-150 font-sans"
         onClick={e => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -59,7 +59,7 @@ export default function DayConditionPrompt({
               <div className="text-[13px] font-semibold tracking-[-0.01em] text-neutral-950 dark:text-white">
                 What does today look like?
               </div>
-              <div className="mt-1 text-[10px] uppercase tracking-[0.12em] text-neutral-500 dark:text-neutral-500">
+              <div className="mt-1 text-[11px] uppercase tracking-[0.12em] text-neutral-500 dark:text-neutral-500">
                 {dateLabel || 'Answer once. The instrument does the rest.'}
               </div>
             </div>
@@ -84,10 +84,10 @@ export default function DayConditionPrompt({
                   onClick={() => handleChoose(condition)}
                   className="group w-full min-h-[72px] [@media(max-height:760px)_and_(min-height:621px)]:min-h-[52px] [@media(max-height:620px)]:min-h-0 grid grid-cols-[28px_1fr_20px] items-center gap-3 text-left py-3.5 [@media(max-height:760px)_and_(min-height:621px)]:py-1.5 [@media(max-height:620px)]:py-1 transition-colors cursor-pointer hover:bg-black/[0.025] dark:hover:bg-white/[0.035] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px]"
                 >
-                  <span className="text-[10px] tabular-nums text-neutral-500 dark:text-neutral-500">{String(index + 1).padStart(2, '0')}</span>
+                  <span className="text-[11px] tabular-nums text-neutral-500 dark:text-neutral-500">{String(index + 1).padStart(2, '0')}</span>
                   <span>
                     <span className="block text-[14px] [@media(max-height:620px)]:text-[13px] font-medium leading-5 [@media(max-height:620px)]:leading-4 tracking-[-0.01em] text-neutral-950 dark:text-neutral-100">{condition.label}</span>
-                    <span className="block mt-1 [@media(max-height:620px)]:mt-0 text-[11px] [@media(max-height:620px)]:text-[10px] leading-4 [@media(max-height:620px)]:leading-[13px] text-neutral-500 dark:text-neutral-400">{condition.effect}</span>
+                    <span className="block mt-1 [@media(max-height:620px)]:mt-0 text-[11px] [@media(max-height:620px)]:text-[11px] leading-4 [@media(max-height:620px)]:leading-[13px] text-neutral-500 dark:text-neutral-400">{condition.effect}</span>
                   </span>
                   <ArrowRight className="w-4 h-4 text-neutral-300 dark:text-neutral-600 transition-transform group-hover:translate-x-0.5 group-hover:text-neutral-700 dark:group-hover:text-neutral-300" />
                 </button>
@@ -97,13 +97,13 @@ export default function DayConditionPrompt({
         </div>
 
         <div className="h-[56px] [@media(max-height:760px)_and_(min-height:621px)]:h-[44px] [@media(max-height:620px)]:h-[38px] px-5 sm:px-7 flex items-center justify-between border-t border-black/[0.10] dark:border-white/[0.10] shrink-0">
-          <span className="text-[10px] uppercase tracking-[0.12em] text-neutral-500 dark:text-neutral-500">
+          <span className="text-[11px] uppercase tracking-[0.12em] text-neutral-500 dark:text-neutral-500">
             Nothing shares first.
           </span>
           <button
             type="button"
             onClick={handleSkip}
-            className="text-[10px] uppercase tracking-[0.12em] font-semibold text-neutral-600 hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-white px-3 py-2 rounded-full border border-black/[0.10] dark:border-white/[0.12] transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+            className="text-[11px] uppercase tracking-[0.12em] font-semibold text-neutral-600 hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-white px-3 py-2 rounded-full border border-black/[0.10] dark:border-white/[0.12] transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
           >
             I already know
           </button>

@@ -101,7 +101,7 @@ Think of a watch's mode button. Same case, same face, same hands — but in stop
 | | **Top 3** (`rule_of_3`) | **Ivy Lee** (`ivy_lee`) | **Urgent/Important Matrix** (`eisenhower`) |
 | :-- | :-- | :-- | :-- |
 | The day it is for | *Too much to do.* Overcommitment. | *I keep not finishing things.* Context-switching. | *Everything feels urgent.* Urgency mistaken for importance. |
-| The enforced rule | **Three lines. A fourth does not exist** — absent, not disabled. | **Six lines in strict order. A line cannot start until every earlier line is done** (`isItemLocked`). | **Classification before writing.** A line can only be written *inside* a quadrant, so the sorting happens first. **Not yet enforced:** the default rows accept writing before any classification — close that gap. |
+| The enforced rule | **Three lines. A fourth does not exist** — absent, not disabled. | **Six lines in strict order. A line cannot start until every earlier line is done** (`isItemLocked`). | **Classification before writing.** A line can only be written *inside* a quadrant, so the sorting happens first. **Applied 15 September:** empty rows are created only after both classification answers; existing written rows remain. |
 | What the design must make obvious | That three is the whole day. Order carries meaning: *01 First · 02 Next · 03 Then*. Planned time against time left. | Which line is live, and why the next is closed — stated plainly, never as a punishment. The accessible label already reads *"Priority 2 is locked until priority 1 is complete"*. | The two questions — *urgent?* *important?* — as legible axes, so a quadrant reads as an answer rather than a bucket. |
 | Credit on the page once chosen (P7, FRAMEWORKS §7) | Rule of 3 — no single author | *Ivy Lee Method · 1918* — devised for Charles Schwab at Bethlehem Steel | *Distinction: Eisenhower, 1954. Matrix: Stephen Covey, 1989.* |
 | Never | a fourth line, subtasks (R13), "add more" | skipping ahead, reordering to dodge the lock, red "blocked" styling | Covey's coined vocabulary — *Quadrant II*, *Big Rocks*, *First Things First* |
@@ -165,7 +165,7 @@ Four gates run inside `npm run deploy`. **Know exactly what each one looks at**,
 | :-- | :-- | :-- | :-- |
 | `npm run test:qc` — `scripts/qc_audit.js` (26 rules) and `scripts/check_content.js` | `src/`, `content/`, `index.html`, `AGENTS.md`/`CLAUDE.md` | Decisions reversed **by name**: `font-mono`, trademark method names, a fourth framework, a price in `src/`, the telemetry contract, licence secrets, the Ivy Lee lock tokens, prose rules on content pages, the two rulebooks drifting apart | Anything visual. Anything not spelled the way the rule expects. **Rule 3 bans only eight blue/purple/cyan/pink classes** — an amber or emerald class passes. |
 | `npm run test:artifact` — `scripts/qc_artifact.js` | `dist/`, `public/`, `worker/` | Broken references, orphaned assets, the home page failing to link a content section, a frozen service-worker cache name, `#root`-scoped critical CSS, Worker syntax | Pixels. |
-| `npm run test:visual` — `scripts/visual_check.js` | 16 surfaces rendered in real Chrome at a frozen time, plus a keyboard pass | Console errors · tracking below −0.12em · text under 3:1 · overflow · sideways clipping without an ellipsis · instrument content scrolled or clipped · keys 1–4 and T routing · the morning prompt covering another view · pixel drift over 0.35% against `tests/baselines/` | **Only an empty journal is rendered.** No populated state, running timer, Ivy Lee lock, overrun, verso, carry-forward or month-old return is covered. Text size, 24px alignment, dark mode on the instrument, correctness of numbers and tone are not checked. |
+| `npm run test:visual` — `scripts/visual_check.js` | 23 surfaces rendered in real Chrome at a frozen time, plus a keyboard pass | Console errors · tracking below −0.12em · text under 3:1 · overflow · sideways clipping without an ellipsis · instrument content scrolled or clipped · keys 1–4 and T routing · the morning prompt covering another view · pixel drift over 0.35% against `tests/baselines/` | **Updated 15 September:** written Top 3, six-line Ivy Lee, running, overrun, paused and closed-day verso states are also rendered at 320×568. Full Matrix, carry-forward and month-old return still need coverage. Text size, 24px alignment, dark mode on the instrument, correctness of numbers and tone are not checked. |
 | `npm run verify:live` | One bundle hash on decideone.app | That the deploy landed | Whether it is correct. |
 
 ### 6.1 How the rules were built, and why that matters to you
@@ -222,7 +222,7 @@ These are founder decisions. Apply them; do not re-open them.
    - Keep the leaflet's *structure* — recto, verso, and the turn as the closure gesture. A flat, exact turn is the instrument form of it.
    - Rewrite Rules 10, 13, 15 and 19 to guard the new truth — for example, that no book chrome is reachable from `main.jsx` — and break each once to prove it fires. Also update **Rule 0**, whose governed-surface list names `data/monthIllustrations.jsx`, and **Rule 6**, which finds the notebook by its `embossed-notebook` class: rename the class and the rule together. Rule 14's `pendingTurnRef` requirement stays only if the remaining turn still needs it.
    - The landing page must still depict the actual product (§13.5): update `landing/JournalScene.jsx`, `landing/JournalDemo.jsx` and the renders in `public/renders/` so nobody believes a paper notebook is for sale.
-   - **Applied in part, 14 September:** the cover (with `showCover`, the C key, the menu and Tools entries and its sounds) and `src/data/monthIllustrations.jsx` are gone, including from the privacy shutter; `?view=cover` opens daily through `src/utils/viewParam.js`; BR8, B-15 and C6 are amended. Rule 0 fails if either module is reached from `main.jsx`, and Rule 15 executes the view mapping. The woven tag and chassis were also removed on 14 September. Only the day-step curl remains.
+   - **Applied in part, 14 September:** the cover (with `showCover`, the C key, the menu and Tools entries and its sounds) and `src/data/monthIllustrations.jsx` are gone, including from the privacy shutter; `?view=cover` opens daily through `src/utils/viewParam.js`; BR8, B-15 and C6 are amended. Rule 0 fails if either module is reached from `main.jsx`, and Rule 15 executes the view mapping. The woven tag and chassis were also removed on 14 September. The day-step curl was replaced by an immediate date update and a flat 160ms fade on 15 September.
 4. **No celebration.** **Applied 14 September:** `canvas-confetti` and its call sites were removed; Rule 26 guards their absence. Confetti is congratulation, which `BRAND_BOOK.md` §4 (*closure is observational, never congratulatory*) and R12 (no gamified visualisers) exclude. Find what triggers it and remove it; a verso line like *"4h 10m against 4h 30m planned."* is the whole reward.
 5. **There is no landing page** (the founder, 12 September; confirmed 15 September): `/` opens the instrument for everyone, first visit included. A first visit gets a short quick start that explains the page, then the morning question; a returning person opens straight to today. The marketing page, its 3D book scene and its renders are retired. The static guides, methods and FAQ pages, `?view=legal`, `?view=methods` and the `#prerender` summary in `index.html` stay. This replaces "first visits get the landing page" (shipped 13 September). **Arrival applied 15 September:** the marketing route, 3D scene, demo, studio renders and Three.js are removed. `/` and retired links open daily; the three-step quick start is skipped after completion or existing written history. Header links reach guides, methods, FAQ and legal information. Static-template redesign and the social capture remain.
 6. **Number keys match the visible order** (fixed 14 September): 1 Daily · 2 Weekly · 3 Monthly · 4 Yearly. Weekly previously had no key at all.
@@ -447,3 +447,27 @@ Every box in UI_BRIEF §12 ticked; Part 1 and Part 2 shipped; `npm run deploy` g
 REPORT BACK
 The design system you set; every surface and state you changed, with before-and-after screenshots at 1440×900 and 390×844; every rule you rewrote and how you proved it fires; anything UI_BRIEF.md got wrong, with your correction; and every open question for the founder.
 ```
+
+
+## Layout checkpoint — 15 September 2026
+
+The resumed pass preserves the inherited neutral/type changes, short placeholders,
+shared Ivy Lee lock, Matrix classification gate and six-week yearly calendars.
+The header and sheet now use the shared neutral tokens and flat controls. At short
+heights the sheet snaps to 12px half-steps; full-height cadence stays 24px. Only
+Daily reserves the mobile side-switch bar. The small yearly cards place their
+open action beside the month; a small-card overflow check covers the previously
+missed clipped actions. Minute fields and start/pause controls have 36px height.
+
+The idle face reads labelled local time; a paused session keeps its own clock
+and elapsed figure. With no planned time the page uses one empty-clock instruction,
+including after priorities have been written. Empty Today retains its count and
+Add line control without a duplicate empty-state sentence.
+
+**Not a completed redesign or a release.** The Matrix's 16 possible tasks and the
+unbounded Today/carry-forward lists cannot fit together at readable sizes on the
+smallest screen. The founder has been asked to choose compact paging, list scroll,
+or a pass scoped to short lists. No cap or paging has been introduced. The opt-in
+`npm run test:visual -- --layout` diagnostic includes the unresolved populated
+Matrix cases; they are not claimed as passing default regression surfaces.
+Rules 3, 10, 15, 18 and 26 have been repaired: neutral colour allow-list with parsed migration calls; rendered decorated-brand-label measurement; the actual initial-view function executed; archive/licence exports; and celebration signatures in built JavaScript. Social capture and the remaining populated/dialog measurements from Appendix A remain.

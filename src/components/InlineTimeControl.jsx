@@ -80,7 +80,7 @@ export default function InlineTimeControl({
   const taskLabel = item?.text?.trim() || 'this priority';
 
   return (
-    <div className={`inline-flex shrink-0 items-center gap-1.5 ${locked || done ? 'opacity-45' : ''}`}>
+    <div className="inline-time-control inline-flex shrink-0 items-center gap-1.5">
       <label
         className={`inline-flex h-7 items-center rounded-md border px-1.5 transition-colors ${
           inputDisabled
@@ -110,12 +110,12 @@ export default function InlineTimeControl({
           aria-label={`Minutes planned for ${taskLabel}`}
           className="w-8 bg-transparent text-right text-[11px] font-semibold tabular-nums outline-none placeholder:text-neutral-300 dark:placeholder:text-neutral-600 disabled:cursor-default"
         />
-        <span className="ml-0.5 text-[9px] uppercase tracking-[0.08em]">min</span>
+        <span className="ml-0.5 text-[11px] uppercase tracking-[0.08em]">min</span>
       </label>
 
       {session.plannedDurationSec > 0 && !done && (
         breathing ? (
-          <span className="w-7 text-center text-[9px] text-neutral-500" aria-live="polite">Ready</span>
+          <span className="w-7 text-center text-[11px] text-neutral-500" aria-live="polite">Ready</span>
         ) : (
           <button
             type="button"

@@ -194,6 +194,8 @@ It does three things the previous line did not. It **begins by trusting the read
 **Quick-start control guidance — approved 15 September 2026 for the direct arrival.**
 “Pick the method that fits the day.” “Choose at the top of the page. Set minutes beside the first line. Turn Over to close the day.” Navigation: “Next”, “Back”, “Skip”, “Start”. Method descriptions may excerpt the existing crawlable one-liners: “Three things for today and no fourth.” “Six tasks in strict order.” “Sorting on two axes before deciding what to do.” These locate existing controls and explain the three-step arrival without adding a promise, field or method. The primary statement and privacy/free promise above supply the other two steps.
 
+**Instrument labels, 15 September 2026.** “First”, “Next”, “Then” may label the three existing lines; short placeholders prevent narrow-screen clipping. “In order. One at a time.” makes the Ivy Lee rule visible. Matrix axes use “Urgent / Important”, “Not urgent / Important”, “Urgent / Not important”, “Not urgent / Not important”. “Classify first” labels its existing input gate. “Day closed” states a persisted closure. “Write first. Set minutes beside the line.” locates the existing time fields. These replace clipped, ambiguous or stale text without adding a field. Empty owner details are omitted rather than substituting a real person. The idle analogue face shows local time, labelled “Local time”; once a duration is set it shows that duration. Existing duration figures remain timing information.
+
 ### 11.2 What the product does — the four movements
 
 1. **It makes the competing work visible.** A bounded page turns a crowded mental list into a choice the person can see.

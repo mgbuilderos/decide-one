@@ -17,9 +17,8 @@ import {
 // The instrument holds the whole day on one surface at every height. A
 // 1366x768 laptop gives roughly 660px of viewport once browser chrome is
 // taken, so short is the common case, not the edge one. Three densities:
-// full, compact (the clock steps down), tight (the clock goes — the numbers
-// it illustrates are already on the page, so it is the one thing here that
-// can leave without taking information with it).
+// full, compact and tight. Compact faces retain the hands; tight layouts
+// omit the duplicate digital readout so controls keep their space.
 function useDensity() {
   const read = () => typeof window === 'undefined' ? 'full'
     : window.matchMedia('(max-height: 760px)').matches ? 'tight'
@@ -53,7 +52,8 @@ export default function ExecutionLayer({
     const state = getSession(dailyLog, item.id).state;
     return state === STATES.RUNNING || state === STATES.BREATHING;
   });
-  const activeSession = activeItem ? getSession(dailyLog, activeItem.id) : null;
+  const clockItem = activeItem || items.find(item => getSession(dailyLog, item.id).state === STATES.PAUSED);
+  const activeSession = clockItem ? getSession(dailyLog, clockItem.id) : null;
   const [askingAbout, setAskingAbout] = useState([]);
 
   // A task left running while the app was closed is suspended and identified
@@ -95,23 +95,23 @@ export default function ExecutionLayer({
     setAskingAbout(previous => previous.filter(id => id !== item.id));
   };
 
-  if (items.length === 0) {
+  if (items.length === 0 || capacity.plannedSec === 0) {
     return (
-      <div className="w-full min-w-0 min-h-[168px] [@media(max-height:820px)_and_(min-height:761px)]:min-h-[120px] [@media(max-height:760px)]:min-h-0 flex flex-col items-center justify-center px-6 py-5 [@media(max-height:820px)_and_(min-height:761px)]:py-1 [@media(max-height:760px)]:py-1 text-center select-none">
-        {density !== 'tight' && <AnalogueClock size={density === 'compact' ? 60 : 88} />}
+      <div className="execution-empty w-full min-w-0 min-h-[168px] [@media(max-height:820px)_and_(min-height:761px)]:min-h-[120px] [@media(max-height:760px)]:min-h-0 flex flex-col items-center justify-center px-6 py-5 [@media(max-height:820px)_and_(min-height:761px)]:py-1 [@media(max-height:760px)]:py-1 text-center select-none">
+        <AnalogueClock size={density === 'full' ? 88 : 48} />
         <p className="mt-3 [@media(max-height:760px)]:mt-1 text-[13px] font-semibold text-neutral-700 dark:text-neutral-300">
           Set time beside a priority.
         </p>
-        <p className="mt-1 max-w-[250px] text-[10px] leading-[16px] text-neutral-500 [@media(max-height:660px)]:hidden">
-          Write the task first, then enter the minutes on the same line.
+        <p className="mt-1 max-w-[360px] text-[11px] leading-[16px] text-neutral-500 [@media(max-height:660px)]:hidden">
+          Write first. Set minutes beside the line.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="w-full min-w-0 min-h-[180px] [@media(max-height:820px)_and_(min-height:761px)]:min-h-[140px] [@media(max-height:760px)]:min-h-0 flex flex-col">
-      <div className="h-7 [@media(max-height:760px)]:h-6 shrink-0 flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] text-[10px]">
+    <div className="execution-panel w-full min-w-0 min-h-[180px] [@media(max-height:820px)_and_(min-height:761px)]:min-h-[140px] [@media(max-height:760px)]:min-h-0 flex flex-col">
+      <div className="h-7 [@media(max-height:760px)]:h-6 shrink-0 flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] text-[11px]">
         <span className="font-semibold uppercase tracking-[0.12em] text-neutral-800 dark:text-neutral-200">
           Today’s Time
         </span>
@@ -123,12 +123,12 @@ export default function ExecutionLayer({
       </div>
 
       {capacity.overcommitted && (
-        <p className="shrink-0 py-1.5 [@media(max-height:760px)]:py-0.5 text-[10px] leading-[16px] text-neutral-600 dark:text-neutral-400 border-b border-black/[0.08] dark:border-white/[0.08]">
+        <p className="shrink-0 py-1.5 [@media(max-height:760px)]:py-0.5 text-[11px] leading-[16px] text-neutral-600 dark:text-neutral-400 border-b border-black/[0.08] dark:border-white/[0.08]">
           That is <span className="font-semibold">{formatDuration(capacity.overBySec)}</span> more than the day has left. Move something to tomorrow.
         </p>
       )}
       {capacity.noSlack && (
-        <p className="shrink-0 py-1.5 [@media(max-height:760px)]:py-0.5 text-[10px] leading-[16px] text-neutral-500 dark:text-neutral-400 border-b border-black/[0.08] dark:border-white/[0.08]">
+        <p className="shrink-0 py-1.5 [@media(max-height:760px)]:py-0.5 text-[11px] leading-[16px] text-neutral-500 dark:text-neutral-400 border-b border-black/[0.08] dark:border-white/[0.08]">
           That fills the day without room between tasks.
         </p>
       )}
@@ -145,7 +145,7 @@ export default function ExecutionLayer({
                   <p className="truncate text-[11px] font-semibold text-neutral-800 dark:text-neutral-200">
                     Still on “{item.text}”?
                   </p>
-                  <p className="text-[10px] leading-[16px] text-neutral-500">
+                  <p className="text-[11px] leading-[16px] text-neutral-500">
                     {formatDuration(session.actualFocusSec || 0)} is estimated because the clock was left running.
                   </p>
                 </div>
@@ -154,7 +154,7 @@ export default function ExecutionLayer({
                     type="button"
                     disabled={!isInteractive}
                     onClick={() => answerStillOn(item, true)}
-                    className="rounded px-2 py-1 text-[10px] font-semibold bg-black/[0.05] dark:bg-white/[0.08] hover:bg-black/10 dark:hover:bg-white/15 disabled:opacity-40 transition-colors"
+                    className="rounded px-2 py-1 text-[11px] font-semibold bg-black/[0.05] dark:bg-white/[0.08] hover:bg-black/10 dark:hover:bg-white/15 disabled:opacity-40 transition-colors"
                   >
                     Resume
                   </button>
@@ -162,7 +162,7 @@ export default function ExecutionLayer({
                     type="button"
                     disabled={!isInteractive}
                     onClick={() => answerStillOn(item, false)}
-                    className="rounded px-2 py-1 text-[10px] font-semibold text-neutral-500 hover:text-neutral-900 dark:hover:text-white disabled:opacity-40 transition-colors"
+                    className="rounded px-2 py-1 text-[11px] font-semibold text-neutral-500 hover:text-neutral-900 dark:hover:text-white disabled:opacity-40 transition-colors"
                   >
                     Leave Paused
                   </button>
@@ -173,33 +173,30 @@ export default function ExecutionLayer({
         </div>
       )}
 
-      <div className="flex min-h-[132px] flex-1 flex-col items-center justify-center py-2 text-center">
+      <div className="execution-clock flex min-h-[132px] flex-1 flex-col items-center justify-center py-2 text-center">
         <AnalogueClock
           session={activeSession}
           plannedSec={activeSession ? 0 : capacity.plannedSec}
-          size={activeSession ? 88 : 80}
-          showReadout={Boolean(activeSession)}
+          size={density === 'full' ? 88 : 48}
+          showReadout={Boolean(activeSession) && density !== 'tight'}
         />
 
-        {activeItem ? (
+        {clockItem ? (
           <>
             <p className="mt-1.5 max-w-[82%] truncate text-[11px] font-semibold text-neutral-800 dark:text-neutral-200">
-              {activeSession.state === STATES.BREATHING ? 'Ready for' : 'Working on'} “{activeItem.text}”
+              {activeSession.state === STATES.BREATHING ? 'Ready for' : activeSession.state === STATES.PAUSED ? 'Paused' : 'Working on'} “{clockItem.text}”
             </p>
-            <p className="mt-0.5 text-[10px] text-neutral-500 tabular-nums">
+            <p className="mt-0.5 text-[11px] text-neutral-500 tabular-nums">
               {formatDuration(elapsedSeconds(activeSession))} used · {formatDuration(activeSession.plannedDurationSec || 0)} planned
             </p>
             {isOvertime(activeSession) && (
-              <p className="mt-1 text-[10px] text-neutral-500">The estimate changed. Add time if the task needs it.</p>
+              <p className="mt-1 text-[11px] text-neutral-500">The estimate changed. Add time if the task needs it.</p>
             )}
           </>
         ) : (
           <>
             <p className="mt-3 text-[12px] font-semibold text-neutral-700 dark:text-neutral-300">
               {capacity.plannedSec > 0 ? 'Start from the priority row.' : 'Enter minutes beside a priority.'}
-            </p>
-            <p className="mt-1 text-[10px] leading-[16px] text-neutral-500">
-              One clock appears here when the work begins.
             </p>
           </>
         )}

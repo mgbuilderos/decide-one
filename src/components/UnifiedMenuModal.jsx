@@ -83,14 +83,14 @@ export default function UnifiedMenuModal({
   const currentFw = FRAMEWORKS.find(f => f.id === activeFramework) || FRAMEWORKS[0];
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-black/45 dark:bg-black/75 backdrop-blur-sm animate-in fade-in select-none">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-black/45 dark:bg-black/75  animate-in fade-in select-none">
       
       {/* Backdrop Dismissal */}
       <div className="fixed inset-0" onClick={onClose} />
 
       {/* Main Modal Card */}
       <div 
-        className="relative z-10 w-full max-w-lg bg-white dark:bg-[#141416] text-neutral-900 dark:text-neutral-100 rounded-3xl shadow-2xl border border-black/[0.10] dark:border-white/[0.12] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150"
+        className="relative z-10 w-full max-w-lg bg-white dark:bg-[#151515] text-neutral-900 dark:text-neutral-100 rounded-3xl shadow-2xl border border-black/[0.10] dark:border-white/[0.12] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         
@@ -106,7 +106,7 @@ export default function UnifiedMenuModal({
           <div className="flex items-center gap-2">
             {/* Subtle Patron Pill */}
             {isPatron ? (
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-2xs whitespace-nowrap">
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-2xs whitespace-nowrap">
                 Lifetime Access
               </span>
             ) : (
@@ -117,7 +117,7 @@ export default function UnifiedMenuModal({
                   onClose();
                   onOpenUpgrade?.();
                 }}
-                className="px-2.5 py-0.5 rounded-full text-[10px] font-bold border border-black/15 dark:border-white/20 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer whitespace-nowrap"
+                className="px-2.5 py-0.5 rounded-full text-[11px] font-bold border border-black/15 dark:border-white/20 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer whitespace-nowrap"
               >
                 Lifetime Access
               </button>
@@ -149,7 +149,7 @@ export default function UnifiedMenuModal({
                   Choose Method
                 </span>
               </div>
-              <div className="text-[10px] font-semibold text-neutral-500 dark:text-neutral-500 whitespace-nowrap">
+              <div className="text-[11px] font-semibold text-neutral-500 dark:text-neutral-500 whitespace-nowrap">
                 Active: <span className="text-neutral-900 dark:text-white font-bold">{currentFw.name}</span>
               </div>
             </div>
@@ -196,7 +196,7 @@ export default function UnifiedMenuModal({
                     <span className="text-[11px] font-bold leading-tight whitespace-nowrap">
                       {m.label}
                     </span>
-                    <span className={`text-[9px] whitespace-nowrap mt-0.5 ${
+                    <span className={`text-[11px] whitespace-nowrap mt-0.5 ${
                       isSelected ? 'text-white/80 dark:text-neutral-700' : 'text-neutral-400 dark:text-neutral-500'
                     }`}>
                       {m.sub}
@@ -206,7 +206,7 @@ export default function UnifiedMenuModal({
               })}
             </div>
 
-            <div className="pt-1 flex items-center justify-end gap-3 text-[10px]">
+            <div className="pt-1 flex items-center justify-end gap-3 text-[11px]">
                 <button
                   type="button"
                   onClick={() => {
@@ -249,7 +249,7 @@ export default function UnifiedMenuModal({
                       playSound('click', settings.isMuted);
                       updateSettings({ paperStyle: p.id });
                     }}
-                    className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-all cursor-pointer whitespace-nowrap ${
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer whitespace-nowrap ${
                       settings.paperStyle === p.id
                         ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-2xs'
                         : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'
@@ -265,7 +265,7 @@ export default function UnifiedMenuModal({
             <div className="flex items-center justify-between gap-2 pt-2 border-t border-black/[0.06] dark:border-white/[0.06]">
               <div>
                 <div className="text-xs font-semibold text-neutral-900 dark:text-white">Evening Closure Reminder</div>
-                <div className="text-[10px] text-neutral-500">Local notification & gold spine glow</div>
+                <div className="text-[11px] text-neutral-500">Local notification</div>
               </div>
               <div className="flex items-center gap-2">
                 <input
@@ -280,7 +280,7 @@ export default function UnifiedMenuModal({
                     playSound('click', settings.isMuted);
                     updateSettings({ ambientRemindersEnabled: settings.ambientRemindersEnabled !== false ? false : true });
                   }}
-                  className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-all cursor-pointer ${
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer ${
                     settings.ambientRemindersEnabled !== false
                       ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-2xs'
                       : 'border border-black/[0.1] dark:border-white/[0.15] text-neutral-400'
@@ -357,7 +357,7 @@ export default function UnifiedMenuModal({
               >
                 <Download className="w-3.5 h-3.5 text-neutral-500" />
                 <span className="text-[11px] font-bold whitespace-nowrap">JSON Backup</span>
-                <span className="text-[9px] text-neutral-500 whitespace-nowrap">Full JSON</span>
+                <span className="text-[11px] text-neutral-500 whitespace-nowrap">Full JSON</span>
               </button>
 
               {/* Weekly Briefing PDF */}
@@ -373,7 +373,7 @@ export default function UnifiedMenuModal({
                   <Printer className="w-3.5 h-3.5 text-neutral-700 dark:text-neutral-300" />
                 </div>
                 <span className="text-[11px] font-bold whitespace-nowrap">Weekly Review</span>
-                <span className="text-[9px] text-neutral-500 whitespace-nowrap">Weekly PDF</span>
+                <span className="text-[11px] text-neutral-500 whitespace-nowrap">Weekly PDF</span>
               </button>
 
               {/* Patron Markdown Export */}
@@ -389,7 +389,7 @@ export default function UnifiedMenuModal({
                   <FileText className="w-3.5 h-3.5 text-neutral-700 dark:text-neutral-300" />
                 </div>
                 <span className="text-[11px] font-bold whitespace-nowrap">Markdown Vault</span>
-                <span className="text-[9px] text-neutral-500 whitespace-nowrap">Obsidian / Notion</span>
+                <span className="text-[11px] text-neutral-500 whitespace-nowrap">Obsidian / Notion</span>
               </button>
 
               {/* Patron Print Engine */}
@@ -405,7 +405,7 @@ export default function UnifiedMenuModal({
                   <BookOpen className="w-3.5 h-3.5 text-neutral-700 dark:text-neutral-300" />
                 </div>
                 <span className="text-[11px] font-bold whitespace-nowrap">Annual Archive</span>
-                <span className="text-[9px] text-neutral-500 whitespace-nowrap">Full Year PDF</span>
+                <span className="text-[11px] text-neutral-500 whitespace-nowrap">Full Year PDF</span>
               </button>
             </div>
 
@@ -413,20 +413,20 @@ export default function UnifiedMenuModal({
             <div className="pt-2.5 border-t border-black/[0.06] dark:border-white/[0.06] flex items-center justify-between gap-2">
               <div className="flex items-center gap-2 min-w-0">
                 <div className="w-6 h-6 rounded-lg bg-black/[0.04] dark:bg-white/[0.06] border border-black/[0.06] dark:border-white/[0.08] flex items-center justify-center shrink-0">
-                  <Shield className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                  <Shield className="w-3.5 h-3.5 text-neutral-600 dark:text-neutral-400" />
                 </div>
                 <div className="truncate">
                   <div className="text-[11px] font-bold text-neutral-900 dark:text-white truncate">
                     Air-Gapped Encrypted Vault (.vault)
                   </div>
-                  <div className="text-[9px] text-neutral-500 truncate">
+                  <div className="text-[11px] text-neutral-500 truncate">
                     AES-GCM-256 • PBKDF2 100K Iterations • Zero Cloud
                   </div>
                 </div>
               </div>
 
               <div className="flex items-center gap-1.5 shrink-0">
-                <label className="py-1 px-2 rounded-lg border border-black/[0.08] dark:border-white/[0.1] hover:bg-black/[0.03] dark:hover:bg-white/[0.05] text-[10px] font-semibold text-neutral-600 dark:text-neutral-400 transition-colors cursor-pointer flex items-center gap-1">
+                <label className="py-1 px-2 rounded-lg border border-black/[0.08] dark:border-white/[0.1] hover:bg-black/[0.03] dark:hover:bg-white/[0.05] text-[11px] font-semibold text-neutral-600 dark:text-neutral-400 transition-colors cursor-pointer flex items-center gap-1">
                   <Upload className="w-2.5 h-2.5" />
                   <span>Restore</span>
                   <input
@@ -449,7 +449,7 @@ export default function UnifiedMenuModal({
                     playSound('clasp-lock', settings.isMuted);
                     onExportEncryptedVault?.();
                   }}
-                  className="py-1 px-2.5 rounded-lg text-[10px] font-bold bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-2xs hover:opacity-90 transition-all cursor-pointer whitespace-nowrap"
+                  className="py-1 px-2.5 rounded-lg text-[11px] font-bold bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-2xs hover:opacity-90 transition-all cursor-pointer whitespace-nowrap"
                 >
                   Export .vault
                 </button>
@@ -465,7 +465,7 @@ export default function UnifiedMenuModal({
             <span className="text-[11px] font-semibold text-neutral-500 whitespace-nowrap">Owner:</span>
             <input
               type="text"
-              value={settings.ownerName || 'Maulik'}
+              value={settings.ownerName || ''}
               onChange={(e) => updateSettings({ ownerName: e.target.value })}
               placeholder="Name..."
               className="px-2 py-0.5 text-xs font-bold rounded-lg border border-black/[0.12] dark:border-white/[0.15] bg-transparent text-neutral-900 dark:text-white focus:outline-none focus:border-neutral-900 dark:focus:border-white w-28 sm:w-36"

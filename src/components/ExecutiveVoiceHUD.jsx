@@ -18,7 +18,7 @@ export default function ExecutiveVoiceHUD({
     return (
       <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-2 duration-200 no-print">
         <div className="bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 px-4 py-2.5 rounded-full shadow-2xl border border-black/10 dark:border-white/20 flex items-center gap-3 text-xs font-medium">
-          <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
+          <AlertCircle className="w-4 h-4 text-neutral-500 shrink-0" />
           <span>
             {errorState === 'permission-denied'
               ? 'Microphone access is blocked. Allow microphone permission in browser settings.'
@@ -41,7 +41,7 @@ export default function ExecutiveVoiceHUD({
 
   return (
     <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 animate-in fade-in zoom-in-95 duration-200 no-print">
-      <div className="bg-neutral-900/95 dark:bg-[#1A1A1C]/95 backdrop-blur-md text-white rounded-2xl p-3 shadow-2xl border border-white/10 flex flex-col items-center gap-2.5 w-[360px] sm:w-[420px]">
+      <div className="bg-neutral-900/95 dark:bg-[#1b1b1b]/95  text-white rounded-2xl p-3 shadow-2xl border border-white/10 flex flex-col items-center gap-2.5 w-[360px] sm:w-[420px]">
         
         {/* Top Control Bar: Active Target Routing & Waveform */}
         <div className="w-full flex items-center justify-between border-b border-white/10 pb-2">
@@ -91,7 +91,7 @@ export default function ExecutiveVoiceHUD({
                 <div
                   key={idx}
                   style={{ height: `${heightPct}%` }}
-                  className="w-1 rounded-full bg-amber-400 transition-all duration-75"
+                  className="w-1 rounded-full bg-neutral-400 transition-all duration-75"
                 />
               );
             })}
@@ -104,7 +104,7 @@ export default function ExecutiveVoiceHUD({
             className="p-1 hover:bg-white/10 rounded-full transition-colors cursor-pointer text-neutral-400 hover:text-white"
             title="Complete Dictation"
           >
-            <Check className="w-4 h-4 text-emerald-400" />
+            <Check className="w-4 h-4 text-neutral-400" />
           </button>
         </div>
 
@@ -122,9 +122,9 @@ export default function ExecutiveVoiceHUD({
         </div>
 
         {/* Footnote */}
-        <div className="w-full flex items-center justify-between text-[10px] text-neutral-500 pt-1">
+        <div className="w-full flex items-center justify-between text-[11px] text-neutral-500 pt-1">
           <span className="flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
+            <span className="w-1.5 h-1.5 rounded-full bg-neutral-500 " />
             <span>100% On-Device • Zero Cloud</span>
           </span>
           <span className="tabular-nums">Cmd+Shift+V to toggle</span>

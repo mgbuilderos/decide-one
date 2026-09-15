@@ -145,7 +145,7 @@ export default function BulletItem({
       }`}>
         {/* Delegation Badge */}
         {item.delegate && (
-          <span className="text-[9px] font-semibold px-1.5 py-0.2 rounded-full bg-black/[0.04] dark:bg-white/[0.08] text-neutral-600 dark:text-neutral-300 border border-black/[0.06] dark:border-white/[0.08] flex items-center gap-0.5 select-none whitespace-nowrap">
+          <span className="text-[11px] font-semibold px-1.5 py-0.2 rounded-full bg-black/[0.04] dark:bg-white/[0.08] text-neutral-600 dark:text-neutral-300 border border-black/[0.06] dark:border-white/[0.08] flex items-center gap-0.5 select-none whitespace-nowrap">
             <span>@{item.delegate}</span>
           </span>
         )}
@@ -154,7 +154,7 @@ export default function BulletItem({
         <button
           type="button"
           onClick={handleCycleCategory}
-          className="text-[10px] font-semibold text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white px-1.5 py-0.2 rounded transition-colors select-none"
+          className="text-[11px] font-semibold text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white px-1.5 py-0.2 rounded transition-colors select-none"
           title={`Category: ${currentCategory.label} (Click to switch)`}
         >
           #{currentCategory.label.toLowerCase()}

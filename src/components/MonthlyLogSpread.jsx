@@ -110,7 +110,7 @@ export default function MonthlyLogSpread({
     <section className="flex min-h-0 flex-1 flex-col select-none" aria-label={`${monthName} ${year}`}>
       <header className="flex flex-wrap items-end justify-between gap-3 border-b border-black/10 pb-3 dark:border-white/10">
         <div>
-          <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.18em] text-neutral-500">
+          <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.18em] text-neutral-500">
             Monthly View
           </p>
           <h1 className="text-xl font-bold tracking-tight text-neutral-900 dark:text-white sm:text-2xl">
@@ -166,7 +166,7 @@ export default function MonthlyLogSpread({
         <div className="flex min-h-0 flex-1 flex-col pt-3">
           <div className="grid grid-cols-7 border-b border-black/10 pb-2 dark:border-white/10" aria-hidden="true">
             {WEEKDAYS.map((day) => (
-              <span key={day} className="text-center text-[9px] font-bold uppercase tracking-[0.12em] text-neutral-500 sm:text-[10px]">
+              <span key={day} className="text-center text-[11px] font-bold uppercase tracking-[0.12em] text-neutral-500 sm:text-[11px]">
                 {day}
               </span>
             ))}
@@ -188,13 +188,13 @@ export default function MonthlyLogSpread({
                   aria-current={isToday ? 'date' : undefined}
                   onClick={() => setSelectedDay(day)}
                 >
-                  <span className={`inline-grid h-5 w-5 place-items-center rounded-full text-[10px] font-bold sm:h-6 sm:w-6 sm:text-[11px] ${isToday && !isSelected ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : ''}`}>
+                  <span className={`inline-grid h-5 w-5 place-items-center rounded-full text-[11px] font-bold sm:h-6 sm:w-6 sm:text-[11px] ${isToday && !isSelected ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : ''}`}>
                     {day}
                   </span>
                   {event && (
                     <>
                       <span className={`absolute bottom-1.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full sm:hidden ${isSelected ? 'bg-white dark:bg-neutral-900' : 'bg-neutral-900 dark:bg-white'}`} />
-                      <span className={`mt-1 hidden line-clamp-2 text-[9px] leading-snug sm:block ${isSelected ? 'text-white/75 dark:text-neutral-700' : 'text-neutral-500 dark:text-neutral-400'}`}>
+                      <span className={`mt-1 hidden line-clamp-2 text-[11px] leading-snug sm:block ${isSelected ? 'text-white/75 dark:text-neutral-700' : 'text-neutral-500 dark:text-neutral-400'}`}>
                         {event}
                       </span>
                     </>
@@ -205,10 +205,10 @@ export default function MonthlyLogSpread({
           </div>
 
           <div className="mt-3 flex min-h-11 items-center gap-3 border-t border-black/10 pt-3 dark:border-white/10">
-            <label htmlFor="monthly-event" className="hidden min-w-36 text-[10px] font-bold uppercase tracking-[0.12em] text-neutral-500 sm:block">
+            <label htmlFor="monthly-event" className="hidden min-w-36 text-[11px] font-bold uppercase tracking-[0.12em] text-neutral-500 sm:block">
               {formatSelectedDate(year, monthIndex, selectedDay)}
             </label>
-            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-black/10 text-[10px] font-bold text-neutral-600 dark:border-white/10 dark:text-neutral-300 sm:hidden">
+            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-black/10 text-[11px] font-bold text-neutral-600 dark:border-white/10 dark:text-neutral-300 sm:hidden">
               {selectedDay}
             </span>
             <input
@@ -224,7 +224,7 @@ export default function MonthlyLogSpread({
       ) : (
         <div className="mx-auto flex min-h-0 w-full max-w-3xl flex-1 flex-col pt-5">
           <div className="mb-4">
-            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-neutral-500">What Matters This Month</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-neutral-500">What Matters This Month</p>
             <h2 className="mt-1 text-lg font-bold tracking-tight text-neutral-900 dark:text-white">Keep the important work visible.</h2>
           </div>
 
@@ -259,7 +259,7 @@ export default function MonthlyLogSpread({
             ) : (
               masterTasks.map((task, index) => (
                 <div key={task.id} className="group flex min-h-12 items-center gap-3 border-b border-black/[0.08] dark:border-white/[0.08]">
-                  <span className="w-6 text-[10px] font-bold text-neutral-500 dark:text-neutral-700">{String(index + 1).padStart(2, '0')}</span>
+                  <span className="w-6 text-[11px] font-bold text-neutral-500 dark:text-neutral-700">{String(index + 1).padStart(2, '0')}</span>
                   <button
                     type="button"
                     className={`grid h-7 w-7 shrink-0 place-items-center rounded-full border transition-colors ${task.completed ? 'border-neutral-900 bg-neutral-900 text-white dark:border-white dark:bg-white dark:text-neutral-900' : 'border-neutral-300 text-transparent hover:border-neutral-900 dark:border-neutral-700 dark:hover:border-white'}`}
@@ -289,7 +289,7 @@ export default function MonthlyLogSpread({
         </div>
       )}
 
-      <footer className="mt-3 flex items-center justify-between border-t border-black/10 pt-2 text-[9px] font-semibold tracking-wide text-neutral-500 dark:border-white/10">
+      <footer className="mt-3 flex items-center justify-between border-t border-black/10 pt-2 text-[11px] font-semibold tracking-wide text-neutral-500 dark:border-white/10">
         <span>{view === 'calendar' ? 'A familiar month. One important line per day.' : 'The work that should shape this month.'}</span>
         <span>{masterTasks.filter((task) => !task.completed).length} Priorities</span>
       </footer>

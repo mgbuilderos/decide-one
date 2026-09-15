@@ -59,14 +59,14 @@ export default function PatronUpgradeModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[110] flex items-center justify-center p-3 sm:p-4 bg-black/50 dark:bg-black/80 backdrop-blur-md animate-in fade-in select-none">
+    <div className="fixed inset-0 z-[110] flex items-center justify-center p-3 sm:p-4 bg-black/50 dark:bg-black/80  animate-in fade-in select-none">
       
       {/* Backdrop Click Dismissal */}
       <div className="fixed inset-0" onClick={onClose} />
 
       {/* Modal Container */}
       <div 
-        className="relative z-10 w-full max-w-lg max-h-[92vh] bg-white dark:bg-[#141416] text-neutral-900 dark:text-neutral-100 rounded-3xl shadow-2xl border border-black/[0.12] dark:border-white/[0.15] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150"
+        className="relative z-10 w-full max-w-lg max-h-[92vh] bg-white dark:bg-[#151515] text-neutral-900 dark:text-neutral-100 rounded-3xl shadow-2xl border border-black/[0.12] dark:border-white/[0.15] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         
@@ -95,7 +95,7 @@ export default function PatronUpgradeModal({
           
           {/* Hero Banner */}
           <div className="text-center space-y-1.5 pt-1">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/[0.05] dark:bg-white/[0.08] text-[10px] font-bold uppercase tracking-wider text-neutral-700 dark:text-neutral-300">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/[0.05] dark:bg-white/[0.08] text-[11px] font-bold uppercase tracking-wider text-neutral-700 dark:text-neutral-300">
               <Sparkles className="w-3 h-3" />
               <span>Lifetime Access</span>
             </div>
@@ -110,7 +110,7 @@ export default function PatronUpgradeModal({
           {/* Pricing Box */}
           <div className="p-4 rounded-2xl border border-black/[0.12] dark:border-white/[0.15] bg-neutral-50 dark:bg-neutral-900/50 flex items-center justify-between">
             <div>
-              <div className="text-[10px] font-bold uppercase tracking-widest text-neutral-500 dark:text-neutral-500">
+              <div className="text-[11px] font-bold uppercase tracking-widest text-neutral-500 dark:text-neutral-500">
                 Lifetime License
               </div>
               <div className="flex items-baseline gap-1.5 mt-0.5">
@@ -126,7 +126,7 @@ export default function PatronUpgradeModal({
 
           {/* Feature list */}
           <div className="space-y-2.5">
-            <div className="text-[10px] font-bold uppercase tracking-widest text-neutral-500 dark:text-neutral-500 px-1">
+            <div className="text-[11px] font-bold uppercase tracking-widest text-neutral-500 dark:text-neutral-500 px-1">
               Included With Lifetime Access
             </div>
 
@@ -197,7 +197,7 @@ export default function PatronUpgradeModal({
                     Enter Custom Key
                   </span>
                 </div>
-                <span className="text-[10px] font-semibold tracking-wider text-neutral-500">
+                <span className="text-[11px] font-semibold tracking-wider text-neutral-500">
                   From your receipt
                 </span>
               </div>
@@ -226,13 +226,13 @@ export default function PatronUpgradeModal({
               </div>
 
               {activationError && (
-                <div className="text-[11px] text-red-500 dark:text-red-400 font-medium">
+                <div className="text-[11px] text-neutral-500 dark:text-neutral-400 font-medium">
                   {activationError}
                 </div>
               )}
 
               {activationSuccess && (
-                <div className="text-[11px] text-green-600 dark:text-green-400 font-bold flex items-center gap-1">
+                <div className="text-[11px] text-neutral-600 dark:text-neutral-400 font-bold flex items-center gap-1">
                   <Check className="w-3.5 h-3.5 stroke-[3]" />
                   <span>Lifetime Access Activated.</span>
                 </div>
@@ -243,7 +243,7 @@ export default function PatronUpgradeModal({
         </div>
 
         {/* Modal Footer */}
-        <div className="h-11 px-6 bg-black/[0.02] dark:bg-white/[0.03] border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-[10px] text-neutral-500 shrink-0">
+        <div className="h-11 px-6 bg-black/[0.02] dark:bg-white/[0.03] border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-[11px] text-neutral-500 shrink-0">
           <span>On-Device By Default</span>
           <span>Version 2.0</span>
         </div>

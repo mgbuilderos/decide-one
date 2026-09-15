@@ -32,12 +32,12 @@ export function DateDisplay({ currentDate }) {
         </span>
       </h1>
 
-      <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 whitespace-nowrap shrink-0">
-        <span className="hidden sm:inline px-1.5 sm:px-2 py-0.5 bg-black/[0.04] dark:bg-white/[0.06] rounded-full text-[10px] text-neutral-700 dark:text-neutral-300 font-bold tracking-wide whitespace-nowrap">
+      <div className="flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 whitespace-nowrap shrink-0">
+        <span className="hidden sm:inline px-1.5 sm:px-2 py-0.5 bg-black/[0.04] dark:bg-white/[0.06] rounded-full text-[11px] text-neutral-700 dark:text-neutral-300 font-bold tracking-wide whitespace-nowrap">
           {formattedWeekday}
         </span>
         <span className="opacity-30 hidden xs:inline">•</span>
-        <span className="text-[10px] tracking-wider uppercase hidden xs:inline whitespace-nowrap tabular-nums">
+        <span className="text-[11px] tracking-wider uppercase hidden xs:inline whitespace-nowrap tabular-nums">
           Day {dayOfYear}
         </span>
       </div>

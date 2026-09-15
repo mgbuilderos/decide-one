@@ -26,8 +26,8 @@ const MENTAL_MODELS = [
 
 const STAKE_LEVELS = [
   { id: 'Strategic', label: 'Strategic', color: 'text-neutral-700 dark:text-neutral-300 bg-neutral-500/10' },
-  { id: 'Critical', label: 'Critical', color: 'text-amber-600 dark:text-amber-400 bg-amber-500/10' },
-  { id: 'High', label: 'High Stakes', color: 'text-red-600 dark:text-red-400 bg-red-500/10' }
+  { id: 'Critical', label: 'Critical', color: 'text-neutral-600 dark:text-neutral-400 bg-neutral-500/10' },
+  { id: 'High', label: 'High Stakes', color: 'text-neutral-600 dark:text-neutral-400 bg-neutral-500/10' }
 ];
 
 export default function ExecutiveDecisionLogModal({
@@ -100,14 +100,14 @@ export default function ExecutiveDecisionLogModal({
   });
 
   return (
-    <div className="fixed inset-0 z-[115] flex items-center justify-center p-3 sm:p-5 bg-black/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in select-none">
+    <div className="fixed inset-0 z-[115] flex items-center justify-center p-3 sm:p-5 bg-black/60 dark:bg-black/80  animate-in fade-in select-none">
       
       {/* Backdrop */}
       <div className="fixed inset-0" onClick={onClose} />
 
       {/* Modal Stage */}
       <div 
-        className="relative z-10 w-full max-w-2xl bg-white dark:bg-[#141416] text-neutral-900 dark:text-neutral-100 rounded-3xl shadow-2xl border border-black/[0.12] dark:border-white/[0.12] flex flex-col max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-150"
+        className="relative z-10 w-full max-w-2xl bg-white dark:bg-[#151515] text-neutral-900 dark:text-neutral-100 rounded-3xl shadow-2xl border border-black/[0.12] dark:border-white/[0.12] flex flex-col max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-150"
         onClick={e => e.stopPropagation()}
       >
         {/* Header Bar */}
@@ -119,11 +119,11 @@ export default function ExecutiveDecisionLogModal({
             <div>
               <div className="text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-white flex items-center gap-2">
                 <span>Decision Log</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-neutral-500 dark:text-neutral-400 font-semibold">
+                <span className="text-[11px] px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-neutral-500 dark:text-neutral-400 font-semibold">
                   {decisions.length} Logged
                 </span>
               </div>
-              <div className="text-[10px] text-neutral-500">
+              <div className="text-[11px] text-neutral-500">
                 Mental models, confidence calibration & 30/90-day retrospectives
               </div>
             </div>
@@ -215,7 +215,7 @@ export default function ExecutiveDecisionLogModal({
                       }`}
                     >
                       <span className="text-[11px] font-bold block">{model.label}</span>
-                      <span className="text-[9px] opacity-70 block mt-0.5 leading-tight">{model.desc}</span>
+                      <span className="text-[11px] opacity-70 block mt-0.5 leading-tight">{model.desc}</span>
                     </button>
                   ))}
                 </div>
@@ -268,7 +268,7 @@ export default function ExecutiveDecisionLogModal({
                     onChange={e => setConfidence(e.target.value)}
                     className="w-full accent-neutral-900 dark:accent-white cursor-pointer"
                   />
-                  <div className="flex justify-between text-[9px] text-neutral-500">
+                  <div className="flex justify-between text-[11px] text-neutral-500">
                     <span>50% (Coin Toss)</span>
                     <span>75% (Strong Edge)</span>
                     <span>100% (Certainty)</span>
@@ -395,31 +395,31 @@ export default function ExecutiveDecisionLogModal({
                         <div className="flex items-start justify-between gap-3">
                           <div className="space-y-1 min-w-0">
                             <div className="flex flex-wrap items-center gap-2">
-                              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                              <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
                                 dec.stake === 'Critical'
-                                  ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                                  ? 'bg-neutral-500/10 text-neutral-600 dark:text-neutral-400'
                                   : dec.stake === 'High'
-                                    ? 'bg-red-500/10 text-red-600 dark:text-red-400'
+                                    ? 'bg-neutral-500/10 text-neutral-600 dark:text-neutral-400'
                                     : 'bg-neutral-500/10 text-neutral-700 dark:text-neutral-300'
                               }`}>
                                 {dec.stake || 'Strategic'}
                               </span>
 
-                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-neutral-700 dark:text-neutral-300">
+                              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-neutral-700 dark:text-neutral-300">
                                 {dec.mentalModel || 'First Principles'}
                               </span>
 
-                              <span className="text-[10px] font-bold text-neutral-500">
+                              <span className="text-[11px] font-bold text-neutral-500">
                                 Confidence: {dec.confidence || 85}%
                               </span>
 
                               {dec.status === 'reviewed' ? (
-                                <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                                <span className="text-[11px] font-bold text-neutral-600 dark:text-neutral-400 flex items-center gap-1">
                                   <CheckCircle2 className="w-3 h-3" />
                                   <span>Reviewed</span>
                                 </span>
                               ) : (
-                                <span className="text-[10px] font-bold text-neutral-500 flex items-center gap-1">
+                                <span className="text-[11px] font-bold text-neutral-500 flex items-center gap-1">
                                   <Clock className="w-3 h-3" />
                                   <span>Review Date: {dec.reviewDate}</span>
                                 </span>
@@ -437,7 +437,7 @@ export default function ExecutiveDecisionLogModal({
                               playSound('click', isMuted);
                               onDeleteDecision?.(dec.id);
                             }}
-                            className="p-1 rounded-lg text-neutral-400 hover:text-red-500 transition-colors cursor-pointer shrink-0"
+                            className="p-1 rounded-lg text-neutral-400 hover:text-neutral-500 transition-colors cursor-pointer shrink-0"
                             title="Delete decision"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -460,17 +460,17 @@ export default function ExecutiveDecisionLogModal({
 
                         {/* Retrospective Section */}
                         {dec.retrospective ? (
-                          <div className="p-3 rounded-xl bg-emerald-500/[0.05] border border-emerald-500/20 text-xs space-y-1">
-                            <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
+                          <div className="p-3 rounded-xl bg-neutral-500/[0.05] border border-neutral-500/20 text-xs space-y-1">
+                            <div className="text-[11px] font-bold uppercase tracking-wider text-neutral-700 dark:text-neutral-400">
                               Review &amp; Lesson
                             </div>
-                            <p className="text-emerald-950 dark:text-emerald-200 leading-relaxed font-serif italic">
+                            <p className="text-neutral-950 dark:text-neutral-200 leading-relaxed font-serif italic">
                               "{dec.retrospective}"
                             </p>
                           </div>
                         ) : isReviewFormOpen ? (
                           <div className="pt-2 space-y-2 border-t border-black/[0.06] dark:border-white/[0.08]">
-                            <label className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 block">
+                            <label className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 block">
                               Record Retrospective: Was this decision validated? What did reality teach you?
                             </label>
                             <textarea
@@ -491,7 +491,7 @@ export default function ExecutiveDecisionLogModal({
                               <button
                                 type="button"
                                 onClick={() => handleSaveRetrospective(dec.id)}
-                                className="px-3 py-1 bg-emerald-600 text-white rounded-lg text-xs font-bold hover:bg-emerald-700"
+                                className="px-3 py-1 bg-neutral-600 text-white rounded-lg text-xs font-bold hover:bg-neutral-700"
                               >
                                 Save Retrospective
                               </button>
@@ -524,7 +524,7 @@ export default function ExecutiveDecisionLogModal({
         </div>
 
         {/* Modal Bottom Bar */}
-        <div className="h-10 px-6 bg-black/[0.015] dark:bg-white/[0.02] border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between text-[10px] text-neutral-500 shrink-0">
+        <div className="h-10 px-6 bg-black/[0.015] dark:bg-white/[0.02] border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between text-[11px] text-neutral-500 shrink-0">
           <span>Keyboard Shortcut: Cmd+D</span>
           <span>100% On-Device Cryptographic Ledger</span>
         </div>

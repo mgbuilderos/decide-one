@@ -192,7 +192,7 @@ function getVolumeSeedData(volumeId) {
       settings: {
         font: 'sans',
         paperStyle: 'plain',
-        penColor: '#18181B',
+        penColor: '#191919',
         isMuted: false,
         darkMode: false,
         viewMode: 'stream'
@@ -277,7 +277,7 @@ function getVolumeSeedData(volumeId) {
       settings: {
         font: 'sans',
         paperStyle: 'square',
-        penColor: '#18181B',
+        penColor: '#191919',
         isMuted: false,
         darkMode: false,
         viewMode: 'stream'
@@ -362,7 +362,7 @@ function getVolumeSeedData(volumeId) {
       settings: {
         font: 'sans',
         paperStyle: 'dots',
-        penColor: '#18181B',
+        penColor: '#191919',
         isMuted: false,
         darkMode: false,
         viewMode: 'stream'
@@ -501,7 +501,7 @@ function getVolumeSeedData(volumeId) {
     settings: {
       font: 'sans',
       paperStyle: 'dots',
-      penColor: '#18181B',
+      penColor: '#191919',
       isMuted: false,
       darkMode: false,
       viewMode: 'stream'
@@ -522,7 +522,7 @@ function getEmptyVolumeData() {
       paperStyle: 'plain',
       paperTone: 'white',
       inkColor: 'carbon',
-      penColor: '#18181B',
+      penColor: '#191919',
       isMuted: false,
       darkMode: false,
       viewMode: 'stream'

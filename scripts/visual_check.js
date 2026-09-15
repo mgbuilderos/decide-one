@@ -20,6 +20,7 @@ import sharp from 'sharp';
 
 const UPDATE = process.argv.includes('--update');
 const DIST = 'dist';
+const LAYOUT = process.argv.includes('--layout');
 // Baselines are per platform. Fonts rasterise differently on macOS and Linux, so
 // a baseline recorded on one can never match the other, and each machine records
 // its own on first run. The measurements (contrast, scroll, tracking, console,
@@ -65,10 +66,50 @@ const SURFACES = [
   // The sizes that were putting the day out of reach until 13 September 2026.
   { id: 'daily-small', url: '/?view=daily', vp: { w: 1280, h: 600 }, fixed: true },
   { id: 'daily-tiny', url: '/?view=daily', vp: { w: 320, h: 568 }, fixed: true },
+  { id: 'yearly-tiny', url: '/?view=yearly', vp: { w: 320, h: 568 }, fixed: true },
   { id: 'weekly-tiny', url: '/?view=weekly', vp: { w: 320, h: 568 }, fixed: true },
   // The morning question, held open on purpose, at the size it was hardest to fit.
   { id: 'daily-prompt-tiny', url: '/?view=daily', vp: { w: 320, h: 568 }, fixed: true, prompt: true }
 ];
+
+// Populated modes use the real persisted schema, not alternate components.
+function journalSeed(kind = 'empty', dark = false) {
+  const stamp = '2026-09-14T09:30:00+05:30';
+  const tasks = ['Write the proposal', 'Review the budget', 'Call the supplier'].map((text, i) => ({id: `qa${i}`, text, completed: false}));
+  const day = {dateString: '2026-09-14', dayCondition: 'known', activeFramework: 'rule_of_3', hardTasks: kind === 'empty' ? tasks.map(t => ({...t,text:''})) : tasks, rapidLog: [], execution: {}};
+  if (kind === 'empty') { delete day.activeFramework; delete day.dayCondition; }
+  if (kind === 'ivy') {
+    day.activeFramework = 'ivy_lee';
+    day.frameworkData = {ivy_lee: {tasks: Array.from({length: 6}, (_, i) => ({id: `il_${i}`, text: `Priority ${i + 1}`, completed: i === 0}))}};
+  }
+  if (kind === 'matrix') {
+    day.activeFramework = 'eisenhower';
+    day.frameworkData = {eisenhower: {quadrants: Object.fromEntries(['q1','q2','q3','q4'].map((q,i)=>[q,[{id:q,text:tasks[i%3].text,completed:false,classified:true}]]))}};
+  }
+  if (['running','overrun','paused','closed'].includes(kind)) {
+    day.execution.qa0 = {plannedDurationSec: 1500, accumulatedSec: kind === 'overrun' ? 1800 : 300, actualFocusSec: 300, pausedDurationSec: 0, state: kind === 'closed' ? 'DONE' : kind === 'paused' ? 'PAUSED' : 'RUNNING', timingAccuracy:'measured', runStartedAt:stamp, lastTickAt:stamp};
+    if (kind === 'closed') day.closedAt = stamp;
+  }
+  return {dailyLogs: {'2026-09-14': day}, monthlyLogs:{}, weeklyReviews:{}, decisions:[], closureLogs:{}, habits:[], settings:{darkMode:dark,isMuted:true,paperStyle:'plain'}};
+}
+// Full Matrix lists remain in the diagnostic sweep until their narrow layout is settled.
+for (const kind of ['written','ivy','running','overrun','paused','closed']) {
+  SURFACES.push({id:`state-${kind}`,url:'/?view=daily',vp:{w:320,h:568},fixed:true,seed:kind});
+}
+if (LAYOUT) {
+  SURFACES.length = 0;
+  for (const [w,h] of [[1440,900],[1366,768],[1366,700],[1366,640],[1280,600],[390,844],[360,740],[320,568]]) {
+    for (const dark of [false,true]) for (const view of ['daily','weekly','monthly','yearly']) {
+      SURFACES.push({id:`layout-${view}-${w}-${h}-${dark?'dark':'light'}`,url:`/?view=${view}`,vp:{w,h},fixed:true,dark});
+    }
+  }
+  for (const kind of ['written','ivy','matrix','running','overrun','paused','closed']) for (const dark of [false,true]) {
+    SURFACES.push({id:`layout-${kind}-${dark?'dark':'light'}`,url:'/?view=daily',vp:{w:320,h:568},fixed:true,seed:kind,dark});
+  }
+}
+
+const only = process.argv.find(arg => arg.startsWith('--surface='))?.slice(10);
+if (only) { const selected = SURFACES.filter(s => s.id.includes(only)); if (!selected.length) throw new Error('No matching surface'); SURFACES.splice(0, SURFACES.length, ...selected); }
 
 // ── A static server for dist/, so the check runs against the real artefact ────
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css',
@@ -261,6 +302,24 @@ const PROBE = `(() => {
   const all = [...document.querySelectorAll('body *')].filter(vis);
   const texty = all.filter(el => [...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim().length > 2));
 
+  // Rule 10 measures the retired badge's appearance, independently of its name.
+  // The wordmark button is navigation; a plain quick-start label is information.
+  const brandChrome = texty.filter(el => /^decide\\s+one$/i.test(el.textContent.trim())
+    && !el.closest('a,button')).flatMap(el => {
+      const decorated = [];
+      for (let n = el; n && /^decide\\s+one$/i.test(n.textContent.trim()); n = n.parentElement) {
+        const s = getComputedStyle(n);
+        const bg = (s.backgroundColor.match(/[\\d.]+/g) || []).map(Number);
+        if (s.backgroundImage !== 'none' || s.boxShadow !== 'none'
+          || ['dashed', 'dotted', 'double'].includes(s.borderTopStyle)
+          || (bg.length >= 3 && (bg.length === 3 || bg[3] > 0))) {
+          decorated.push({ el: name(n), reason: 'decorated brand label' });
+          break;
+        }
+      }
+      return decorated;
+    });
+
   // 1. Tracking so tight the glyphs collide. -4px is right at 86px and ruinous
   //    at 18px, which is exactly how a display heading collapsed into mush.
   const tracking = texty.map(el => {
@@ -297,7 +356,8 @@ const PROBE = `(() => {
   // scroll: the content is CLIPPED instead, which is worse — the person cannot
   // reach it at all. Checking documentElement.scrollHeight alone is an
   // assertion that can never fire, which is how this shipped once already.
-  const boxes = all.filter(el => el.clientHeight > 120 && el.scrollHeight > el.clientHeight + 24);
+  const boxes = all.filter(el => (el.clientHeight > 120 && el.scrollHeight > el.clientHeight + 24)
+    || (el.matches('.year-card') && el.clientHeight > 0 && el.scrollHeight > el.clientHeight + 2));
   const scrollers = boxes.filter(el => /auto|scroll/.test(getComputedStyle(el).overflowY))
     .map(el => ({ el: name(el), hidden: el.scrollHeight - el.clientHeight, kind: 'scrolls' }));
   const clipped = boxes.filter(el => getComputedStyle(el).overflowY === 'hidden')
@@ -314,6 +374,7 @@ const PROBE = `(() => {
 
   const d = document.documentElement;
   return {
+    brandChrome,
     clipped_x,
     vpH: innerHeight, docH: d.scrollHeight,
     scrolls: d.scrollHeight > innerHeight + 2,
@@ -338,7 +399,7 @@ for (const s of SURFACES) {
     { features: [{ name: 'prefers-color-scheme', value: s.dark ? 'dark' : 'light' },
                  { name: 'prefers-reduced-motion', value: 'reduce' }] });
 
-  const seed = await call('Page.addScriptToEvaluateOnNewDocument', { source: `localStorage.removeItem('DECIDEONE_STUDIO_V1'); localStorage.${s.quickStart ? "removeItem('DECIDEONE_QUICK_START_V1')" : "setItem('DECIDEONE_QUICK_START_V1', 'done')"};` });
+  const seed = await call('Page.addScriptToEvaluateOnNewDocument', { source: `localStorage.setItem('DECIDEONE_STUDIO_V1', ${JSON.stringify(JSON.stringify(journalSeed(s.seed, s.dark)))}); localStorage.${s.quickStart ? "removeItem('DECIDEONE_QUICK_START_V1')" : "setItem('DECIDEONE_QUICK_START_V1', 'done')"};` });
   await call('Page.navigate', { url: ORIGIN + s.url });
   await call('Page.removeScriptToEvaluateOnNewDocument', { identifier: seed.identifier });
   await settle(2600);                       // fonts, lazy chunks, WebGL fallback
@@ -351,6 +412,11 @@ for (const s of SURFACES) {
     await settle(700);
   }
 
+  if (s.seed === 'closed') {
+    await evaluate('[...document.querySelectorAll("button")].find(b => b.textContent.trim() === "Turn Over")?.click(); 1');
+    await settle(200);
+  }
+
   let m;
   try {
     m = await evaluate(PROBE);
@@ -360,6 +426,7 @@ for (const s of SURFACES) {
   }
 
   const at = `${s.id} (${s.vp.w}×${s.vp.h})`;
+  if (s.fixed) for (const badge of m.brandChrome) errors.push(`${at}: Rule 10 — ${badge.el}: ${badge.reason}`);
   for (const c of consoleErrors.slice(0, 2)) errors.push(`${at}: console error — ${c.slice(0, 140)}`);
   if (s.fixed && m.scrolls) {
     errors.push(`${at}: the instrument scrolls — ${m.docH}px of content in a ${m.vpH}px viewport. `
@@ -384,6 +451,8 @@ for (const s of SURFACES) {
   for (const o of m.overflow.slice(0, 2)) {
     if (!m.hScroll) errors.push(`${at}: ${o.el} extends to ${o.right}px, past the ${s.vp.w}px viewport`);
   }
+
+  if (LAYOUT) continue;
 
   // ── Pixels ─────────────────────────────────────────────────────────────────
   const shot = await call('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });

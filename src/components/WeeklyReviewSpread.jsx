@@ -225,7 +225,7 @@ export default function WeeklyReviewSpread({
   };
 
   return (
-    <div className="flex-1 min-h-0 flex flex-col overflow-hidden text-neutral-900 dark:text-neutral-100">
+    <div className="weekly-review flex-1 min-h-0 flex flex-col overflow-hidden text-neutral-900 dark:text-neutral-100">
       
       {/* Top Header Strip: Week Navigation & Actions */}
       <div className="h-10 border-b border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between px-1 mb-2 shrink-0 no-print">
@@ -259,7 +259,7 @@ export default function WeeklyReviewSpread({
 
           <button
             onClick={handleJumpToday}
-            className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full border border-black/10 dark:border-white/15 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white cursor-pointer ml-1"
+            className="text-[11px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full border border-black/10 dark:border-white/15 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white cursor-pointer ml-1"
           >
             Today
           </button>
@@ -325,37 +325,37 @@ export default function WeeklyReviewSpread({
           {/* Executive KPI Bar */}
           <div className="grid grid-cols-3 gap-2 [@media(max-height:620px)]:gap-1 p-2.5 [@media(max-height:620px)]:p-1 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] mb-3 [@media(max-height:620px)]:mb-1 shrink-0">
             <div>
-              <div className="text-[9px] uppercase tracking-wider font-bold text-neutral-500 dark:text-neutral-500">
+              <div className="text-[11px] uppercase tracking-wider font-bold text-neutral-500 dark:text-neutral-500">
                 Completed
               </div>
               <div className="text-sm font-bold text-neutral-900 dark:text-white mt-0.5">
                 {completedPriorities} / {totalPriorities}
               </div>
-              <div className="text-[10px] text-neutral-500">
+              <div className="text-[11px] text-neutral-500">
                 {priorityRate}% Completed
               </div>
             </div>
 
             <div>
-              <div className="text-[9px] uppercase tracking-wider font-bold text-neutral-500 dark:text-neutral-500">
+              <div className="text-[11px] uppercase tracking-wider font-bold text-neutral-500 dark:text-neutral-500">
                 Time
               </div>
               <div className="text-sm font-bold text-neutral-900 dark:text-white mt-0.5">
                 {formatDuration(weekActualSec)}
               </div>
-              <div className="text-[10px] text-neutral-500">
+              <div className="text-[11px] text-neutral-500">
                 of {formatDuration(weekPlannedSec)} planned
               </div>
             </div>
 
             <div>
-              <div className="text-[9px] uppercase tracking-wider font-bold text-neutral-500 dark:text-neutral-500">
+              <div className="text-[11px] uppercase tracking-wider font-bold text-neutral-500 dark:text-neutral-500">
                 Estimate accuracy
               </div>
               <div className="text-sm font-bold text-neutral-900 dark:text-white mt-0.5">
                 {timeboxAccuracy === null ? '—' : `${timeboxAccuracy}%`}
               </div>
-              <div className="text-[10px] text-neutral-500">
+              <div className="text-[11px] text-neutral-500">
                 {timeboxAccuracy === null ? 'No timeboxes yet' : 'How close the guesses were'}
               </div>
             </div>
@@ -364,10 +364,10 @@ export default function WeeklyReviewSpread({
           {/* Where the week's time went — planned against actual (R7). */}
           <div className="mb-3 [@media(max-height:620px)]:mb-0.5 shrink-0">
             <div className="flex items-center justify-between mb-1.5 px-0.5">
-              <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400">
+              <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400">
                 Planned vs Actual
               </span>
-              <span className="text-[10px] text-neutral-500">
+              <span className="text-[11px] text-neutral-500">
                 {daysWithPlans} of 7 days planned
               </span>
             </div>
@@ -387,12 +387,12 @@ export default function WeeklyReviewSpread({
                         <div className="absolute top-0 left-0 right-0 h-[3px] bg-neutral-400 dark:bg-neutral-500" title="Ran over" />
                       )}
                     </div>
-                    <span className="text-[9px] text-neutral-500">{day.dayLetter}</span>
+                    <span className="text-[11px] text-neutral-500">{day.dayLetter}</span>
                   </div>
                 );
               })}
             </div>
-            <p className="mt-1.5 text-[10px] text-neutral-500 leading-[16px]">
+            <p className="mt-1.5 text-[11px] text-neutral-500 leading-[16px]">
               {weekPlannedSec > 0
                 ? `${formatDuration(weekActualSec)} spent against ${formatDuration(weekPlannedSec)} planned.`
                 : 'No time was set this week, so there is nothing to compare.'}
@@ -403,10 +403,10 @@ export default function WeeklyReviewSpread({
           {/* Weekly Carryover Triage */}
           <div className="flex-1 min-h-0 flex flex-col">
             <div className="flex items-center justify-between mb-1.5 px-0.5 shrink-0">
-              <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400">
+              <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400">
                 Carry Forward ({pendingTasks.length})
               </span>
-              <span className="text-[10px] text-neutral-500">
+              <span className="text-[11px] text-neutral-500">
                 Uncompleted from Mon–Sun
               </span>
             </div>
@@ -432,7 +432,7 @@ export default function WeeklyReviewSpread({
                         <span className={`leading-tight font-medium ${currentAction ? 'line-through text-neutral-400' : 'text-neutral-800 dark:text-neutral-200'}`}>
                           {task.text}
                         </span>
-                        <span className="text-[9px] font-bold uppercase text-neutral-500 shrink-0">
+                        <span className="text-[11px] font-bold uppercase text-neutral-500 shrink-0">
                           {task.sourceDayLabel}
                         </span>
                       </div>
@@ -442,7 +442,7 @@ export default function WeeklyReviewSpread({
                         <button
                           type="button"
                           onClick={() => handleTriageAction(task, 'migrate')}
-                          className={`px-2 py-0.5 rounded-full text-[10px] font-semibold flex items-center gap-1 transition-all cursor-pointer ${
+                          className={`px-2 py-0.5 rounded-full text-[11px] font-semibold flex items-center gap-1 transition-all cursor-pointer ${
                             currentAction === 'migrate'
                               ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900'
                               : 'border border-black/10 dark:border-white/15 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'
@@ -456,7 +456,7 @@ export default function WeeklyReviewSpread({
                         <button
                           type="button"
                           onClick={() => handleTriageAction(task, 'delegate')}
-                          className={`px-2 py-0.5 rounded-full text-[10px] font-semibold flex items-center gap-1 transition-all cursor-pointer ${
+                          className={`px-2 py-0.5 rounded-full text-[11px] font-semibold flex items-center gap-1 transition-all cursor-pointer ${
                             currentAction === 'delegate'
                               ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900'
                               : 'border border-black/10 dark:border-white/15 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'
@@ -470,7 +470,7 @@ export default function WeeklyReviewSpread({
                         <button
                           type="button"
                           onClick={() => handleTriageAction(task, 'drop')}
-                          className={`px-2 py-0.5 rounded-full text-[10px] font-semibold flex items-center gap-1 transition-all cursor-pointer ${
+                          className={`px-2 py-0.5 rounded-full text-[11px] font-semibold flex items-center gap-1 transition-all cursor-pointer ${
                             currentAction === 'drop'
                               ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900'
                               : 'border border-black/10 dark:border-white/15 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'
@@ -499,7 +499,7 @@ export default function WeeklyReviewSpread({
           <div className="mb-4 shrink-0">
             <div className="flex items-center gap-1.5 mb-2 px-0.5">
               <Trophy className="w-3.5 h-3.5 text-neutral-500" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400">
+              <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400">
                 What Moved
               </span>
             </div>
@@ -530,7 +530,7 @@ export default function WeeklyReviewSpread({
           <div className="mb-4 shrink-0">
             <div className="flex items-center gap-1.5 mb-2 px-0.5">
               <AlertCircle className="w-3.5 h-3.5 text-neutral-500" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400">
+              <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400">
                 What Got In The Way
               </span>
             </div>
@@ -548,7 +548,7 @@ export default function WeeklyReviewSpread({
           <div className="flex-1 min-h-0 flex flex-col mb-3">
             <div className="flex items-center gap-1.5 mb-2 px-0.5 shrink-0">
               <Sparkles className="w-3.5 h-3.5 text-neutral-500" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400">
+              <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400">
                 What Comes First Next Week
               </span>
             </div>
@@ -576,7 +576,7 @@ export default function WeeklyReviewSpread({
           </div>
 
           {/* Executive Seal Footer */}
-          <div className="pt-2 border-t border-black/[0.06] dark:border-white/[0.06] flex items-center justify-between text-[10px] text-neutral-500 shrink-0">
+          <div className="pt-2 border-t border-black/[0.06] dark:border-white/[0.06] flex items-center justify-between text-[11px] text-neutral-500 shrink-0">
             <span>Weekly Review</span>
             <span>Stored On This Device</span>
           </div>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Check, Lock } from 'lucide-react';
 import { playSound } from '../utils/audio';
 import InlineTimeControl from './InlineTimeControl';
-import { STATES, completeSession, getSession } from '../utils/executionModel';
+import { STATES, completeSession, getSession, isItemLocked } from '../utils/executionModel';
 
 export const FRAMEWORKS = [
   // Cluster 1: Focus & Prioritization
@@ -76,9 +76,9 @@ export default function ProductivityFrameworks({
 
   // --- 1. RULE OF 3 HANDLERS ---
   const slotLabels = [
-    { num: '01', title: 'First', placeholder: 'What deserves your day first?' },
-    { num: '02', title: 'Next', placeholder: 'What comes next?' },
-    { num: '03', title: 'Then', placeholder: 'What can wait until these are done?' }
+    { num: '01', title: 'First', placeholder: 'First' },
+    { num: '02', title: 'Next', placeholder: 'Next' },
+    { num: '03', title: 'Then', placeholder: 'Then' }
   ];
 
   const handleToggleHardTask = (index) => {
@@ -103,9 +103,9 @@ export default function ProductivityFrameworks({
   // --- 2. EISENHOWER HANDLERS (Multi-Task Array per Quadrant) ---
   const rawQuadrants = currentFwData.quadrants || {};
   const normalizeQuadList = (q, defaultId) => {
-    if (!q) return [{ id: defaultId, text: '', completed: false }];
-    if (Array.isArray(q)) return q.length > 0 ? q : [{ id: defaultId, text: '', completed: false }];
-    return [{ id: defaultId, text: q.text || '', completed: !!q.completed }];
+    if (!q) return [];
+    if (Array.isArray(q)) return q.filter(item => item.text?.trim() || item.classified);
+    return q.text?.trim() ? [{ id: defaultId, text: q.text, completed: !!q.completed }] : [];
   };
 
   const eData = {
@@ -152,16 +152,8 @@ export default function ProductivityFrameworks({
     const qKey = QUADRANT_FOR[`${urgent}|${important}`];
     const list = [...(eData[qKey] || [])];
     if (list.length >= 4) return;
-    list.push({ id: `${qKey}_${Date.now()}`, text: '', completed: false });
+    list.push({ id: `${qKey}_${Date.now()}`, text: '', completed: false, classified: true });
     playSound('check', isMuted);
-    updateActiveData({ quadrants: { ...eData, [qKey]: list } });
-  };
-
-  const handleAddTaskEisenhower = (qKey) => {
-    const list = [...eData[qKey]];
-    if (list.length >= 4) return;
-    list.push({ id: `${qKey}_${Date.now()}`, text: '', completed: false });
-    playSound('click', isMuted);
     updateActiveData({ quadrants: { ...eData, [qKey]: list } });
   };
 
@@ -220,8 +212,8 @@ export default function ProductivityFrameworks({
   const currentMeta = FRAMEWORKS.find(f => f.id === activeFramework) || FRAMEWORKS[0];
 
   return (
-    <section className={`flex flex-col ${isFullPage ? 'flex-1 min-h-0' : 'shrink-0 border-b border-black/[0.08] dark:border-white/[0.08]'}`}>
-      
+    <section data-method={activeFramework} className={`method-section flex flex-col ${isFullPage ? 'flex-1 min-h-0' : 'shrink-0 border-b border-black/[0.08] dark:border-white/[0.08]'}`}>
+
       {/* Universal 24px Grid Cadence Header Bar */}
       <div className="h-[36px] leading-[36px] [@media(max-height:760px)]:h-[28px] [@media(max-height:760px)]:leading-[28px] flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] shrink-0">
         <div className="flex items-baseline gap-2 min-w-0">
@@ -235,13 +227,13 @@ export default function ProductivityFrameworks({
 
         {/* Quiet progress only; method selection lives in the icon group above. */}
         <div className="flex items-center gap-2 select-none no-print">
-          <span className="hidden sm:inline text-[9px] font-semibold uppercase tracking-[0.12em] text-neutral-500">Time</span>
-          <div className="text-[10px] font-semibold">
+          <span className="hidden sm:inline text-[11px] font-semibold uppercase tracking-[0.12em] text-neutral-500">Time</span>
+          <div className="text-[11px] font-semibold">
             <span className={`font-bold ${
-              doneCount === 0 
-                ? 'progress-ink-red' 
-                : doneCount === totalTasks 
-                  ? 'progress-ink-green' 
+              doneCount === 0
+                ? 'text-neutral-500'
+                : doneCount === totalTasks
+                  ? 'progress-ink-green'
                   : 'progress-ink-yellow'
             }`}>
               {doneCount}
@@ -251,6 +243,7 @@ export default function ProductivityFrameworks({
         </div>
       </div>
 
+      <p className="method-rule">{activeFramework === 'rule_of_3' ? 'Three things for today and no fourth.' : activeFramework === 'ivy_lee' ? 'In order. One at a time.' : 'Classify first'}</p>
       {/* --- RENDER 1: RULE OF 3 --- */}
       {activeFramework === 'rule_of_3' && (
         <div className="space-y-0">
@@ -264,11 +257,11 @@ export default function ProductivityFrameworks({
             return (
               <div
                 key={idx}
-                className={`group flex items-center gap-3 transition-all min-h-[48px] [@media(max-height:760px)]:min-h-[36px] px-1 -mx-1 ${
-                  task.completed ? 'opacity-40' : 'hover:bg-black/[0.02] dark:hover:bg-white/[0.03]'
+                className={`priority-row group flex items-center gap-3 transition-all min-h-[48px] [@media(max-height:760px)]:min-h-[36px] px-1 -mx-1 ${
+                  task.completed ? '' : 'hover:bg-black/[0.02] dark:hover:bg-white/[0.03]'
                 }`}
               >
-                <span className={`font-bold select-none text-[10px] w-3.5 ${
+                <span className={`font-bold select-none text-[11px] w-3.5 ${
                   isMissed ? 'progress-ink-red' : 'text-neutral-400 dark:text-neutral-500'
                 }`}>
                   {meta.num}
@@ -289,7 +282,7 @@ export default function ProductivityFrameworks({
                   {task.completed ? (
                     <Check className="w-3 h-3 stroke-[3]" />
                   ) : isMissed ? (
-                    <span className="text-[9px] font-black leading-none">✕</span>
+                    <span className="text-[11px] font-black leading-none">✕</span>
                   ) : null}
                 </button>
 
@@ -299,11 +292,11 @@ export default function ProductivityFrameworks({
                     value={task.text || ''}
                     onChange={(e) => handleHardTaskTextChange(idx, e.target.value)}
                     placeholder={meta.placeholder || `Priority ${idx + 1}...`}
-                    className={`w-full bg-transparent font-normal focus:outline-none transition-all placeholder-neutral-400/60 text-[14px] sm:text-[15px] h-[48px] leading-[48px] [@media(max-height:760px)]:h-[36px] [@media(max-height:760px)]:leading-[36px] ${
-                      task.completed 
-                        ? 'line-through text-neutral-400 dark:text-neutral-500' 
-                        : isMissed 
-                          ? 'progress-ink-red' 
+                    className={`w-full bg-transparent font-normal focus:outline-none transition-all placeholder-neutral-500 text-[14px] sm:text-[15px] h-[48px] leading-[48px] [@media(max-height:760px)]:h-[36px] [@media(max-height:760px)]:leading-[36px] ${
+                      task.completed
+                        ? 'line-through text-neutral-400 dark:text-neutral-500'
+                        : isMissed
+                          ? 'progress-ink-red'
                           : 'text-neutral-900 dark:text-neutral-100'
                     }`}
                   />
@@ -353,7 +346,7 @@ export default function ProductivityFrameworks({
                         setClassifier(null);
                       }
                     }}
-                    className="text-[11px] font-semibold px-2.5 py-0.5 rounded bg-white dark:bg-[#141416] border border-black/[0.1] dark:border-white/[0.14] hover:border-black/30 dark:hover:border-white/35 transition-colors cursor-pointer"
+                    className="text-[11px] font-semibold px-2.5 py-0.5 rounded bg-white dark:bg-[#151515] border border-black/[0.1] dark:border-white/[0.14] hover:border-black/30 dark:hover:border-white/35 transition-colors cursor-pointer"
                   >
                     {label}
                   </button>
@@ -361,7 +354,7 @@ export default function ProductivityFrameworks({
                 <button
                   type="button"
                   onClick={() => setClassifier(null)}
-                  className="text-[10px] text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-200 px-1 cursor-pointer"
+                  className="text-[11px] text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-200 px-1 cursor-pointer"
                   title="Cancel"
                 >
                   ×
@@ -373,12 +366,12 @@ export default function ProductivityFrameworks({
       )}
 
       {activeFramework === 'eisenhower' && (
-        <div className="flex-1 min-h-0 grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 pt-1">
+        <div className="matrix-grid flex-1 min-h-0 grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 pt-1">
           {[
-            { key: 'q1', title: '01. DO FIRST', tag: 'Urgent' },
-            { key: 'q2', title: '02. SCHEDULE', tag: 'Plan' },
-            { key: 'q3', title: '03. DELEGATE', tag: 'Offload' },
-            { key: 'q4', title: '04. ELIMINATE', tag: 'Drop' }
+            { key: 'q1', title: 'Urgent', tag: 'Important' },
+            { key: 'q2', title: 'Not urgent', tag: 'Important' },
+            { key: 'q3', title: 'Urgent', tag: 'Not important' },
+            { key: 'q4', title: 'Not urgent', tag: 'Not important' }
           ].map((quad) => {
             const tasks = eData[quad.key] || [];
 
@@ -390,11 +383,11 @@ export default function ProductivityFrameworks({
                     {quad.title}
                   </span>
                   <div className="flex items-center gap-1.5 shrink-0">
-                    <span className="text-[10px] text-neutral-500 dark:text-neutral-500 font-medium whitespace-nowrap">
+                    <span className="text-[11px] text-neutral-500 dark:text-neutral-500 font-medium whitespace-nowrap">
                       {quad.tag}
                     </span>
                     <span
-                      className="text-[10px] text-neutral-500 dark:text-neutral-600 font-semibold tabular-nums"
+                      className="text-[11px] text-neutral-500 dark:text-neutral-600 font-semibold tabular-nums"
                       title="Tasks arrive here by being classified, not by choosing this box"
                     >
                       {tasks.filter(t => t.text && t.text.trim()).length}
@@ -409,7 +402,7 @@ export default function ProductivityFrameworks({
                     return (
                       <div
                         key={item.id || idx}
-                        className="flex items-center gap-2 h-[28px] px-1 -mx-1 rounded-xs hover:bg-black/[0.02] dark:hover:bg-white/[0.03] transition-colors group"
+                        className="matrix-row flex items-center gap-2 min-h-[36px] px-1 -mx-1 rounded-xs hover:bg-black/[0.02] dark:hover:bg-white/[0.03] transition-colors group"
                       >
                         <button
                           type="button"
@@ -440,7 +433,7 @@ export default function ProductivityFrameworks({
                             }
                           }}
                           placeholder={idx === 0 ? "Decision outcome..." : "Next item..."}
-                          className={`flex-1 min-w-0 bg-transparent text-xs focus:outline-none placeholder-neutral-400/40 ${
+                          className={`flex-1 min-w-0 bg-transparent text-xs focus:outline-none placeholder-neutral-500 ${
                             isDone ? 'line-through text-neutral-400 dark:text-neutral-500' : 'text-neutral-800 dark:text-neutral-200'
                           }`}
                         />
@@ -466,12 +459,12 @@ export default function ProductivityFrameworks({
         <div className="flex-1 min-h-0 space-y-1 pt-1">
           {ivyTasks.map((task, idx) => {
             const isDone = task.completed;
-            const isLocked = idx > 0 && !ivyTasks[idx - 1]?.completed;
+            const isLocked = isItemLocked('ivy_lee', ivyTasks, idx);
             return (
               <div
                 key={task.id || idx}
-                className={`flex items-center gap-3 h-[48px] px-1 -mx-1 border-b border-black/[0.04] dark:border-white/[0.04] last:border-b-0 transition-all rounded-xs ${
-                  isDone ? 'opacity-40' : isLocked ? 'opacity-55' : 'hover:bg-black/[0.02] dark:hover:bg-white/[0.03]'
+                className={`ivy-row flex items-center gap-3 h-[48px] px-1 -mx-1 border-b border-black/[0.04] dark:border-white/[0.04] last:border-b-0 transition-all rounded-xs ${
+                  isDone ? '' : isLocked ? '' : 'hover:bg-black/[0.02] dark:hover:bg-white/[0.03]'
                 }`}
               >
                 <span className="font-bold text-xs sm:text-sm w-5 text-neutral-500 dark:text-neutral-500 select-none">
@@ -497,8 +490,9 @@ export default function ProductivityFrameworks({
                   disabled={isLocked}
                   value={task.text || ''}
                   onChange={(e) => handleTextIvy(idx, e.target.value)}
-                  placeholder={isLocked ? `Finish priority 0${idx} to unlock` : `Sequential priority 0${idx + 1}...`}
-                  className={`flex-1 min-w-0 bg-transparent text-[14px] sm:text-[15px] focus:outline-none placeholder-neutral-400/60 ${
+                  placeholder={isLocked ? `After ${idx}` : `Priority ${idx + 1}`}
+                  aria-label={isLocked ? `Priority ${idx + 1}, available after priority ${idx}` : `Priority ${idx + 1}`}
+                  className={`flex-1 min-w-0 bg-transparent text-[14px] sm:text-[15px] focus:outline-none placeholder-neutral-500 ${
                     isDone ? 'line-through text-neutral-400 dark:text-neutral-500' : 'text-neutral-900 dark:text-neutral-100'
                   }`}
                 />

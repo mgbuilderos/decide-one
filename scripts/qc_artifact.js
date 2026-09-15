@@ -174,6 +174,12 @@ for (const style of indexHtml.match(/<style>[\s\S]*?<\/style>/g) || []) {
   }
 }
 
+// Celebration cannot hide in a prebuilt or vendored bundle (Rule 26).
+for (const file of distFiles.filter(f=>f.endsWith('.js'))) {
+  const code = fs.readFileSync(file, 'utf8');
+  if (/canvas-confetti|react-confetti|confetti-js|party-js|confetti\.create|confettiCannon/i.test(code)) errors.push(`Rule 26: celebration package signature in ${file}`);
+}
+
 // ── Report ───────────────────────────────────────────────────────────────────
 if (errors.length) {
   console.error(`\n\x1b[31m✗ artefact gate\x1b[0m  ${errors.length} problem(s) in what would be published:\n`);

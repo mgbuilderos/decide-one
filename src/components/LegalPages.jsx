@@ -42,7 +42,7 @@ export default function LegalPages({ onBack }) {
   const [tab, setTab] = useState('terms');
 
   return (
-    <div className="min-h-screen w-full bg-white dark:bg-[#0f0f10] text-neutral-900 dark:text-neutral-100">
+    <div className="min-h-screen w-full bg-white dark:bg-[#0f0f0f] text-neutral-900 dark:text-neutral-100">
       <div className="max-w-[720px] mx-auto px-5 sm:px-8 py-10">
 
         <button

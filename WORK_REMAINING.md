@@ -41,7 +41,7 @@ and believe.
 
 - Test the first-use flow with five people who have not seen the product.
 - Measure whether they can explain the product, choose a method, enter priorities, and begin the first item without help.
-- Profile the 3D hero on mid-range mobile hardware. The scene is lazy-loaded, but the Three.js asset remains the largest optional chunk.
+- The 3D hero and Three.js dependency were removed on 15 September; no hero profiling remains.
 
 ## The instrument holds one screen — resolved 13 September 2026
 
@@ -72,3 +72,16 @@ why the compact tier is written `(max-height:820px) and (min-height:761px)`.
 Locked in by `npm run test:visual`, which now renders `daily-small` (1280x600),
 `daily-tiny` and `weekly-tiny` (320x568) on every deploy.
 
+
+
+## Layout follow-through — 15 September 2026
+
+The layout checkpoint is not the full redesign. Resolve small-screen navigation
+for up to 16 Matrix tasks and unbounded Today/carry-forward lists: compact paging,
+list scroll, or explicitly limit this pass to short lists. Then extend populated
+coverage to those lists, all secondary dialogs, and returning after a month.
+Retain the existing founder-only choices in UI_BRIEF Appendix A. The colour
+allow-list and named gate repairs are implemented and mutation-tested. Social
+capture, complete populated-state verification and guarded deployment remain
+outstanding. Earlier zero-scroll claims above describe the empty-state
+measurements of 13 September, not every possible populated list.

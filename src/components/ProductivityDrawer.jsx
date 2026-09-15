@@ -10,7 +10,7 @@ export default function ProductivityDrawer({ isOpen, onClose, dailyMetrics = {},
   const monthlyRate = monthlyStats.monthlyRate || 0;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/30 dark:bg-black/60 backdrop-blur-xs flex justify-end animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 bg-black/30 dark:bg-black/60  flex justify-end animate-in fade-in duration-200">
       <button className="absolute inset-0 cursor-default" aria-label="Close Priority Review" onClick={onClose} />
       <aside className="relative w-full max-w-sm bg-white dark:bg-neutral-900 h-full shadow-2xl p-6 overflow-y-auto border-l border-neutral-200 dark:border-neutral-800 animate-in slide-in-from-right duration-300" aria-label="Priority Review">
         <div className="flex items-center justify-between pb-4 border-b border-neutral-200 dark:border-neutral-800">

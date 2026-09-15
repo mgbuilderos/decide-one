@@ -318,6 +318,36 @@ Every one of the 26 rules in `scripts/qc_audit.js`, classified by what a pass ca
 
 **Recommended next:** replace Rule 3's deny-list with an allow-list (neutral, black, white and the progress classes only); fold Rule 18 into Rule 0; and give Rules 6, 10, 13, 15 and 19 the treatment Rules 4, 12, 16 and 20 received — a guard in front of a real measurement.
 
+### 15 September implementation update
+
+The table above records the 14 September audit, not the current gate shape.
+Rules 6/19 now share the actual flat sheet anchor. Rule 13 executes date stepping
+at calendar boundaries and checks the reduced-motion wiring; Rule 14 executes
+closure eligibility. Rule 15 evaluates the actual App initial-view function for
+first visits, retired links and information routes, rather than finding an unused
+call. These were committed with the arrival and flat-day changes.
+
+Rule 3 now checks a neutral utility allow-list, named literal values and one
+zero-chroma RGB threshold across source and index.html. Only named progress CSS
+blocks are exempt. Load and both import call sites are parsed as JavaScript, so
+trailing comments cannot satisfy them. Rule 10 retains the cheap retired-name
+guards and adds a Chrome measurement of decorated non-interactive brand labels.
+Rule 18 checks public archive/licence exports; Rule 0 owns file reachability.
+Rule 26 also rejects known celebration signatures in built JavaScript. Signature
+matching cannot recognize every rewritten or heavily transformed library.
+
+Mutation evidence: a chromatic index.html declaration, a load migration replaced
+by a comment, an archive function made non-exported, and a built celebration
+signature each failed its intended rule. Removing the Rule 10 probe failed source
+QC; injecting a black brand tag named `renamed-label` failed visual QC in both
+themes. Thirteen colour fixtures exercised six prohibited hue forms and seven
+neutral/progress forms. Each mutation was restored immediately.
+
+The default visual suite covers 23 surfaces, including written Top 3, Ivy Lee,
+running/overrun/paused timing and closed-day verso at 320×568. The opt-in layout
+sweep includes all eight sizes and both themes. It still exposes populated Matrix
+clipping: a default regression pass is not proof that every list or dialog fits.
+
 ## 8. Deliberately not done
 
 - **`.monogram-gold-foil` not renamed.** It renders `rgba(0,0,0,.72)` ink and

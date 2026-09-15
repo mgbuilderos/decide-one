@@ -66,7 +66,7 @@ export default function MonthPicker({ currentDate, onSelect, onClose, hasEntry, 
       ref={root}
       role="dialog"
       aria-label="Choose a day"
-      className="absolute right-0 top-full mt-2 z-50 w-[248px] p-3 rounded-2xl bg-white dark:bg-[#141416] border border-black/[0.1] dark:border-white/[0.14] shadow-[0_12px_36px_rgba(0,0,0,0.14)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.5)] select-none"
+      className="absolute right-0 top-full mt-2 z-50 w-[248px] p-3 rounded-2xl bg-white dark:bg-[#151515] border border-black/[0.1] dark:border-white/[0.14] shadow-[0_12px_36px_rgba(0,0,0,0.14)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.5)] select-none"
     >
       <div className="h-[24px] flex items-center justify-between">
         <button
@@ -92,7 +92,7 @@ export default function MonthPicker({ currentDate, onSelect, onClose, hasEntry, 
 
       <div className="mt-2 grid grid-cols-7 gap-y-0.5">
         {WEEKDAYS.map((w, i) => (
-          <span key={i} className="h-[20px] flex items-center justify-center text-[10px] font-semibold text-neutral-500 dark:text-neutral-500">
+          <span key={i} className="h-[20px] flex items-center justify-center text-[11px] font-semibold text-neutral-500 dark:text-neutral-500">
             {w}
           </span>
         ))}

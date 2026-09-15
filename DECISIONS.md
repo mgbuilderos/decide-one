@@ -303,3 +303,17 @@ Steps 1–3 are cheap today and expensive after launch. Step 7 is worth more tha
 ## Design implementation — 15 September 2026
 
 Flat day steps apply the existing BR8/P11 decision. The selected day updates immediately using a functional state update; a 160ms opacity transition conveys the change and is disabled under reduced motion. There is no pending target date or animation-completion commit to go stale. Turning recto to verso remains closure only for today, with written work, once, and with no running or breathing session (B-19/P12). Rules 13 and 14 now execute day stepping and closure conditions and reject 3D chrome. The height observer continues to depend on activeView because legal/methods remove its stage from the DOM; entering the instrument mounts a new node to observe.
+
+
+Layout checkpoint, 15 September: shared neutral styling and readable type, short
+method placeholders, shared Ivy Lee order locking, and classification before new
+Matrix writing. Yearly mini-calendars render all 42 positions; compact cards keep
+both month selection and the day-opening action visible. Compact sheet heights
+use the permitted 12px half-cadence; full density stays at 24px. A local-time label
+distinguishes the unset analogue face, and paused sessions retain their own face.
+Full-list behavior at small sizes remains open (paging versus scroll); no data cap
+or new list navigation has been decided in this checkpoint.
+
+Gate repairs, 15 September: Rule 3 uses a neutral palette allow-list and a zero RGB-channel-spread threshold for literals, with only named progress CSS blocks exempt. Its load/import call checks use parsed call expressions, so comments cannot masquerade as migration. Rule 18 delegates existence and reachability to Rule 0 and checks the archive/activation exports only. Artifact QC also rejects known celebration package signatures in built JavaScript. These implement the existing no-colour/no-celebration decisions without changing product scope.
+
+Rule 10 now also measures non-interactive Decide One labels in Chrome for a filled background, texture, shadow or stitched-style border, independently of class names. A plain label and the wordmark navigation button remain permitted. The source guard requires that measurement to remain present. This catches a renamed version of the retired tag; it is not a general proof that every possible ornament is absent.

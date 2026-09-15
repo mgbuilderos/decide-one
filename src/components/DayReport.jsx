@@ -53,7 +53,7 @@ export default function DayReport({
     const over = isOvertime(session);
     return (
       <div className="w-full min-w-0 flex-1 min-h-0 flex flex-col items-center justify-center text-center px-6 py-8 select-none">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-neutral-500 mb-1">
+        <p className="text-[11px] font-bold uppercase tracking-widest text-neutral-500 mb-1">
           {breathing ? 'Getting ready' : over ? 'Past the box' : 'Running'}
         </p>
         <p className="text-sm font-semibold text-neutral-900 dark:text-neutral-100 max-w-[260px] mb-4 leading-[20px]">
@@ -117,7 +117,7 @@ export default function DayReport({
 
   return (
     <div className="w-full min-w-0 flex-1 min-h-0 flex flex-col overflow-hidden">
-      <div className="h-[24px] leading-[24px] shrink-0 flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] text-[10px] uppercase tracking-wider">
+      <div className="h-[24px] leading-[24px] shrink-0 flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] text-[11px] uppercase tracking-wider">
         <span className="font-bold text-neutral-900 dark:text-neutral-100">Where the time went</span>
         <span className="text-neutral-500 dark:text-neutral-400 normal-case tracking-normal">{dateLabel}</span>
       </div>
@@ -133,7 +133,7 @@ export default function DayReport({
                 <p className={`text-[13px] leading-[20px] font-medium truncate ${item.completed ? 'text-neutral-400 line-through' : 'text-neutral-900 dark:text-neutral-100'}`}>
                   {item.text}
                 </p>
-                <p className="mt-1 text-[10px] text-neutral-500 dark:text-neutral-400">
+                <p className="mt-1 text-[11px] text-neutral-500 dark:text-neutral-400">
                   {p === 0
                     ? 'No time was set'
                     : `${formatDuration(a)} spent · ${formatDuration(p)} planned`}
@@ -151,17 +151,18 @@ export default function DayReport({
         })}
       </div>
 
+      {dailyLog.closedAt && <p className="text-[13px] py-2">Day closed</p>}
       <div className="shrink-0 border-t border-black/[0.08] dark:border-white/[0.08] pt-2">
         <p className="text-[11px] leading-[18px] text-neutral-600 dark:text-neutral-300">
           {done} of {items.length} finished.{' '}
           {planned > 0 ? `${formatDuration(actual)} against ${formatDuration(planned)} planned.` : 'No time was set today.'}
         </p>
         {anyInferred && (
-          <p className="mt-0.5 text-[10px] text-neutral-500 italic">
+          <p className="mt-0.5 text-[11px] text-neutral-500 italic">
             Some figures are estimated — a session was left running rather than measured.
           </p>
         )}
-        {onCloseDay && (
+        {onCloseDay && !dailyLog.closedAt && (
           <button
             type="button"
             disabled={!isInteractive}

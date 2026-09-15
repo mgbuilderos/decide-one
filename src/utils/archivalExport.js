@@ -9,11 +9,11 @@
 export function generateMarkdownArchive(data, settings) {
   const dailyLogs = data?.dailyLogs || {};
   const habits = data?.habits || [];
-  const owner = settings?.ownerName || 'Maulik';
+  const owner = settings?.ownerName || '';
   const exportDate = new Date().toISOString().split('T')[0];
 
   let md = `# Decide One Archival Vault\n`;
-  md += `> Owner: ${owner} | Exported: ${exportDate} | Format: Obsidian & Notion Markdown\n\n`;
+  md += `> ${owner ? `Owner: ${owner} | ` : ''}Exported: ${exportDate} | Format: Obsidian & Notion Markdown\n\n`;
   md += `---\n\n`;
 
   const sortedDateKeys = Object.keys(dailyLogs).sort().reverse();

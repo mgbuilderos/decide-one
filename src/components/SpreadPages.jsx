@@ -109,7 +109,7 @@ export function LeftPage({
         <div className="min-h-[36px] [@media(max-height:820px)_and_(min-height:761px)]:min-h-0 [@media(max-height:760px)]:min-h-0 flex-1" aria-hidden="true" />
       </div>
 
-      <footer className="shrink-0 h-[28px] border-t border-black/[0.08] dark:border-white/[0.08] flex items-center text-[10px] text-neutral-500 dark:text-neutral-400 select-none px-1">
+      <footer className="shrink-0 h-[28px] border-t border-black/[0.08] dark:border-white/[0.08] flex items-center text-[11px] text-neutral-500 dark:text-neutral-400 select-none px-1">
         <span className="font-semibold tracking-[0.08em]">Three choices. One clear order.</span>
       </footer>
 
@@ -161,7 +161,7 @@ export function RightPage({
       />
 
       {/* Bottom Footer: Paper Edition (Exact 24px Baseline, Zero Clutter) */}
-      <footer className="shrink-0 h-[24px] border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-[10px] text-neutral-500 dark:text-neutral-400 select-none whitespace-nowrap px-1 overflow-hidden">
+      <footer className="shrink-0 h-[24px] border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-[11px] text-neutral-500 dark:text-neutral-400 select-none whitespace-nowrap px-1 overflow-hidden">
         {/* Paper Edition Indicator */}
         <div className="flex items-center gap-1.5 font-semibold uppercase tracking-[0.14em] shrink-0">
           <button

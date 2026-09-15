@@ -3,6 +3,7 @@ import path from 'path';
 import { pathToFileURL } from 'url';
 import { parse } from '@babel/parser';
 import vm from 'node:vm';
+import { colourViolations } from './style_contract.js';
 
 const SRC_DIR = path.resolve('src');
 let errors = [];
@@ -279,18 +280,12 @@ scanFiles(SRC_DIR, (filePath, content) => {
   }
 });
 
-// Rule 3: 3-Color Progress Gate (Red, Yellow, Green progress palette; zero random decorative colors)
-const forbiddenDecorativePatterns = [
-  'bg-blue-100', 'bg-purple-100', 'bg-cyan-100', 'bg-pink-100',
-  'text-blue-600', 'text-purple-600', 'text-cyan-600', 'text-pink-600'
-];
-scanFiles(SRC_DIR, (filePath, content) => {
-  for (const pattern of forbiddenDecorativePatterns) {
-    if (content.includes(pattern)) {
-      errors.push(`[Rule 3 Violation] Forbidden decorative chromatic color "${pattern}" found in: ${path.relative(process.cwd(), filePath)}`);
-    }
-  }
-});
+// Rule 3: neutral palette and literal colours, including the first paint.
+const checkColours = (file, source) => {
+  for (const value of colourViolations(source)) errors.push(`[Rule 3 Violation] ${path.relative(process.cwd(), file)} contains chromatic or unsupported colour ${value}`);
+};
+scanFiles(SRC_DIR, checkColours);
+checkColours(path.resolve('index.html'), fs.readFileSync('index.html', 'utf8'));
 
 // Rule 3, continued: the retired inks and paper tones stay retired (UI_BRIEF §7.2).
 //
@@ -350,27 +345,20 @@ if (appearanceSubjects.includes('utils/appearance.js')) {
   }
 }
 if (appearanceSubjects.includes('hooks/useJournalStorage.js')) {
-  const storage = stripComments(fs.readFileSync(path.join(SRC_DIR, 'hooks/useJournalStorage.js'), 'utf8'));
-  const nextDeclaration = /\n(?:export )?(?:function |  const \w+ = useCallback\()/g;
-  for (const [route, start] of [
-    ['loading a volume from localStorage', 'function loadVolumeDataFromStorage('],
-    ['importJSON, restoring a .json backup', 'const importJSON = useCallback('],
-    ['importEncryptedVault, restoring a .vault backup', 'const importEncryptedVault = useCallback(']
-  ]) {
-    const at = storage.indexOf(start);
-    if (at === -1) {
-      errors.push(`[Rule 3 Violation] useJournalStorage.js no longer has "${start}", so Rule 3 cannot see whether ${route} migrates appearance. Point the rule at what does this now.`);
-      continue;
+  const ast = parse(fs.readFileSync(path.join(SRC_DIR, 'hooks/useJournalStorage.js'), 'utf8'), { sourceType: 'module', plugins: ['jsx'] });
+  const visit = (node, fn) => {
+    if (!node || typeof node !== 'object') return;
+    if (node.type) fn(node);
+    for (const [key, child] of Object.entries(node)) if (!['comments','leadingComments','trailingComments'].includes(key)) {
+      if (Array.isArray(child)) child.forEach(n=>visit(n,fn)); else if (child && typeof child === 'object') visit(child,fn);
     }
-    nextDeclaration.lastIndex = at + start.length;
-    const next = nextDeclaration.exec(storage);
-    const body = storage.slice(at, next ? next.index : storage.length);
-    if (!body.includes('normaliseAppearance(')) {
-      errors.push(
-        `[Rule 3 Violation] ${route} in useJournalStorage.js does not call normaliseAppearance(). ` +
-        'Settings arriving that way keep whatever ink and paper tone they carry.'
-      );
-    }
+  };
+  for (const route of ['loadVolumeDataFromStorage','importJSON','importEncryptedVault']) {
+    let root;
+    visit(ast, n=>{ if ((n.type === 'FunctionDeclaration' || n.type === 'VariableDeclarator') && n.id?.name === route) root = n; });
+    let migrated = false;
+    visit(root, n=>{ if (n.type === 'CallExpression' && n.callee?.name === 'normaliseAppearance') migrated = true; });
+    if (!migrated) errors.push(`[Rule 3 Violation] ${route} does not call normaliseAppearance; comments are not calls.`);
   }
 }
 
@@ -492,7 +480,11 @@ scanFiles(SRC_DIR, (filePath, content) => {
   }
 });
 
-// Rule 10: No 3-dot menu, no tie cord, and no woven tag.
+// Rule 10: visual measurement plus cheap guards against retired chrome.
+const visualRule10 = fs.readFileSync('scripts/visual_check.js', 'utf8');
+for (const anchor of ['const brandChrome =', 's.backgroundImage', 's.boxShadow', 'm.brandChrome']) {
+  if (!visualRule10.includes(anchor)) errors.push(`[Rule 10 Violation] visual badge measurement missing ${anchor}`);
+}
 //
 // Until 15 September 2026 this rule required App.jsx to carry the woven
 // "DECIDE ONE" twill tag. BR8 was resolved toward the instrument register on
@@ -806,44 +798,13 @@ if (fs.existsSync(signingKeyPath)) {
   }
 }
 
-// Rule 18: Lifetime Patron & Archival Monetization Gate
-const licensePath = path.join(SRC_DIR, 'utils/licenseManager.js');
-if (fs.existsSync(licensePath)) {
-  const licContent = fs.readFileSync(licensePath, 'utf8');
-  if (!licContent.includes('verifyLicenseKey') || !licContent.includes('activateLicense')) {
-    errors.push('[Rule 18 Violation] licenseManager.js missing verifyLicenseKey or activateLicense.');
-  }
-} else {
-  errors.push('[Rule 18 Violation] src/utils/licenseManager.js does not exist.');
+// Rule 18: Rule 0 owns existence/reachability; verify the public entry points.
+for (const [rel, names] of [['utils/licenseManager.js',['verifyLicenseKey','activateLicense']], ['utils/archivalExport.js',['generateMarkdownArchive','printAnnualBook']]]) {
+  if (!fs.existsSync(path.join(SRC_DIR, rel))) continue; // Rule 0 reports this.
+  const ast = parse(fs.readFileSync(path.join(SRC_DIR, rel), 'utf8'), {sourceType:'module'});
+  const exports = ast.program.body.filter(n=>n.type === 'ExportNamedDeclaration').map(n=>n.declaration?.id?.name);
+  for (const name of names) if (!exports.includes(name)) errors.push(`[Rule 18 Violation] ${rel} must export ${name}`);
 }
-
-const exportPath = path.join(SRC_DIR, 'utils/archivalExport.js');
-if (fs.existsSync(exportPath)) {
-  const expContent = fs.readFileSync(exportPath, 'utf8');
-  if (!expContent.includes('generateMarkdownArchive') || !expContent.includes('printAnnualBook')) {
-    errors.push('[Rule 18 Violation] archivalExport.js missing generateMarkdownArchive or printAnnualBook.');
-  }
-} else {
-  errors.push('[Rule 18 Violation] src/utils/archivalExport.js does not exist.');
-}
-
-const patronModalPath = path.join(SRC_DIR, 'components/PatronUpgradeModal.jsx');
-if (!fs.existsSync(patronModalPath)) {
-  errors.push('[Rule 18 Violation] src/components/PatronUpgradeModal.jsx does not exist.');
-}
-
-const yearlySpreadPath = path.join(SRC_DIR, 'components/YearlyViewSpread.jsx');
-if (!fs.existsSync(yearlySpreadPath)) {
-  errors.push('[Rule 18 Violation] src/components/YearlyViewSpread.jsx does not exist.');
-}
-
-// The month breaker is deliberately NOT checked here. MonthlyBreakerPage.jsx is
-// still on disk, but nothing has reached it since 4e68de4 and Rule 0's new
-// second clause said so out loud. Asserting the file exists was the weakest
-// possible version of this rule: it passed for a day while the feature was
-// absent from the product. Whether the breaker comes back or the 215 lines go
-// is an open product question — B-36 in DECISIONS.md. If it is wired back in,
-// restore it to governedSurfaces rather than to a bare existsSync here.
 
 // Rule 19: The sheet is flat — no chassis.
 //
@@ -1200,7 +1161,7 @@ if (errors.length === 0) {
   console.log('✅ ALL STRUCTURAL QC CHECKS PASSED (not security or legal certification):');
   console.log('  - Rule 1: Zero font-mono violations (Universal Helvetica)');
   console.log('  - Rule 2: Zero unmanaged overlapping dropdown popovers in the item rows that ship');
-  console.log('  - Rule 3: 3-Color Progress Gate (progress colours only; retired inks and paper tones stay retired; the carbon-on-white migration is run)');
+  console.log('  - Rule 3: Neutral palette allow-list, achromatic literals and parsed appearance migration calls');
   console.log('  - Rule 4: Zero-scroll viewport lock & slim notepad proportions (max-w-[412px])');
   console.log('  - Rule 5: Consumer-friendly language gate (zero technical jargon in UI labels)');
   console.log('  - Rule 0: Governed surfaces exist AND are reached from main.jsx (a deleted or orphaned file fails rather than skipping its rules); retired surfaces are neither');
@@ -1216,7 +1177,7 @@ if (errors.length === 0) {
   console.log('  - Rule 15: Direct instrument arrival: actual App initializer executed for first, retired and information links; no marketing or cover modules');
   console.log('  - Rule 16: Zero Date Overflow & Header Wrapping Gate (whitespace-nowrap & fixed 48px header boundary)');
   console.log('  - Rule 17: Zero "Bullet Journal" / Ryder Carroll Gate (100% Decide One brand purity & right page flex containment)');
-  console.log('  - Rule 18: Lifetime Patron & Archival Monetization Gate (100% offline verification, export engine & 12-month annual view)');
+  console.log('  - Rule 18: Archive and licence public exports (Rule 0 owns reachability)');
   console.log('  - Rule 19: The sheet is flat (one instrument-sheet with a hairline; no shadow, 3D or transition-all on it; no retired chassis class under src/)');
   console.log('  - Rule 20: Executive Universal Keyboard Navigation Gate (1/2/3/4/T routing, pressed in Chrome)');
   console.log('  - Rule 21: Restricted Naming Token Check (not trademark or copyright clearance)');

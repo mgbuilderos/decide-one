@@ -99,7 +99,8 @@ export default function App() {
       const avail = mainStageRef.current.clientHeight - parseFloat(stageStyle.paddingTop) - parseFloat(stageStyle.paddingBottom);
       if (avail > 100) {
         // Snap canvas height H to strict multiple of 24px so the bottom footer border-t falls exactly on grid lines
-        const snapped = Math.max(240, Math.floor(avail / 24) * 24);
+        const cadence = window.innerHeight <= 820 ? 12 : 24;
+        const snapped = Math.max(240, Math.floor(avail / cadence) * cadence);
         setSnappedNotebookHeight(snapped);
       }
     };
@@ -621,7 +622,7 @@ export default function App() {
   }
 
   return (
-    <div className={`h-screen max-h-screen overflow-hidden bg-[#EAEAE7] dark:bg-[#0B0B0D] text-neutral-900 dark:text-neutral-100 p-2 sm:p-3 flex flex-col instrument-app font-sans`}>
+    <div className={`h-screen max-h-screen overflow-hidden bg-[#e9e9e9] dark:bg-[#0c0c0c] text-neutral-900 dark:text-neutral-100 p-2 sm:p-3 flex flex-col instrument-app font-sans`}>
       
       {/* Floating Header Toolbar: Minimalist Single Bar with Framework Selector & Settings */}
       <HeaderToolbar
@@ -646,7 +647,7 @@ export default function App() {
       />
 
       {/* Open Notebook 2-Page Spread (Bi-Fold Desktop / Two-Fold Mobile) */}
-        <main ref={mainStageRef} className={`w-full max-w-[412px] md:max-w-[960px] mx-auto flex-1 min-h-0 flex flex-col justify-center print-page pb-12 sm:pb-0 relative instrument-stage`}>
+        <main ref={mainStageRef} className={`w-full max-w-[412px] md:max-w-[960px] mx-auto flex-1 min-h-0 flex flex-col justify-center print-page ${activeView === 'daily' ? 'pb-10 sm:pb-0' : 'pb-0'} relative instrument-stage`}>
             
             {/* Floating day controls only belong to the daily instrument. */}
             {activeView === 'daily' && <button
@@ -781,7 +782,7 @@ export default function App() {
 
       {/* Mobile Ergonomic Bottom Thumb-Zone Navigation Bar */}
       {activeView === 'daily' && (
-        <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#141416]/95 backdrop-blur-xl border-t border-black/[0.08] dark:border-white/[0.1] px-4 py-2 flex items-center justify-around no-print" aria-label="Daily Page Sides">
+        <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#151515]/95  border-t border-black/[0.08] dark:border-white/[0.1] px-4 py-2 flex items-center justify-around no-print" aria-label="Daily Page Sides">
           {[
             { id: 'side1', label: 'Decide' },
             { id: 'side2', label: 'Turn Over' }

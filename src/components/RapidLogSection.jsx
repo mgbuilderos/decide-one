@@ -94,7 +94,8 @@ export default function RapidLogSection({
 
   return (
     <section
-      className={`shrink-0 flex flex-col ${!isInteractive ? 'pointer-events-none select-none' : ''}`}
+      className={`today-stream shrink-0 flex flex-col ${!isInteractive ? 'pointer-events-none select-none' : ''}`}
+      data-empty={filteredLog.length === 0}
       aria-label="Today"
     >
       
@@ -104,7 +105,7 @@ export default function RapidLogSection({
           <h2 className="text-xs sm:text-sm font-semibold uppercase tracking-[0.14em] text-neutral-800 dark:text-neutral-200">
             Today
           </h2>
-          <span className="text-[10px] font-normal text-neutral-500 dark:text-neutral-400 tabular-nums">
+          <span className="text-[11px] font-normal text-neutral-500 dark:text-neutral-400 tabular-nums">
             ({rapidLog.length})
           </span>
         </div>
@@ -146,7 +147,7 @@ export default function RapidLogSection({
           className="h-[24px] leading-[24px] text-xs text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200 transition-colors flex items-center gap-1.5 px-1 select-none cursor-pointer"
         >
           <span className="text-neutral-400 dark:text-neutral-500 font-bold">+</span>
-          <span>Add line (or press Enter on any entry)</span>
+          <span>Add line<span className="today-add-hint"> (or press Enter on any entry)</span></span>
         </button>
       </div>
 

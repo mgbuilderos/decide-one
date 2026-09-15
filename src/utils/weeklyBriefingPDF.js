@@ -71,7 +71,7 @@ export async function generateExecutiveWeeklyBriefingPDF({
   const weekEnd = weekDates[6];
   const weekNum = getISOWeekNumber(weekStart.dateObj);
   const year = weekStart.dateObj.getFullYear();
-  const owner = settings.ownerName || 'Maulik';
+  const owner = settings.ownerName || '';
 
   // Paper geometry in points (pt)
   const isA4 = pageSize.toLowerCase() === 'a4';
@@ -183,7 +183,7 @@ export async function generateExecutiveWeeklyBriefingPDF({
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8);
   doc.setTextColor(...INK_MUTED);
-  doc.text(`CONFIDENTIAL • ${owner.toUpperCase()} PRIVATE VAULT`, PAGE_W - MR, curY + 24, { align: 'right' });
+  doc.text(`CONFIDENTIAL • ${owner ? owner.toUpperCase() + ' ' : ''}PRIVATE VAULT`, PAGE_W - MR, curY + 24, { align: 'right' });
 
   curY += 34;
   drawLine(ML, curY, PAGE_W - MR, curY, INK_BLACK, 1.2);

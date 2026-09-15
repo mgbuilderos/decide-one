@@ -38,13 +38,13 @@ export default function CarryForwardModal({
     setChosen((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/40 dark:bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-200 select-none">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/40 dark:bg-black/70  flex items-center justify-center p-4 animate-in fade-in duration-200 select-none">
       <button className="fixed inset-0 cursor-default" aria-label="Start fresh" onClick={onDismiss} />
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="carry-forward-title"
-        className="relative w-full max-w-md bg-white dark:bg-[#141416] text-neutral-900 dark:text-neutral-100 rounded-2xl shadow-2xl border border-black/[0.12] dark:border-white/[0.15] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200"
+        className="relative w-full max-w-md bg-white dark:bg-[#151515] text-neutral-900 dark:text-neutral-100 rounded-2xl shadow-2xl border border-black/[0.12] dark:border-white/[0.15] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200"
       >
         <div className="min-h-[56px] px-5 flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] shrink-0">
           <div>

@@ -130,14 +130,14 @@ export default function OmniSearchModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-start justify-center pt-16 sm:pt-24 p-3 sm:p-4 bg-black/50 dark:bg-black/80 backdrop-blur-md animate-in fade-in select-none">
+    <div className="fixed inset-0 z-[120] flex items-start justify-center pt-16 sm:pt-24 p-3 sm:p-4 bg-black/50 dark:bg-black/80  animate-in fade-in select-none">
       
       {/* Backdrop Click Dismissal */}
       <div className="fixed inset-0" onClick={onClose} />
 
       {/* Modal Container */}
       <div 
-        className="relative z-10 w-full max-w-2xl bg-white dark:bg-[#141416] text-neutral-900 dark:text-neutral-100 rounded-2xl shadow-2xl border border-black/[0.12] dark:border-white/[0.15] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150"
+        className="relative z-10 w-full max-w-2xl bg-white dark:bg-[#151515] text-neutral-900 dark:text-neutral-100 rounded-2xl shadow-2xl border border-black/[0.12] dark:border-white/[0.15] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         
@@ -160,7 +160,7 @@ export default function OmniSearchModal({
               <X className="w-4 h-4" />
             </button>
           )}
-          <kbd className="hidden sm:inline-flex items-center gap-0.5 px-2 py-0.5 rounded bg-black/[0.06] dark:bg-white/[0.08] text-[10px] font-semibold text-neutral-500">
+          <kbd className="hidden sm:inline-flex items-center gap-0.5 px-2 py-0.5 rounded bg-black/[0.06] dark:bg-white/[0.08] text-[11px] font-semibold text-neutral-500">
             ESC to close
           </kbd>
         </div>
@@ -260,11 +260,11 @@ export default function OmniSearchModal({
                       : 'bg-black/[0.06] text-neutral-700 dark:bg-white/[0.08] dark:text-neutral-300'
                   }`}>
                     {item.section === 'hardTasks' ? (
-                      <Flame className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                      <Flame className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
                     ) : item.section === 'reflection' ? (
-                      <Feather className="w-4 h-4 text-amber-500" />
+                      <Feather className="w-4 h-4 text-neutral-500" />
                     ) : item.isCompleted ? (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                      <CheckCircle2 className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
                     ) : (
                       <BookOpen className="w-4 h-4" />
                     )}
@@ -283,7 +283,7 @@ export default function OmniSearchModal({
                       {item.isCompleted && (
                         <>
                           <span>•</span>
-                          <span className="text-emerald-600 dark:text-emerald-400 font-medium">Completed</span>
+                          <span className="text-neutral-600 dark:text-neutral-400 font-medium">Completed</span>
                         </>
                       )}
                     </div>
@@ -335,7 +335,7 @@ export default function OmniSearchModal({
                     className="p-2.5 rounded-xl border border-black/[0.06] dark:border-white/[0.08] hover:bg-black/[0.03] dark:hover:bg-white/[0.05] cursor-pointer flex items-center justify-between text-xs"
                   >
                     <span className="font-semibold">{sugg.label}</span>
-                    <span className="text-[10px] text-neutral-500">{sugg.cmd}</span>
+                    <span className="text-[11px] text-neutral-500">{sugg.cmd}</span>
                   </div>
                 ))}
               </div>

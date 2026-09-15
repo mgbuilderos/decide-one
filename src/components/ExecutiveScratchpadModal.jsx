@@ -77,15 +77,15 @@ export default function ExecutiveScratchpadModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/35 dark:bg-black/65 backdrop-blur-xs animate-in fade-in duration-150 no-print">
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/35 dark:bg-black/65  animate-in fade-in duration-150 no-print">
       <div 
         onKeyDown={handleKeyDown}
-        className="w-full max-w-[520px] bg-white/95 dark:bg-[#1C1C1E]/95 backdrop-blur-md rounded-2xl shadow-2xl border border-black/10 dark:border-white/12 p-4 text-neutral-900 dark:text-neutral-100 animate-in zoom-in-95 duration-150"
+        className="w-full max-w-[520px] bg-white/95 dark:bg-[#1d1d1d]/95  rounded-2xl shadow-2xl border border-black/10 dark:border-white/12 p-4 text-neutral-900 dark:text-neutral-100 animate-in zoom-in-95 duration-150"
       >
         {/* Header Bar */}
         <div className="flex items-center justify-between pb-2 mb-2 border-b border-black/[0.08] dark:border-white/[0.08]">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+            <Sparkles className="w-3.5 h-3.5 text-neutral-600 dark:text-neutral-400" />
             <span className="text-xs font-bold uppercase tracking-wider">
               Quick Thought Capture
             </span>

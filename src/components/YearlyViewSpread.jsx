@@ -47,7 +47,9 @@ export default function YearlyViewSpread({
       <div
         key={monthIdx}
         onClick={() => handleMonthCardClick(monthIdx)}
-        className={`p-2 sm:p-2.5 rounded-xl border transition-all cursor-pointer group flex flex-col justify-between h-full min-h-0 relative overflow-hidden ${
+        role="button" tabIndex={0} aria-label={`View ${MONTH_NAMES[monthIdx]} ${currentYear}`}
+        onKeyDown={e => { if (e.target === e.currentTarget && ['Enter', ' '].includes(e.key)) { e.preventDefault(); handleMonthCardClick(monthIdx); } }}
+        className={`year-card p-2 sm:p-2.5 rounded-xl border transition-all cursor-pointer group flex flex-col justify-between h-full min-h-0 relative overflow-hidden ${
           isThisMonth
             ? 'border-neutral-900 bg-black/[0.03] dark:border-white dark:bg-white/[0.04] shadow-xs'
             : 'border-black/[0.08] dark:border-white/[0.08] hover:border-black/25 dark:hover:border-white/25 hover:bg-black/[0.015] dark:hover:bg-white/[0.02]'
@@ -57,17 +59,17 @@ export default function YearlyViewSpread({
         <div className="flex items-center justify-between">
           <div className="min-w-0 pr-1">
             <div className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-white truncate">
-              {MONTH_NAMES[monthIdx]}
+              <span className="year-month-full">{MONTH_NAMES[monthIdx]}</span><span className="year-month-short" aria-hidden="true">{MONTH_NAMES[monthIdx].slice(0, 3)}</span>
             </div>
-            <div className="text-[9px] text-neutral-500 dark:text-neutral-500 truncate">
+            <div className="text-[11px] text-neutral-500 dark:text-neutral-500 truncate">
               {daysInMonth} days
             </div>
           </div>
         </div>
 
         {/* Micro Calendar Dot-Grid preview */}
-        <div className="grid grid-cols-7 gap-0.5 text-center my-auto py-0.5">
-          {Array.from({ length: Math.min(daysInMonth + firstDayWeekday, 35) }).map((_, idx) => {
+        <div className="year-mini-calendar grid grid-cols-7 gap-0.5 text-center my-auto py-0.5">
+          {Array.from({ length: 42 }).map((_, idx) => {
             const dayNum = idx - firstDayWeekday + 1;
             const isValid = dayNum > 0 && dayNum <= daysInMonth;
             const isToday = isThisMonth && dayNum === today.getDate();
@@ -75,7 +77,7 @@ export default function YearlyViewSpread({
             return (
               <span
                 key={idx}
-                className={`text-[8px] sm:text-[9px] h-3 flex items-center justify-center rounded-xs ${
+                className={`text-[11px] sm:text-[11px] h-3 flex items-center justify-center rounded-xs ${
                   !isValid
                     ? 'opacity-0'
                     : isToday
@@ -90,7 +92,7 @@ export default function YearlyViewSpread({
         </div>
 
         {/* Card Bottom: Quick Jump Action */}
-        <div className="flex items-center justify-between pt-1 border-t border-black/[0.04] dark:border-white/[0.06] text-[9px] sm:text-[10px]">
+        <div className="year-card-actions flex items-center justify-between pt-1 border-t border-black/[0.04] dark:border-white/[0.06] text-[11px] sm:text-[11px]">
           <span className="text-neutral-500 group-hover:text-neutral-700 dark:group-hover:text-neutral-200 transition-colors flex items-center gap-0.5 font-medium">
             <span>View Month</span>
             <ChevronRight className="w-2.5 h-2.5" />
@@ -126,11 +128,11 @@ export default function YearlyViewSpread({
               <span className="opacity-40">•</span>
               <span className="opacity-70">{currentYear}</span>
             </div>
-            <div className="text-[10px] text-neutral-500 dark:text-neutral-500">
+            <div className="text-[11px] text-neutral-500 dark:text-neutral-500">
               H1 • January — June
             </div>
           </div>
-          <div className="text-[10px] font-semibold text-neutral-500 dark:text-neutral-500 uppercase tracking-widest hidden sm:block">
+          <div className="text-[11px] font-semibold text-neutral-500 dark:text-neutral-500 uppercase tracking-widest hidden sm:block">
             Decide One
           </div>
         </div>
@@ -151,11 +153,11 @@ export default function YearlyViewSpread({
             <div className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-900 dark:text-neutral-100">
               H2 • July — December
             </div>
-            <div className="text-[10px] text-neutral-500 dark:text-neutral-500">
+            <div className="text-[11px] text-neutral-500 dark:text-neutral-500">
               Select a month to review its priorities
             </div>
           </div>
-          <span className="text-[10px] text-neutral-500">12 Months</span>
+          <span className="text-[11px] text-neutral-500">12 Months</span>
         </div>
 
         {/* Right 6-Month Grid (Hardcoded Zero-Scroll) */}
