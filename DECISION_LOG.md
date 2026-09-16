@@ -1512,3 +1512,9 @@ Re-recorded weekly-desktop and monthly-desktop baselines at the founder's direct
 ### 2026-09-16 14:08 — unattributed
 
 Correction to the previous entry: weekly-desktop and monthly-desktop were not an intended 11px inset from the phone-navigation commits. They rendered two ways. .pocket-scroll's scrollbar-gutter: stable reserved about 11px in some full runs and not others (single-surface runs always reserved it), so re-recording from a single-surface run failed the next full run with the same 0.65% and 1.12%. Measured in fresh tabs: the gutter was 12px and 11px with and without Chrome's scrollbar-hiding emulation and after a phone render, so neither was the cause. The gate now injects scrollbar-width: none into every page it renders; the gutter then measured 0 in every probe. Baselines restored to their earlier committed versions; the full gate passed all 46 surfaces.
+
+---
+
+### 2026-09-16 14:12 — unattributed
+
+Deployed fb67cc4 to Cloudflare: QC, content, artefact and all 46 visual surfaces passed (the second consecutive full pass since the scrollbar-gutter fix); decideone.app verified MATCH against assets/index-DaMe7-CN.js (Worker version 146347bc-c306-49fc-b129-0c94674e654e). Live now: MIT licence files, the support screen (shows 'not set up' until VITE_SUPPORT_* are set in .env.production) and the quiet ask after closed days. Repository not yet public; the founder publishes it.
