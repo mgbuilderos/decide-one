@@ -95,12 +95,17 @@
 /* The closure summary already explains carry-forward; leave space for the actions. */
 @media (max-height: 620px) {
   .instrument-app .closure-dialog .closure-body { padding: 8px 12px; }
-  .instrument-app .closure-body > * + * { margin-top: 8px; }
-  .instrument-app .closure-body > div:first-child { padding: 8px; }
-  .instrument-app .closure-task { padding: 4px; }
+  .instrument-app .closure-body > * + * { margin-top: 8px !important; }
+  .instrument-app .closure-body > div:first-child { padding: 4px; }
+  .instrument-app .closure-task { padding: 2px 4px; }
   .instrument-app .closure-task > div:first-child { margin-bottom: 0; }
   .instrument-app .closure-task > div:first-child > span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .instrument-app .closure-task button { min-height: 36px; padding: 4px 6px; }
-  .instrument-app .closure-body textarea { height: 48px; padding: 4px 8px; }
+  .instrument-app .closure-task button { min-height: 36px; padding: 2px 6px; }
+  .instrument-app .closure-body textarea { height: 44px; padding: 4px 8px; }
   .instrument-app .closure-dialog > div:last-child { padding: 6px 12px; }
+}
+
+@media (max-height: 620px) {
+  .instrument-app .closure-task + .closure-task { margin-top: 4px !important; }
+  .instrument-app .closure-body > div:nth-child(2) > div + div { margin-top: 4px !important; }
 }

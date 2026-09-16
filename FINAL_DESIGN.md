@@ -71,7 +71,7 @@ are checked in a real browser; the privacy shutter has exactly one action; the
 Today section is absent; the header and sheet widths are measured; and all three
 paper styles are rendered at desktop and phone sizes before release.
 
-## Design as built — verified 16 September 2026
+## Design baseline — verified 16 September 2026
 
 Checked in the code at `0912ed8`. decideone.app serves this build (`assets/index-Cr16pIku.js`, `npm run verify:live` MATCH on 16 September).
 
@@ -134,13 +134,11 @@ Checked in the code at `0912ed8`. decideone.app serves this build (`assets/index
 ## What holds it
 
 - **Source rules:** Rule 1 (Inter), Rule 3 (neutral allow-list), Rule 8 (compact menu), Rule 13 (immediate day step, book transition, reduced motion), Rule 14 (closure conditions, executed), Rule 15 (direct arrival, executed), Rule 19 (book geometry measured in Chrome, the quick start's hash, and AGENTS/CLAUDE/UI_BRIEF pointing here), Rule 22 (elapsed stopwatch), Rule 26 (no celebration, with a built-bundle check in `qc_artifact.js`).
-- **Visual gate** (`npm run test:visual`): 27 surfaces plus six seeded states at 320×568 (written, Ivy Lee, running, overrun, paused, closed) — the arrival with its quick start, Daily at five sizes and both grids, the menu (desktop, tiny, dark tiny), the privacy shutter, Weekly/Monthly/Yearly at desktop, phone and tiny, a guide in both themes, the FAQ and the morning question. `--layout` sweeps eight sizes × two themes × four views plus seven populated states; `--review` opens seven secondary surfaces in both themes. 60 baselines in `tests/baselines/darwin/`.
-- Green checks cover only the states they render. Populated Matrix lists at 320×568 are in the `--layout` sweep, not the default gate.
+- **Visual gate** (`npm run test:visual`): 27 surfaces plus nine seeded states at 320×568 (written, Ivy Lee, running, overrun, paused, closed, Matrix, long Matrix and Matrix report) — the arrival with its quick start, Daily at five sizes and both grids, the menu (desktop, tiny, dark tiny), the privacy shutter, Weekly/Monthly/Yearly at desktop, phone and tiny, a guide in both themes, the FAQ and the morning question. `--layout` sweeps eight sizes × two themes × four views plus nine populated states; `--review` opens seven secondary surfaces in both themes. Baselines are held in `tests/baselines/darwin/`.
+- Green checks cover only the states they render. Populated Matrix lists, 28-task lists and their paged time report are now in the default gate as well as the `--layout` sweep. Every page is traversed and its task identities and row bounds are checked.
 
 ## Still open
 
-- Matrix paging was approved on 16 September: compact Previous/Next controls keep every task reachable without scrolling; implementation is being verified.
-- `index.html`'s share-image alt text still describes *"a task and its planned time"*; planned time no longer exists. Correct it through VISION §11.
 - The left-page footer says *Three Choices*; VISION §11.1's approved alternate says *Three methods*.
 - `PatronUpgradeModal` still lists *Page & Ink Appearance*; the weekly PDF heading still reads *DAILY VICTORY & EVENING REFLECTIONS ANTHOLOGY*; the `patron-chime` and `singing-bowl` sounds remain. Founder decisions.
 - The secondary surfaces — decision log, scratchpad, dictation, search, privacy shutter — keep, demote or remove. Founder decision.
@@ -158,3 +156,37 @@ Where these still say otherwise, this file wins:
 ## Matrix paging — founder approval, 16 September 2026
 
 The founder chose compact Previous/Next paging for long Matrix lists on small screens. Size pages to the space available, retain all quadrant assignments and entries, reveal newly classified entries, and keep the same work reachable in the time report. Never silently cap or discard stored entries to make the page fit. Preserve the approved book, current stopwatch and initial popup.
+
+## Final refinement — 16 September 2026
+
+Use the current source, not the historical 5180 preview. The book geometry,
+Inter hierarchy, stopwatch and compact menu above remain the governing design.
+`QuickStart.jsx` is unchanged by this refinement and remains hash-pinned.
+
+- Matrix pages adapt to the actual space after headers, the stopwatch and footers.
+  Small circular marks and 40px task rows stay readable. Previous/Next and
+  “Page X of Y” appear only when necessary. Quadrant headings repeat on split
+  pages. Every stored entry remains reachable, including older oversized lists.
+- Classification still precedes entry. Adding reveals and focuses the new task.
+  Editing, completing or deleting an empty row uses its original identity/index,
+  never its position on the visible page. A full quadrant no longer silently
+  ignores an Add action. An empty Matrix reports zero written tasks accurately.
+- The Matrix time report uses the same paging principle and totals all tasks,
+  including those on other pages. Paging during the start delay cannot stop a
+  session: the shared execution panel owns that transition.
+- Phones use the short month plus day and full year so the date and all date
+  navigation controls fit together. The full date remains available as a title.
+  The icon-only Menu button keeps an explicit accessible name.
+- The closure dialog keeps every existing task action and its optional note.
+  Short-screen spacing is compact; duplicate reassurance/instruction text was
+  removed. Its carry-forward, closure and storage behavior is unchanged.
+- The share-image description no longer claims planned-time controls exist.
+
+These choices supersede the older Matrix-overflow exception. Do not restore a
+silent item cap, list scrolling, small text, flattened paper or square marks to
+make a viewport pass. Preserve the first-visit popup unless the founder explicitly
+changes it. Baseline changes require visible review, not automatic acceptance.
+
+Verification results are recorded below when the final run completes. This
+refinement is local until explicitly deployed; the earlier live-build record
+above does not refer to these changes.

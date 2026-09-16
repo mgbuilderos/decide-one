@@ -1470,3 +1470,9 @@ Documented the 15-16 September design changes. FINAL_DESIGN.md now carries the d
 ### 2026-09-16 09:56 — codex
 
 Resumed at b429011 without reverting later founder corrections. Founder approved compact Previous/Next Matrix paging. Implemented adaptive quadrant pages and corresponding time-report pages, retained every stored task (28-task browser sweep), revealed/focused classified additions, and moved breathing transition from a paged row into the shared execution panel so paging cannot cancel startup. Browser interactions verified edits and timer continuity. Fixed narrow date clipping with a short month plus full year; preserved QuickStart. Build/source/artifact gates passed; 82-layout sweep passed before final closure/date-check refinements. Secondary review, mutation proof and refreshed default baselines are in progress. This is a recoverable working checkpoint, not deployment.
+
+---
+
+### 2026-09-16 12:15 — unattributed
+
+Recovered prior session's unfinished date/menu accessibility and compact closure refinements. Build and QC pass; nine populated phone states pass browser geometry and keyboard checks. Continuing mobile refinement from this checkpoint; not yet deployed.

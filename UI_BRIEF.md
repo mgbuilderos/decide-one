@@ -515,10 +515,10 @@ The stopwatch reads `00:00` before a session starts and shows actual elapsed foc
 while running or paused. It never shows local time, planned time or remaining
 time. The separate Today stream is removed; only framework rows accept work.
 
-**Not a completed redesign or a release.** The Matrix's 16 possible tasks and the
-unbounded Today/carry-forward lists cannot fit together at readable sizes on the
-smallest screen. The founder has been asked to choose compact paging, list scroll,
-or a pass scoped to short lists. No cap or paging has been introduced. The opt-in
-`npm run test:visual -- --layout` diagnostic includes the unresolved populated
-Matrix cases; they are not claimed as passing default regression surfaces.
+**Superseded 16 September 2026:** the founder chose compact Previous/Next paging.
+Matrix and its time report now adapt page size to the available space, retain every
+stored entry and reveal newly classified tasks. The default visual gate traverses
+all pages of 28-task lists and checks identity and bounds. See FINAL_DESIGN.md for
+the governing implementation and latest verification; the old flat layout and
+Matrix-overflow exception must not be restored.
 Rules 3, 10, 15, 18 and 26 have been repaired: neutral colour allow-list with parsed migration calls; rendered decorated-brand-label measurement; the actual initial-view function executed; archive/licence exports; and celebration signatures in built JavaScript. Social capture and the remaining populated/dialog measurements from Appendix A remain.

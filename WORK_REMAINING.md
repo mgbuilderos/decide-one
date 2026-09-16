@@ -77,9 +77,7 @@ Locked in by `npm run test:visual`, which now renders `daily-small` (1280x600),
 ## Layout follow-through — amended 16 September 2026
 
 The unbounded Today stream was removed by founder decision on 16 September, so it
-can no longer become a hidden fourth priority. Resolve small-screen navigation
-for populated Matrix tasks, then extend coverage to all secondary dialogs and
-returning after a month.
+can no longer become a hidden fourth priority. On 16 September the founder chose compact paging: Matrix and its time report now retain every task without scrolling, including oversized stored lists. Seven secondary surfaces are covered at 320px in both themes. Returning after a month remains a separate coverage gap.
 Retain the existing founder-only choices in UI_BRIEF Appendix A. The colour
 allow-list and named gate repairs are implemented and mutation-tested. Social
 capture, complete populated-state verification and guarded deployment remain

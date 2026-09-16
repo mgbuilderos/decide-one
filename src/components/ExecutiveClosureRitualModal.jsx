@@ -149,9 +149,6 @@ export default function ExecutiveClosureRitualModal({
                 <div className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                   Unfinished Priorities ({incompleteTasks.length})
                 </div>
-                <div className="text-[11px] text-neutral-500">
-                  Choose what happens next
-                </div>
               </div>
 
               <div className="space-y-2">

@@ -27,6 +27,7 @@ export default function HeaderToolbar({
           type="button"
           className="instrument-quiet-action instrument-tools-trigger"
           onClick={onOpenMenu}
+          aria-label="Menu"
           aria-haspopup="dialog"
           aria-expanded={menuOpen}
           aria-controls="unified-menu"
