@@ -140,7 +140,7 @@ Checked in the code at `0912ed8`. decideone.app serves this build (`assets/index
 ## Still open
 
 - The left-page footer says *Three Choices*; VISION §11.1's approved alternate says *Three methods*.
-- `PatronUpgradeModal` still lists *Page & Ink Appearance*; the weekly PDF heading still reads *DAILY VICTORY & EVENING REFLECTIONS ANTHOLOGY*; the `patron-chime` and `singing-bowl` sounds remain. Founder decisions.
+- Resolved 16 September: the Patron modal is replaced by the support screen (DECISIONS B-46). Still the founder's: the weekly PDF heading *DAILY VICTORY & EVENING REFLECTIONS ANTHOLOGY*, and the `patron-chime` and `singing-bowl` sounds.
 - The secondary surfaces — decision log, scratchpad, dictation, search, privacy shutter — keep, demote or remove. Founder decision.
 - Unmerged branches with worktrees: `claude/great-snyder-b287a3` (re-adds confetti) and `claude/inspiring-satoshi-f0fb27`.
 - Untracked and uncommitted: `output/` (the 15 September design checkpoint and browser captures), `.playwright-cli/` and `screenshot_v3_overview.png`.

@@ -1482,3 +1482,9 @@ Recovered prior session's unfinished date/menu accessibility and compact closure
 ### 2026-09-16 12:27 — unattributed
 
 Refined mobile UX from founder screenshots while preserving desktop book. Dynamic viewport sizing, compact icon header, 48px task rows/44px controls on taller phones, one focus-panel readout, clearer interrupted-session actions, and ruled closure rows with accessible selected states and labelled note. Recovered prior session first in db024bd. Build/QC/artifact pass; 44 Chrome surfaces pass geometry, contrast, console and keyboard checks; inspected mobile light/dark captures and refreshed intended baselines. Physical-device keyboard/browser chrome testing remains outside this run.
+
+---
+
+### 2026-09-16 13:44 — unattributed
+
+Founder decision, 16 September: Decide One goes open source under MIT and offers support by UPI (India) and GitHub Sponsors (worldwide) with suggested amounts, adapted from the OpenTools blueprint. Recorded before code: VISION §11.1 'Open source and support' (suggested amounts, not a price; approved copy; the quiet ask after 14 closed days with growing waits), DECISIONS B-46, UI_BRIEF §13 and FINAL_DESIGN open items resolved. Added LICENSE (MIT), package.json license, README rewritten to the current product (it still said a one-time price and a landing page), CONTRIBUTING, SECURITY, and VITE_SUPPORT_* variables in .env.example. The founder publishes the repository; nothing is pushed or made public here.

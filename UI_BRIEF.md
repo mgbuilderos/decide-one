@@ -395,7 +395,7 @@ npm run deploy                 # the only way to publish; runs every gate, then 
 
 - **B-23 — the Today stream is unbounded.** Should it be capped, so it cannot become priority four?
 - **The secondary surfaces** — decision log, scratchpad, voice dictation, search, the privacy shutter. Keep, demote behind the menu, or remove? Do not promote them.
-- **The support ask.** `PatronUpgradeModal` and *Become a Patron* in the menu now grant nothing. VISION §11.1 places the ask at the end of a closed day, not in a menu.
+- **The support ask — resolved 16 September 2026 (DECISIONS B-46).** UPI and GitHub Sponsors with suggested amounts, a quiet note after a closed day, and the old Patron modal replaced. Copy in VISION §11.1.
 - **R16 — a definition of done per line.** Undecided; do not build it.
 - **Landing copy.** The hero's *FREE FOREVER* eyebrow sits uneasily with `BRAND_BOOK.md` §6 (*do not say "free forever!"*). Copy changes go through VISION §11 first.
 - **The recto footer** reads *Three choices. One clear order.*, while VISION §11.1's approved alternate is *Three methods. One clear order.* Confirm which is meant before changing either.

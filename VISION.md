@@ -245,6 +245,14 @@ It does three things the previous line did not. It **begins by trusting the read
 
 **Paging labels, 16 September 2026.** The founder approved “Previous” and “Next” for Matrix lists that exceed the available page. “Page X of Y” and item ranges describe position; they do not rank or hide work. The same controls may expose the corresponding time report.
 
+**Open source and support, 16 September 2026.** Decided by the founder: Decide One is published as open source under the MIT licence, and support is offered the way the OpenTools blueprint offers it — UPI in India, GitHub Sponsors everywhere else — with suggested amounts. This amends the "no price anywhere" position narrowly: the figures below are **suggested support amounts, not a price**. Nothing is held back, nothing unlocks, and declining is a complete answer. Payment happens in the person's UPI app or on GitHub; the instrument loads no payment code and records nothing about who supports. Tiers are named in words, not emoji, because emoji render in colour and the instrument is black and white.
+
+Canonical support amounts: UPI ₹50 Chai · ₹150 Lunch · ₹500 Patron · ₹1,500 Sponsor; GitHub Sponsors $3 Coffee · $10 Backer · $25 Patron.
+
+Approved support copy. Menu and search: *Support Decide One*. The screen: *Support Decide One* · *Decide One is free, for everyone, with nothing held back. If it has been worth something to you, this is how to say so.* · *Nothing unlocks. Declining is a complete answer.* Channels: *India · UPI* and *Worldwide · GitHub*. UPI: *Scan with any UPI app* · *Pay ₹ in a UPI app* (with the chosen figure) · *Another amount* · *UPI ID* · *Copy* / *Copied*. GitHub tiers: *A small thank-you.* · *Helps the work continue.* · *Backs the next year of it.* · *Sponsor on GitHub* · *See the code on GitHub* · *Open source under the MIT licence.* Footer: *Payments happen in your UPI app or on GitHub. Decide One never sees them.* With no channel set up: *Support is not set up on this copy of Decide One.*
+
+The quiet ask after a closed day: only once at least 14 days have been closed (TELEMETRY_SPEC §7), at most once a day, 400ms after closing so the closed day registers first, and never over the closing dialog. *The day is closed.* · *If Decide One has been worth something, you can support it.* · *Not now* · *Don't ask again* · *Support options*. In India, with UPI set up, the first three amounts appear as direct UPI links. Each *Not now* waits longer before asking again — 14, then 30, then 90 days — and *Don't ask again* ends it.
+
 ### 11.2 What the product does — the four movements
 
 1. **It makes the competing work visible.** A bounded page turns a crowded mental list into a choice the person can see.
