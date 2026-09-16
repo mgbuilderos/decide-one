@@ -1500,3 +1500,9 @@ Built support (B-46, VISION §11.1). src/utils/support.js: channels from VITE_SU
 ### 2026-09-16 13:56 — unattributed
 
 Support screen polished against rendered Chrome captures, not just green checks: at 320x568 the app header covered the dialog's title and close button (dialog raised to z-[120], the layer the morning question uses); a selected amount's label was grey on black (forced light tone); desktop amount labels sat at the top of their buttons (centred); the close button showed a clipped focus ring on open (focus now starts on the heading, as QuickStart does); the quiet note raised above page chrome. Menu entry moved inside Guides & Legal: as its own row it pushed the menu 30px past 320x568 and broke the Tab trap, which the visual gate caught. Configured layout (UPI QR, amounts, pay link, ID) verified in Chrome with test IDs at 1440x900 and 320x568, then those images discarded; committed baselines support-desktop and support-tiny show the unconfigured build. Menu surfaces match their existing baselines. Found, not caused: weekly-desktop and monthly-desktop already fail at 5ed6717 (another agent's phone-navigation commits); their baselines were not re-recorded, so deploy is blocked until that change is confirmed. Recorded in FINAL_DESIGN still open.
+
+---
+
+### 2026-09-16 13:58 — unattributed
+
+Re-recorded weekly-desktop and monthly-desktop baselines at the founder's direction. Both had failed since 5ed6717 (another agent's phone-navigation commits inset each view's content about 11px on the right). Reviewed before accepting: Weekly shows every stat, focus row, carry-forward and review field; Monthly shows the whole calendar, today, the event field and footer; nothing clipped. FINAL_DESIGN open item marked resolved.
