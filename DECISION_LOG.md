@@ -1524,3 +1524,9 @@ Deployed fb67cc4 to Cloudflare: QC, content, artefact and all 46 visual surfaces
 ### 2026-09-16 15:54 — unattributed
 
 Made github.com/mgbuilderos/decide-one public at the founder's request (16 September). Before flipping, scanned all 155 commits raw (the RTK proxy had been filtering git output): every committed path, and every added line for private-key blocks, JWK private keys, and Cloudflare, GitHub, AWS, Stripe, Google, Slack and owner-secret tokens — zero matches; licence-signing-key.json and .env files were never committed, and scripts/license-keypair.mjs only generates a keypair and prints it. GitHub now reports PUBLIC with the MIT licence detected; anonymous request returns 200.
+
+---
+
+### 2026-09-16 16:11 — unattributed
+
+Support links set for production (founder, 16 September). Created .env.production (gitignored): VITE_SUPPORT_UPI_ID=mg.io.test@oksbi — the ID configured for mgbuilderos in the OpenTools commit 73b4b2f, which the founder pointed to — VITE_SUPPORT_UPI_NAME=Decide One, and VITE_SUPPORT_REPO_URL now that the repository is public. GitHub Sponsors left unset: the GitHub API reports no Sponsors listing for mgbuilderos. Re-recorded support-desktop and support-tiny, reviewed: UPI tab with the ID, amounts, QR on desktop, pay link on phones, one screen at 320x568. These two baselines now assume the .env.production support values; a build without them shows 'not set up' and fails those two surfaces.
