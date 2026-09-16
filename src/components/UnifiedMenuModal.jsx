@@ -14,7 +14,7 @@ export default function UnifiedMenuModal({
   onExportMarkdown, onPrintAnnual, onPrintWeeklyBriefing,
   onExportEncryptedVault, onImportEncryptedVault, onOpenDecisions, onOpenAnalytics,
   onOpenClosure, onToggleDictation, isListening = false,
-  onLockVault, onOpenMethods, onOpenLegal
+  onLockVault, onOpenMethods, onOpenLegal, onOpenSupport
 }) {
   const closeButtonRef = useRef(null);
   const restoreMenuTriggerRef = useRef(true);
@@ -256,6 +256,10 @@ export default function UnifiedMenuModal({
               <button type="button" className="type-control min-h-10 text-left" onClick={() => runAndClose(onOpenLegal)}>Terms, Privacy &amp; Refunds</button>
             </nav>
           </details>
+          <button type="button" onClick={() => runAndClose(onOpenSupport)}
+            className="type-control min-h-11 w-full border-t border-black/[0.08] dark:border-white/[0.10] flex items-center text-left">
+            Support Decide One
+          </button>
         </div>
       </div>
     </div>

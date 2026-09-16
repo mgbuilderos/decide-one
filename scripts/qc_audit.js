@@ -64,7 +64,8 @@ const governedSurfaces = [
   ['utils/licenseManager.js', 'Rules 18 and 23 — offline verification, signed keys'],
   ['utils/licenseKeys.js', 'Rule 23 — signed per-buyer licences replaced shared keys'],
   ['utils/archivalExport.js', 'Rule 18 — the export engine the Patron tier promises'],
-  ['components/PatronUpgradeModal.jsx', 'Rule 18 — the upgrade surface'],
+  ['components/SupportModal.jsx', 'Rule 24 — the support surface (VISION §11.1)'],
+  ['utils/support.js', 'Rule 24 — suggested support amounts and the quiet ask, executed'],
   ['components/YearlyViewSpread.jsx', 'Rule 18 — the twelve-month annual view'],
   ['components/ExecutionLayer.jsx', 'Rule 22 — the active elapsed stopwatch'],
   ['components/FocusStopwatch.jsx', 'Rule 22 — the clockwise elapsed-time face'],
@@ -981,6 +982,57 @@ if (!fs.existsSync(visionPath)) {
   }
 }
 
+// Rule 24, support. Suggested support amounts are copy decided in VISION §11.1,
+// not a price (B-46). They live in utils/support.js as plain numbers, so the
+// scan above still fails any money figure written into src/. This runs that
+// module, compares it with VISION's canonical line, and checks the ask stays
+// quiet: never before the habit exists, never twice a day, never without a
+// channel, never after "Don't ask again", and a longer wait after each decline.
+{
+  const vision = fs.readFileSync('VISION.md', 'utf8');
+  const line = vision.split('\n').find((l) => l.startsWith('Canonical support amounts:'));
+  const supportSubjects = requireLiveSubjects('Rule 24', ['utils/support.js'], 'it holds the support amounts and decides when support is asked for');
+  if (!line) {
+    errors.push('[Rule 24 Violation] VISION.md §11.1 has no "Canonical support amounts:" line, so the amounts in src/utils/support.js agree with nothing.');
+  } else if (supportSubjects.includes('utils/support.js')) {
+    try {
+      const support = await import(pathToFileURL(path.join(SRC_DIR, 'utils/support.js')).href);
+      const [upiPart, sponsorPart = ''] = line.split('GitHub Sponsors');
+      const decidedUpi = [...upiPart.matchAll(/₹([\d,]+) (\w+)/g)].map((m) => `${m[1].replace(/,/g, '')} ${m[2]}`);
+      const decidedUsd = [...sponsorPart.matchAll(/\$(\d+) (\w+)/g)].map((m) => `${m[1]} ${m[2]}`);
+      const shippedUpi = support.UPI_AMOUNTS.map((a) => `${a.inr} ${a.label}`);
+      const shippedUsd = support.SPONSOR_TIERS.map((t) => `${t.usd} ${t.label}`);
+      if (JSON.stringify(decidedUpi) !== JSON.stringify(shippedUpi)) {
+        errors.push(`[Rule 24 Violation] UPI amounts in src/utils/support.js (${shippedUpi.join(', ')}) differ from VISION.md §11.1 (${decidedUpi.join(', ')}).`);
+      }
+      if (JSON.stringify(decidedUsd) !== JSON.stringify(shippedUsd)) {
+        errors.push(`[Rule 24 Violation] GitHub Sponsors tiers in src/utils/support.js (${shippedUsd.join(', ')}) differ from VISION.md §11.1 (${decidedUsd.join(', ')}).`);
+      }
+      const channels = { upiId: 'test@upi', upiName: 'Decide One', sponsorsUrl: '', repoUrl: '' };
+      const day = '2026-09-16';
+      const ask = (closedDays, preference = {}, todayKey = day, ch = channels) =>
+        support.shouldAskForSupport({ closedDays, todayKey, preference, channels: ch });
+      const min = support.SUPPORT_ASK_MIN_CLOSED_DAYS;
+      const first = support.declineSupportAsk({}, day);
+      const second = support.declineSupportAsk(first, first.nextAfter);
+      const checks = [
+        [min >= 14, 'can appear before 14 closed days (TELEMETRY_SPEC §7)'],
+        [!ask(min - 1), 'appears before the habit exists'],
+        [ask(min), 'never appears once the habit exists'],
+        [!ask(min, {}, day, { ...channels, upiId: '' }), 'appears with no support channel set up'],
+        [!ask(min, { off: true }), 'appears after "Don\'t ask again"'],
+        [!ask(min, support.markSupportAsked({}, day)), 'appears twice in one day'],
+        [!ask(min, first, support.addDaysToKey(day, 13)), 'returns within 14 days of "Not now"'],
+        [ask(min, first, first.nextAfter), 'never returns after its wait'],
+        [second.nextAfter === support.addDaysToKey(first.nextAfter, 30), 'does not wait longer after a second "Not now"']
+      ];
+      for (const [ok, message] of checks) if (!ok) errors.push(`[Rule 24 Violation] the support ask ${message}.`);
+    } catch (e) {
+      errors.push(`[Rule 24 Violation] src/utils/support.js could not be run (${e.message}). It must stay pure so this audit can execute it.`);
+    }
+  }
+}
+
 // Rule 25: Telemetry Contract Gate.
 //
 // Six dashboard metrics were a permanent zero because the server analysed
@@ -1147,7 +1199,7 @@ if (errors.length === 0) {
   console.log('  - Rule 21: Restricted Naming Token Check (not trademark or copyright clearance)');
   console.log('  - Rule 22: Execution Layer Enforcement Gate (Ivy Lee order lock, breathing state, elapsed stopwatch, timing provenance)');
   console.log('  - Rule 23: Licence Integrity Gate (signed per-buyer keys; no shared secret, no private key in source)');
-  console.log('  - Rule 24: Price Consistency Gate (VISION §11.1 is the price - including when that price is free)');
+  console.log('  - Rule 24: Price Consistency Gate (VISION §11.1 is the price - including when that price is free - and decides the suggested support amounts and the quiet ask, executed)');
   console.log('  - Rule 25: Telemetry Contract Gate (analysed events are emitted; emitted events are in the TELEMETRY_SPEC §2 registry)');
   console.log('  - Rule 26: No celebration (no confetti package in package.json, none imported under src/, none shipped from main.jsx)\n');
   process.exit(0);

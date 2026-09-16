@@ -24,6 +24,7 @@ import { observeWebVitals } from './utils/webVitals';
 import { stepDate, shouldOfferClosure } from './utils/dayNavigation';
 import { initialView } from './utils/viewParam';
 import { needsQuickStart, finishQuickStart } from './utils/quickStart';
+import { readSupportPreference, writeSupportPreference, shouldAskForSupport, markSupportAsked, declineSupportAsk } from './utils/support';
 
 const MonthlyLogSpread = lazy(() => import('./components/MonthlyLogSpread'));
 const CarryForwardModal = lazy(() => import('./components/CarryForwardModal'));
@@ -31,7 +32,8 @@ const YearlyViewSpread = lazy(() => import('./components/YearlyViewSpread'));
 const WeeklyReviewSpread = lazy(() => import('./components/WeeklyReviewSpread'));
 const LegalPages = lazy(() => import('./components/LegalPages'));
 const MethodsPage = lazy(() => import('./components/MethodsPage'));
-const PatronUpgradeModal = lazy(() => import('./components/PatronUpgradeModal'));
+const SupportModal = lazy(() => import('./components/SupportModal'));
+const SupportNote = lazy(() => import('./components/SupportNote'));
 const ProductivityDrawer = lazy(() => import('./components/ProductivityDrawer'));
 const QuickLegendModal = lazy(() => import('./components/QuickLegendModal'));
 const UnifiedMenuModal = lazy(() => import('./components/UnifiedMenuModal'));
@@ -51,7 +53,8 @@ export default function App() {
   const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+  const [isSupportOpen, setIsSupportOpen] = useState(false);
+  const [isSupportAskOpen, setIsSupportAskOpen] = useState(false);
   const [license, setLicense] = useState(() => {
     // B2 — anyone who activated with a retired promo key keeps access as a
     // demo rather than being silently dropped to the free version.
@@ -569,9 +572,6 @@ export default function App() {
     saveMonthlyLog(monthKey, updatedMonthlyLog);
   };
 
-  const refreshLicense = () => {
-    setLicense(getStoredLicense());
-  };
 
   const handleSelectMonth = (monthIdx) => {
     setCurrentDate(new Date(currentDate.getFullYear(), monthIdx, 1));
@@ -814,6 +814,7 @@ export default function App() {
         onLockVault={triggerHardLock}
         onOpenMethods={() => setActiveView('methods')}
         onOpenLegal={() => setActiveView('legal')}
+        onOpenSupport={() => setIsSupportOpen(true)}
       /></Suspense>}
 
       {/* Sub-Millisecond Omnisearch & Command Palette Modal (Cmd+K) */}
@@ -824,10 +825,6 @@ export default function App() {
         monthlyLogs={data.monthlyLogs}
         onTeleportToPage={handleTeleportToPage}
         isMuted={settings.isMuted}
-        onOpenUpgrade={() => {
-          setIsSearchOpen(false);
-          setIsUpgradeModalOpen(true);
-        }}
       /></Suspense>}
 
       {/* Executive Biometric / Privacy Shutter Overlay */}
@@ -838,12 +835,15 @@ export default function App() {
         isMuted={settings.isMuted}
       />
 
-      {/* Payment UI loads only when requested; checkout remains intentionally separate. */}
-      {isUpgradeModalOpen && <Suspense fallback={null}><PatronUpgradeModal
-        isOpen={isUpgradeModalOpen}
-        onClose={() => setIsUpgradeModalOpen(false)}
-        isMuted={settings.isMuted}
-        onLicenseUpdated={refreshLicense}
+      {/* Support (VISION §11.1). Loads only when opened; no payment code. */}
+      {isSupportOpen && <Suspense fallback={null}><SupportModal
+        isOpen={isSupportOpen}
+        onClose={() => setIsSupportOpen(false)}
+      /></Suspense>}
+      {isSupportAskOpen && !isClosureModalOpen && <Suspense fallback={null}><SupportNote
+        onNotNow={() => { writeSupportPreference(declineSupportAsk(readSupportPreference(), todayKey)); setIsSupportAskOpen(false); }}
+        onNeverAgain={() => { writeSupportPreference({ ...readSupportPreference(), off: true }); setIsSupportAskOpen(false); }}
+        onOpenSupport={() => { setIsSupportAskOpen(false); setIsSupportOpen(true); }}
       /></Suspense>}
 
       {/* Analytics Drawer (Monochrome) */}
@@ -913,6 +913,13 @@ export default function App() {
         }}
         onCloseDay={(dateKey, closureSummary) => {
           closeDay(dateKey, closureSummary);
+          // The quiet ask (VISION §11.1) waits for the closing dialog to go.
+          const closedDays = Object.entries(data.dailyLogs).filter(([key, log]) => key === dateKey || log?.closedAt).length;
+          const preference = readSupportPreference();
+          if (shouldAskForSupport({ closedDays, todayKey, preference })) {
+            writeSupportPreference(markSupportAsked(preference, todayKey));
+            setIsSupportAskOpen(true);
+          }
         }}
         onLockShutter={() => {
           triggerHardLock();
