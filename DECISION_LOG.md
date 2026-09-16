@@ -1530,3 +1530,9 @@ Made github.com/mgbuilderos/decide-one public at the founder's request (16 Septe
 ### 2026-09-16 16:11 — unattributed
 
 Support links set for production (founder, 16 September). Created .env.production (gitignored): VITE_SUPPORT_UPI_ID=mg.io.test@oksbi — the ID configured for mgbuilderos in the OpenTools commit 73b4b2f, which the founder pointed to — VITE_SUPPORT_UPI_NAME=Decide One, and VITE_SUPPORT_REPO_URL now that the repository is public. GitHub Sponsors left unset: the GitHub API reports no Sponsors listing for mgbuilderos. Re-recorded support-desktop and support-tiny, reviewed: UPI tab with the ID, amounts, QR on desktop, pay link on phones, one screen at 320x568. These two baselines now assume the .env.production support values; a build without them shows 'not set up' and fails those two surfaces.
+
+---
+
+### 2026-09-16 16:15 — unattributed
+
+Deployed the support links: all gates passed (46 visual surfaces match); decideone.app verified MATCH against assets/index-QgzPHMkz.js (Worker version d1562671-1e51-4336-aed5-cfb54647c72c), and the live bundle contains the configured UPI ID. GitHub Sponsors still unset (no listing for mgbuilderos).
