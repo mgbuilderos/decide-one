@@ -1476,3 +1476,9 @@ Resumed at b429011 without reverting later founder corrections. Founder approved
 ### 2026-09-16 12:15 — unattributed
 
 Recovered prior session's unfinished date/menu accessibility and compact closure refinements. Build and QC pass; nine populated phone states pass browser geometry and keyboard checks. Continuing mobile refinement from this checkpoint; not yet deployed.
+
+---
+
+### 2026-09-16 12:27 — unattributed
+
+Refined mobile UX from founder screenshots while preserving desktop book. Dynamic viewport sizing, compact icon header, 48px task rows/44px controls on taller phones, one focus-panel readout, clearer interrupted-session actions, and ruled closure rows with accessible selected states and labelled note. Recovered prior session first in db024bd. Build/QC/artifact pass; 44 Chrome surfaces pass geometry, contrast, console and keyboard checks; inspected mobile light/dark captures and refreshed intended baselines. Physical-device keyboard/browser chrome testing remains outside this run.

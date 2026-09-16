@@ -765,13 +765,14 @@ export default function App() {
 
       {/* Mobile Ergonomic Bottom Thumb-Zone Navigation Bar */}
       {activeView === 'daily' && (
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#151515]/95  border-t border-black/[0.08] dark:border-white/[0.1] px-4 py-2 flex items-center justify-around no-print" aria-label="Daily Page Sides">
+        <nav className="mobile-page-navigation md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#151515]/95  border-t border-black/[0.08] dark:border-white/[0.1] px-4 py-2 flex items-center justify-around no-print" aria-label="Daily Page Sides">
           {[
             { id: 'side1', label: 'Decide' },
             { id: 'side2', label: 'Turn Over' }
           ].map(tab => (
             <button
               key={tab.id}
+              aria-pressed={mobileFold === tab.id}
               onClick={() => {
                 handleMobileFoldSwitch(tab.id);
               }}

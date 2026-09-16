@@ -190,3 +190,21 @@ changes it. Baseline changes require visible review, not automatic acceptance.
 Verification results are recorded below when the final run completes. This
 refinement is local until explicitly deployed; the earlier live-build record
 above does not refer to these changes.
+
+
+## Mobile refinement — 16 September 2026, founder screenshot review
+
+Preserve the desktop spread. On phones, retain a single readable book page,
+use the dynamic viewport height, and keep Search/Menu as labelled accessible
+icons around the centred DECIDE ONE name. The recovered short date remains.
+At heights above 620px, task rows are 48px and stopwatch/page-turn buttons have
+44px targets; the shortest phone retains the compact density.
+
+The focus panel shows its elapsed readout once, below the dial. On return after
+an interrupted session, the estimated-time question and two actions replace the
+redundant paused dial until answered. Timing calculations are unchanged.
+
+Close The Day uses ruled task rows instead of nested cards on phones. Each
+existing triage action exposes its selected state, the optional note has an
+associated label, and the full-width closing action stays outside the scroll
+body. The initial popup, methods, stored data and desktop book are unchanged.

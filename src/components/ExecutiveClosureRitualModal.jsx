@@ -82,7 +82,7 @@ export default function ExecutiveClosureRitualModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-center justify-center p-3 sm:p-5 bg-black/70 dark:bg-black/85  animate-in fade-in select-none">
+    <div className="closure-overlay fixed inset-0 z-[120] flex items-center justify-center p-3 sm:p-5 bg-black/70 dark:bg-black/85  animate-in fade-in select-none">
 
       {/* Backdrop */}
       <div className="fixed inset-0" onClick={handleDismiss} />
@@ -94,7 +94,7 @@ export default function ExecutiveClosureRitualModal({
         onClick={e => e.stopPropagation()}
       >
         {/* Header Bar */}
-        <div className="h-14 px-5 sm:px-6 flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] shrink-0 bg-black/[0.015] dark:bg-white/[0.02]">
+        <div className="closure-header h-14 px-5 sm:px-6 flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08] shrink-0 bg-black/[0.015] dark:bg-white/[0.02]">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-neutral-500/10 text-neutral-600 dark:text-neutral-400 flex items-center justify-center">
               <Sunset className="w-4 h-4" />
@@ -116,6 +116,7 @@ export default function ExecutiveClosureRitualModal({
             }}
             className="p-1.5 rounded-full text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer"
             title="Close"
+            aria-label="Close"
           >
             <X className="w-4 h-4" />
           </button>
@@ -126,7 +127,7 @@ export default function ExecutiveClosureRitualModal({
 
           {/* Section 1: What the day came to. A statement, not a scorecard —
               R8 and R12: no streak, no verdict, no protagonist. */}
-          <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between">
+          <div className="closure-summary p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between">
             <div className="space-y-0.5">
               <div className="text-[11px] font-bold uppercase tracking-widest text-neutral-500">
                 What today came to
@@ -176,10 +177,11 @@ export default function ExecutiveClosureRitualModal({
                       </div>
 
                       {/* 1-Click Triage Buttons */}
-                      <div className="flex items-center gap-1.5 pt-1">
+                      <div className="closure-actions flex items-center gap-1.5 pt-1">
                         <button
                           type="button"
                           onClick={() => handleTriageAction(task.id, 'migrated')}
+                          aria-pressed={currentAction === 'migrated'}
                           className={`px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer ${
                             currentAction === 'migrated'
                               ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900'
@@ -193,6 +195,7 @@ export default function ExecutiveClosureRitualModal({
                         <button
                           type="button"
                           onClick={() => handleTriageAction(task.id, 'delegated')}
+                          aria-pressed={currentAction === 'delegated'}
                           className={`px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer ${
                             currentAction === 'delegated'
                               ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900'
@@ -206,6 +209,7 @@ export default function ExecutiveClosureRitualModal({
                         <button
                           type="button"
                           onClick={() => handleTriageAction(task.id, 'dropped')}
+                          aria-pressed={currentAction === 'dropped'}
                           className={`px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer ${
                             currentAction === 'dropped'
                               ? 'bg-neutral-500 text-white'
@@ -226,7 +230,7 @@ export default function ExecutiveClosureRitualModal({
           {/* Section 3: one useful note */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+              <label htmlFor="closure-note" className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                 What Changed Today?
               </label>
               <span className="text-[11px] text-neutral-500 font-serif italic">
@@ -234,6 +238,7 @@ export default function ExecutiveClosureRitualModal({
               </span>
             </div>
             <textarea
+              id="closure-note"
               rows={2}
               value={reflectionNotes}
               onChange={e => setReflectionNotes(e.target.value)}
@@ -246,7 +251,7 @@ export default function ExecutiveClosureRitualModal({
         </div>
 
         {/* Modal Bottom Bar: closing the day */}
-        <div className="p-4 sm:p-5 bg-black/[0.02] dark:bg-white/[0.02] border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between shrink-0">
+        <div className="closure-footer p-4 sm:p-5 bg-black/[0.02] dark:bg-white/[0.02] border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between shrink-0">
           <div className="text-[11px] text-neutral-500 font-medium">
             {ownerName ? `${ownerName} • ` : ''}Day Closure
           </div>

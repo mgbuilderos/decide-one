@@ -51,6 +51,7 @@
   .book-sheet .instrument-verso .execution-clock { min-height: 72px !important; }
 }
 @media (max-width: 767px) {
+  .instrument-app.instrument-app { height: 100dvh; max-height: 100dvh; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
   .instrument-app .instrument-stage { padding-top: 6px; }
   .instrument-app .instrument-sheet { border-radius: 12px !important; }
 }
@@ -107,5 +108,58 @@
 
 @media (max-height: 620px) {
   .instrument-app .closure-task + .closure-task { margin-top: 4px !important; }
-  .instrument-app .closure-body > div:nth-child(2) > div + div { margin-top: 4px !important; }
+.instrument-app .closure-body > div:nth-child(2) > div + div { margin-top: 4px !important; }
+}
+
+/* Phone layout: retain the book, give each action room, avoid duplicate time. */
+@media (max-width: 767px) {
+  .instrument-app .instrument-header { border-radius: 12px; overflow: hidden; }
+  .instrument-app .instrument-quiet-action { min-width: 44px; min-height: 44px; justify-content: center; }
+  .instrument-app .instrument-quiet-action span { display: none; }
+  .instrument-app .execution-header-elapsed { display: none; }
+  .instrument-app .execution-panel { min-height: 0 !important; }
+  .instrument-app .execution-clock { grid-template-columns: 88px minmax(0, 1fr); gap: 16px; }
+  .instrument-app .execution-clock > .focus-stopwatch { width: 72px !important; }
+  .instrument-app .execution-clock .focus-stopwatch svg { width: 72px; height: 72px; }
+  .instrument-app .execution-clock .focus-stopwatch .type-numeric-display { display: block; font-size: var(--type-section-title-size); line-height: 24px; }
+  .instrument-app .execution-needs-answer .execution-clock { display: none !important; }
+  .instrument-app .execution-return-question { align-items: stretch; flex-direction: column; gap: 8px; }
+  .instrument-app .execution-return-question > div:last-child { display: grid; grid-template-columns: 1fr 1fr; }
+  .instrument-app .execution-return-question button { min-height: 44px; border-radius: 6px; }
+  .instrument-app .execution-return-question button:first-child { background: var(--ink); color: var(--paper); }
+  .instrument-app .execution-return-questions { border-bottom: 0; }
+
+  .instrument-app .closure-overlay { padding: 8px; }
+  .instrument-app .closure-overlay .closure-dialog { max-height: calc(100dvh - 16px); border-radius: 16px; }
+  .instrument-app .closure-header { height: auto; min-height: 64px; padding: 12px 16px; gap: 8px; }
+  .instrument-app .closure-header > div > div:first-child { display: none; }
+  .instrument-app .closure-header > button { width: 44px; height: 44px; flex-shrink: 0; display: grid; place-items: center; }
+  .instrument-app .closure-body { padding: 16px; }
+  .instrument-app .closure-summary { background: none; border: 0; border-radius: 0; padding: 0 0 12px; border-bottom: 1px solid var(--rule); }
+  .instrument-app .closure-task { padding: 12px 0; border: 0; border-bottom: 1px solid var(--rule); border-radius: 0; background: none; opacity: 1; }
+  .instrument-app .closure-task > div:first-child { margin-bottom: 8px; }
+  .instrument-app .closure-actions { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, .8fr); gap: 4px; }
+  .instrument-app .closure-actions button { min-height: 44px; justify-content: center; padding: 4px; font-size: var(--type-control-size); font-weight: 500; }
+  .instrument-app .closure-actions svg { display: none; }
+  .instrument-app .closure-body textarea { font-size: 16px; line-height: 24px; }
+  .instrument-app .closure-footer { padding: 12px 16px max(12px, env(safe-area-inset-bottom)); }
+  .instrument-app .closure-footer > div { display: none; }
+  .instrument-app .closure-footer > button { width: 100%; min-height: 44px; justify-content: center; border-radius: 8px; box-shadow: none; }
+}
+@media (max-width: 767px) and (min-height: 621px) {
+  .instrument-app .instrument-stage.pb-10 { padding-bottom: 60px; }
+  .instrument-app .mobile-page-navigation button { min-height: 44px; }
+  .instrument-app .priority-row, .instrument-app .ivy-row { height: 48px !important; min-height: 48px; }
+  .instrument-app .priority-row .inline-time-control button, .instrument-app .ivy-row .inline-time-control button { width: 44px; height: 44px; }
+}
+@media (max-width: 767px) and (max-height: 620px) {
+  .instrument-app .instrument-header { grid-template-rows: 44px 42px; }
+  .instrument-app .instrument-masthead { height: 44px; min-height: 44px; }
+  .instrument-app .execution-clock { min-height: 64px !important; grid-template-columns: 60px minmax(0, 1fr); }
+  .instrument-app .execution-clock > .focus-stopwatch { width: 48px !important; }
+  .instrument-app .execution-clock .focus-stopwatch svg { width: 48px; height: 48px; }
+  .instrument-app .closure-header { min-height: 56px; padding-block: 6px; }
+  .instrument-app .closure-summary { padding-bottom: 4px; }
+  .instrument-app .closure-task { padding-block: 4px; }
+  .instrument-app .closure-task > div:first-child { margin-bottom: 2px; }
 }

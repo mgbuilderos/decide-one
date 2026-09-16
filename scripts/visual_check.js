@@ -98,15 +98,21 @@ function journalSeed(kind = 'empty', dark = false) {
     day.frameworkData = {eisenhower: {quadrants: Object.fromEntries(['q1','q2','q3','q4'].map((q,i)=>[q,Array.from({length: kind === 'matrix' ? 1 : 7}, (_, j) => ({id:`${q}_${j}`,text:`Task ${i*7+j+1}`,completed:false,classified:true}))]))}};
   }
   if (kind === 'matrix-report') day.closedAt = stamp;
-  if (['running','overrun','paused','closed'].includes(kind)) {
+  if (['running','overrun','paused','closed','returning'].includes(kind)) {
     day.execution.qa0 = {plannedDurationSec: 0, accumulatedSec: 300, actualFocusSec: 300, pausedDurationSec: 0, state: kind === 'closed' ? 'DONE' : kind === 'paused' ? 'PAUSED' : 'RUNNING', timingAccuracy:'measured', runStartedAt:stamp, lastTickAt:stamp};
     if (kind === 'closed') day.closedAt = stamp;
   }
+  if (kind === 'returning') day.execution.qa0.lastTickAt = '2026-09-14T08:30:00+05:30';
   return {dailyLogs: {'2026-09-14': day}, monthlyLogs:{}, weeklyReviews:{}, decisions:[], closureLogs:{}, habits:[], settings:{darkMode:dark,isMuted:true,paperStyle:'plain'}};
 }
 // Matrix pages now cover populated, oversized stored lists and the time report.
 for (const kind of ['written','ivy','running','overrun','paused','closed','matrix','matrix-long','matrix-report']) {
   SURFACES.push({id:`state-${kind}`,url:'/?view=daily',vp:{w:320,h:568},fixed:true,seed:kind});
+}
+// Phone flows reported by the founder: realistic height, both themes.
+for (const dark of [false, true]) {
+  for (const kind of ['paused', 'running', 'returning']) SURFACES.push({id:`phone-${kind}-${dark?'dark':'light'}`,url:'/?view=daily',vp:{w:390,h:740},fixed:true,seed:kind,dark});
+  SURFACES.push({id:`phone-closure-${dark?'dark':'light'}`,url:'/?view=daily',vp:{w:390,h:740},fixed:true,seed:'written',dark,open:'closure'});
 }
 if (LAYOUT) {
   SURFACES.length = 0;
@@ -654,6 +660,8 @@ for (const s of SURFACES) {
   // ── Pixels ─────────────────────────────────────────────────────────────────
   const shot = await call('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
   const png = Buffer.from(shot.data, 'base64');
+  fs.mkdirSync('output/playwright', {recursive:true});
+  fs.writeFileSync(`output/playwright/${s.id}.png`, png);
   const baseline = path.join(BASELINES, `${s.id}.png`);
 
   if (UPDATE || !fs.existsSync(baseline)) {

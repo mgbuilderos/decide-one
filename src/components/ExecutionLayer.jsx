@@ -76,10 +76,10 @@ export default function ExecutionLayer({ dailyLog, onUpdateExecution, isMuted = 
   if (!stopwatchItem && askingAbout.length === 0) return null;
 
   return (
-    <section className="execution-panel" aria-labelledby="focus-time-heading">
+    <section className={`execution-panel ${askingAbout.length ? 'execution-needs-answer' : ''}`} aria-labelledby="focus-time-heading">
       <header className="execution-panel-header">
         <h2 id="focus-time-heading" className="type-label">Focus Time</h2>
-        {activeSession && <span className="type-metadata">{formatStopwatch(elapsedSeconds(activeSession))} elapsed</span>}
+        {activeSession && <span className="execution-header-elapsed type-metadata">{formatStopwatch(elapsedSeconds(activeSession))} elapsed</span>}
       </header>
 
       {askingAbout.length > 0 && <div className="execution-return-questions">
