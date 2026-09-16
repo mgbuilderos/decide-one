@@ -248,6 +248,18 @@ await call('Runtime.enable');
 // 14 September 2026, Asia/Kolkata.
 const FROZEN_ISO = '2026-09-14T09:30:00+05:30';
 await call('Emulation.setTimezoneOverride', { timezoneId: 'Asia/Kolkata' });
+// Scrollbars never take space in a screenshot. .pocket-scroll uses
+// scrollbar-gutter: stable, which reserves ~11px for a classic scrollbar even
+// with --hide-scrollbars. On 16 September weekly-desktop and monthly-desktop
+// rendered with that gutter in some full runs and without it in others, so
+// their baselines flipped between two renders and deploys passed or failed at
+// random. With scrollbar-width: none the gutter measured 0 in every run,
+// including straight after a phone-sized surface.
+await call('Page.addScriptToEvaluateOnNewDocument', { source: `addEventListener('DOMContentLoaded', () => {
+  const style = document.createElement('style');
+  style.textContent = '*{scrollbar-width:none!important}';
+  document.head.appendChild(style);
+});` });
 await call('Page.addScriptToEvaluateOnNewDocument', { source: `(() => {
   const Real = Date;
   const fixed = Real.parse('${FROZEN_ISO}');

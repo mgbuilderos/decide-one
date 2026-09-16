@@ -145,7 +145,7 @@ Checked in the code at `0912ed8`. decideone.app serves this build (`assets/index
 - Unmerged branches with worktrees: `claude/great-snyder-b287a3` (re-adds confetti) and `claude/inspiring-satoshi-f0fb27`.
 - Untracked and uncommitted: `output/` (the 15 September design checkpoint and browser captures), `.playwright-cli/` and `screenshot_v3_overview.png`.
 
-- Resolved 16 September: `weekly-desktop` and `monthly-desktop` were re-recorded at the founder's direction. The 16 September phone-navigation commits (`5a50494`, `db024bd`, `5ed6717`) inset both views' content about 11px on the right; both were reviewed intact — full calendar, event field, weekly review fields, nothing clipped.
+- Resolved 16 September: `weekly-desktop` and `monthly-desktop` were not changed by any commit — they rendered two ways. `.pocket-scroll` uses `scrollbar-gutter: stable`, which reserved about 11px on the right in some full runs of the visual gate and not in others, so the baselines flipped and deploys passed or failed at random. The gate now renders with `scrollbar-width: none`, the gutter measured 0 in every probe, and the earlier baselines were restored.
 
 ## Older text this file supersedes
 

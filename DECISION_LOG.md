@@ -1506,3 +1506,9 @@ Support screen polished against rendered Chrome captures, not just green checks:
 ### 2026-09-16 13:58 — unattributed
 
 Re-recorded weekly-desktop and monthly-desktop baselines at the founder's direction. Both had failed since 5ed6717 (another agent's phone-navigation commits inset each view's content about 11px on the right). Reviewed before accepting: Weekly shows every stat, focus row, carry-forward and review field; Monthly shows the whole calendar, today, the event field and footer; nothing clipped. FINAL_DESIGN open item marked resolved.
+
+---
+
+### 2026-09-16 14:08 — unattributed
+
+Correction to the previous entry: weekly-desktop and monthly-desktop were not an intended 11px inset from the phone-navigation commits. They rendered two ways. .pocket-scroll's scrollbar-gutter: stable reserved about 11px in some full runs and not others (single-surface runs always reserved it), so re-recording from a single-surface run failed the next full run with the same 0.65% and 1.12%. Measured in fresh tabs: the gutter was 12px and 11px with and without Chrome's scrollbar-hiding emulation and after a phone render, so neither was the cause. The gate now injects scrollbar-width: none into every page it renders; the gutter then measured 0 in every probe. Baselines restored to their earlier committed versions; the full gate passed all 46 surfaces.
