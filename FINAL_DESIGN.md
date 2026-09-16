@@ -145,6 +145,8 @@ Checked in the code at `0912ed8`. decideone.app serves this build (`assets/index
 - Unmerged branches with worktrees: `claude/great-snyder-b287a3` (re-adds confetti) and `claude/inspiring-satoshi-f0fb27`.
 - Untracked and uncommitted: `output/` (the 15 September design checkpoint and browser captures), `.playwright-cli/` and `screenshot_v3_overview.png`.
 
+- **The visual gate is red on two surfaces that predate the support work:** `weekly-desktop` (0.65% of pixels) and `monthly-desktop` (1.12%) — both pages about 11px narrower on the right. Reproduced at `5ed6717`, before any support commit, so it came with the 16 September phone-navigation commits (`5a50494`, `db024bd`, `5ed6717`). Their baselines were not re-recorded; whoever made that change should confirm it is intended and record them. `npm run deploy` stops here until then.
+
 ## Older text this file supersedes
 
 Where these still say otherwise, this file wins:

@@ -254,12 +254,9 @@ export default function UnifiedMenuModal({
               <a className="type-control min-h-10 inline-flex items-center" href="/faq/">Questions</a>
               <button type="button" className="type-control min-h-10 text-left" onClick={() => runAndClose(onOpenMethods)}>Methods &amp; Attributions</button>
               <button type="button" className="type-control min-h-10 text-left" onClick={() => runAndClose(onOpenLegal)}>Terms, Privacy &amp; Refunds</button>
+              <button type="button" className="type-control min-h-10 text-left" onClick={() => runAndClose(onOpenSupport)}>Support Decide One</button>
             </nav>
           </details>
-          <button type="button" onClick={() => runAndClose(onOpenSupport)}
-            className="type-control min-h-11 w-full border-t border-black/[0.08] dark:border-white/[0.10] flex items-center text-left">
-            Support Decide One
-          </button>
         </div>
       </div>
     </div>

@@ -30,7 +30,7 @@ export default function SupportModal({ isOpen, onClose, channels = SUPPORT_CHANN
   const [custom, setCustom] = useState('');
   const [qrSvg, setQrSvg] = useState('');
   const [copied, setCopied] = useState(false);
-  const closeRef = useRef(null);
+  const headingRef = useRef(null);
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
 
@@ -40,7 +40,7 @@ export default function SupportModal({ isOpen, onClose, channels = SUPPORT_CHANN
   useEffect(() => {
     if (!isOpen) return undefined;
     const previous = document.activeElement;
-    closeRef.current?.focus();
+    headingRef.current?.focus();
     // Captured and stopped, so Escape closes this dialog rather than reaching
     // the privacy shutter's own Escape handler.
     const onKey = (event) => {
@@ -95,7 +95,7 @@ export default function SupportModal({ isOpen, onClose, channels = SUPPORT_CHANN
   );
 
   return (
-    <div className={`fixed inset-0 z-50 bg-black/40 dark:bg-black/70 flex items-center justify-center p-3 [@media(max-height:620px)]:p-0 select-none`}>
+    <div className={`fixed inset-0 z-[120] bg-black/40 dark:bg-black/70 flex items-center justify-center p-3 [@media(max-height:620px)]:p-0 select-none`}>
       <button type="button" tabIndex={-1} className="fixed inset-0 cursor-default" aria-label="Close" onClick={onClose} />
       <section
         role="dialog"
@@ -104,9 +104,8 @@ export default function SupportModal({ isOpen, onClose, channels = SUPPORT_CHANN
         className={`support-dialog relative w-full max-w-[560px] bg-white dark:bg-[#171717] text-neutral-900 dark:text-neutral-100 rounded-2xl [@media(max-height:620px)]:rounded-none ${BORDER} flex flex-col`}
       >
         <header className={`min-h-14 [@media(max-height:620px)]:min-h-11 px-5 [@media(max-height:620px)]:px-4 flex items-center justify-between gap-3 border-b border-black/[0.08] dark:border-white/[0.10]`}>
-          <h2 id="support-title" className="type-section-title">Support Decide One</h2>
+          <h2 id="support-title" ref={headingRef} tabIndex={-1} className="type-section-title outline-none">Support Decide One</h2>
           <button
-            ref={closeRef}
             type="button"
             onClick={onClose}
             aria-label="Close"
@@ -147,11 +146,11 @@ export default function SupportModal({ isOpen, onClose, channels = SUPPORT_CHANN
                         type="button"
                         aria-pressed={selected}
                         onClick={() => { setPreset(inr); setCustom(''); }}
-                        className={`min-h-12 [@media(max-height:620px)]:min-h-11 px-1 sm:px-3 rounded-lg flex flex-col sm:flex-row items-center sm:items-baseline justify-center sm:justify-between gap-0.5 sm:gap-2 transition-colors ${
+                        className={`min-h-12 [@media(max-height:620px)]:min-h-11 px-1 sm:px-3 rounded-lg flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-0.5 sm:gap-2 transition-colors ${
                           selected ? `${PRIMARY} border border-transparent` : `${BORDER} ${QUIET}`
                         }`}
                       >
-                        <span className="type-metadata">{label}</span>
+                        <span className={`type-metadata ${selected ? '!text-white/70 dark:!text-neutral-900/70' : ''}`}>{label}</span>
                         <span className="type-control tabular-nums">{formatInr(inr)}</span>
                       </button>
                     );

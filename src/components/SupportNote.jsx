@@ -31,7 +31,7 @@ export default function SupportNote({ onNotNow, onNeverAgain, onOpenSupport, cha
   return (
     <aside
       aria-labelledby="support-note-title"
-      className={`no-print fixed z-40 bottom-3 inset-x-3 sm:inset-x-auto sm:right-4 sm:bottom-4 sm:w-[344px] bg-white dark:bg-[#171717] text-neutral-900 dark:text-neutral-100 rounded-2xl ${BORDER} p-4 flex flex-col gap-3`}
+      className={`no-print fixed z-[100] bottom-3 inset-x-3 sm:inset-x-auto sm:right-4 sm:bottom-4 sm:w-[344px] bg-white dark:bg-[#171717] text-neutral-900 dark:text-neutral-100 rounded-2xl ${BORDER} p-4 flex flex-col gap-3`}
     >
       <div className="flex items-start justify-between gap-3">
         <div>

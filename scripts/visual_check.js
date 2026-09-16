@@ -63,6 +63,9 @@ const SURFACES = [
   { id: 'menu-tiny', url: '/?view=daily', vp: { w: 320, h: 568 }, fixed: true, seed: 'written', open: 'tools' },
   { id: 'menu-dark-tiny', url: '/?view=daily', vp: { w: 320, h: 568 }, fixed: true, dark: true, seed: 'written', open: 'tools' },
   { id: 'privacy-mobile', url: '/?view=daily', vp: MOBILE, fixed: true, seed: 'written', open: 'privacy' },
+  // Support (B-46): the screen must hold one viewport at desktop and at the smallest phone.
+  { id: 'support-desktop', url: '/?view=daily', vp: DESKTOP, fixed: true, seed: 'written', open: 'support' },
+  { id: 'support-tiny', url: '/?view=daily', vp: { w: 320, h: 568 }, fixed: true, seed: 'written', open: 'support' },
   { id: 'weekly-desktop', url: '/?view=weekly', vp: DESKTOP, fixed: true },
   { id: 'weekly-mobile', url: '/?view=weekly', vp: MOBILE, fixed: true },
   { id: 'monthly-desktop', url: '/?view=monthly', vp: DESKTOP, fixed: true },
@@ -519,6 +522,13 @@ for (const s of SURFACES) {
 
   if (s.open) {
     if (s.open === 'tools') await evaluate(`document.querySelector('.instrument-tools-trigger').click(); 1`);
+    else if (s.open === 'support') {
+      await evaluate(`document.querySelector('.instrument-tools-trigger').click(); 1`);
+      await settle(700);
+      await evaluate(`[...document.querySelectorAll('#unified-menu summary')].find(s => s.textContent.includes('Guides'))?.click(); 1`);
+      await settle(150);
+      await evaluate(`[...document.querySelectorAll('#unified-menu button')].find(b => b.textContent.trim() === 'Support Decide One')?.click(); 1`);
+    }
     else if (s.open === 'privacy') {
       await evaluate(`document.querySelector('.instrument-tools-trigger')?.click(); 1`);
       await settle(100);
