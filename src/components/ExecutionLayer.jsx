@@ -3,6 +3,7 @@ import FocusStopwatch, { formatStopwatch } from './FocusStopwatch';
 import { playSound } from '../utils/audio';
 import {
   STATES,
+  BREATHING_SECONDS,
   getSession,
   syncSession,
   reconcileOnReturn,
@@ -50,6 +51,17 @@ export default function ExecutionLayer({ dailyLog, onUpdateExecution, isMuted = 
       document.removeEventListener('visibilitychange', write);
     };
   }, [activeItem?.id, activeSession?.state, dailyLog, onUpdateExecution]);
+
+  // This transition belongs to the session, so paging its row away cannot cancel it.
+  useEffect(() => {
+    if (!activeItem || activeSession?.state !== STATES.BREATHING) return undefined;
+    const id = window.setTimeout(() => {
+      onUpdateExecution?.(activeItem.id, beginRunning(getSession(dailyLog, activeItem.id)));
+    }, BREATHING_SECONDS * 1000);
+    return () => window.clearTimeout(id);
+    // Deliberately keep one timer through ordinary row edits.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeItem?.id, activeSession?.state]);
 
   const answerStillOn = (item, stillOn) => {
     const session = getSession(dailyLog, item.id);

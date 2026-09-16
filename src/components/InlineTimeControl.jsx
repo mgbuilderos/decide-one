@@ -4,10 +4,8 @@ import { playSound } from '../utils/audio';
 import { formatStopwatch } from './FocusStopwatch';
 import {
   STATES,
-  BREATHING_SECONDS,
   getSession,
   startSession,
-  beginRunning,
   pauseSession,
   elapsedSeconds
 } from '../utils/executionModel';
@@ -37,16 +35,6 @@ export default function InlineTimeControl({
     const id = window.setInterval(() => setBeat(Date.now()), 1000);
     return () => window.clearInterval(id);
   }, [running]);
-
-  useEffect(() => {
-    if (!breathing || !itemId) return undefined;
-    const id = window.setTimeout(() => {
-      onUpdateExecution?.(itemId, beginRunning(getSession(dailyLog, itemId)));
-    }, BREATHING_SECONDS * 1000);
-    return () => window.clearTimeout(id);
-    // A breathing state is deliberately a single three-second transition.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [breathing, itemId]);
 
   const handleStart = () => {
     if (!itemId || !hasTask) return;

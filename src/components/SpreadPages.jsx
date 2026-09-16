@@ -76,7 +76,7 @@ export function LeftPage({
           />
         </div>}
 
-        <div className="min-h-[36px] [@media(max-height:820px)_and_(min-height:761px)]:min-h-0 [@media(max-height:760px)]:min-h-0 flex-1" aria-hidden="true" />
+        {activeFramework !== 'eisenhower' && <div className="min-h-[36px] [@media(max-height:820px)_and_(min-height:761px)]:min-h-0 [@media(max-height:760px)]:min-h-0 flex-1" aria-hidden="true" />}
       </div>
 
       <footer className="instrument-page-footer">

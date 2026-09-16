@@ -93,18 +93,19 @@ function journalSeed(kind = 'empty', dark = false) {
     day.activeFramework = 'ivy_lee';
     day.frameworkData = {ivy_lee: {tasks: Array.from({length: 6}, (_, i) => ({id: `il_${i}`, text: `Priority ${i + 1}`, completed: i === 0}))}};
   }
-  if (kind === 'matrix') {
+  if (kind.startsWith('matrix')) {
     day.activeFramework = 'eisenhower';
-    day.frameworkData = {eisenhower: {quadrants: Object.fromEntries(['q1','q2','q3','q4'].map((q,i)=>[q,[{id:q,text:tasks[i%3].text,completed:false,classified:true}]]))}};
+    day.frameworkData = {eisenhower: {quadrants: Object.fromEntries(['q1','q2','q3','q4'].map((q,i)=>[q,Array.from({length: kind === 'matrix' ? 1 : 7}, (_, j) => ({id:`${q}_${j}`,text:`Task ${i*7+j+1}`,completed:false,classified:true}))]))}};
   }
+  if (kind === 'matrix-report') day.closedAt = stamp;
   if (['running','overrun','paused','closed'].includes(kind)) {
     day.execution.qa0 = {plannedDurationSec: 0, accumulatedSec: 300, actualFocusSec: 300, pausedDurationSec: 0, state: kind === 'closed' ? 'DONE' : kind === 'paused' ? 'PAUSED' : 'RUNNING', timingAccuracy:'measured', runStartedAt:stamp, lastTickAt:stamp};
     if (kind === 'closed') day.closedAt = stamp;
   }
   return {dailyLogs: {'2026-09-14': day}, monthlyLogs:{}, weeklyReviews:{}, decisions:[], closureLogs:{}, habits:[], settings:{darkMode:dark,isMuted:true,paperStyle:'plain'}};
 }
-// Full Matrix lists remain in the diagnostic sweep until their narrow layout is settled.
-for (const kind of ['written','ivy','running','overrun','paused','closed']) {
+// Matrix pages now cover populated, oversized stored lists and the time report.
+for (const kind of ['written','ivy','running','overrun','paused','closed','matrix','matrix-long','matrix-report']) {
   SURFACES.push({id:`state-${kind}`,url:'/?view=daily',vp:{w:320,h:568},fixed:true,seed:kind});
 }
 if (LAYOUT) {
@@ -114,7 +115,7 @@ if (LAYOUT) {
       SURFACES.push({id:`layout-${view}-${w}-${h}-${dark?'dark':'light'}`,url:`/?view=${view}`,vp:{w,h},fixed:true,dark});
     }
   }
-  for (const kind of ['written','ivy','matrix','running','overrun','paused','closed']) for (const dark of [false,true]) {
+  for (const kind of ['written','ivy','matrix','matrix-long','matrix-report','running','overrun','paused','closed']) for (const dark of [false,true]) {
     SURFACES.push({id:`layout-${kind}-${dark?'dark':'light'}`,url:'/?view=daily',vp:{w:320,h:568},fixed:true,seed:kind,dark});
   }
 }
@@ -433,6 +434,12 @@ const PROBE = `(() => {
     headerWidth: header?.getBoundingClientRect().width || 0,
     stageWidth: stage?.getBoundingClientRect().width || 0,
     wordmark: wordmark?.textContent.trim() || '',
+    dateFits: [...document.querySelectorAll('.date-display')].filter(vis).every(date => {
+      const parent = date.getBoundingClientRect();
+      return [...date.querySelectorAll('h1 > span')].filter(vis).every(span => {
+        const r=span.getBoundingClientRect(); return r.left >= parent.left-1 && r.right <= parent.right+1;
+      });
+    }),
     hasTodayStream: !!document.querySelector('.today-stream'),
     stopwatchElapsed: Number(stopwatch?.dataset.elapsedSeconds || 0),
     stopwatchAngle: Number(stopwatch?.dataset.secondHandAngle || 0),
@@ -523,9 +530,39 @@ for (const s of SURFACES) {
     fs.writeFileSync(`output/playwright/${s.id}.png`,Buffer.from(shot.data,'base64'));
   }
 
-  if (s.seed === 'closed') {
+  if (s.seed === 'closed' || s.seed === 'matrix-report') {
     await evaluate('[...document.querySelectorAll("button")].find(b => b.textContent.trim() === "Turn Over")?.click(); 1');
     await settle(200);
+  }
+
+  if (s.seed?.startsWith('matrix')) {
+    const report = s.seed === 'matrix-report';
+    const rowSelector = report ? '.day-report-row' : '.matrix-row';
+    const pagerSelector = report ? 'nav[aria-label="Time report pages"]' : 'nav[aria-label="Matrix pages"]';
+    const expected = Object.values(journalSeed(s.seed).dailyLogs['2026-09-14'].frameworkData.eisenhower.quadrants).flat().map(task => task.id).sort();
+    const found = [];
+    for (let step = 0; step < 40; step++) {
+      const state = await evaluate(`(() => {
+        const rows = [...document.querySelectorAll('${rowSelector}')];
+        const next = [...document.querySelectorAll('${pagerSelector} button')].find(b => b.textContent === 'Next');
+        return {ids: rows.map(row => row.dataset.taskId),
+          fits: rows.every(row => { const r=row.getBoundingClientRect(); const parent=row.closest('.matrix-grid,.day-report-list').getBoundingClientRect(); return r.top >= parent.top-1 && r.bottom <= parent.bottom+1 && r.bottom <= innerHeight; }),
+          next: !!next && next.getAttribute('aria-disabled') !== 'true'};
+      })()`);
+      found.push(...state.ids);
+      if (!state.fits) errors.push(`${s.id}: paged rows extend outside their available space`);
+      if (!state.next) break;
+      await evaluate(`[...document.querySelectorAll('${pagerSelector} button')].find(b => b.textContent === 'Next').click(); 1`);
+      await settle(60);
+    }
+    if (JSON.stringify(found.sort()) !== JSON.stringify(expected)) errors.push(`${s.id}: paging lost or duplicated the wrong task identities`);
+    await evaluate(`{const buttons=document.querySelectorAll('${pagerSelector} button'); buttons[0]?.click();} 1`);
+    // Return to the first page for a stable screenshot.
+    for (let step=0;step<40;step++) {
+      const back = await evaluate(`(() => { const b=document.querySelector('${pagerSelector} button'); if(!b || b.getAttribute('aria-disabled')==='true') return false; b.click(); return true; })()`);
+      if(!back) break;
+      await settle(30);
+    }
   }
 
   let m;
@@ -578,6 +615,7 @@ for (const s of SURFACES) {
   }
   const shortMonth = s.url.includes('view=monthly') && s.vp.h <= 620;
   if (shortMonth && !m.monthEditorVisible) errors.push(`${at}: the selected day's event field is out of reach`);
+  if (!m.contract.dateFits) errors.push(`${at}: date is clipped by its navigation controls`);
   for (const el of m.smallType) errors.push(`${at}: ${el} renders below 11px`);
   for (const item of m.offScaleType) errors.push(`${at}: ${item.el} renders at ${item.size}px outside the instrument type scale`);
   if (s.fixed) for (const issue of m.bookGeometry) errors.push(`${at}: Rule 19 — ${issue}`);

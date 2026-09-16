@@ -239,6 +239,12 @@ It does three things the previous line did not. It **begins by trusting the read
 
 **Navigation and privacy labels, amended 16 September 2026.** The header exposes Search, the centred name and one “Menu”; it does not open a second menu from inside the first. The compact menu places the three Methods and three Paper Grid choices first, followed by direct work actions. “DECISION SPACE” names the existing decision record wherever that surface is presented. Preferences, Backup & Export, and Guides & Legal remain lower in the same menu. The privacy screen uses the same Inter controls as the rest of the instrument.
 
+**Closure refinement, 16 September 2026.** Keep the existing “Whatever is left is carried, not lost” summary. Remove the second reassurance card repeating that promise, so task actions and the optional note remain in view on short screens. This changes no closure, migration or storage behavior.
+
+**Share-image description, 16 September 2026.** “Decide One open priority instrument with a task on white pages.” This describes the captured image without implying the retired planned-time control still exists.
+
+**Paging labels, 16 September 2026.** The founder approved “Previous” and “Next” for Matrix lists that exceed the available page. “Page X of Y” and item ranges describe position; they do not rank or hide work. The same controls may expose the corresponding time report.
+
 ### 11.2 What the product does — the four movements
 
 1. **It makes the competing work visible.** A bounded page turns a crowded mental list into a choice the person can see.

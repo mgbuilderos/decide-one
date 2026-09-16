@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Check, Pause } from 'lucide-react';
+import CompactPager from './CompactPager';
+import usePageSpace from '../hooks/usePageSpace';
 import FocusStopwatch, { formatStopwatch } from './FocusStopwatch';
 import { STATES, getSession, getFrameworkItems, elapsedSeconds } from '../utils/executionModel';
 
@@ -14,6 +16,12 @@ export default function DayReport({
   isInteractive = true
 }) {
   const items = getFrameworkItems(dailyLog);
+  const [reportSpaceRef, reportHeight] = usePageSpace();
+  const [reportPage, setReportPage] = useState(0);
+  const paged = dailyLog?.activeFramework === 'eisenhower';
+  const pageSize = paged && items.length * 64 > reportHeight ? Math.max(1, Math.floor((reportHeight - 40) / 64)) : Math.max(1, items.length);
+  const pageCount = Math.max(1, Math.ceil(items.length / pageSize));
+  const currentPage = Math.min(reportPage, pageCount - 1);
   const [, setBeat] = useState(0);
   const running = items
     .map(item => ({ item, session: getSession(dailyLog, item.id) }))
@@ -57,19 +65,22 @@ export default function DayReport({
     </div>;
   }
 
-  return <section className="day-report" aria-labelledby="day-report-heading">
+  return <section className={`day-report ${paged ? 'matrix-time-report' : ''}`} aria-labelledby="day-report-heading">
     <header>
       <h2 id="day-report-heading" className="type-label">Where The Time Went</h2>
       <span className="type-metadata">{dateLabel}</span>
     </header>
+    <div className="day-report-pages" ref={reportSpaceRef}>
     <div className="day-report-list">
-      {sessions.map(({ item, session }) => <div key={item.id} className="day-report-row">
-        <p className={`type-body ${item.completed ? 'is-complete' : ''}`}>{item.text}</p>
+      {sessions.slice(currentPage * pageSize, (currentPage + 1) * pageSize).map(({ item, session }) => <div key={item.id} data-task-id={item.id} className="day-report-row">
+        <p title={item.text} className={`type-body ${item.completed ? 'is-complete' : ''}`}>{item.text}</p>
         <p className="type-metadata">
           {formatStopwatch(elapsedSeconds(session))} elapsed
           {session.timingAccuracy === 'inferred' && <span> · estimated</span>}
         </p>
       </div>)}
+    </div>
+    <CompactPager page={currentPage} count={pageCount} onChange={setReportPage} label="Time report pages" />
     </div>
     <footer>
       {dailyLog.closedAt && <p className="type-control">Day Closed</p>}

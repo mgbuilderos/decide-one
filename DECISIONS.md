@@ -364,3 +364,7 @@ or new list navigation has been decided in this checkpoint.
 Gate repairs, 15 September: Rule 3 uses a neutral palette allow-list and a zero RGB-channel-spread threshold for literals, with only named progress CSS blocks exempt. Its load/import call checks use parsed call expressions, so comments cannot masquerade as migration. Rule 18 delegates existence and reachability to Rule 0 and checks the archive/activation exports only. Artifact QC also rejects known celebration package signatures in built JavaScript. These implement the existing no-colour/no-celebration decisions without changing product scope.
 
 Rule 10 now also measures non-interactive Decide One labels in Chrome for a filled background, texture, shadow or stitched-style border, independently of class names. A plain label and the wordmark navigation button remain permitted. The source guard requires that measurement to remain present. This catches a renamed version of the retired tag; it is not a general proof that every possible ornament is absent.
+
+## Matrix paging — founder approval, 16 September 2026
+
+The founder chose compact Previous/Next paging for long Matrix lists on small screens. Size pages to the space available, retain all quadrant assignments and entries, reveal newly classified entries, and keep the same work reachable in the time report. Never silently cap or discard stored entries to make the page fit. Preserve the approved book, current stopwatch and initial popup.

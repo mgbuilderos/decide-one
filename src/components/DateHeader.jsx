@@ -24,9 +24,10 @@ export function DateDisplay({ currentDate }) {
   const dayOfYear = Math.round((midnightToday - startOfYear) / 86400000) + 1;
 
   return (
-    <div className="flex items-baseline gap-2 sm:gap-2.5 min-w-0 whitespace-nowrap overflow-hidden text-ellipsis tabular-nums">
+    <div className="date-display flex items-baseline gap-2 sm:gap-2.5 min-w-0 whitespace-nowrap overflow-hidden text-ellipsis tabular-nums" title={currentDate.toLocaleDateString('en-US', {weekday:'long',year:'numeric',month:'long',day:'numeric'})}>
       <h1 className="type-page-title flex items-baseline gap-1.5 sm:gap-2 whitespace-nowrap shrink-0">
-        <span className="whitespace-nowrap">{formattedMonth} {dayOfMonth}</span>
+        <span className="date-month-full whitespace-nowrap">{formattedMonth} {dayOfMonth}</span>
+        <span className="date-month-short whitespace-nowrap">{currentDate.toLocaleDateString('en-US', {month:'short'})} {dayOfMonth}</span>
         <span className="date-year">
           {year}
         </span>

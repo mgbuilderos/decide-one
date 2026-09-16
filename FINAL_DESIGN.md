@@ -139,7 +139,7 @@ Checked in the code at `0912ed8`. decideone.app serves this build (`assets/index
 
 ## Still open
 
-- Populated Urgent/Important Matrix lists overflow at 320×568. Compact paging or list scrolling is the founder's call.
+- Matrix paging was approved on 16 September: compact Previous/Next controls keep every task reachable without scrolling; implementation is being verified.
 - `index.html`'s share-image alt text still describes *"a task and its planned time"*; planned time no longer exists. Correct it through VISION §11.
 - The left-page footer says *Three Choices*; VISION §11.1's approved alternate says *Three methods*.
 - `PatronUpgradeModal` still lists *Page & Ink Appearance*; the weekly PDF heading still reads *DAILY VICTORY & EVENING REFLECTIONS ANTHOLOGY*; the `patron-chime` and `singing-bowl` sounds remain. Founder decisions.
@@ -154,3 +154,7 @@ Where these still say otherwise, this file wins:
 - DECISIONS **P11** (single leaflet, one side visible), **B-12** (desktop spread gone), **BR8** and **B-15** (the chrome stays retired; the book geometry returned), and **B-6, B-7, B-8, B-13, B-35** (capacity, planned minutes, the analogue clock). Each row carries a dated note pointing here.
 - UI_BRIEF §3–§4 (duration per line, the analogue clock, capacity), §7.3 (a flat turn), §8 (capacity and planned-time states), §10 (AnalogueClock, RapidLogSection, BulletItem), §13 B-23 (resolved) and Appendix A (the 15 September prompt).
 - TELEMETRY_SPEC's *"Planned 6h 10m. Spent 5h 40m."* example and its planned-against-spent proof; ARCHITECTURE_AUDIT's note that Rules 6 and 19 anchor a flat sheet.
+
+## Matrix paging — founder approval, 16 September 2026
+
+The founder chose compact Previous/Next paging for long Matrix lists on small screens. Size pages to the space available, retain all quadrant assignments and entries, reveal newly classified entries, and keep the same work reachable in the time report. Never silently cap or discard stored entries to make the page fit. Preserve the approved book, current stopwatch and initial popup.

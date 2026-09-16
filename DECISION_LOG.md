@@ -1464,3 +1464,9 @@ Closed details no longer enter the menu Tab sequence; the visible first and last
 ### 2026-09-16 04:20 — unattributed
 
 Documented the 15-16 September design changes. FINAL_DESIGN.md now carries the design as built at 0912ed8 (live, MATCH): direct arrival and the hash-pinned three-step quick start; the 960px two-row header and compact menu; the open-book spread, fold, paper depth, round marks and 280ms reduced-motion-safe day step; framework-only input; the clockwise elapsed FocusStopwatch replacing the analogue clock, planned minutes and capacity; the one-action privacy shutter; self-hosted Inter hierarchy and zero-chroma neutral tokens; review views and information pages; plus a commit-by-commit history including the rejected flat pass, the gates that hold the design, what is still open, and which older text it supersedes. Dated superseded notes added to DECISIONS P11, B-6, B-7, B-8, B-12, B-13, B-35, B-15 and BR8; UI_BRIEF Appendix A marked as history; FINAL_DESIGN.md registered in npm run brief and in the AGENTS/CLAUDE table; the stale '23 rules' count removed.
+
+---
+
+### 2026-09-16 09:56 — codex
+
+Resumed at b429011 without reverting later founder corrections. Founder approved compact Previous/Next Matrix paging. Implemented adaptive quadrant pages and corresponding time-report pages, retained every stored task (28-task browser sweep), revealed/focused classified additions, and moved breathing transition from a paged row into the shared execution panel so paging cannot cancel startup. Browser interactions verified edits and timer continuity. Fixed narrow date clipping with a short month plus full year; preserved QuickStart. Build/source/artifact gates passed; 82-layout sweep passed before final closure/date-check refinements. Secondary review, mutation proof and refreshed default baselines are in progress. This is a recoverable working checkpoint, not deployment.

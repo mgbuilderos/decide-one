@@ -65,3 +65,42 @@
 .instrument-app .inline-time-control input { width: 3ch; font-size: 13px; text-overflow: clip; appearance: textfield; -moz-appearance: textfield; }
 .instrument-app .inline-time-control input::-webkit-inner-spin-button,
 .instrument-app .inline-time-control input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* Approved Matrix paging: content determines page count, never hidden rows. */
+.instrument-app .method-section[data-method="eisenhower"] { flex: 1 1 0; min-height: 0; }
+.instrument-app .method-section[data-method="eisenhower"] > header,
+.instrument-app .method-section[data-method="eisenhower"] > .method-rule { flex-shrink: 0; }
+.instrument-app .matrix-pages { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.instrument-app .matrix-grid { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 8px; padding-top: 0; }
+.instrument-app .matrix-page-group { flex-shrink: 0; }
+.instrument-app .matrix-page-group > div:first-child { height: 32px; margin: 0; padding: 0; }
+.instrument-app .matrix-row { height: 40px; min-height: 40px; gap: 6px; }
+.instrument-app .matrix-row input { text-overflow: ellipsis; }
+.compact-pager { display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 40px; flex-shrink: 0; border-top: 1px solid var(--rule); }
+.compact-pager button { font: inherit; font-size: var(--type-control-size); line-height: 18px; min-height: 36px; padding: 0 4px; border-radius: 4px; }
+.compact-pager button[aria-disabled="true"] { color: var(--ink-muted); cursor: default; }
+
+.day-report-pages { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.instrument-app .matrix-time-report .day-report-list { overflow: visible; }
+.instrument-app .matrix-time-report .day-report-row { height: 64px; padding: 10px 0; box-sizing: border-box; }
+.instrument-app .matrix-time-report .day-report-row .type-body { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.date-month-short { display: none; }
+@media (max-width: 767px) {
+  .date-month-full, .date-display .date-meta { display: none; }
+  .date-month-short { display: inline; }
+  .instrument-app .date-display { flex-shrink: 0; }
+}
+
+/* The closure summary already explains carry-forward; leave space for the actions. */
+@media (max-height: 620px) {
+  .instrument-app .closure-dialog .closure-body { padding: 8px 12px; }
+  .instrument-app .closure-body > * + * { margin-top: 8px; }
+  .instrument-app .closure-body > div:first-child { padding: 8px; }
+  .instrument-app .closure-task { padding: 4px; }
+  .instrument-app .closure-task > div:first-child { margin-bottom: 0; }
+  .instrument-app .closure-task > div:first-child > span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .instrument-app .closure-task button { min-height: 36px; padding: 4px 6px; }
+  .instrument-app .closure-body textarea { height: 48px; padding: 4px 8px; }
+  .instrument-app .closure-dialog > div:last-child { padding: 6px 12px; }
+}

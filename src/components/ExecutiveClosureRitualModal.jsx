@@ -89,7 +89,8 @@ export default function ExecutiveClosureRitualModal({
 
       {/* Modal Dialog */}
       <div
-        className="relative z-10 w-full max-w-lg bg-white dark:bg-[#151515] text-neutral-900 dark:text-neutral-100 rounded-3xl shadow-2xl border border-black/[0.12] dark:border-white/[0.15] flex flex-col max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-150"
+        role="dialog" aria-modal="true" aria-label="Close The Day"
+        className="closure-dialog relative z-10 w-full max-w-lg bg-white dark:bg-[#151515] text-neutral-900 dark:text-neutral-100 rounded-3xl shadow-2xl border border-black/[0.12] dark:border-white/[0.15] flex flex-col max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-150"
         onClick={e => e.stopPropagation()}
       >
         {/* Header Bar */}
@@ -121,7 +122,7 @@ export default function ExecutiveClosureRitualModal({
         </div>
 
         {/* Modal Body */}
-        <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-5">
+        <div className="closure-body flex-1 overflow-y-auto p-5 sm:p-6 space-y-5">
 
           {/* Section 1: What the day came to. A statement, not a scorecard —
               R8 and R12: no streak, no verdict, no protagonist. */}
@@ -160,7 +161,7 @@ export default function ExecutiveClosureRitualModal({
                   return (
                     <div
                       key={task.id}
-                      className={`p-3 rounded-xl border transition-all ${
+                      className={`closure-task p-3 rounded-xl border transition-all ${
                         currentAction
                           ? 'border-neutral-500/30 bg-neutral-500/[0.02] opacity-75'
                           : 'border-black/[0.08] dark:border-white/[0.1] bg-white dark:bg-black/20'
@@ -244,16 +245,6 @@ export default function ExecutiveClosureRitualModal({
             />
           </div>
 
-          {/* Nothing is lost — the anti-Zeigarnik promise, stated plainly */}
-          <div className="p-3.5 rounded-2xl border border-black/[0.06] dark:border-white/[0.08] bg-black/[0.015] dark:bg-white/[0.02] text-xs text-neutral-500 space-y-1">
-            <div className="font-bold text-neutral-800 dark:text-neutral-200 flex items-center gap-1.5">
-              <Moon className="w-3.5 h-3.5 text-neutral-500" />
-              <span>Nothing is lost</span>
-            </div>
-            <p className="text-[11px] leading-relaxed">
-              Everything unfinished has somewhere to go before the day closes. What was not first today is not deleted — it moves up, and it will be here tomorrow.
-            </p>
-          </div>
 
         </div>
 

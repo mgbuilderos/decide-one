@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Check, Lock } from 'lucide-react';
 import { playSound } from '../utils/audio';
 import InlineTimeControl from './InlineTimeControl';
+import CompactPager from './CompactPager';
+import usePageSpace from '../hooks/usePageSpace';
+import { matrixPages } from '../utils/matrixPages';
 import { STATES, completeSession, getSession, isItemLocked } from '../utils/executionModel';
 
 export const FRAMEWORKS = [
@@ -140,6 +143,26 @@ export default function ProductivityFrameworks({
    * the form, never the content (P10).
    */
   const [classifier, setClassifier] = useState(null);
+  const [matrixSpaceRef, matrixHeight] = usePageSpace();
+  const [matrixPage, setMatrixPage] = useState(0);
+  const [newTaskId, setNewTaskId] = useState(null);
+  const newTaskInput = useRef(null);
+  const groups = [
+    { key: 'q1', title: 'Urgent', tag: 'Important' },
+    { key: 'q2', title: 'Not urgent', tag: 'Important' },
+    { key: 'q3', title: 'Urgent', tag: 'Not important' },
+    { key: 'q4', title: 'Not urgent', tag: 'Not important' }
+  ].map(group => ({ ...group, tasks: eData[group.key] }));
+  const allOnOnePage = matrixPages(groups, matrixHeight);
+  const pages = allOnOnePage.length > 1 ? matrixPages(groups, matrixHeight - 40) : allOnOnePage;
+  const currentPage = Math.min(matrixPage, pages.length - 1);
+  const newTaskPage = newTaskId ? pages.findIndex(page => page.some(group => group.tasks.some(task => task.id === newTaskId))) : -1;
+  useEffect(() => {
+    if (newTaskPage < 0) return;
+    if (currentPage !== newTaskPage) setMatrixPage(newTaskPage);
+    else if (newTaskInput.current) { newTaskInput.current.focus(); setNewTaskId(null); }
+  }, [newTaskPage, currentPage, newTaskId]);
+  useEffect(() => { setMatrixPage(0); setClassifier(null); }, [activeFramework]);
 
   const QUADRANT_FOR = {
     'true|true': 'q1',    // urgent and important  -> do first
@@ -151,19 +174,16 @@ export default function ProductivityFrameworks({
   const classifyAndAdd = (urgent, important) => {
     const qKey = QUADRANT_FOR[`${urgent}|${important}`];
     const list = [...(eData[qKey] || [])];
-    if (list.length >= 4) return;
-    list.push({ id: `${qKey}_${Date.now()}`, text: '', completed: false, classified: true });
+    const id = `${qKey}_${Date.now()}`;
+    list.push({ id, text: '', completed: false, classified: true });
+    setNewTaskId(id);
     playSound('check', isMuted);
     updateActiveData({ quadrants: { ...eData, [qKey]: list } });
   };
 
   const handleDeleteTaskEisenhower = (qKey, idx) => {
     const list = [...eData[qKey]];
-    if (list.length <= 1) {
-      list[0] = { ...list[0], text: '', completed: false };
-    } else {
-      list.splice(idx, 1);
-    }
+    list.splice(idx, 1);
     updateActiveData({ quadrants: { ...eData, [qKey]: list } });
   };
 
@@ -201,7 +221,7 @@ export default function ProductivityFrameworks({
     doneCount = hardTasks.filter(t => t.text && t.text.trim() && t.completed).length;
   } else if (activeFramework === 'eisenhower') {
     const all = Object.values(eData).flat().filter(t => t && t.text && t.text.trim());
-    totalTasks = Math.max(all.length, 1);
+    totalTasks = all.length;
     doneCount = all.filter(t => t.completed).length;
   } else if (activeFramework === 'ivy_lee') {
     const all = ivyTasks.filter(t => t && t.text && t.text.trim());
@@ -367,17 +387,13 @@ export default function ProductivityFrameworks({
       )}
 
       {activeFramework === 'eisenhower' && (
-        <div className="matrix-grid flex-1 min-h-0 grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 pt-1">
-          {[
-            { key: 'q1', title: 'Urgent', tag: 'Important' },
-            { key: 'q2', title: 'Not urgent', tag: 'Important' },
-            { key: 'q3', title: 'Urgent', tag: 'Not important' },
-            { key: 'q4', title: 'Not urgent', tag: 'Not important' }
-          ].map((quad) => {
-            const tasks = eData[quad.key] || [];
+        <div className="matrix-pages" ref={matrixSpaceRef}>
+        <div className="matrix-grid">
+          {pages[currentPage].map((quad) => {
+            const tasks = quad.tasks;
 
             return (
-              <div key={quad.key} className="flex flex-col min-h-0">
+              <div key={quad.key} className="matrix-page-group">
                 {/* Quadrant Header: Exact 28px height, whitespace-nowrap guarantees 100% horizontal alignment */}
                 <div className="flex items-center justify-between h-[28px] pb-1 mb-1 border-b border-black/[0.08] dark:border-white/[0.08] select-none">
                   <span className="text-[11px] font-bold tracking-wider uppercase text-neutral-900 dark:text-neutral-100 whitespace-nowrap">
@@ -391,24 +407,27 @@ export default function ProductivityFrameworks({
                       className="text-[11px] text-neutral-500 dark:text-neutral-600 font-semibold tabular-nums"
                       title="Tasks arrive here by being classified, not by choosing this box"
                     >
-                      {tasks.filter(t => t.text && t.text.trim()).length}
+                      {eData[quad.key].filter(t => t.text && t.text.trim()).length}
                     </span>
                   </div>
                 </div>
 
                 {/* Quadrant Tasks List */}
-                <div className="space-y-0.5 flex-1 min-h-0 overflow-hidden">
-                  {tasks.map((item, idx) => {
+                <div className="matrix-page-rows">
+                  {tasks.map((item, offset) => {
+                    const idx = quad.start + offset;
                     const isDone = item.completed;
                     return (
                       <div
                         key={item.id || idx}
+                        data-task-id={item.id || `${quad.key}_${idx}`}
                         className="matrix-row flex items-center gap-2 min-h-[36px] px-1 -mx-1 rounded-xs hover:bg-black/[0.02] dark:hover:bg-white/[0.03] transition-colors group"
                       >
                         <button
                           type="button"
+                          disabled={!isInteractive || !item.text?.trim()}
                           onClick={() => handleToggleEisenhower(quad.key, idx)}
-                          aria-label={`${isDone ? 'Mark incomplete' : 'Complete'} ${quad.title.toLowerCase()} item ${idx + 1}`}
+                          aria-label={`${isDone ? 'Mark incomplete' : 'Complete'} ${quad.title.toLowerCase()} ${quad.tag.toLowerCase()} item ${idx + 1}`}
                           className={`priority-bullet w-3.5 h-3.5 rounded-full border transition-all flex items-center justify-center shrink-0 cursor-pointer ${
                             isDone
                               ? 'progress-bg-green progress-border-green text-white'
@@ -421,6 +440,9 @@ export default function ProductivityFrameworks({
                         <input
                           type="text"
                           value={item.text || ''}
+                          ref={item.id === newTaskId ? newTaskInput : null}
+                          aria-label={`${quad.title}, ${quad.tag}, task ${idx + 1}`}
+                          disabled={!isInteractive}
                           onChange={(e) => handleTextEisenhower(quad.key, idx, e.target.value)}
                           onKeyDown={(e) => {
                             if (e.key === 'Enter') {
@@ -428,7 +450,7 @@ export default function ProductivityFrameworks({
                               // Not another line in this box: the next task gets
                               // classified like the first one did (P9).
                               setClassifier({});
-                            } else if (e.key === 'Backspace' && item.text === '' && tasks.length > 1) {
+                            } else if (e.key === 'Backspace' && item.text === '') {
                               e.preventDefault();
                               handleDeleteTaskEisenhower(quad.key, idx);
                             }
@@ -452,6 +474,8 @@ export default function ProductivityFrameworks({
               </div>
             );
           })}
+        </div>
+        <CompactPager page={currentPage} count={pages.length} onChange={setMatrixPage} label="Matrix pages" />
         </div>
       )}
 
